@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://p3fmmo.com/p3fesdecompheader.png" alt="Persona 3 FES Decompilation" width="1280" height="480">
+  <img src="https://p3fmmo.com/p3fesdecompheader.png" alt="Persona 3 FES Decompilation" height="480">
 </p>
 
 # Persona 3 FES Decompilation
