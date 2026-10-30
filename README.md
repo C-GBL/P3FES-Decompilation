@@ -155,6 +155,9 @@ build\int\bin\p3fes.exe
 | `config/` | input map and the six recorded replay routes |
 | `docs/` | ADRs, the runtime contract, format notes, 30+ analysis documents, the integration log |
 
+## AI Disclosure
+I've used Claude a lot on this and will keep using it. A project this big on the timeline I wanted wasn't happening otherwise. Everything it writes has to pass the same tests as anything I write by hand. PRs are welcome, AI-assisted ones too.
+
 ## Legal
 
 This repository contains no game data, no BIOS, no Sony SDK code and no generated code. The disc image, the ELF, the extracted files and the recompiled C++ all come from your own copy and stay on your machine. Community symbol maps were used as private reading hints; the committed names are only those verified in our own analysis or permissively licensed.
