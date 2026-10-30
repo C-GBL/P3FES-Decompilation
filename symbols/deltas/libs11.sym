@@ -1,0 +1,9 @@
+# libs11.sym  Phase 5 slice delta (game/include/p3fes/game/libs11.h, game/src/cri/libs11.cpp); SLUS_216.21
+# generated 2026-10-28 from the instructions (the p3fes_handgen bodies) and the CRI error strings each function passes
+#   to sub_552630 on a null handle ("E200305200x AIXP_GetNum...: NULL pointer is specified."), checked by
+#   tests/game/test_libs11.cpp (the AIX player accessors). A proposal only: the code keeps the symbols/ name.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs11 verified=yes ev=<anchor>
+00553690 000000d4 F AIXP_GetNumSmpl source=phase5-libs11 verified=yes ev=INTEGRATION_LOG.md#libs11
+00553730 00000054 F AIXP_GetNumTrack source=phase5-libs11 verified=yes ev=INTEGRATION_LOG.md#libs11
+00553788 00000054 F AIXP_GetNumPhrase source=phase5-libs11 verified=yes ev=INTEGRATION_LOG.md#libs11
+005537e0 0000005c F AIXP_GetNumSong source=phase5-libs11 verified=yes ev=INTEGRATION_LOG.md#libs11

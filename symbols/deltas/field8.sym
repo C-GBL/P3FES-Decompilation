@@ -1,0 +1,50 @@
+# field8.sym  Phase 5 slice delta (game/include/p3fes/game/field8.h); SLUS_216.21
+# generated 2026-10-25 from the instructions (p3fes_handgen bodies, the strings, the callers / data references, the
+#   kwln task records the creators write; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-field8, verified=yes: our own names, each from what the body does (its role block in
+#   game/src/sweep/field8_*.cpp). Not imported by the agent.
+# sub_102A70: the "hdd:" RtFS device's close callback: "HDD FClose", state 1, sceClose(fd), sceSync("pfs0:").
+00102A70 00000060 F H_Cdvd_RtFsHdd_FClose source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_102B60: the "hdd:" device's write callback: "HDD FWrite", sceWrite(fd), the position advanced.
+00102B60 00000088 F H_Cdvd_RtFsHdd_FWrite source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_102BF0: the "hdd:" device's seek callback: "HDD Seek", whence 3 / 2 / 1 / other, sceLseek(fd, pos, SEEK_SET).
+00102BF0 00000114 F H_Cdvd_RtFsHdd_FSeek source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_102D10: the "hdd:" device's exists callback: sceOpen("pfs0:" + name + 4, O_RDONLY) and sceClose.
+00102D10 00000078 F H_Cdvd_RtFsHdd_FExists source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_108BC0: kwlnUpdate's per-frame sound pump: ADXM main step, the master volume, the SE-bank steps, the ADX channels.
+00108BC0 0000028C F H_Snd_Update source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_10BF70: kwlnUpdate's frame start: the resource-manager worker suspended unless asleep / dormant (8 / 12).
+0010BF70 00000080 F H_ResrcMan_MaybeSuspendThread source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_190590: the memory-card check every card screen polls (GetInfo; -1 not a PS2 card, -2 no card / unformatted).
+00190590 00000168 F H_Memcard_UpdateCheck source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_190720: the load sequencer (" ### MemcardSeqMode = %d ###", SearchFile / ReadFile, "MEMCARD READ SIZE = %d").
+00190720 00000584 F H_Memcard_UpdateLoad source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_190CD0: the slot scan of the save / load list (16 slots' headers read into the slot-list buffer).
+00190CD0 00000568 F H_Memcard_UpdateSlotList source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_191660: " ### ChkMemcardAreaSeq = %d ###": whether the card has room for a new save.
+00191660 00000360 F H_Memcard_UpdateAreaCheck source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_19D3F0 / sub_19D400: the retail build's assertion / abort hooks, `jr $ra` (file, line) / (msg, file, line).
+0019D3F0 00000008 F K_Assert source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+0019D400 00000008 F K_Abort source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A0590: a scene object's hidden flag (0x40000000 of +40) for ids of kinds 1..3 (the battle's unit creation).
+001A0590 0000016C F MT_Scene_SetObjectHidden source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A0A90 / sub_1A0EE0: MT_Scene_Load's light set-ups of the kind-4 / kind-5 scene records.
+001A0A90 00000264 F MT_Scene_SetupLights4 source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+001A0EE0 00000264 F MT_Scene_SetupLights5 source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A1550 / sub_1A2170: the "ksk window" task's update / destroy (field7 creates it: sub_1A2200).
+001A1550 00000C18 F dbgKskWindowUpdate source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+001A2170 00000084 F dbgKskWindowDestroy source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A2720: the list box's value column (" %s", "  TRUE" / " FALSE", " %8d", " 0x%08X", " %4.2f").
+001A2720 00000358 F dbgListBoxDrawValues source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A2A80 / sub_1A3A60: the "ksk list box" task's update / destroy (field7 creates it: sub_1A3B10).
+001A2A80 00000FD4 F dbgListBoxUpdate source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+001A3A60 00000074 F dbgListBoxDestroy source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A4940: the "color box" task's update (R / G / B / "ALPHA" rows over a 4-byte target).
+001A4940 000001FC F dbgColorBoxUpdate source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A5320 / sub_1A5280: Kyoto's "circle draw" task's create / destroy.
+001A5320 0000038C F Y_Kyoto_CreateCircleDrawTask source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+001A5280 00000094 F Y_Kyoto_DestroyCircleDrawTask source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1A9500: the "epl delay(kosaka)" task's update (field7 creates it: sub_1A96C0).
+001A9500 0000018C F K_FldEpl_UpdateDelayTask source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8
+# sub_1AE580: the "collis mover" task's update (field3_collision.cpp creates it).
+001AE580 00001358 F K_FldColl_UpdateMoverTask source=phase5-field8 verified=yes ev=INTEGRATION_LOG.md#field8

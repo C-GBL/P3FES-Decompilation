@@ -1,0 +1,235 @@
+# band20b.sym  Phase 5 slice delta (game/include/p3fes/game/band20b.h); SLUS_216.21
+# generated 2026-10-24 from the instructions (p3fes_handgen bodies, the K_Assert file strings of each module, the
+#   callers / callees, the $gp module slots; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-band20b verified=yes: our own names, each from what the body does (the role in the header and
+#   the .cpp). ev=<doc>#<section>. Not imported by the agent.
+# sub_202830: builds the title line of the skill under the cursor of the skill window (datGetSkillName -> font chain at work +136), the usable / payable marks (+28976 bits...
+00202830 000001e0 F bcmMain_DebugSkillPreview source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_203630: the item-window twin of sub_202830: the item name (sub_171110) as the title line (+612), the count of the item in stock (sub_170760) at +28980, the panel's i...
+00203630 00000124 F bcmMain_DebugItemPreview source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2057C0: opens the TACTICS list ("start command operation"): collects the tactics 1..10 that are open (2 / 3 / 4 / 6 / 8 behind the flags 4635 / 4636 / 4637 / 4634 / ...
+002057c0 000005a0 F bcmMain_StartTacticsList source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2063F0: the TACTICS list's decide step: row 7 ("Assign Target") switches to the target selection (sub_21B670 / sub_2085E0, sub-state 1); any other tactic is stored i...
+002063f0 000001a4 F bcmMain_DecideTactic source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_208B30: builds the auto-battle setting display: gathers the party units (sub_29ADA0, at most 20, none dead: K_Assert 111 / 112) and the living, visible units of both...
+00208b30 00000428 F bausMain_Build source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2094F0: clears flag bit 0 (the display is drawn no more).
+002094f0 0000004c F bausMain_Hide source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_209940: (quads, n, value) prints value ("%d") into a guest stack buffer and gives each digit, last first, its sprite page (sub_209BA0); more digits than quads assert...
+00209940 000000b8 F bausMain_SetNumber source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_209BA0: (quad, digit) the quad of one digit: panel set 1, page 46 + digit.
+00209ba0 0000005c F bausMain_SetDigit source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_209C40: the table 0x6871C0 in The Answer (sub_17D800), else 0x6850C0.
+00209c40 00000040 F sflData_GetTableK source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_209CC0: the table 0x68C760 in The Answer, else 0x68C440.
+00209cc0 00000040 F sflData_GetTableL source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20AB30: (model) a card's back face: base init (sub_209EA0), kind 2, the vertex block +224 (sub_20C7B0), then the four corner positions (x +-3, y from the $gp constan...
+0020ab30 00000150 F gcModel_InitBack source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20AC90: (model) one frame of a card model: time +60 += the $gp step; kind 1 / 0 animate the texture coordinates (the scrolling bands, the 2-second pulse of the glow)...
+0020ac90 000005c0 F gcModel_Update source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20C320: (z $f12, xy*, out*) the camera-space point of a screen position at depth z: x / y scaled by the view window (camera +104) over half the frame buffer size (su...
+0020c320 000000e0 F gcModel_ToScreenDepth source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20C7A0: (model, frame) stores the frame at +56.
+0020c7a0 0000000c F gcModel_SetParent source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20CA90: (matrix, model) the model matrix: the aspect-corrected scale (+44 .. +52), the rotation of the quaternion +16 .. +28 (2 / |q|^2 form), the position +32, then...
+0020ca90 000001ec F gcModel_BuildMatrix source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20CF20: (grid, model) lights the 9 x 7 / 8 vertex grid of a card: the camera's position in model space decides the face (bit 0: back), each vertex gets the specular-...
+0020cf20 000005e0 F gcModel_LightGrid source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20D670: (model, out*) copies the position +32 .. +40.
+0020d670 00000020 F gcModel_GetPosition source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20D690: (model, quat*) copies the quaternion to +16 .. +28.
+0020d690 00000028 F gcModel_SetRotation source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20D6C0: (model) asserts kind 0 (line 1655), then +368 |= 1.
+0020d6c0 00000050 F gcModel_ShowFront source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20D710: (model) asserts kind 0 (line 1662), then +368 |= 2 and flag bit 1.
+0020d710 0000005c F gcModel_ShowShine source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20D770: (model, v $f12) asserts kind 1 (line 1670), then +808 = v.
+0020d770 00000058 F gcModel_SetGlow source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20E710: (i) the heap copies of base files 13 / 14 (+120 + 4 i; asserts loaded bit 1, line 467).
+0020e710 00000080 F sflRes_GetBaseBlock2 source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20E8F0: requests battle/shuffle/sfl_tutorial.bin (asserts neither loaded nor requested, lines 498 / 499): the node at +112, requested bit 3.
+0020e8f0 000000b8 F sflRes_RequestTutorial source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20E9B0: returns requested bit 3.
+0020e9b0 00000044 F sflRes_IsTutorialRequested source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20EA00: (i) the tutorial archive's block i (+92 + 4 i; asserts loaded bit 3, line 515).
+0020ea00 00000080 F sflRes_GetTutorialBlock source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20EC50: the i_change_per01.spr sprite set (+128; asserts loaded bit 4, line 554).
+0020ec50 0000006c F sflRes_GetSprSet source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20F7D0: (u16 id) finds the member record of party id (K_Assert 412 when there is none: the record pointer stays 0 and the store faults, as in retail), sets its flag ...
+0020f7d0 000000e0 F bppMain_OpenMemberPanel source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20F8B0: (u16 id) the reverse: clears bit 0 of the member record and closes its panel (sub_2337B0).
+0020f8b0 000000e4 F bppMain_CloseMemberPanel source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20FA80: (u16 id) finds the member record and starts its panel's flash (sub_233910).
+0020fa80 000000d4 F bppMain_FlashMember source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20FB60: (u16 id) finds the member record and stops its panel's flash (sub_233930).
+0020fb60 000000d4 F bppMain_StopFlashMember source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20FCE0: sets flag bit 5 of the party panel.
+0020fce0 00000048 F bppMain_SetFlag20 source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20FD30: clears flag bit 5 of the party panel.
+0020fd30 0000004c F bppMain_ClearFlag20 source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_20FE30: (panel, kind, unit) builds the analysis panel of an enemy unit (bsa_main.c): asserts it is closed (line 145), flags 1 | 0x40, the kind, the unit and its enem...
+0020fe30 00000f2c F bsaPanel_Open source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_210D60: (panel) fade frame 0, fade mode 1, flag 0x40.
+00210d60 00000030 F bsaPanel_StartClose source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_215A30: (panel) returns flag bit 0 (+4).
+00215a30 00000010 F bsaPanel_IsOpen source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_215A40: (panel) returns flag bit 6 (+4).
+00215a40 00000010 F bsaPanel_IsFading source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_215B00: opens the persona select: the stock (datPersonaGetByPcId / sub_1756F0 / sub_175410) as 16-byte entries after the ones already listed (the protagonist's curre...
+00215b00 000004bc F sflPsel_Open source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_215FC0: the persona select's frame: the list fade (+23616, 6 frames) and the caption fade (+23628, 3 frames; the fade-out destroys the caption), then the state machi...
+00215fc0 00000840 F sflPsel_Update source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2168A0: returns flag bit 5.
+002168a0 00000044 F sflPsel_IsRunning source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2168F0: draws the persona select (sflRoot draw task): the rows (sub_219370, the cursor row lit), the panel pieces, the digit quads, the caption row when shown (bit 3...
+002168f0 000007d0 F sflPsel_Draw source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2170C0: the font chain of each shown row's persona name (+2640 of the row; the cursor row in colour 6, the others 0), placed at x 4640 / 16, y (33 row + 93) * 8 / 16...
+002170c0 000001f8 F sflPsel_BuildRowChains source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_217350: destroys the rows' name chains (sub_3B0170) and builds them again.
+00217350 000000b8 F sflPsel_RebuildRowChains source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_217410: (ids*, count*) writes the ids of the entries with bit 1 set and bit 0 clear (the compendium ones still kept) and their count.
+00217410 000000bc F sflPsel_GetKept source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2174D0: (ids*, count*) writes the ids of the entries with bit 0 set and bit 1 clear (the released ones) and their count.
+002174d0 000000bc F sflPsel_GetReleased source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_217590: (u16 id) appends an entry for persona id with flag bit 1 (from the compendium).
+00217590 00000074 F sflPsel_AddEntry source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_217610: the quads of every shown row (sub_218810, the cursor row lit) and of the two two-digit numbers: entries + 1 (+22592) and the stock count (+23104).
+00217610 00000170 F sflPsel_SetRowQuads source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_217780: places everything: the rows (sub_218B20 at x 240 / y 90 + 33 row), the panel pieces with the fade alpha, the two numbers centred (sub_218370 at 503 / 384, su...
+00217780 0000092c F sflPsel_Layout source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2180B0: (arcana) the sprite page of an arcana: 1..12 -> 10..21, 13..22 -> 0..9; any other value asserts (line 1540) and uses whatever $s1 held.
+002180b0 00000194 F sflPsel_ArcanaPage source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_218250: (quads, n, value) prints value ("%d") and gives each digit, last first, its page (sub_218310); more digits than quads asserts (line 1554).
+00218250 000000b8 F sflPsel_SetNumber source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_218310: (quad, digit) the quad of one digit: the spr set, page 39 + digit.
+00218310 00000058 F sflPsel_SetDigit source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_218370: (quads, n, value, xy*) places value's digits centred in an n-digit field 27 px a digit (x = xy.x + 27 (len - 1 - i) + 27 n / 2 - 27 len / 2, each half rounde...
+00218370 000001f4 F sflPsel_PlaceNumberL source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_218570: (quads, n, value, xy*) the same with 19 px digits scaled to 73 % of the page size.
+00218570 00000238 F sflPsel_PlaceNumberS source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2187B0: fade frame 0, direction 1, flag bit 2.
+002187b0 00000054 F sflPsel_FadeIn source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_218810: (row, entry, lit) the quads of one row: the frame (pages 27 / 28 lit, 35 / 36 kept, 33 / 34 otherwise; the left piece and its mirror), the marker (24 / 59 li...
+00218810 0000030c F sflPsel_SetRowPages source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_218B20: (row, entry, lit, xy*) places one row's quads relative to xy with the fade alpha: frame pieces, marker, arcana, kept mark, the level centred (sub_238DC0) and...
+00218b20 0000084c F sflPsel_LayoutRow source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_219370: (row, entry, lit) draws one row: each quad's raster (sub_21CCE0 of its page) then the two Im2D triangles, the level digits (sub_239140) and the name chain (f...
+00219370 00000600 F sflPsel_DrawRow source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_219970: the caption of the entry under the cursor: its index (+23640), the name chain (+21200, colour 0), its row quads (sub_218810 on the caption row), the caption ...
+00219970 0000013c F sflPsel_OpenCaption source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_219AB0: caption fade frame 0, direction 0 (out), flag bit 4.
+00219ab0 00000050 F sflPsel_CloseCaption source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_219B90: a locked entry (bit 2) shows message 49 (state 4); otherwise the question 46 with the yes / no window 48, the list fade-out, the caption (sub_219970) and sta...
+00219b90 00000100 F sflPsel_AskRelease source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21AD40: (a, b) the pair record (16 x 20 bytes at +76) in use with these two keys (+8 == b, +4 == a); none asserts (line 610) and returns the record past the end.
+0021ad40 000000f0 F gcRes_FindPair source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21B080: (u16 id) the id record (16 x 16 bytes at +396) in use for id; none asserts (line 671).
+0021b080 000000cc F gcRes_FindId source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21B6F0: returns flag bit 0 of bse_main.c (K_Assert 30 when no work).
+0021b6f0 00000044 F bseMain_IsBusy source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21B740: returns flag bit 1; asserts the work is not busy (line 71).
+0021b740 00000074 F bseMain_IsDone source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21B7C0: returns +8; asserts the work is not busy (line 79).
+0021b7c0 00000070 F bseMain_GetResult source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21B830: the cancel SFX, then flag bit 1 set and bit 0 cleared.
+0021b830 00000074 F bseMain_Finish source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_21C720: the heap block +104 of bp_res.c (asserts loaded bit 0, line 457).
+0021c720 0000006c F bpRes_GetBlock104 source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2254A0: puts the command panel into the tactics-list state (state 4, sub-step 1, flag 8): the row under the cursor = rows - first row (+24680 - +24684), its value, t...
+002254a0 00000148 F bcmPanel_OpenTacticsList source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_227D10: the quads of the tactics list's frame from panel set 0: pages 30..33, the two mirrored corners (30 / 31), the scroll mark (29), the separators (38 / 39, 38 m...
+00227d10 00000214 F bcmPanel_BuildListFrame source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_22C1D0: sub-step +17988 = 0 (sub_205410's close path).
+0022c1d0 00000040 F bcmPanel_ResetSubStep source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_233790: (panel) sets flag bit 3 (the open animation).
+00233790 00000014 F bppPanel_StartOpenAnim source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2337B0: (panel) the flash frame (+2124) to 0, flag bit 8 set, bit 3 cleared.
+002337b0 00000024 F bppPanel_StartCloseAnim source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_239280: releases the pose block (+34688, sub_249690) and clears the sfl_ground.c slot.
+00239280 00000050 F sflGround_Unregister source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_2392D0: the Shuffle Time ground's per-frame layout (9.9 KB): the background and far quads, the seven card rings (1,056 bytes each) turning with their random phase, t...
+002392d0 000026b8 F sflGround_Layout source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23C3A0: (quads) texture coordinates of the two banner quads from base raster 1 (253 x 51 and 182 x 75 texels from (1, 1) / (1, 52)), near-screen z and 1 / camera far...
+0023c3a0 0000017c F sflGround_SetBannerQuads source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23CA10: the ground's first entry mode: the full-raster quad (effect raster 5), the 7 x 4 ring quads (effect raster 4, 51 x 128 texels), each ring's random phase / se...
+0023ca10 00000334 F sflGround_StartA source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23CD50: returns flag bit 1.
+0023cd50 00000044 F sflGround_IsShown2 source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23CDA0: the same set-up as sub_23CA10 with the second mode's values.
+0023cda0 00000334 F sflGround_StartB source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23D240: rebuilds the sparkles (sub_23D2A0) and the floor (sub_23D650); frame 0, mode 5.
+0023d240 00000060 F sflGround_Reset source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23D2A0: the 48 sparkles: their quads (base raster 2, 63 x 81 texels), then each one live with a random life 120..179, kind 0..2, position (-20 .. 660, -20 .. 468), t...
+0023d2a0 000003a4 F sflGround_InitSparkles source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23D650: the floor quad (base raster 0 inset by one texel) and the 9 x 11 grid vertices: near-screen z, 1 / far, colour 255 / 255 / 255 / 255 as floats.
+0023d650 00000150 F sflGround_InitFloor source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23F010: the panel's two title quads (effect raster 0, whole) and three number quads (raster 1, 463 x 89 texels), frame 0, mode 1, flag bit 1, then the layout (sub_23...
+0023f010 000001c0 F sflPanel_StartA source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23F1D0: the same with mode 2.
+0023f1d0 000001bc F sflPanel_StartB source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_23F540: the battle info pop-ups (16 records of 3,920 bytes): every live record ages one frame up to 50 (then, or when its unit is gone, bits 0 / 1 clear); each live ...
+0023f540 000023c8 F biMain_Update source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_3151D0: (model) (the model draw path, sub_317A20) a model's projected shadow: its alpha (+936) eases towards the target (+937) by the step (+938) a frame and is scal...
+003151d0 00000a44 F mdlDrawShadow source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_31C1D0: (model) a character model's weapons (model kind +212 == 1; else returns 0): the equipped weapon (datGetEquipmentIdx -> sub_16F630) by character (+214, jump t...
+0031c1d0 0000060c F mdlAttachWeapons source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_31E4D0: (slot*, kind, id) requests a model's motion / sound file into its 32-byte slot (allocated on first use through the RwMalloc slot: {data, 1, kind, id, kind}):...
+0031e4d0 00000400 F mdlRequestMotionFile source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321360: (u16 layer) draws one effect layer (every effect draw task): saves the nine RW render states of 0x69BBD0 and sets their effect values, then for the seven ble...
+00321360 000006fc F effMng_DrawLayer source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321B00: layer 0 inside the camera's update (RwCameraBeginUpdate / EndUpdate); from 200 effect units on (0x7CD540) also the screen fade quad with FRAME_1 masked (sub_...
+00321b00 0000014c F effMng_DrawLayer0Task source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321C50: layer 1 inside the camera's update.
+00321c50 00000058 F effMng_DrawLayer1Task source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321CE0: layer 3 inside the camera's update.
+00321ce0 00000058 F effMng_DrawLayer3Task source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321D40: layer 4 once requested (0x7CE540): saves the camera frame's matrix, sets the fixed one at 0x9572E0, draws the layer in the camera's update, restores the matr...
+00321d40 000000e0 F effMng_DrawLayer4Task source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321E50: layer 6 inside the camera's update.
+00321e50 00000058 F effMng_DrawLayer6Task source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_321EB0: layer 7 inside the camera's update.
+00321eb0 00000058 F effMng_DrawLayer7Task source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_324470: (mesh) the atomic's frame gets the matrix of sub_323920 (sub_4CB7F0, replace).
+00324470 00000044 F fxMesh_SetIdentity source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_324680: (def) a 44-byte effect record (RwMalloc, zeroed): tag 210, class +4, +12 / +28 from the definition, and the class instance made by the class row's create slo...
+00324680 000000c0 F fxEffect_CreateFromDef source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_324870: (rec) the same record built from another record: the class row's clone slot (0x69BE34 + 52 class) on the source's instance.
+00324870 000000c0 F fxEffect_Clone source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_3257A0: (node) one node step (sub_3252A0) then its draw (sub_325500).
+003257a0 00000038 F fxNode_StepAndDraw source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_326490: (n) a 96-byte class instance (RwMalloc, zeroed): count n, -1 at +4, scale 1.0.
+00326490 00000074 F fxInst_Create source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_326510: (def) the class instance of a definition: its particle-system definition (sub_3245B0), the particle count (+32 or +184, times +36, at most 300), the instance...
+00326510 00000228 F fxInst_CreateFromDef source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_3268C0: (inst) a class instance like another: the same particle-system definition and count, its own particle system, the mesh (sub_323640) and the kind data copied ...
+003268c0 0000011c F fxInst_Clone source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_3269E0: (dst, src) copies the kind data of src into dst by src's kind (+12, jump table): 1 / 4 the texture scale, 2 / 7 a fresh model A / B, 5 / 6 one effect record ...
+003269e0 0000028c F fxInst_CopyKind source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_326F60: (inst, def) kind 5: one effect record per particle (the count of the particle system +8, or +0): the old records destroyed (sub_324740) and their block freed...
+00326f60 00000130 F fxInst_SetEffects source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_327090: (inst, def) kind 6: one node tree per particle: the old trees destroyed (sub_3257E0), the first created from the definition (sub_324BD0), the others cloned f...
+00327090 00000130 F fxInst_SetTrees source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_327250: (inst) kinds 5 / 6: every particle's effect record / node tree follows its particle (32 bytes at the particle system's +24): reset on age 0, then scale, posi...
+00327250 0000037c F fxInst_StepChildren source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_3275D0: (inst, alpha $f12) one frame of a class instance by kind (+12, jump table): the mesh kinds update the PTank / mesh vertices of every particle from the partic...
+003275d0 00000d0c F fxInst_Update source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32AF30: (psys) the particle-system type A frame (its scale slot is sub_32B990): emits new particles by the rate, ages and moves every live particle (velocity, gravit...
+0032af30 00000a5c F fxPsysUpdateA source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32BA30: (psys) the particle-system type B frame (scale slot sub_32C2B0), as sub_32AF30 for its own parameter layout.
+0032ba30 00000874 F fxPsysUpdateB source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32C340: (psys) the particle-system type C frame (scale slot sub_32CD70): the emitter turns (cosf / sinf) before the particles move.
+0032c340 00000a24 F fxPsysUpdateC source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32CE10: (psys) the particle-system type D frame (scale slot sub_32D7C0): particles on rotated rings (the X / Y rotation matrices sub_358160 / sub_358380 / sub_358410).
+0032ce10 000009ac F fxPsysUpdateD source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32D840: (psys) the particle-system type E frame (scale slot sub_32E110).
+0032d840 000008c4 F fxPsysUpdateE source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32E1A0: (psys) the particle-system type F frame (scale slot sub_32EAB0).
+0032e1a0 00000904 F fxPsysUpdateF source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32EAB0: (psys, s $f12) type F's scale slot: the live parameter block (+32) = the base block (+36) times s for the size, speed and spread fields (+100, +104, +116 / +...
+0032eab0 0000008c F fxPsysScaleF source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32EB40: (psys) the particle-system type G frame (scale slot sub_32F8B0): particles along an axis (sub_358340) with the turning emitter.
+0032eb40 00000d64 F fxPsysUpdateG source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32F8B0: (psys, s $f12) type G's scale slot: +100, +104 and +116 / +124 / +132 of the base block times s.
+0032f8b0 0000005c F fxPsysScaleG source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b
+# sub_32F910: (psys) the particle-system type H frame.
+0032f910 000007e8 F fxPsysUpdateH source=phase5-band20b verified=yes ev=INTEGRATION_LOG.md#band20b

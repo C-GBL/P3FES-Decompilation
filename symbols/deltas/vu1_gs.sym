@@ -1,0 +1,348 @@
+# vu1_gs.sym -- Phase 2 topic 14 delta (VU1 microcode, pipelines, GS funnels). Evidence anchors: docs/ANALYSIS/14_vu1_gs_census.md
+# NOTE for the lead: 44 D rows (ret-tag VAs 0x5a2180.., descriptors 0x7cdb28.., rt2d arrays 0x7cdb78/88/98) sit inside larger IDA data items on a fresh master; apply symbols/types/vu1_gs.apply.txt first (it del_items + apply_tinfo) or re-run the importer after it -- validated on ida/work_vu1_gs.i64: 159 names, 21 promotions, 164 comments, 0 failures on the second pass.
+# <addr8> <size8> <F|D|L> <name> source=phase2-vu1_gs ev=<anchor> | promoted hints: source=<src> verified=yes ev=<anchor>
+005a1d80 00000400 D vu1_prog_000_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a2180 000004c0 D vu1_prog_001_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a2640 000004a0 D vu1_prog_002_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a2ae0 00000540 D vu1_prog_003_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a3020 00000550 D vu1_prog_004_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a3570 00000670 D vu1_prog_005_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a3be0 00000ac0 D vu1_prog_006_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a46a0 000007f0 D vu1_prog_007_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a4e90 00000580 D vu1_prog_008_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a5410 00000670 D vu1_prog_009_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a5a80 00000740 D vu1_prog_010_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a61c0 00000980 D vu1_prog_011_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a6b40 00000900 D vu1_prog_012_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a7440 000009a0 D vu1_prog_013_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a7de0 00000d30 D vu1_prog_014_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a8b10 00000c60 D vu1_prog_015_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005a9770 00002bb0 D vu1_prog_016_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005ac320 00002f90 D vu1_prog_017_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005af2b0 00002be0 D vu1_prog_018_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005b1e90 00002ce0 D vu1_prog_019_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005b4b70 000023a0 D vu1_prog_020_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005b6f10 00002420 D vu1_prog_021_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005b9330 00002e70 D vu1_prog_022_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005bc1a0 00003010 D vu1_prog_023_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005bf1b0 00002ea0 D vu1_prog_024_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005c2050 00002fa0 D vu1_prog_025_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005c4ff0 00002760 D vu1_prog_026_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005c7750 000027e0 D vu1_prog_027_unreferenced source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005c9f30 00000430 D vu1_prog_028_ptank_spr2d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005ca360 000003c0 D vu1_prog_029_ptank_spr2d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005ca720 000003e0 D vu1_prog_030_ptank_spr2d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cab00 00000360 D vu1_prog_031_ptank_spr2d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cae60 00000a80 D vu1_prog_032_ptank_spr3d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cb8e0 000008b0 D vu1_prog_033_ptank_spr3d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cc190 000009d0 D vu1_prog_034_ptank_spr3d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005ccb60 00000850 D vu1_prog_035_ptank_spr3d source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cd3b0 00000200 D vu1_prog_036_unknown_tbl4 source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cd5b0 00000270 D vu1_prog_037_unknown_tbl4 source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cd820 00000160 D vu1_prog_038_unknown_tbl4 source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cd980 00000190 D vu1_prog_039_unknown_tbl4 source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+005cdb10 00000030 D vu1_prog_040_null_transform source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006b5e90 00002eb0 D vu1_prog_041_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006b8d40 000039c0 D vu1_prog_042_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006bc700 00001a90 D vu1_prog_043_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006be190 00001d50 D vu1_prog_044_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006bfee0 00002a60 D vu1_prog_045_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006c2940 00002af0 D vu1_prog_046_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006c5430 00002c30 D vu1_prog_047_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006c8060 00002a00 D vu1_prog_048_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006caa60 00003bc0 D vu1_prog_049_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006ce620 000030b0 D vu1_prog_050_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006d16d0 00002bb0 D vu1_prog_051_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006d4280 00002980 D vu1_prog_052_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006d6c00 00003b20 D vu1_prog_053_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006da720 00003030 D vu1_prog_054_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006dd750 00002d70 D vu1_prog_055_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006e04c0 00002b50 D vu1_prog_056_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006e3010 00003d10 D vu1_prog_057_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006e6d20 00003200 D vu1_prog_058_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006e9f20 00002a20 D vu1_prog_059_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006ec940 000027f0 D vu1_prog_060_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006ef130 000039b0 D vu1_prog_061_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006f2ae0 00002ea0 D vu1_prog_062_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006f5980 00003190 D vu1_prog_063_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006f8b10 00003c90 D vu1_prog_064_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006fc7a0 00001d60 D vu1_prog_065_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006fe500 00002020 D vu1_prog_066_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00700520 00002d30 D vu1_prog_067_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00703250 00002dc0 D vu1_prog_068_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00706010 00002e90 D vu1_prog_069_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00708ea0 00002c60 D vu1_prog_070_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0070bb00 00003e20 D vu1_prog_071_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0070f920 00003310 D vu1_prog_072_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00712c30 00002e10 D vu1_prog_073_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00715a40 00002be0 D vu1_prog_074_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00718620 00003d80 D vu1_prog_075_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0071c3a0 00003290 D vu1_prog_076_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0071f630 00002fd0 D vu1_prog_077_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00722600 00002db0 D vu1_prog_078_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007253b0 00003f70 D vu1_prog_079_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00729320 00003460 D vu1_prog_080_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0072c780 00002cf0 D vu1_prog_081_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0072f470 00002ac0 D vu1_prog_082_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00731f30 00003c80 D vu1_prog_083_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00735bb0 00003170 D vu1_prog_084_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00738d20 00002170 D vu1_prog_085_rt2d_stroke source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0073ae90 000020d0 D vu1_prog_086_rt2d_stroke source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0073cf60 000022d0 D vu1_prog_087_rt2d_font source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0073f230 00002240 D vu1_prog_088_rt2d_font source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00741470 00002350 D vu1_prog_089_rt2d_fill source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007437c0 000022b0 D vu1_prog_090_rt2d_fill source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00745a70 00002ba0 D vu1_prog_091_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00748610 00002b00 D vu1_prog_092_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0074b110 00003a70 D vu1_prog_093_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0074eb80 00002f60 D vu1_prog_094_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00751ae0 00002ae0 D vu1_prog_095_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007545c0 000028c0 D vu1_prog_096_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00756e80 00003a80 D vu1_prog_097_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0075a900 00002f60 D vu1_prog_098_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0075d860 00002e70 D vu1_prog_099_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007606d0 00002dd0 D vu1_prog_100_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007634a0 00003d40 D vu1_prog_101_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007671e0 00003230 D vu1_prog_102_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0076a410 000020d0 D vu1_prog_103_g3_skspt_uva source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0076c4e0 00001e10 D vu1_prog_104_g3_skspt_uva source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0076e2f0 00002db0 D vu1_prog_105_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+007710a0 00002b90 D vu1_prog_106_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00773c30 00003d50 D vu1_prog_107_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+00777980 00003240 D vu1_prog_108_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0077cb40 000003a0 D vu1_prog_109_ptank_xform source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0077cee0 00000320 D vu1_prog_110_ptank_xform source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0077d200 00000390 D vu1_prog_111_ptank_xform source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0077d590 00000380 D vu1_prog_112_ptank_xform source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+0077d910 000003a0 D vu1_prog_113_ptank_xform source=phase2-vu1_gs ev=14_vu1_gs_census.md#1
+006b4f00 00000020 D tbl_vu1code_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5170 00000070 D tbl_vu1code_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5380 00000020 D tbl_vu1code_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5490 00000070 D tbl_vu1code_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5450 00000010 D tbl_vu1code_g3_skspt_a source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5460 00000010 D tbl_vu1code_g3_skspt_gem source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5470 00000010 D tbl_vu1code_g3_skspt_bem source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5480 00000010 D tbl_vu1code_g3_skspt_dup source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5d40 00000020 D tbl_vu1code_g3_skspt_uva source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5d60 00000010 D tbl_vu1code_g3_skspt_dupuva source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb78 00000008 D tbl_vu1code_rt2d_stroke source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb88 00000008 D tbl_vu1code_rt2d_font source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb98 00000008 D tbl_vu1code_rt2d_fill source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007bcf74 00000018 D tbl_vu1code_unknown_tbl4 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b4f20 00000084 D pds_matpipe_def_1 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b4ff0 00000084 D pds_matpipe_def_4 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5080 00000084 D pds_matpipe_def_5 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b51e0 00000084 D pds_matpipe_def_1100b source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5270 00000084 D pds_matpipe_def_1100c source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b53a0 00000084 D pds_matpipe_def_10001 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5500 00000084 D pds_matpipe_def_11011 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5590 00000084 D pds_matpipe_def_11012 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b56a0 00000084 D pds_matpipe_def_10019 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b57f0 00000084 D pds_matpipe_def_1001b source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5940 00000084 D pds_matpipe_def_1001d source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5a50 00000084 D pds_matpipe_def_10020 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5b00 00000084 D pds_matpipe_def_10021 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5b90 00000084 D pds_matpipe_def_10022 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5c20 00000084 D pds_matpipe_def_10023 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5cb0 00000084 D pds_matpipe_def_10024 source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5d70 00000084 D pds_matpipe_def_1002a source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+006b5e00 00000084 D pds_matpipe_def_1002b source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb28 00000008 D vu1code_desc_g3_generic source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb40 00000008 D vu1code_desc_g3_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb48 00000008 D vu1code_desc_g3_skin source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb50 00000008 D vu1code_desc_g3_skspt_a source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb58 00000008 D vu1code_desc_g3_skspt_gem source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb60 00000008 D vu1code_desc_g3_skspt_bem source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb68 00000008 D vu1code_desc_g3_skspt_dup source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb70 00000008 D vu1code_desc_g3_skin_matfx source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb80 00000008 D vu1code_desc_rt2d_stroke source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdb90 00000008 D vu1code_desc_rt2d_font source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdba0 00000008 D vu1code_desc_rt2d_fill source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdba8 00000008 D vu1code_desc_g3_skspt_uva source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+007cdbb0 00000008 D vu1code_desc_g3_skspt_dupuva source=phase2-vu1_gs ev=14_vu1_gs_census.md#2
+004a3db0 00000074 F RxPipelineNodePS2AllMatSetVU1CodeArray source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+004a3540 0000006c F PS2AllMatPipelineNodeInit source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#1
+0046ad80 0000021c F RpPDSSkyMatPipeCreate source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+0046a830 00000058 F RpPDSRegisterPipe source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+0046aa80 000001a4 F PDSRegistryAddPipe source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+0046a890 00000038 F RpPDSGetPipe source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+004d7f60 0000024c F RpSkyRenderStateSet source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#4
+004d6b90 00000d18 F _rwSkySetRenderState source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#4
+004ef020 000001ac F skyFillInPktForUpLoadAlignedContiguousRectangle source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#3
+004a0e00 00000624 F RpMeshPS2AllBridgeCallBack source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#3
+004dff20 000001b4 F SkyUseMode source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#5
+00197350 00000c24 F kwlnInitRenderer source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+004b1100 000000a0 F rt2dPS2PipeOpen source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+0010e880 000003d0 F uttmxCreateRaster source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#5
+00478a70 0000024c F rpSpr2dGenCreatePS2AllMatPipe source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+00479e50 000001f8 F rpSpr3dGenCreatePS2AllMatPipe source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+004d59d0 000004b8 F _rwDMAOpenVIFPkt source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#3
+004d54e0 000004e8 F _rwDMAOpenGIFPkt source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#3
+004e3100 0000021c F SkyCreateFBRaster source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#5
+004e3320 0000022c F SkyCreateDBRaster source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#5
+004709e0 00000424 F RpPDS_G3_2DFont_PS2AllBridgeCallBack source=tge-pr4 verified=yes ev=14_vu1_gs_census.md#2
+# comments
+# comment 005a1d80 VU1 microprogram 0 (unreferenced): RW DMA ret packet QWC=63, 126 insns in 1 MPG piece(s) from VU addr 0, sha256 68291e9e0988181e..., arrays: - [phase2-vu1_gs]
+# comment 005a2180 VU1 microprogram 1 (unreferenced): RW DMA ret packet QWC=75, 150 insns in 1 MPG piece(s) from VU addr 0, sha256 8844f69a9e06c18d..., arrays: - [phase2-vu1_gs]
+# comment 005a2640 VU1 microprogram 2 (unreferenced): RW DMA ret packet QWC=73, 146 insns in 1 MPG piece(s) from VU addr 0, sha256 d3ef18d641922ce6..., arrays: - [phase2-vu1_gs]
+# comment 005a2ae0 VU1 microprogram 3 (unreferenced): RW DMA ret packet QWC=83, 166 insns in 1 MPG piece(s) from VU addr 0, sha256 8f746e50acd77768..., arrays: - [phase2-vu1_gs]
+# comment 005a3020 VU1 microprogram 4 (unreferenced): RW DMA ret packet QWC=84, 168 insns in 1 MPG piece(s) from VU addr 0, sha256 05f1af3f3a6aa081..., arrays: - [phase2-vu1_gs]
+# comment 005a3570 VU1 microprogram 5 (unreferenced): RW DMA ret packet QWC=102, 204 insns in 1 MPG piece(s) from VU addr 0, sha256 bba8098050fc8dc3..., arrays: - [phase2-vu1_gs]
+# comment 005a3be0 VU1 microprogram 6 (unreferenced): RW DMA ret packet QWC=171, 341 insns in 2 MPG piece(s) from VU addr 0, sha256 8f1f72e1b6ac2d23..., arrays: - [phase2-vu1_gs]
+# comment 005a46a0 VU1 microprogram 7 (unreferenced): RW DMA ret packet QWC=126, 252 insns in 1 MPG piece(s) from VU addr 0, sha256 5bce40603c68b486..., arrays: - [phase2-vu1_gs]
+# comment 005a4e90 VU1 microprogram 8 (unreferenced): RW DMA ret packet QWC=87, 174 insns in 1 MPG piece(s) from VU addr 0, sha256 6bdf39389ad3d1ab..., arrays: - [phase2-vu1_gs]
+# comment 005a5410 VU1 microprogram 9 (unreferenced): RW DMA ret packet QWC=102, 204 insns in 1 MPG piece(s) from VU addr 0, sha256 0eae757bc44e1892..., arrays: - [phase2-vu1_gs]
+# comment 005a5a80 VU1 microprogram 10 (unreferenced): RW DMA ret packet QWC=115, 230 insns in 1 MPG piece(s) from VU addr 0, sha256 3d922d2ed32278ea..., arrays: - [phase2-vu1_gs]
+# comment 005a61c0 VU1 microprogram 11 (unreferenced): RW DMA ret packet QWC=151, 301 insns in 2 MPG piece(s) from VU addr 0, sha256 db53b5f71691b77c..., arrays: - [phase2-vu1_gs]
+# comment 005a6b40 VU1 microprogram 12 (unreferenced): RW DMA ret packet QWC=143, 285 insns in 2 MPG piece(s) from VU addr 0, sha256 e2372630da8784aa..., arrays: - [phase2-vu1_gs]
+# comment 005a7440 VU1 microprogram 13 (unreferenced): RW DMA ret packet QWC=153, 305 insns in 2 MPG piece(s) from VU addr 0, sha256 24aa4a8fc7c7d4de..., arrays: - [phase2-vu1_gs]
+# comment 005a7de0 VU1 microprogram 14 (unreferenced): RW DMA ret packet QWC=210, 419 insns in 2 MPG piece(s) from VU addr 0, sha256 4e2bd97520cdb555..., arrays: - [phase2-vu1_gs]
+# comment 005a8b10 VU1 microprogram 15 (unreferenced): RW DMA ret packet QWC=197, 393 insns in 2 MPG piece(s) from VU addr 0, sha256 4c9076eacaad427b..., arrays: - [phase2-vu1_gs]
+# comment 005a9770 VU1 microprogram 16 (unreferenced): RW DMA ret packet QWC=698, 1391 insns in 6 MPG piece(s) from VU addr 0, sha256 bf0218011e232d10..., arrays: - [phase2-vu1_gs]
+# comment 005ac320 VU1 microprogram 17 (unreferenced): RW DMA ret packet QWC=760, 1515 insns in 6 MPG piece(s) from VU addr 0, sha256 19c83193728cb8a7..., arrays: - [phase2-vu1_gs]
+# comment 005af2b0 VU1 microprogram 18 (unreferenced): RW DMA ret packet QWC=701, 1397 insns in 6 MPG piece(s) from VU addr 0, sha256 b91cccf9c37e5709..., arrays: - [phase2-vu1_gs]
+# comment 005b1e90 VU1 microprogram 19 (unreferenced): RW DMA ret packet QWC=717, 1429 insns in 6 MPG piece(s) from VU addr 0, sha256 0ce59150a491e0ec..., arrays: - [phase2-vu1_gs]
+# comment 005b4b70 VU1 microprogram 20 (unreferenced): RW DMA ret packet QWC=569, 1134 insns in 5 MPG piece(s) from VU addr 0, sha256 5fe5df59262f6744..., arrays: - [phase2-vu1_gs]
+# comment 005b6f10 VU1 microprogram 21 (unreferenced): RW DMA ret packet QWC=577, 1150 insns in 5 MPG piece(s) from VU addr 0, sha256 694f06e44cd5e61b..., arrays: - [phase2-vu1_gs]
+# comment 005b9330 VU1 microprogram 22 (unreferenced): RW DMA ret packet QWC=742, 1479 insns in 6 MPG piece(s) from VU addr 0, sha256 fc074f5757aae1d3..., arrays: - [phase2-vu1_gs]
+# comment 005bc1a0 VU1 microprogram 23 (unreferenced): RW DMA ret packet QWC=768, 1531 insns in 6 MPG piece(s) from VU addr 0, sha256 3600827ad7ae1500..., arrays: - [phase2-vu1_gs]
+# comment 005bf1b0 VU1 microprogram 24 (unreferenced): RW DMA ret packet QWC=745, 1485 insns in 6 MPG piece(s) from VU addr 0, sha256 d2cc5422ede18a4b..., arrays: - [phase2-vu1_gs]
+# comment 005c2050 VU1 microprogram 25 (unreferenced): RW DMA ret packet QWC=761, 1517 insns in 6 MPG piece(s) from VU addr 0, sha256 1585db1ede547f5d..., arrays: - [phase2-vu1_gs]
+# comment 005c4ff0 VU1 microprogram 26 (unreferenced): RW DMA ret packet QWC=629, 1254 insns in 5 MPG piece(s) from VU addr 0, sha256 e105b1e05b546be1..., arrays: - [phase2-vu1_gs]
+# comment 005c7750 VU1 microprogram 27 (unreferenced): RW DMA ret packet QWC=637, 1270 insns in 5 MPG piece(s) from VU addr 0, sha256 281fd2eebe98b778..., arrays: - [phase2-vu1_gs]
+# comment 005c9f30 VU1 microprogram 28 (ptank_spr2d): RW DMA ret packet QWC=66, 132 insns in 1 MPG piece(s) from VU addr 0, sha256 41b4b303c68359b4..., arrays: ptank_spr2d[2] [phase2-vu1_gs]
+# comment 005ca360 VU1 microprogram 29 (ptank_spr2d): RW DMA ret packet QWC=59, 118 insns in 1 MPG piece(s) from VU addr 0, sha256 70697b59792c4a43..., arrays: ptank_spr2d[3] [phase2-vu1_gs]
+# comment 005ca720 VU1 microprogram 30 (ptank_spr2d): RW DMA ret packet QWC=61, 122 insns in 1 MPG piece(s) from VU addr 0, sha256 c96fdf7d0659d1d5..., arrays: ptank_spr2d[0] [phase2-vu1_gs]
+# comment 005cab00 VU1 microprogram 31 (ptank_spr2d): RW DMA ret packet QWC=53, 106 insns in 1 MPG piece(s) from VU addr 0, sha256 faba806bf1a031f6..., arrays: ptank_spr2d[1] [phase2-vu1_gs]
+# comment 005cae60 VU1 microprogram 32 (ptank_spr3d): RW DMA ret packet QWC=167, 333 insns in 2 MPG piece(s) from VU addr 0, sha256 0e2ca11c32aeffd3..., arrays: ptank_spr3d[2] [phase2-vu1_gs]
+# comment 005cb8e0 VU1 microprogram 33 (ptank_spr3d): RW DMA ret packet QWC=138, 275 insns in 2 MPG piece(s) from VU addr 0, sha256 121f9cdeaa2580cf..., arrays: ptank_spr3d[3] [phase2-vu1_gs]
+# comment 005cc190 VU1 microprogram 34 (ptank_spr3d): RW DMA ret packet QWC=156, 311 insns in 2 MPG piece(s) from VU addr 0, sha256 a29a56afcc70baad..., arrays: ptank_spr3d[0] [phase2-vu1_gs]
+# comment 005ccb60 VU1 microprogram 35 (ptank_spr3d): RW DMA ret packet QWC=132, 263 insns in 2 MPG piece(s) from VU addr 0, sha256 acc6e8d83beb0a87..., arrays: ptank_spr3d[1] [phase2-vu1_gs]
+# comment 005cd3b0 VU1 microprogram 36 (unknown_tbl4): RW DMA ret packet QWC=31, 62 insns in 1 MPG piece(s) from VU addr 0, sha256 16df7386d53e187e..., arrays: unknown_tbl4[4] [phase2-vu1_gs]
+# comment 005cd5b0 VU1 microprogram 37 (unknown_tbl4): RW DMA ret packet QWC=38, 76 insns in 1 MPG piece(s) from VU addr 0, sha256 6a53e468ff1b8de1..., arrays: unknown_tbl4[5] [phase2-vu1_gs]
+# comment 005cd820 VU1 microprogram 38 (unknown_tbl4): RW DMA ret packet QWC=21, 41 insns in 1 MPG piece(s) from VU addr 0, sha256 e681b489a6e20965..., arrays: unknown_tbl4[0] [phase2-vu1_gs]
+# comment 005cd980 VU1 microprogram 39 (unknown_tbl4): RW DMA ret packet QWC=24, 47 insns in 1 MPG piece(s) from VU addr 0, sha256 be30f12b217e3700..., arrays: unknown_tbl4[1] [phase2-vu1_gs]
+# comment 005cdb10 VU1 microprogram 40 (null_transform): RW DMA ret packet QWC=2, 4 insns in 1 MPG piece(s) from VU addr 0, sha256 e20db00a77d56d81..., arrays: null_transform[0], null_transform[1], null_transform[2], null_transform[3], null_transform[4], null_transform[5], null_transform[6], null_transform[7], null_transform[8], null_transform[9], null_transform[10], null_transform[11], null_transform[12], null_transform[13], null_transform[14], null_transform[15], null_transform[16], null_transform[17], null_transform[18], null_transform[19], null_transform[20], null_transform[21], null_transform[22], null_transform[23], null_transform[24], null_transform[25], null_transform[26], null_transform[27], null_transform[28], null_transform[29], null_transform[30], null_transform[31] [phase2-vu1_gs]
+# comment 006b5e90 VU1 microprogram 41 (g3_generic): RW DMA ret packet QWC=746, 1487 insns in 6 MPG piece(s) from VU addr 0, sha256 b5da3704bd4ebbb3..., arrays: g3_generic[3], g3_matfx[3] [phase2-vu1_gs]
+# comment 006b8d40 VU1 microprogram 42 (g3_generic): RW DMA ret packet QWC=923, 1839 insns in 8 MPG piece(s) from VU addr 0, sha256 ffa410ad2dad1208..., arrays: g3_generic[1], g3_matfx[1] [phase2-vu1_gs]
+# comment 006bc700 VU1 microprogram 43 (g3_generic): RW DMA ret packet QWC=424, 845 insns in 4 MPG piece(s) from VU addr 0, sha256 866be57f8571c20d..., arrays: g3_generic[6], g3_generic[7] [phase2-vu1_gs]
+# comment 006be190 VU1 microprogram 44 (g3_generic): RW DMA ret packet QWC=468, 933 insns in 4 MPG piece(s) from VU addr 0, sha256 335a06de9929e826..., arrays: g3_generic[4], g3_generic[5] [phase2-vu1_gs]
+# comment 006bfee0 VU1 microprogram 45 (g3_generic): RW DMA ret packet QWC=677, 1348 insns in 6 MPG piece(s) from VU addr 0, sha256 1b14cb7c935a2368..., arrays: g3_generic[2], g3_matfx[2] [phase2-vu1_gs]
+# comment 006c2940 VU1 microprogram 46 (g3_generic): RW DMA ret packet QWC=686, 1367 insns in 6 MPG piece(s) from VU addr 0, sha256 6b0e71911b6ebd21..., arrays: g3_generic[0], g3_matfx[0] [phase2-vu1_gs]
+# comment 006c5430 VU1 microprogram 47 (g3_matfx): RW DMA ret packet QWC=706, 1406 insns in 6 MPG piece(s) from VU addr 0, sha256 0b20783e9cd1036b..., arrays: g3_matfx[4] [phase2-vu1_gs]
+# comment 006c8060 VU1 microprogram 48 (g3_matfx): RW DMA ret packet QWC=671, 1337 insns in 6 MPG piece(s) from VU addr 0, sha256 8c18355ed0ccd81e..., arrays: g3_matfx[6] [phase2-vu1_gs]
+# comment 006caa60 VU1 microprogram 49 (g3_matfx): RW DMA ret packet QWC=955, 1903 insns in 8 MPG piece(s) from VU addr 0, sha256 a8f9f704e85284ca..., arrays: g3_matfx[5] [phase2-vu1_gs]
+# comment 006ce620 VU1 microprogram 50 (g3_matfx): RW DMA ret packet QWC=778, 1550 insns in 7 MPG piece(s) from VU addr 0, sha256 cc4527fbac17b161..., arrays: g3_matfx[7] [phase2-vu1_gs]
+# comment 006d16d0 VU1 microprogram 51 (g3_matfx): RW DMA ret packet QWC=698, 1390 insns in 6 MPG piece(s) from VU addr 0, sha256 08071ca9ac26610f..., arrays: g3_matfx[8] [phase2-vu1_gs]
+# comment 006d4280 VU1 microprogram 52 (g3_matfx): RW DMA ret packet QWC=663, 1320 insns in 6 MPG piece(s) from VU addr 0, sha256 3469d2db08451bcb..., arrays: g3_matfx[10] [phase2-vu1_gs]
+# comment 006d6c00 VU1 microprogram 53 (g3_matfx): RW DMA ret packet QWC=945, 1882 insns in 8 MPG piece(s) from VU addr 0, sha256 9cb8b7e6adb93d6e..., arrays: g3_matfx[9] [phase2-vu1_gs]
+# comment 006da720 VU1 microprogram 54 (g3_matfx): RW DMA ret packet QWC=770, 1534 insns in 6 MPG piece(s) from VU addr 0, sha256 5fc265af1ed7442b..., arrays: g3_matfx[11] [phase2-vu1_gs]
+# comment 006dd750 VU1 microprogram 55 (g3_matfx): RW DMA ret packet QWC=726, 1447 insns in 6 MPG piece(s) from VU addr 0, sha256 1fbf08fda38e1159..., arrays: g3_matfx[12] [phase2-vu1_gs]
+# comment 006e04c0 VU1 microprogram 56 (g3_matfx): RW DMA ret packet QWC=692, 1378 insns in 6 MPG piece(s) from VU addr 0, sha256 c9c71c055c087809..., arrays: g3_matfx[14] [phase2-vu1_gs]
+# comment 006e3010 VU1 microprogram 57 (g3_matfx): RW DMA ret packet QWC=976, 1944 insns in 8 MPG piece(s) from VU addr 0, sha256 fd563d910e8311b6..., arrays: g3_matfx[13] [phase2-vu1_gs]
+# comment 006e6d20 VU1 microprogram 58 (g3_matfx): RW DMA ret packet QWC=799, 1591 insns in 7 MPG piece(s) from VU addr 0, sha256 030cf0a1807cf66d..., arrays: g3_matfx[15] [phase2-vu1_gs]
+# comment 006e9f20 VU1 microprogram 59 (g3_matfx): RW DMA ret packet QWC=673, 1340 insns in 6 MPG piece(s) from VU addr 0, sha256 bbc4b6dacc111417..., arrays: g3_matfx[16] [phase2-vu1_gs]
+# comment 006ec940 VU1 microprogram 60 (g3_matfx): RW DMA ret packet QWC=638, 1271 insns in 5 MPG piece(s) from VU addr 0, sha256 39b189d2ff763ea6..., arrays: g3_matfx[18] [phase2-vu1_gs]
+# comment 006ef130 VU1 microprogram 61 (g3_matfx): RW DMA ret packet QWC=922, 1837 insns in 8 MPG piece(s) from VU addr 0, sha256 9574714cc2b7d215..., arrays: g3_matfx[17] [phase2-vu1_gs]
+# comment 006f2ae0 VU1 microprogram 62 (g3_matfx): RW DMA ret packet QWC=745, 1484 insns in 6 MPG piece(s) from VU addr 0, sha256 a8d0b58ddbd61a34..., arrays: g3_matfx[19] [phase2-vu1_gs]
+# comment 006f5980 VU1 microprogram 63 (g3_skin): RW DMA ret packet QWC=792, 1577 insns in 7 MPG piece(s) from VU addr 0, sha256 09d10f7af023f740..., arrays: g3_skin[3], g3_skin_matfx[3] [phase2-vu1_gs]
+# comment 006f8b10 VU1 microprogram 64 (g3_skin): RW DMA ret packet QWC=968, 1929 insns in 8 MPG piece(s) from VU addr 0, sha256 930a758f0515baf3..., arrays: g3_skin[1], g3_skin_matfx[1] [phase2-vu1_gs]
+# comment 006fc7a0 VU1 microprogram 65 (g3_skin): RW DMA ret packet QWC=469, 935 insns in 4 MPG piece(s) from VU addr 0, sha256 5fbc81b4fb6981fa..., arrays: g3_skin[6], g3_skin[7] [phase2-vu1_gs]
+# comment 006fe500 VU1 microprogram 66 (g3_skin): RW DMA ret packet QWC=513, 1023 insns in 4 MPG piece(s) from VU addr 0, sha256 d1f5180e7627fefa..., arrays: g3_skin[4], g3_skin[5] [phase2-vu1_gs]
+# comment 00700520 VU1 microprogram 67 (g3_skin): RW DMA ret packet QWC=722, 1438 insns in 6 MPG piece(s) from VU addr 0, sha256 3c542b56f3326efe..., arrays: g3_skin[2], g3_skin_matfx[2] [phase2-vu1_gs]
+# comment 00703250 VU1 microprogram 68 (g3_skin): RW DMA ret packet QWC=731, 1457 insns in 6 MPG piece(s) from VU addr 0, sha256 d5ad7443c7b8cd89..., arrays: g3_skin[0], g3_skin_matfx[0] [phase2-vu1_gs]
+# comment 00706010 VU1 microprogram 69 (g3_skin_matfx): RW DMA ret packet QWC=744, 1482 insns in 6 MPG piece(s) from VU addr 0, sha256 eefdcf408b01f3d6..., arrays: g3_skin_matfx[4], g3_skspt_a[0] [phase2-vu1_gs]
+# comment 00708ea0 VU1 microprogram 70 (g3_skin_matfx): RW DMA ret packet QWC=709, 1413 insns in 6 MPG piece(s) from VU addr 0, sha256 245de4cc3538a167..., arrays: g3_skin_matfx[6], g3_skspt_a[2] [phase2-vu1_gs]
+# comment 0070bb00 VU1 microprogram 71 (g3_skin_matfx): RW DMA ret packet QWC=993, 1979 insns in 8 MPG piece(s) from VU addr 0, sha256 0e8998ecdc5b9fb8..., arrays: g3_skin_matfx[5], g3_skspt_a[1] [phase2-vu1_gs]
+# comment 0070f920 VU1 microprogram 72 (g3_skin_matfx): RW DMA ret packet QWC=816, 1626 insns in 7 MPG piece(s) from VU addr 0, sha256 1a6f300acc8b2feb..., arrays: g3_skin_matfx[7], g3_skspt_a[3] [phase2-vu1_gs]
+# comment 00712c30 VU1 microprogram 73 (g3_skin_matfx): RW DMA ret packet QWC=736, 1466 insns in 6 MPG piece(s) from VU addr 0, sha256 60580395ae8c9f54..., arrays: g3_skin_matfx[8], g3_skspt_gem[0] [phase2-vu1_gs]
+# comment 00715a40 VU1 microprogram 74 (g3_skin_matfx): RW DMA ret packet QWC=701, 1396 insns in 6 MPG piece(s) from VU addr 0, sha256 2f5e7306a5574f9a..., arrays: g3_skin_matfx[10], g3_skspt_gem[2] [phase2-vu1_gs]
+# comment 00718620 VU1 microprogram 75 (g3_skin_matfx): RW DMA ret packet QWC=983, 1958 insns in 8 MPG piece(s) from VU addr 0, sha256 f4d052ba0ff6af82..., arrays: g3_skin_matfx[9], g3_skspt_gem[1] [phase2-vu1_gs]
+# comment 0071c3a0 VU1 microprogram 76 (g3_skin_matfx): RW DMA ret packet QWC=808, 1610 insns in 7 MPG piece(s) from VU addr 0, sha256 43a9a0e219640630..., arrays: g3_skin_matfx[11], g3_skspt_gem[3] [phase2-vu1_gs]
+# comment 0071f630 VU1 microprogram 77 (g3_skin_matfx): RW DMA ret packet QWC=764, 1523 insns in 6 MPG piece(s) from VU addr 0, sha256 7314d6f8a089c927..., arrays: g3_skin_matfx[12], g3_skspt_bem[0] [phase2-vu1_gs]
+# comment 00722600 VU1 microprogram 78 (g3_skin_matfx): RW DMA ret packet QWC=730, 1454 insns in 6 MPG piece(s) from VU addr 0, sha256 b63efb2e489e2a90..., arrays: g3_skin_matfx[14], g3_skspt_bem[2] [phase2-vu1_gs]
+# comment 007253b0 VU1 microprogram 79 (g3_skin_matfx): RW DMA ret packet QWC=1014, 2020 insns in 8 MPG piece(s) from VU addr 0, sha256 7cf20975a85e189d..., arrays: g3_skin_matfx[13], g3_skspt_bem[1] [phase2-vu1_gs]
+# comment 00729320 VU1 microprogram 80 (g3_skin_matfx): RW DMA ret packet QWC=837, 1667 insns in 7 MPG piece(s) from VU addr 0, sha256 1b5a370c5f57eabc..., arrays: g3_skin_matfx[15], g3_skspt_bem[3] [phase2-vu1_gs]
+# comment 0072c780 VU1 microprogram 81 (g3_skin_matfx): RW DMA ret packet QWC=718, 1430 insns in 6 MPG piece(s) from VU addr 0, sha256 33339a53484b75cc..., arrays: g3_skin_matfx[16], g3_skspt_dup[0] [phase2-vu1_gs]
+# comment 0072f470 VU1 microprogram 82 (g3_skin_matfx): RW DMA ret packet QWC=683, 1361 insns in 6 MPG piece(s) from VU addr 0, sha256 b951d7a14e0e349f..., arrays: g3_skin_matfx[18], g3_skspt_dup[2] [phase2-vu1_gs]
+# comment 00731f30 VU1 microprogram 83 (g3_skin_matfx): RW DMA ret packet QWC=967, 1927 insns in 8 MPG piece(s) from VU addr 0, sha256 e33a44cdd397b7b0..., arrays: g3_skin_matfx[17], g3_skspt_dup[1] [phase2-vu1_gs]
+# comment 00735bb0 VU1 microprogram 84 (g3_skin_matfx): RW DMA ret packet QWC=790, 1574 insns in 7 MPG piece(s) from VU addr 0, sha256 1056ebb9b336ef24..., arrays: g3_skin_matfx[19], g3_skspt_dup[3] [phase2-vu1_gs]
+# comment 00738d20 VU1 microprogram 85 (rt2d_stroke): RW DMA ret packet QWC=534, 1063 insns in 5 MPG piece(s) from VU addr 0, sha256 582acecede8e0db7..., arrays: rt2d_stroke[0] [phase2-vu1_gs]
+# comment 0073ae90 VU1 microprogram 86 (rt2d_stroke): RW DMA ret packet QWC=524, 1044 insns in 5 MPG piece(s) from VU addr 0, sha256 5503461fa8489266..., arrays: rt2d_stroke[1] [phase2-vu1_gs]
+# comment 0073cf60 VU1 microprogram 87 (rt2d_font): RW DMA ret packet QWC=556, 1108 insns in 5 MPG piece(s) from VU addr 0, sha256 de92a4a6bf1105d0..., arrays: rt2d_font[0] [phase2-vu1_gs]
+# comment 0073f230 VU1 microprogram 88 (rt2d_font): RW DMA ret packet QWC=547, 1089 insns in 5 MPG piece(s) from VU addr 0, sha256 2a9530b9c979cbb6..., arrays: rt2d_font[1] [phase2-vu1_gs]
+# comment 00741470 VU1 microprogram 89 (rt2d_fill): RW DMA ret packet QWC=564, 1123 insns in 5 MPG piece(s) from VU addr 0, sha256 2556bdb10012eefa..., arrays: rt2d_fill[0] [phase2-vu1_gs]
+# comment 007437c0 VU1 microprogram 90 (rt2d_fill): RW DMA ret packet QWC=554, 1104 insns in 5 MPG piece(s) from VU addr 0, sha256 548a62f81d9f7c94..., arrays: rt2d_fill[1] [phase2-vu1_gs]
+# comment 00745a70 VU1 microprogram 91 (g3_matfx): RW DMA ret packet QWC=697, 1388 insns in 6 MPG piece(s) from VU addr 0, sha256 c407e5c8b60bad10..., arrays: g3_matfx[20] [phase2-vu1_gs]
+# comment 00748610 VU1 microprogram 92 (g3_matfx): RW DMA ret packet QWC=687, 1369 insns in 6 MPG piece(s) from VU addr 0, sha256 b68a6e024de7f5f0..., arrays: g3_matfx[22] [phase2-vu1_gs]
+# comment 0074b110 VU1 microprogram 93 (g3_matfx): RW DMA ret packet QWC=934, 1860 insns in 8 MPG piece(s) from VU addr 0, sha256 7931b3c700d48fe3..., arrays: g3_matfx[21] [phase2-vu1_gs]
+# comment 0074eb80 VU1 microprogram 94 (g3_matfx): RW DMA ret packet QWC=757, 1508 insns in 6 MPG piece(s) from VU addr 0, sha256 a7ff6f7579dec4e3..., arrays: g3_matfx[23] [phase2-vu1_gs]
+# comment 00751ae0 VU1 microprogram 95 (g3_matfx): RW DMA ret packet QWC=685, 1365 insns in 6 MPG piece(s) from VU addr 0, sha256 5389caa20e2b11b0..., arrays: g3_matfx[24] [phase2-vu1_gs]
+# comment 007545c0 VU1 microprogram 96 (g3_matfx): RW DMA ret packet QWC=651, 1296 insns in 6 MPG piece(s) from VU addr 0, sha256 3c1aaf61189e70e4..., arrays: g3_matfx[26] [phase2-vu1_gs]
+# comment 00756e80 VU1 microprogram 97 (g3_matfx): RW DMA ret packet QWC=935, 1862 insns in 8 MPG piece(s) from VU addr 0, sha256 9e2dacc0dee79388..., arrays: g3_matfx[25] [phase2-vu1_gs]
+# comment 0075a900 VU1 microprogram 98 (g3_matfx): RW DMA ret packet QWC=757, 1509 insns in 6 MPG piece(s) from VU addr 0, sha256 4e0c861d68167ecf..., arrays: g3_matfx[27] [phase2-vu1_gs]
+# comment 0075d860 VU1 microprogram 99 (g3_skin_matfx): RW DMA ret packet QWC=742, 1478 insns in 6 MPG piece(s) from VU addr 0, sha256 f7c256017974ed2c..., arrays: g3_skin_matfx[20], g3_skspt_uva[0] [phase2-vu1_gs]
+# comment 007606d0 VU1 microprogram 100 (g3_skin_matfx): RW DMA ret packet QWC=732, 1459 insns in 6 MPG piece(s) from VU addr 0, sha256 f49fbfe7ec201e43..., arrays: g3_skin_matfx[22], g3_skspt_uva[2] [phase2-vu1_gs]
+# comment 007634a0 VU1 microprogram 101 (g3_skin_matfx): RW DMA ret packet QWC=979, 1950 insns in 8 MPG piece(s) from VU addr 0, sha256 71e11ced88713a80..., arrays: g3_skin_matfx[21], g3_skspt_uva[1] [phase2-vu1_gs]
+# comment 007671e0 VU1 microprogram 102 (g3_skin_matfx): RW DMA ret packet QWC=802, 1598 insns in 7 MPG piece(s) from VU addr 0, sha256 95de82b856d0877d..., arrays: g3_skin_matfx[23], g3_skspt_uva[3] [phase2-vu1_gs]
+# comment 0076a410 VU1 microprogram 103 (g3_skspt_uva): RW DMA ret packet QWC=524, 1044 insns in 5 MPG piece(s) from VU addr 0, sha256 4891a122347ee8db..., arrays: g3_skspt_uva[4], g3_skspt_uva[5] [phase2-vu1_gs]
+# comment 0076c4e0 VU1 microprogram 104 (g3_skspt_uva): RW DMA ret packet QWC=480, 956 insns in 4 MPG piece(s) from VU addr 0, sha256 403387e0a37fb0c8..., arrays: g3_skspt_uva[6], g3_skspt_uva[7] [phase2-vu1_gs]
+# comment 0076e2f0 VU1 microprogram 105 (g3_skin_matfx): RW DMA ret packet QWC=730, 1455 insns in 6 MPG piece(s) from VU addr 0, sha256 c7467b681414972a..., arrays: g3_skin_matfx[24], g3_skspt_dupuva[0] [phase2-vu1_gs]
+# comment 007710a0 VU1 microprogram 106 (g3_skin_matfx): RW DMA ret packet QWC=696, 1386 insns in 6 MPG piece(s) from VU addr 0, sha256 870a31f024e87cf4..., arrays: g3_skin_matfx[26], g3_skspt_dupuva[2] [phase2-vu1_gs]
+# comment 00773c30 VU1 microprogram 107 (g3_skin_matfx): RW DMA ret packet QWC=980, 1952 insns in 8 MPG piece(s) from VU addr 0, sha256 7fbb6aea44183c96..., arrays: g3_skin_matfx[25], g3_skspt_dupuva[1] [phase2-vu1_gs]
+# comment 00777980 VU1 microprogram 108 (g3_skin_matfx): RW DMA ret packet QWC=803, 1599 insns in 7 MPG piece(s) from VU addr 0, sha256 c9ccca005b897608..., arrays: g3_skin_matfx[27], g3_skspt_dupuva[3] [phase2-vu1_gs]
+# comment 0077cb40 VU1 microprogram 109 (ptank_xform): RW DMA ret packet QWC=57, 113 insns in 1 MPG piece(s) from VU addr 0, sha256 9bf7abece5e48f2b..., arrays: ptank_xform[0] [phase2-vu1_gs]
+# comment 0077cee0 VU1 microprogram 110 (ptank_xform): RW DMA ret packet QWC=49, 98 insns in 1 MPG piece(s) from VU addr 0, sha256 7f301dc2d0bfde4c..., arrays: ptank_xform[0] [phase2-vu1_gs]
+# comment 0077d200 VU1 microprogram 111 (ptank_xform): RW DMA ret packet QWC=56, 112 insns in 1 MPG piece(s) from VU addr 0, sha256 cdcf02ffb54cfbaa..., arrays: ptank_xform[0] [phase2-vu1_gs]
+# comment 0077d590 VU1 microprogram 112 (ptank_xform): RW DMA ret packet QWC=55, 110 insns in 1 MPG piece(s) from VU addr 0, sha256 1935b8c5395c4a08..., arrays: ptank_xform[0] [phase2-vu1_gs]
+# comment 0077d910 VU1 microprogram 113 (ptank_xform): RW DMA ret packet QWC=57, 113 insns in 1 MPG piece(s) from VU addr 0, sha256 efe7c4df253ffaed..., arrays: ptank_xform[0] [phase2-vu1_gs]
+# comment 006b4f00 VU1 code array (8 entries) g3_generic: RpMesh/RwIm3D generic (non-skinned) transform; descriptor 0x7cdb28; pipes 0x1001/0x1004/0x1005 (tri, Im3D tri, Im3D line) [phase2-vu1_gs]
+# comment 006b5170 VU1 code array (28 entries) g3_matfx: RpPDS_G3_Matfx bridge; descriptor 0x7cdb40; pipes 0x1100b/0x1100c (entries 0-3 = generic set) [phase2-vu1_gs]
+# comment 006b5380 VU1 code array (8 entries) g3_skin: RpPDS_G3d_Skin instance + stock bridge; descriptor 0x7cdb48; pipes 0x10001/0x10020 [phase2-vu1_gs]
+# comment 006b5490 VU1 code array (28 entries) g3_skin_matfx: skin + RpPDS_G3_Matfx bridge; descriptor 0x7cdb70; pipes 0x11011/0x11012 [phase2-vu1_gs]
+# comment 006b5450 VU1 code array (4 entries) g3_skspt_a: skin + bridge sub_472170 (unnamed; SkSpt variant); descriptor 0x7cdb50; pipe 0x10021 [phase2-vu1_gs]
+# comment 006b5460 VU1 code array (4 entries) g3_skspt_gem: skin + RpPDS_G3_SkSptGem bridge; descriptor 0x7cdb58; pipe 0x10022 [phase2-vu1_gs]
+# comment 006b5470 VU1 code array (4 entries) g3_skspt_bem: skin + RpPDS_G3_SkSptBem bridge; descriptor 0x7cdb60; pipe 0x10023 [phase2-vu1_gs]
+# comment 006b5480 VU1 code array (4 entries) g3_skspt_dup: skin + RpPDS_G3_SkSptDup bridge; descriptor 0x7cdb68; pipe 0x10024 [phase2-vu1_gs]
+# comment 006b5d40 VU1 code array (8 entries) g3_skspt_uva: skin + bridge sub_473340 (unnamed; Uva variant); descriptor 0x7cdba8; pipe 0x1002a [phase2-vu1_gs]
+# comment 006b5d60 VU1 code array (4 entries) g3_skspt_dupuva: skin + RpPDS_G3_SkSptDupUva bridge; descriptor 0x7cdbb0; pipe 0x1002b [phase2-vu1_gs]
+# comment 007cdb78 VU1 code array (2 entries) rt2d_stroke: RpPDS_G3_2DStroke (Rt2d stroke, point-list prim 6); pipe 0x10019 [phase2-vu1_gs]
+# comment 007cdb88 VU1 code array (2 entries) rt2d_font: RpPDS_G3_2DFont (Rt2d font, point-list prim 6); pipe 0x1001b [phase2-vu1_gs]
+# comment 007cdb98 VU1 code array (2 entries) rt2d_fill: RpPDS_G3_2DFill (Rt2d fill, tristrip); pipe 0x1001d [phase2-vu1_gs]
+# comment 0077b1e0 VU1 code array (4 entries) ptank_spr2d: rps2gPS2ALLVUCodeArray: RpPTank 2D sprite pipe (rpSpr2dGenCreatePS2AllMatPipe 0x478a70) [phase2-vu1_gs]
+# comment 0077b1f0 VU1 code array (4 entries) ptank_spr3d: rps3gPS2ALLVUCodeArray: RpPTank 3D sprite pipe (rpSpr3dGenCreatePS2AllMatPipe 0x479e50) [phase2-vu1_gs]
+# comment 007bcf74 VU1 code array (6 entries) unknown_tbl4: pointer table 0x7bcf74..0x7bcf88 (4 program pointers + 2 other words) with no code/data xref found [phase2-vu1_gs]
+# comment 0077ac5c VU1 code array (1 entries) ptank_xform: RpPTank TransformInfo 0x77ac40.. (rpSkyAlloc 0x475540): per-format instance programs at 0x77ac5c/0x77ac60/0x77acfc/0x77ad9c/0x77ae3c [phase2-vu1_gs]
+# comment 0077ac60 VU1 code array (1 entries) ptank_xform:  [phase2-vu1_gs]
+# comment 0077acfc VU1 code array (1 entries) ptank_xform:  [phase2-vu1_gs]
+# comment 0077ad9c VU1 code array (1 entries) ptank_xform:  [phase2-vu1_gs]
+# comment 0077ae3c VU1 code array (1 entries) ptank_xform:  [phase2-vu1_gs]
+# comment 0077f130 VU1 code array (32 entries) null_transform: skyVU1NullTransforms: 32 x the 4-unit null program [phase2-vu1_gs]
+# comment 006b4f20 RpPDS material pipe definition id 0x1: primtype 4, VU buf 4/69/23, VIF offset 276, code array 0x6b4f00 x8; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b4ff0 RpPDS material pipe definition id 0x4: primtype 4, VU buf 4/69/23, VIF offset 276, code array 0x6b4f00 x8; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5080 RpPDS material pipe definition id 0x5: primtype 1, VU buf 4/69/34, VIF offset 276, code array 0x6b4f00 x8; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b51e0 RpPDS material pipe definition id 0x1100b: primtype 4, VU buf 4/56/18, VIF offset 224, code array 0x6b5170 x28; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5270 RpPDS material pipe definition id 0x1100c: primtype 4, VU buf 4/56/18, VIF offset 224, code array 0x6b5170 x28; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b53a0 RpPDS material pipe definition id 0x10001: primtype 4, VU buf 5/43/14, VIF offset 215, code array 0x6b5380 x8; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5500 RpPDS material pipe definition id 0x11011: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5490 x28; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5590 RpPDS material pipe definition id 0x11012: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5490 x28; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b56a0 RpPDS material pipe definition id 0x10019: primtype 6, VU buf 2/40/40, VIF offset 240, code array 0x7cdb78 x2; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b57f0 RpPDS material pipe definition id 0x1001b: primtype 6, VU buf 2/12/12, VIF offset 228, code array 0x7cdb88 x2; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5940 RpPDS material pipe definition id 0x1001d: primtype 4, VU buf 2/80/26, VIF offset 240, code array 0x7cdb98 x2; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5a50 RpPDS material pipe definition id 0x10020: primtype 4, VU buf 5/43/14, VIF offset 215, code array 0x6b5380 x8; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5b00 RpPDS material pipe definition id 0x10021: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5450 x4; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5b90 RpPDS material pipe definition id 0x10022: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5460 x4; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5c20 RpPDS material pipe definition id 0x10023: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5470 x4; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5cb0 RpPDS material pipe definition id 0x10024: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5480 x4; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5d70 RpPDS material pipe definition id 0x1002a: primtype 4, VU buf 5/43/14, VIF offset 215, code array 0x6b5d40 x8; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 006b5e00 RpPDS material pipe definition id 0x1002b: primtype 4, VU buf 5/36/12, VIF offset 180, code array 0x6b5d60 x4; consumed by RpPDSSkyMatPipeCreate 0x46ad80 (+88 prim, +104 vifoff, +108 desc, +112..+128 callbacks) [phase2-vu1_gs]
+# comment 0046ad80 Builds a PS2All material pipeline from a 132-byte PDS definition: +88 prim type (1/2 line,3-5 tri,6 point) selects VU buffer sizing, +104 VIF offset, +108 -> {vu1CodeArray,count} (RxPipelineNodePS2AllMatSetVU1CodeArray), +112..+128 PS2All callbacks 1..5. Evidence: Hex-Rays 0x46ad80 [phase2-vu1_gs]
+# comment 004a3db0 Stores the VU1 code array pointer/count at node-private +24/+28; NULL -> skyVU1NullTransforms x32 [phase2-vu1_gs]
+# comment 004d7f60 Game-facing GS state funnel: 1 dither DIMX (0x6071243571603524 / 0x1212303012123030 / 0), 2 ALPHA_1 raw (ABCD low byte, FIX from bits 24-31), 3 TEST_1 low 16 bits (alpha test), 4/5 globals; each GS case emits a 1-reg A+D packet via rwDMAOpenVIFPkt(0x80000000,2). 665 call sites; ALPHA census in 14_vu1_gs_census.md#4 [phase2-vu1_gs]
+# comment 004d6b90 RW render-state -> GS shadow funnel: case 29 alpha-test func -> TEST_1 ATE/ATST, 30 AREF, 9 texture filter -> TEX1_1 MMAG/MMIN, 10/11 address U/V -> CLAMP_1, 15 FOGCOL, 8/12/13/14/16/20 Z/fog/blend/cull; flush = 1-reg A+D packet [phase2-vu1_gs]
+# comment 004ef020 Builds the PATH2 texture upload chain: per <=32750-qword slice {DMA cnt1 | DIRECT 1 | GIFtag IMAGE} {DMA ref | DIRECT n} then {DMA cnt2 | DIRECT 2 | A+D x1 TEXFLUSH (0x965A40)}; SyncDCache [phase2-vu1_gs]
+# comment 004a0e00 Stock PS2All material bridge: STCYCL 4/4 + UNPACK V4-32 x1 -> VU 0x3FC (mat colour), x3 -> 0x3FD (surf props, clip vectors), GIF tag (gifTag128, PRIM |= transType|mesh+41), A+D x3 (TEST/TEX0/CLAMP shadows) when textured, then MSCAL of the code-array entry [phase2-vu1_gs]
+# comment 00197350 Registers the 33 RpPDS pipelines (ids 0x1001.., 0x1100b/c, 0x10001, 0x11011/2, 0x10019-1e, 0x10020-24, 0x1002a/b), attaches World/Spline/Skin/PTank plugins, RwEngineOpen, RpSkySelectDeepZBuffer(0), RwEngineSetVideoMode(82)=640x448x32, rwDMAPreAlloc(0x280000,1024), creates the world + 2 lights [phase2-vu1_gs]
+# comment 004dff20 Copies videoModes[mode] (0x77e710, 24-byte rows: w,h,depth,flags,refresh,format) into customMode 0x965730..; flags&0x100 selects field mode [phase2-vu1_gs]
+# comment 0010e880 TMX -> RwRaster: PSM 20/44/36 -> PAL8, 19/27 -> PAL4, 2/10/1/0 -> 16/16S/24/32; RwRasterCreate(w,h,depth, fmt|0x504); pixels via RwRasterLock, palette via RwRasterLockPalette [phase2-vu1_gs]
+# comment 004b1100 Rt2d PS2 pipes = RpPDSGetPipe(0x1001a font, 0x1001e stroke, 0x1001c fill) [phase2-vu1_gs]

@@ -1,0 +1,235 @@
+# battle_core2.sym  Phase 5 slice delta (game/include/p3fes/game/battle_core2.h); SLUS_216.21
+# generated 2026-10-21 from the slice's role comments (game/src/battle/battle_core2.cpp), each from what the body does
+#   (p3fes_handgen bodies, the IDA pseudocode reference as a reading hint; no IDA database opened). Rows: <addr8> <size8>
+#   F <name> <tags>, source=phase5-battle_core2 verified=yes: our own names. A proposal several functions share (the
+#   unit packets' hold / release callbacks) is a comment only. ev=<doc>#<section>. Not imported by the agent.
+# sub_27C020: (sfl_persona.c line 41, the K_Assert): the shuffle persona work *(gp-18696) has bit 2 or bit 3 of its
+0027c020 00000058 F sflPersonaIsBusy source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C220: work flags |= 2 -- the running sequence reports it is finished (the main update then pops the
+0027c220 00000084 F adminiSetSeqDone source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C2B0: the running sequence (work +8, s8; -1 = none). 26 callers in the field / event / shop code.
+0027c2b0 0000007c F adminiGetSeq source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C330: the requested sequence (work +9, s8; -1 = none).
+0027c330 0000007c F adminiGetNextSeq source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C5A0: (task): the "exit" step: sSequenceList[seq].exit() (row +4) when the running sequence has one; a
+0027c5a0 000000ac F adminiUpdateTask_Exit source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C650: (task): the admini task's main update. While the running sequence is not done: its check
+0027c650 000001ec F adminiUpdateTask_Main source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C840: (task): the admini task's destroy function: the running sequence's exit function, then RwFree of the
+0027c840 000000ac F adminiDestroyTask source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C8F0: (kwlnInitMain): creates the "admini" task once (kwlnTaskGetTaskByName first): a 36-byte work from
+0027c8f0 000000e8 F adminiCreateTask source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27C9E0: (sSequenceList row, a test sequence): printf("+++ call\n").
+0027c9e0 00000028 F adminiSeqDebug_Call source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CA10: printf("+++ exit\n"); returns 0 (left at once).
+0027ca10 0000002c F adminiSeqDebug_Exit source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CA40: printf("+++ check\n"); returns 1 (done at once).
+0027ca40 0000002c F adminiSeqDebug_Check source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CAE0: the battle sequence's check function: 1 once the battle's task tree is gone (sub_27D880() == 0).
+0027cae0 00000028 F adminiSeqCheckBtl source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CB10: (restoring, parameter block): the shop sequence's call function: fclShop_CreateShopDrawTasks(*block).
+0027cb10 00000024 F adminiSeqCallShop source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CB40: an exit function that leaves at once (returns 0).
+0027cb40 0000000c F adminiSeqExitNone source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CB50: the shop sequence's check function: 1 once sub_3E0920() returns 0.
+0027cb50 00000028 F adminiSeqCheckShop source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CB80: the next battle-wide id from the u64 counter at gp-26592 (0x7CC510): ++counter, wrapped to 1 at
+0027cb80 00000048 F btlGetUID source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CBD0: the next free battle model id: the u16 at gp-26584 counts up in 256..511 (wrapping to 256) until
+0027cbd0 00000060 F btlAllocModelId source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27CE50: sub_3951A0(id) for ids 5440..5567 and 5568..5631 (the same two loops btlCreate runs).
+0027ce50 00000078 F btlReleaseModelSlots source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27D020: (btlDestroyTask): the reverse of btlCreate: frees the btlActions (sub_29A140) and the units (sub_2879F0),
+0027d020 000001ac F btlDestroy source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27D730: (BF COMM): waits for the battle to end: nothing before the command's 11th frame
+0027d730 000000dc F btlScrCmd_WAIT_BATTLE source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27D810: (BF COMM): the encounter fade task sub_2FF260(1); returns 1.
+0027d810 00000028 F btlScrCmd_ENCOUNT_FADE source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27D8D0: (two field callers): for the ten party members i = 1..10: x = sub_16C470(i) (u32 -> float,
+0027d8d0 0000030c F btlUpdatePartyAfterBattle source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27DC00: (a0): a packet of kind 0xFF02 (4 data bytes = a0) whose update is sub_27DBE0.
+0027dc00 00000048 F btlPacketCreate_FF02 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27DC80: (a0): a packet of kind 0xFF03 (4 data bytes = a0) whose update is sub_27DC50.
+0027dc80 00000048 F btlPacketCreate_FF03 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27E270: (parent): zeroes the arena offset, request and reload index and creates the
+0027e270 00000048 F btlTableCreateReloadTask source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27E2C0: (parent): the same body as sub_27E270 (a second copy in the binary).
+0027e2c0 00000048 F btlTableCreateReloadTask2 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27E530: (a0 = condition, a1 = the packet's age): one start / end condition of a packet (16 bytes: kind
+0027e530 000006d8 F btlPacketTestCond source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27EC10: (a0 = kind, a1 = data size): RwMalloc(144 + size), zeroed: kind (+64), both start and end conditions
+0027ec10 00000108 F btlPacketAlloc source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27ED20: (a0 = packet, a1 = queue 0..3): gives the packet its id (btlGetUID, +88), age / run frames 0, phase 0,
+0027ed20 000000cc F btlPacketQueue source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27EE00: (a0 = packet): one frame of a queued packet, unless paused (+70) or not queued (flag 8 clear). A
+0027ee00 00000354 F btlPacketUpdate source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F160: (a0 = queue): btlPacketUpdate for every packet of queue a0, head to tail (the next link read
+0027f160 0000005c F btlPacketUpdateQueue source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F1C0: for the four queues, from the head along the prev link (+128; so in a well-formed queue only the head
+0027f1c0 0000011c F btlPacketFreeAll source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F2E0: an update callback that finishes at once (returns 1).
+0027f2e0 0000000c F btlPacketUpdateDone source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F2F0: (): a 144-byte packet of kind 0xFF00 without data (the body of sub_27EC10 inlined) whose update
+0027f2f0 000000e8 F btlPacketCreateEmpty source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F3E0: (data): the update callback of sub_27F410's packets: returns data->fn(data->arg) (jalr).
+0027f3e0 0000002c F btlPacketUpdateCall source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F410: (a0 = fn, a1 = arg): a packet of kind 0xFF01 with 8 data bytes (sub_27EC10 inlined): its update
+0027f410 00000114 F btlPacketCreateCall source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F530: (unit): position and home position = the zero vector (0x957180), rotation (0, 0, 0, 1), scale
+0027f530 00000118 F btlUnitInitTransform source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F650: (unit, vec3*): position = *a1; dirty |= 4 (transform changed).
+0027f650 0000002c F btlUnitSetPos source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F680: (unit, quat*): rotation = *a1 unless the rotation is locked (flags bit 13); dirty |= 4.
+0027f680 00000044 F btlUnitSetRot source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F6D0: (unit): sub_4BDCB0(&rotation) (the identity), dirty |= 4.
+0027f6d0 0000003c F btlUnitResetRot source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F710: (unit, $f12): scale = f12, dirty |= 4.
+0027f710 00000018 F btlUnitSetScale source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F730: (unit, rgba): the colour bytes = a1 (four sb), dirty |= 4.
+0027f730 00000040 F btlUnitSetColour source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F770: (unit, bits): u16 +0 |= a1, dirty |= 4.
+0027f770 00000020 F btlUnitShowFlagsSet source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F790: (unit, bits): u16 +0 &= ~a1, dirty |= 4.
+0027f790 0000002c F btlUnitShowFlagsClear source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F7C0: (unit, a1 = vec3 out or 0, a2 = screen out or 0, a3 = target out or 0): the grid position
+0027f7c0 00000168 F btlUnitGetGridPos source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27F930: (unit): the address of the object embedded at +78.
+0027f930 0000000c F btlUnitGetSub78 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FC80: (unit): a persona (side 2) other than id 207 gives its MODEL.TBL section-3 record's byte +86
+0027fc80 00000070 F btlUnitGetPersonaColour source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FCF0: (unit, a1): sub_2D1DE0(stack quat, &position, a1) and, unless the rotation is locked, rotation =
+0027fcf0 00000080 F btlUnitSetRotFromDir source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FD70: (data): the transform packet holds its unit: busy counter (+160) ++.
+0027fd70 00000018 F btlPktXform_OnQueue source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FD90: (data): applies the transform packet (sub_27FE90) once: mask bit 0 the position, bit 1 the rotation
+0027fd90 000000d4 F btlPktXform_Update source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FE70: (data): busy counter (+160) --.
+0027fe70 00000018 F btlPktXform_OnEnd source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FE90: (unit, pos* or 0, quat* or 0, rgba* or 0): a transform packet (kind 283, 40 data bytes): the unit
+0027fe90 0000011c F btlPacketCreateXform source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_27FFB0: (unit, vec3 out): out = position + rotate(centre offset (+128..+136) * scale, rotation) (sub_4BE1E0
+0027ffb0 000000a0 F btlUnitGetCentre source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_281270: (unit): move flags (+200) bit 0.
+00281270 00000014 F btlUnitIsMoving source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_281290: (unit): move flags (+200) &= ~1.
+00281290 00000014 F btlUnitClearMoving source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_2812B0: (unit): move flags (+200) &= ~2.
+002812b0 00000014 F btlUnitClearTurning source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_2813D0: (data): the sub_2819D0 (move) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_2819B0: (data): the sub_2819D0 (move) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_2819D0: (unit, vec3* target or 0 (= the zero vector), a2 = frames, $f12 = speed): a unit move packet
+002819d0 000000d8 F btlPacketCreateMove source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_281AB0: (data): the look packet (sub_281E80) holds its unit (data +36): busy counter (+160) ++.
+00281ab0 00000018 F btlPktLook_OnQueue source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_281E60: (data): busy counter of the unit at data +36 --.
+00281e60 00000018 F btlPktLook_OnEnd source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_281E80: (a0 = unit, a1 = the unit looked at, a2 = frames, $f12 / $f13): a kind-267 packet (40 data bytes:
+00281e80 000000a0 F btlPacketCreateLook source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282130: (a0, a1): a kind-268 packet (36 data bytes: a0 at +24, u16 a1 at +28, 0 at +30) whose update is
+00282130 0000005c F btlPacketCreate268 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282190: (data): the sub_2822B0 (turn) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_282290: (data): the sub_2822B0 (turn) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_2822B0: (unit, vec3* or 0 (= the zero vector), a2 = frames): a unit turn packet (kind 269, 24 data bytes);
+002822b0 000000c8 F btlPacketCreateTurn source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282380: (data): the two-unit packet (sub_282650) holds both units (data +0, +4): their busy counters ++.
+00282380 00000028 F btlPktPair_OnQueue source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282620: (data): both units' busy counters --.
+00282620 00000028 F btlPktPair_OnEnd source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282650: (a0 = unit, a1 = unit, a2): a kind-270 packet (16 data bytes: a0, a1, a2) holding both units;
+00282650 00000080 F btlPacketCreateFace source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282C30: (unit): the current motion (s16 +2510) when the unit has a model (dirty bit 1), else 0.
+00282c30 00000028 F btlUnitGetMotion source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282C60: (unit): a party or enemy unit (side 0 / 1) whose current motion (0 without a model) equals its idle
+00282c60 00000068 F btlUnitIsIdle source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_282CD0: (unit): a party or enemy unit whose current motion is 1.
+00282cd0 00000064 F btlUnitIsMotion1 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_283510: (unit, a1 = motion slot): enemies (side 1) ask sub_2FB860 first (a result other than -1 wins);
+00283510 000000c4 F btlUnitGetMotionId source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_283BA0: (unit): (s16) sub_318990(model, 0) when the unit has a model, else 0.
+00283ba0 00000058 F btlUnitGetMotionFrame source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_283C00: (unit, a1): with a model, sub_318770(model, 0) with $f12 = (float)a1 (cvt.s.w); $v0 is left as
+00283c00 00000044 F btlUnitSetMotionFrame source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_283C50: (unit, $f12): the motion speed (+2516) = f12 when the unit has a model.
+00283c50 0000001c F btlUnitSetMotionSpeed source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_283FE0: (unit, a1): for a non-enemy unit with id 4, the address of the 8-byte row a1 - 4 of 0x6932E0;
+00283fe0 00000060 F btlUnitGetWeaponFxRow source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284170: (data): the sub_284200 (motion) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_284190: (data): plays the motion packet's motion once (sub_282D40(unit, motion, mode, flags) when motion
+00284190 00000050 F btlPktMotion_Update source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_2841E0: (data): the sub_284200 (motion) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_284200: (unit, a1 = motion, a2 = mode, a3 = flags, $f12 = speed): -4 -> sub_284B70(unit, 6), -3 ->
+00284200 00000128 F btlPacketCreateMotion source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284330: (data): the sub_2843E0 (idle motion) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_284350: (data): unless the unit already plays its idle motion, sub_282D40 (the motion call, with $a1.. as
+00284350 0000006c F btlPktIdle_Update source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_2843C0: (data): the sub_2843E0 (idle motion) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_2843E0: (unit, a1): a kind-260 packet (8 data bytes: unit, u16 a1); callbacks sub_284330 / sub_284350 /
+002843e0 00000070 F btlPacketCreateIdle source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284450: (data): the sub_284600 (motion speed) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_2845E0: (data): the sub_284600 (motion speed) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_284600: (unit, $f12): a kind-263 packet (12 data bytes: unit, f12); callbacks sub_284450 /
+00284600 00000070 F btlPacketCreateMotionSpeed source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284670: (data): the kind-264 packet (sub_284900) holds its unit (data +12): busy counter (+160) ++.
+00284670 00000018 F btlPktFade_OnQueue source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_2848E0: (data): busy counter of the unit at data +12 --.
+002848e0 00000018 F btlPktFade_OnEnd source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284900: (unit, a1): a kind-264 packet (24 data bytes: unit at +12, u16 a1 at +16, 0 at +18); callbacks
+00284900 00000074 F btlPacketCreate264 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284980: (data): the sub_284B70 (kind 265) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_284B50: (data): the sub_284B70 (kind 265) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_284B70: (unit): a kind-265 packet (16 data bytes: the unit as a 64-bit sd at +0); callbacks sub_284980 /
+00284b70 00000064 F btlPacketCreate265 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284BE0: (data): the sub_284C90 (kind 261) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_284C70: (data): the sub_284C90 (kind 261) packet releases its unit (data +0): busy counter (+160) --.
+# (shared proposal btlPktUnit_OnEnd: not a row)
+# sub_284C90: (unit): a kind-261 packet (4 data bytes: the unit); callbacks sub_284BE0 / sub_284C00 / sub_284C70.
+00284c90 00000060 F btlPacketCreate261 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_284CF0: (data): the sub_284D80 (kind 262) packet holds its unit (data +0): busy counter (+160) ++.
+# (shared proposal btlPktUnit_OnQueue: not a row)
+# sub_287400: (btlUpdateDraw3DTask): sub_287EA0(unit) for every unit with a model (dirty bit 1) of the four side
+00287400 00000084 F btlUnitDrawAll source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_287490: (unit): flags &= ~0x1000 (shown), sub_287CF0 (the model state); with a model id (+2546) sub_1A0DC0
+00287490 0000007c F btlUnitShowModel source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_287510: (unit): flags |= 0x1000 (hidden), sub_287CF0, sub_1A0DC0 with a model id; flags &= ~2.
+00287510 00000064 F btlUnitHideModel source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_287580: (unit): flags bit 12 (0x1000) clear.
+00287580 00000018 F btlUnitIsShown source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_2889C0: (unit, a1 = id): id (+164) = a1 and, by side, the model record that gives the scale (u16 +20 / 100, or
+002889c0 000003d8 F btlUnitSetId source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_288F80: (unit, a1 = persona id): creates the unit's persona sub-unit (btlUnitCreate(2), +2560) when it has
+00288f80 0000005c F btlUnitSetPersona source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_289650: (a0 = side, a1 = id, a2 = DatUnit or 0): an enemy (side 1) or a party member (side 0): a unit and a
+00289650 0000020c F btlCreateCombatant source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29A140: (btlDestroy): unlinks and frees (RwFree) every btlAction of gBtl+332.
+0029a140 00000088 F btlActionFreeAll source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29A750: rebuilds the turn order gBtl+596 (12 slots): sorts it by agility (btlOrderSortByAgility), then
+0029a750 00000490 F btlOrderShuffle source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29ABE0: (action): an action queued for the next round (flags bit 2) is removed from gBtl+644 (sub_29A250,
+0029abe0 00000084 F btlOrderOnActionEnd source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29AC70: (action): sub_29ABE0 without the move to the end: the next-round removal, then order flags |= 8.
+0029ac70 000000a4 F btlOrderOnActionEnd2 source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29AE40: (btlUpdateTask): starts the next turn. Only with the order active (gBtl+584 bit 0), not paused (gBtl+12
+0029ae40 000001f8 F btlOrderUpdate source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29E370: (btlDestroy): sub_3B5AB0 (the scene teardown).
+0029e370 00000020 F btlSceneClose source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29E390: (SCENE_SET init): MT_Scene_Load(gBtl+580 field, gBtl+582 room).
+0029e390 0000002c F btlSceneLoad source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29E3C0: (END update): gBtl+12 &= ~2 (scene active), sub_3B5AB0.
+0029e3c0 00000034 F btlSceneEnd source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29E400: (SCENE_SET update): sub_3B5A10().
+0029e400 00000020 F btlSceneIsReady source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2
+# sub_29E420: (btlUpdateTask): with the scene active (gBtl+12 bit 1), copies the two vec4 of gBtl+452 /
+0029e420 00000088 F btlSceneUpdateVectors source=phase5-battle_core2 verified=yes ev=INTEGRATION_LOG.md#battle_core2

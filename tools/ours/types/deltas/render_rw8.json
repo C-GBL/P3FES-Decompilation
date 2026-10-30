@@ -1,0 +1,103 @@
+{
+ "records": [
+  {
+   "name": "RxPipeline",
+   "size": 52,
+   "anchors": [{"how": "ret", "fn": "0x4F2F70"}, {"how": "param", "fn": "0x4F4640", "index": 0}, {"how": "param", "fn": "0x4F3F80", "index": 0},
+               {"how": "param", "fn": "0x4F4830", "index": 0}, {"how": "param", "fn": "0x4F4950", "index": 0}, {"how": "param", "fn": "0x4F3260", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "locked"},
+    {"off": 4, "width": 4, "type": "u32", "name": "num_nodes"},
+    {"off": 8, "width": 4, "type": "ptr", "name": "nodes"},
+    {"off": 12, "width": 4, "type": "u32", "name": "cluster_slots"},
+    {"off": 16, "width": 4, "type": "u32", "name": "packet_state"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "packet"},
+    {"off": 24, "width": 4, "type": "u32", "name": "num_input_reqs"},
+    {"off": 28, "width": 4, "type": "ptr", "name": "input_reqs"},
+    {"off": 32, "width": 4, "type": "ptr", "name": "super_block"},
+    {"off": 36, "width": 4, "type": "u32", "name": "super_block_size"},
+    {"off": 40, "width": 4, "type": "u32", "name": "entry_point"},
+    {"off": 44, "width": 4, "type": "u32", "name": "plugin_id"},
+    {"off": 48, "width": 4, "type": "u32", "name": "plugin_data"}
+   ]
+  },
+  {
+   "name": "RxPipelineNode",
+   "size": 40,
+   "anchors": [{"how": "param", "fn": "0x4F3680", "index": 1}, {"how": "param", "fn": "0x4F4C30", "index": 2}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "node_def"},
+    {"off": 4, "width": 4, "type": "u32", "name": "num_outputs"},
+    {"off": 8, "width": 4, "type": "ptr", "name": "outputs"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "slot_cluster_refs"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "slots_continue"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "private_data"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "input_to_slot"},
+    {"off": 28, "width": 4, "type": "ptr", "name": "top_sort_data"},
+    {"off": 32, "width": 4, "type": "ptr", "name": "init_data"},
+    {"off": 36, "width": 4, "type": "u32", "name": "init_data_size"}
+   ]
+  },
+  {
+   "name": "RxNodeDefinition",
+   "size": 64,
+   "anchors": [{"how": "param", "fn": "0x4F3680", "index": 2}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "name"},
+    {"off": 4, "width": 4, "type": "fnptr", "name": "body"},
+    {"off": 8, "width": 4, "type": "fnptr", "name": "node_init"},
+    {"off": 12, "width": 4, "type": "fnptr", "name": "node_term"},
+    {"off": 16, "width": 4, "type": "fnptr", "name": "pipeline_node_init"},
+    {"off": 20, "width": 4, "type": "fnptr", "name": "pipeline_node_term"},
+    {"off": 24, "width": 4, "type": "fnptr", "name": "pipeline_node_config"},
+    {"off": 28, "width": 4, "type": "fnptr", "name": "config_msg_handler"},
+    {"off": 32, "width": 4, "type": "u32", "name": "num_clusters"},
+    {"off": 36, "width": 4, "type": "ptr", "name": "clusters"},
+    {"off": 40, "width": 4, "type": "ptr", "name": "input_reqs"},
+    {"off": 44, "width": 4, "type": "u32", "name": "num_outputs"},
+    {"off": 48, "width": 4, "type": "ptr", "name": "outputs"},
+    {"off": 52, "width": 4, "type": "u32", "name": "private_data_size"},
+    {"off": 56, "width": 4, "type": "u32", "name": "editable"},
+    {"off": 60, "width": 4, "type": "s32", "name": "use_count"}
+   ]
+  },
+  {
+   "name": "RxHeap",
+   "size": 28,
+   "anchors": [{"how": "ret", "fn": "0x4F6A10"}, {"how": "param", "fn": "0x4F67B0", "index": 0}, {"how": "param", "fn": "0x4F65B0", "index": 0},
+               {"how": "param", "fn": "0x4F6970", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "block_size"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "super_blocks"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "free_entries"},
+    {"off": 16, "width": 4, "type": "u32", "name": "entries_capacity"},
+    {"off": 20, "width": 4, "type": "u32", "name": "num_free"},
+    {"off": 24, "width": 4, "type": "u32", "name": "dirty"}
+   ]
+  },
+  {
+   "name": "PdsRegistryEntry",
+   "size": 20,
+   "anchors": [{"how": "param", "fn": "0x46A8D0", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "def"},
+    {"off": 4, "width": 4, "type": "u32", "name": "aux_id"},
+    {"off": 8, "width": 4, "type": "u32", "name": "id"},
+    {"off": 12, "width": 4, "type": "u32", "name": "type"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "pipe"}
+   ]
+  },
+  {
+   "name": "PdsObjPipeDef",
+   "size": 20,
+   "anchors": [{"how": "param", "fn": "0x46AFA0", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "plugin_id"},
+    {"off": 4, "width": 4, "type": "u32", "name": "plugin_data"},
+    {"off": 8, "width": 4, "type": "fnptr", "name": "callback1"},
+    {"off": 12, "width": 4, "type": "fnptr", "name": "callback2"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "mat_pipe"}
+   ]
+  }
+ ]
+}

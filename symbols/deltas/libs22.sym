@@ -1,0 +1,11 @@
+# libs22.sym  Phase 5 slice delta (game/include/p3fes/game/libs22.h, game/src/cri/libs22.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own error texts: each of
+#   these functions checks the MWSFD player (sub_581798) and on failure prints a message that names the function
+#   ("E404010: mwPlySetCnvBottomUp: handle is invalid." 0x7C97E8, "E404011: mwPlyGetCnvBottomUp: ..." 0x7C9820,
+#   "E407024: mwPlyStartFnameRangeLp: ..." 0x7C9AE8, "E1122637: mwPlyGetSlFname: ..." 0x7C9B20). Checked by
+#   tests/game/test_libs22.cpp. Proposals only: the code keeps the symbols/ names. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs22 verified=yes ev=<anchor>
+00583de8 00000074 F mwPlySetCnvBottomUp source=phase5-libs22 verified=yes ev=INTEGRATION_LOG.md#libs22
+00583e58 0000005c F mwPlyGetCnvBottomUp source=phase5-libs22 verified=yes ev=INTEGRATION_LOG.md#libs22
+005845e0 000000a0 F mwPlyStartFnameRangeLp source=phase5-libs22 verified=yes ev=INTEGRATION_LOG.md#libs22
+00584680 000000ac F mwPlyGetSlFname source=phase5-libs22 verified=yes ev=INTEGRATION_LOG.md#libs22

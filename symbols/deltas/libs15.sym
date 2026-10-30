@@ -1,0 +1,21 @@
+# libs15.sym  Phase 5 slice delta (game/include/p3fes/game/libs15.h, game/src/cri/libs15.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own texts: each name below is
+#   the one the function passes in its own error or "not implemented" string (adxt_*: "E0... <name>: parameter error"
+#   at 0x7C2430..; PS2RNA_*: "<name>: not implemented" at 0x7C65F0..; ROFS_*: the function-name argument of the
+#   rofs_if.c error report at 0x7C7100..; mwPly*: "E...: <name>: handle is invalid." at 0x7C9A18..). The two
+#   "ROFS_GetFileSiz64" reporters (0x566848, 0x566938) are left out: two functions print the same name. Checked by
+#   tests/game/test_libs15.cpp. A proposal only: the code keeps the symbols/ name. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs15 verified=yes ev=<anchor>
+0053f458 000000ac F adxt_StartAfsLp source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+0053f548 00000038 F adxt_GetNumFiles source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+0053f5b0 00000040 F adxt_ResetEntry source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00560be0 00000048 F PS2RNA_Start source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+005611e0 00000048 F PS2RNA_SetStartSmpl source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+005615b0 00000044 F PS2RNA_DiscardData source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00561640 00000044 F PS2RNA_SetStmHdInfo source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+005668b8 00000080 F ROFS_GetFileSiz source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00566c20 00000094 F ROFS_GetDirInf source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00566cb8 00000070 F ROFS_IsExistFile source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00566d28 00000070 F ROFS_GetNumFiles source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00584400 000000c4 F mwPlyEntryAfs source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15
+00584558 00000088 F mwPlyEntryFnameRange source=phase5-libs15 verified=yes ev=INTEGRATION_LOG.md#libs15

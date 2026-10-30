@@ -1,0 +1,269 @@
+{
+ "records": [
+  {
+   "name": "Pl2EncHandle",
+   "size": 44,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x55F308",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x55F218",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x55EE58",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x55F028",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "u32",
+     "name": "Work",
+     "note": "libs11: the work area given to create (sub_55EC38)"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "WorkSize",
+     "note": "libs11: its size (>= 1024)"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "u32",
+     "name": "Delay0",
+     "note": "libs11: first 384-byte delay line (s32 samples)"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "u32",
+     "name": "Delay1",
+     "note": "libs11: second delay line (Delay0 + 384)"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "s32",
+     "name": "Rate",
+     "note": "libs11: sample rate (sub_55F308)"
+    },
+    {
+     "off": 20,
+     "width": 4,
+     "type": "s32",
+     "name": "Pos",
+     "note": "libs11: delay-line position, wraps at DelayLen"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "s32",
+     "name": "DelayLen",
+     "note": "libs11: rate / 750 clamped to 1..96"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "s32",
+     "name": "Gain0",
+     "note": "libs11: gain index 127 + p (sub_55F218)"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "s32",
+     "name": "Gain1",
+     "note": "libs11: gain index |p - 127|"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "s32",
+     "name": "Gain2",
+     "note": "libs11: gain index |q + 127|"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "s32",
+     "name": "Gain3",
+     "note": "libs11: gain index |q - 127|"
+    }
+   ]
+  },
+  {
+   "name": "CriSectorFile",
+   "size": 48,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x55BFE0",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x55C078",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x55C378",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 2,
+     "width": 1,
+     "type": "s8",
+     "name": "Stat",
+     "note": "libs11: 0 idle, 1 read done, 2 reading, 3 error"
+    },
+    {
+     "off": 8,
+     "width": 8,
+     "type": "u64",
+     "name": "Size",
+     "note": "libs11: file size in bytes"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "s32",
+     "name": "Nsct",
+     "note": "libs11: file size in sectors (the seek clamp)"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "s32",
+     "name": "Fd",
+     "note": "libs11: descriptor given to the SRD request"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "s32",
+     "name": "Pos",
+     "note": "libs11: sector position (seek / tell)"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "u32",
+     "name": "Buf",
+     "note": "libs11: read buffer"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "s32",
+     "name": "Nreq",
+     "note": "libs11: sectors asked"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "s32",
+     "name": "Nread",
+     "note": "libs11: sectors read (<< 11 = the read result)"
+    },
+    {
+     "off": 44,
+     "width": 4,
+     "type": "u32",
+     "name": "Srd",
+     "note": "libs11: SRD request in flight"
+    }
+   ]
+  },
+  {
+   "name": "AixPlayer",
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x553438",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x553468",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x553498",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x553510",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x553560",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 1,
+     "width": 1,
+     "type": "u8",
+     "name": "Stat",
+     "note": "libs11: 1..3 while attached (the AIXP getters test it)"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "Parser",
+     "note": "libs11: AIX parser record"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "u32",
+     "name": "SubPly",
+     "note": "libs11: sub-player"
+    },
+    {
+     "off": 144,
+     "width": 4,
+     "type": "u32",
+     "name": "Source",
+     "note": "libs11: data source object"
+    },
+    {
+     "off": 452,
+     "width": 4,
+     "type": "s32",
+     "name": "RangeStart",
+     "note": "libs11: range start (sub_553498)"
+    },
+    {
+     "off": 456,
+     "width": 4,
+     "type": "s32",
+     "name": "RangeEnd",
+     "note": "libs11: range start + length"
+    }
+   ]
+  }
+ ]
+}

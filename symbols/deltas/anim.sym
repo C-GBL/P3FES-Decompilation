@@ -1,0 +1,307 @@
+# anim.sym  Phase 5 slice delta (game/include/p3fes/game/anim.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-22 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the replay snapshots' animation records; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-anim verified=yes: names from what each body does; RenderWare names where the body matches the
+#   public RenderWare 3.x API (ADR-0009 rule 4). ev=<doc>#<section>. Not imported by the agent.
+# sub_311730: The hierarchy matrix update of a slot with a look-at ($a0 hierarchy, $a1 slot, $a2 the slot's look-at record + ...
+00311730 00001538 F mdlSlotUpdateHierarchyLookAt source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_317730: Per frame, one ready model ($a0, flag 0x1000): places the clump (root offset x placement), sets the children's ...
+00317730 000002e8 F mdlModelUpdate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A290: Apply callback of the game scheme: matrix $a0 = scale(frame +36) x rotation(frame quaternion), translation fro ...
+0035a290 0000015c F gameKeyFrameApply source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A3F0: Interpolates two frames ($a1, $a2) at weight $f12 into $a0: slerp of the quaternions (the second negated when  ...
+0035a3f0 00000228 F gameKeyFrameInterpolateQT source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A620: Blend callback of the game scheme: gameKeyFrameInterpolateQT, plus the product of the two +48 values.
+0035a620 00000074 F gameKeyFrameBlend source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A6A0: Stream-write callback: per 52-byte keyframe 12 reals and the previous frame's byte offset.
+0035a6a0 000000d0 F gameKeyFrameStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A770: Stream-read callback: per keyframe 12 reals and the previous frame's offset (turned into a pointer).
+0035a770 000000d8 F gameKeyFrameStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A850: Stream-size callback: 52 bytes per keyframe.
+0035a850 00000020 F gameKeyFrameStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35A870: Mul-recip callback: frame $a0 times the inverse of $a1 (conjugate quaternion product, translation difference).
+0035a870 00000198 F gameKeyFrameMulRecip source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35AA10: Add callback: quaternion product, translation sum.
+0035aa10 00000188 F gameKeyFrameAdd source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_35ABA0: Registers the game's keyframe scheme (id 0x44A07195, 52-byte keyframes and frames, callbacks 0x35A290..0x35AA1 ...
+0035aba0 000000a4 F gameKeyRegisterScheme source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_464760: Apply callback of the standard scheme (id 1): writes the frame's quaternion (+8) as a rotation matrix and its  ...
+00464760 000000f0 F RpHAnimKeyFrameApply source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_464850: Interpolate callback: slerp of the two keyframes' quaternions (nlerp when they are nearly equal; the second ne ...
+00464850 00000628 F RpHAnimKeyFrameInterpolate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_464E80: Blend callback: slerp / lerp of two interpolated frames with weight $f12.
+00464e80 0000061c F RpHAnimKeyFrameBlend source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4654A0: Stream-read callback: per 36-byte keyframe the time + quaternion + translation (8 reals) and the previous fram ...
+004654a0 000000e8 F RpHAnimKeyFrameStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465590: Stream-write callback: per keyframe the 8 reals and the previous frame's byte offset.
+00465590 000000c8 F RpHAnimKeyFrameStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465660: Stream-size callback: 36 bytes per keyframe.
+00465660 00000010 F RpHAnimKeyFrameStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465670: Mul-recip callback: frame $a0 times the inverse of $a1 (conjugate quaternion product, translation difference).
+00465670 00000160 F RpHAnimKeyFrameMulRecip source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4657D0: Add callback: quaternion product and translation sum.
+004657d0 00000158 F RpHAnimKeyFrameAdd source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465930: Child-frame callback of RpHAnimHierarchyAttach: stores frame $a0 in every node of hierarchy $a1 whose id is th ...
+00465930 000000c4 F hAnimAttachFrameCB source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465A00: RpHAnim's engine-open callback: creates the 36-byte hierarchy free list (0x7CE734) and registers the standard  ...
+00465a00 000000dc F hAnimOpen source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465AE0: RpHAnim's engine-close callback: destroys the hierarchy free list.
+00465ae0 0000003c F hAnimClose source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465B20: Frame constructor: the 8-byte HAnim extension = {id -1, hierarchy 0}.
+00465b20 0000001c F hAnimFrameCtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465B40: Frame destructor: when the frame carries a hierarchy, clears every node's frame pointer and destroys the hiera ...
+00465b40 000000a4 F hAnimFrameDtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465BF0: Frame copy callback: copies the id and, for an owned hierarchy, creates a copy (same node ids, indices and fla ...
+00465bf0 000000fc F hAnimFrameCopy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465CF0: Frame stream-write: version 0x100, the id, then for a hierarchy its node count, flags and keyframe size and pe ...
+00465cf0 000001bc F hAnimFrameStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_465EB0: Frame stream-read: version 0x100, the id, the node count; when nodes follow, the flags and keyframe size, a ne ...
+00465eb0 00000274 F hAnimFrameStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466130: Frame stream-size: 0 for a plain frame, 12 for an id or a sub-hierarchy, 20 + 12 per node for a hierarchy.
+00466130 00000078 F hAnimFrameStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4661B0: Attaches RpHAnim (id 0x11E): the engine plugin, the 8-byte frame extension (offset 0x7CE730) and its stream ca ...
+004661b0 000000a4 F RpHAnimPluginAttach source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466260: Creates a hierarchy of $a0 nodes, flags $a3, keyframe size $t0: an interpolator, the matrix array (unless flag ...
+00466260 00000168 F RpHAnimHierarchyCreate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466480: Creates the sub-hierarchy of parent $a0 rooted at node $a1: counts the nodes of the subtree (push / pop flags  ...
+00466480 000001c0 F RpHAnimHierarchyCreateSubHierarchy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466640: Binds hierarchy $a0 to its frames: every node whose id matches the parent frame's gets it, the frame is update ...
+00466640 000000c4 F RpHAnimHierarchyAttach source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466710: The hierarchy attached to frame $a0 (extension +4).
+00466710 00000010 F RpHAnimFrameGetHierarchy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466720: The HAnim id of frame $a0 (extension +0).
+00466720 00000010 F RpHAnimFrameGetID source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466730: The matrix update of a hierarchy without a matrix array (flag 2): the root is the parent frame's LTM (rebuilt  ...
+00466730 000007b4 F hAnimHierarchyUpdateFrames source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_466EF0: Computes a hierarchy's node matrices from its interpolator. Flag 2 (no matrix array) goes to hAnimHierarchyUpd ...
+00466ef0 0000069c F RpHAnimHierarchyUpdateMatrices source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489020: Frees a skin's split data (+56 block) and zeroes the six split fields (+44..+64). Returns 1.
+00489020 00000058 F skinSplitDataDestroy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489080: Writes the split data: bone limit, mesh count, RLE count, then (when meshes) the remap / RLE-count / RLE block ...
+00489080 000000dc F skinSplitDataStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489160: Reads the split data: bone limit, mesh count, RLE count; then one RwMalloc for the remap indices (bones bytes) ...
+00489160 000001c0 F skinSplitDataStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489320: Size of the split data in the stream: 12, plus the block when meshes.
+00489320 00000030 F skinSplitDataStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489350: RpSkinAtomicSetType (atomic $a0, type $a1): type 2 (MatFX) falls back to 1 when MatFX (0x120) is not attached, ...
+00489350 00000088 F skinAtomicSetType source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4893E0: Sets the skin's maximum weights per vertex (+16): 1 + the highest weight slot in use over $a2 vertex weight re ...
+004893e0 00000080 F skinFindMaxWeights source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489460: Builds the used-bone list ($a3, count in *$a4) from $t1 vertices: each non-zero weight's bone index byte, adde ...
+00489460 000000ec F skinFindUsedBones source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489550: Allocates a skin's data block for $a1 bones, $a2 used bones and $a3 vertices (used-bone list, 16-aligned bone  ...
+00489550 000001dc F skinCreateData source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489730: RpSkin's engine-open callback: on the first open picks the pipelines available (MatFX, 0x12E), creates the 72- ...
+00489730 00000108 F skinOpen source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489840: RpSkin's engine-close callback: on the last close destroys the free list and the palette.
+00489840 0000007c F skinClose source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4898C0: Geometry constructor: skin = 0.
+004898c0 00000018 F skinGeometryCtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4898E0: Geometry destructor: destroys the geometry's skin.
+004898e0 00000064 F skinGeometryDtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489950: Geometry copy callback: nothing (returns the geometry).
+00489950 00000008 F skinGeometryCopy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489960: Atomic constructor: the 4-byte extension (the hierarchy) = 0.
+00489960 0000003c F skinAtomicCtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4899A0: Atomic destructor: clears the hierarchy link.
+004899a0 0000001c F skinAtomicDtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4899BC: Returns $a0 (the tail of skinAtomicDtor, reached by its jal).
+004899bc 00000008 F skinAtomicDtorTail source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4899D0: Atomic copy callback: copies the hierarchy link.
+004899d0 00000020 F skinAtomicCopy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4899F0: Atomic stream-always callback: a skinned geometry gets the skin pipeline (type 2 when MatFX is attached and en ...
+004899f0 00000090 F skinAtomicAlwaysCB source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489A80: Atomic stream-rights callback: a skinned geometry gets the pipeline of the type in the rights data ($a3).
+00489a80 00000054 F skinAtomicRightsCB source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489AE0: Geometry stream-size: 0 without a skin; native geometries (flag 0x1000000) via skinNativeStreamGetSize, else 4 ...
+00489ae0 0000008c F skinGeometryStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489B70: Geometry stream-write: the packed counts {bones, used bones, max weights}, the used-bone list, the indices, th ...
+00489b70 00000160 F skinGeometryStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489CD0: Geometry stream-read: the packed counts, a new skin (free list) with its data block, the used-bone list (or bu ...
+00489cd0 00000248 F skinGeometryStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_489F20: Atomic-side skin read for old files: when the geometry already has a skin the chunk is skipped, else the bone  ...
+00489f20 00000254 F skinAtomicStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A180: Atomic stream-write: nothing (returns the stream).
+0048a180 00000008 F skinAtomicStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A190: Atomic stream-size: 0.
+0048a190 00000008 F skinAtomicStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A1A0: Attaches RpSkin (id 0x116): the engine plugin, the 4-byte atomic extension (0x95DE14), its stream / always / r ...
+0048a1a0 000000f4 F RpSkinPluginAttach source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A2A0: Sets atomic $a0's skin hierarchy to $a1. Returns $a0.
+0048a2a0 00000018 F RpSkinAtomicSetHAnimHierarchy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A2C0: The skin of geometry $a0 (0 = not skinned).
+0048a2c0 00000014 F RpSkinGeometryGetSkin source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A2E0: RpSkinGeometrySetSkin: replaces the geometry's skin by $a1 and precomputes the per-vertex weights (skinPrepare ...
+0048a2e0 00000084 F skinGeometrySetSkin source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A370: RpSkinDestroy: frees the data block and the split data and returns the skin to the free list. Returns 0.
+0048a370 00000060 F skinDestroy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A3D0: The bone count of skin $a0 (+0). (functions.json's name is a FLIRT mismatch.)
+0048a3d0 00000008 F RpSkinGetNumBones source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A3F0: Public RpSkinAtomicSetType: the same body as skinAtomicSetType (type 2 needs MatFX, type 3 plugin 0x12E; else  ...
+0048a3f0 00000088 F RpSkinAtomicSetType source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A480: The skin type of atomic $a0: its pipeline's plugin data when the pipeline belongs to the skin plugin (0x116),  ...
+0048a480 00000028 F RpSkinAtomicGetType source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A4B0: Packs each vertex's bone indices into the low bits of its weights for the VU1 skin programs: weight slot k get ...
+0048a4b0 000002d8 F skinPrepareWeights source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A790: Returns $a0 (an empty skin release hook).
+0048a790 00000008 F skinDestroyNoop source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A7A0: Native-geometry stream size: 64 per bone + 36 + used bones + split data.
+0048a7a0 00000054 F skinNativeStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A800: Native-geometry stream-write: a chunk with version 4, the packed counts, the used-bone list, the bone matrices ...
+0048a800 00000194 F skinNativeStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48A9A0: Native-geometry stream-read: a chunk of version 0x35000..0x37002 (else RpSkin error), platform 4, the packed c ...
+0048a9a0 0000024c F skinNativeStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48ABF0: Returns 1 (no platform set-up).
+0048abf0 00000008 F skinPlatformOpen source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48AC00: Returns 1.
+0048ac00 00000008 F skinPlatformClose source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_48AC10: Gives atomic $a0 the PDS skin pipeline: 0x11002 (plain skin), or the MatFX skin pipelines 0x11013 / 0x11014 (g ...
+0048ac10 00000108 F skinAtomicSetPipeline source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B65A0: RtAnim's engine-open callback: creates a free list of 24-byte records (the RW globals' free-list parameters 0x ...
+004b65a0 0000005c F rtAnimOpen source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6600: RtAnim's engine-close callback: forgets every registered interpolation scheme (count 0x7CE8A0 = 0) and destroy ...
+004b6600 0000003c F rtAnimClose source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6640: Attaches the RtAnim toolkit: RwEngineRegisterPlugin(0, id 0x1B7, open, close). Returns 1 when the registration ...
+004b6640 00000034 F RtAnimInitialize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6680: Copies a 48-byte RtAnimInterpolatorInfo (type id, frame sizes, the eight callbacks, custom data size) into the ...
+004b6680 00000128 F RtAnimRegisterInterpolationScheme source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B67B0: The scheme table entry of type id $a0, or 0 with RtAnim error 2 when no scheme has that id.
+004b67b0 00000084 F RtAnimGetInterpolatorInfo source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6840: Creates an animation of scheme $a0 with $a1 keyframes, flags $a2 and duration $f12: one RwMalloc(24 + frames x ...
+004b6840 00000134 F RtAnimAnimationCreate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B69B0: Loads an animation from a file name: opens a file stream, finds the animation chunk (0x1B), reads it with RtAn ...
+004b69b0 00000088 F RtAnimAnimationRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6A40: Reads an animation chunk body: version 0x100, the scheme id, the keyframe count, the flags and the duration; c ...
+004b6a40 00000240 F RtAnimAnimationStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6C80: Writes an animation chunk: the chunk header (0x1B, size from RtAnimAnimationStreamGetSize, version 0x37002 / b ...
+004b6c80 0000010c F RtAnimAnimationStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6D90: The chunk body size of an animation: 20 + the scheme's stream-size callback (+40).
+004b6d90 00000038 F RtAnimAnimationStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6DD0: The node count of an animation: the keyframes before the first one whose previous-frame link points back at ke ...
+004b6dd0 00000040 F RtAnimAnimationGetNumNodes source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6E10: Creates an interpolator for $a0 nodes with interpolated frames of up to $a1 bytes: RwMalloc(76 + nodes x size, ...
+004b6e10 0000009c F RtAnimInterpolatorCreate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B6EC0: Starts animation $a1 on interpolator $a0 at time 0: copies the scheme's frame sizes and its apply / blend / in ...
+004b6ec0 00000144 F RtAnimInterpolatorSetCurrentAnim source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7010: Sets the loop callback ($a1) and its data ($a2): called when the time wraps past the duration.
+004b7010 0000000c F RtAnimInterpolatorSetAnimLoopCallBack source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7020: Copies the interpolated frames of $a1 into $a0 (memcpy of nodes x frame size bytes from +76). Returns 1.
+004b7020 00000030 F RtAnimInterpolatorCopy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7050: Moves interpolator $a0 back by $f12 seconds. When the time goes below 0 it wraps (adding the duration until po ...
+004b7050 000001ec F RtAnimInterpolatorSubAnimTime source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7240: Advances interpolator $a0 by $f12 seconds (nothing for $f12 <= 0). Past the duration the time wraps (subtracti ...
+004b7240 00000274 F RtAnimInterpolatorAddAnimTime source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B74C0: Sets the time of interpolator $a0 to $f12: forward from the current time with RtAnimInterpolatorAddAnimTime, o ...
+004b74c0 00000048 F RtAnimInterpolatorSetCurrentTime source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7510: Blends two interpolators into $a0: for every node of $a0 the scheme's blend callback (+64) mixes the frames of ...
+004b7510 000000bc F RtAnimInterpolatorBlend source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B75D0: Creates a sub-interpolator of parent $a0 starting at node $a1 with $a2 nodes and frame size $a3 (-1: the paren ...
+004b75d0 00000054 F RtAnimInterpolatorCreateSubInterpolator source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B76B0: Removes entry $a1 from dictionary $a0's entry list (+16): the last entry takes its place and the list shrinks  ...
+004b76b0 0000009c F rtDictRemoveEntry source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7750: The schema's current dictionary (+20).
+004b7750 00000008 F RtDictSchemaGetCurrentDict source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7760: Sets the schema's current dictionary (+20). Returns the schema.
+004b7760 0000000c F RtDictSchemaSetCurrentDict source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7770: Releases every entry of dictionary $a0 with the schema's entry-destroy callback (+28), then destroys the entry ...
+004b7770 0000007c F rtDictDestroyEntries source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B77F0: Finds the entry of dictionary $a0 whose name (schema callback +32) equals the string $a1 (the RW string-compar ...
+004b77f0 000000c0 F RtDictFindNamedEntry source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B79D0: Reads a dictionary chunk for schema $a0 from stream $a1: an old-version chunk goes to the schema's compatibili ...
+004b79d0 00000284 F RtDictSchemaStreamReadDict source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7C60: Initialises UV keyframe $a1: previous frame $a2, time $f12, and the UV values from matrix $a3 by the animation ...
+004b7c60 000000a0 F uvAnimKeyFrameInit source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7D00: Stream-read callback of the UV keyframe schemes: an int (unused), the custom data (uvAnimCustomDataStreamRead) ...
+004b7d00 00000104 F uvAnimStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7E10: Stream-write callback of the UV keyframe schemes: 0, the custom data, then per keyframe 7 reals and the previo ...
+004b7e10 00000118 F uvAnimStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7F30: Stream-size callback of the UV keyframe schemes: the custom data size + 4 + 32 per keyframe.
+004b7f30 00000044 F uvAnimStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7F80: Apply callback of the linear UV scheme: writes interpolated frame $a1's six UV values into matrix $a0 (right.x ...
+004b7f80 0000004c F uvAnimLinearApply source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B7FD0: Interpolate callback of the linear UV scheme: out ($a0) = key1 + (key2 - key1) x (t - t1) / (t2 - t1) for the  ...
+004b7fd0 000000ac F uvAnimLinearInterpolate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8080: Blend callback of the linear UV scheme: out = a + (b - a) x $f12 for the six values.
+004b8080 0000009c F uvAnimLinearBlend source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8120: Mul-recip callback of the linear UV scheme: replaces frame $a0 by its product with the inverse of the 2x2 part ...
+004b8120 000000cc F uvAnimLinearMulRecip source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B81F0: Add callback of the linear UV scheme: the 2x2 product of the two frames' matrices and the sum of their transla ...
+004b81f0 00000094 F uvAnimLinearAdd source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8290: Copies a matrix's UV part (right.xy, up.xy, pos.xy) into the six values of a linear UV keyframe. Returns 0 (th ...
+004b8290 00000038 F uvAnimLinearFromMatrix source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B82D0: Apply callback of the parametric UV scheme: builds the matrix from the frame's (angle, scale u, scale v, skew, ...
+004b82d0 000000f8 F uvAnimParamApply source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B83D0: Interpolate callback of the parametric UV scheme: linear in the six parameters between the two keyframes at t  ...
+004b83d0 00000124 F uvAnimParamInterpolate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8500: Blend callback of the parametric UV scheme: linear in the six parameters with weight $f12.
+004b8500 0000010c F uvAnimParamBlend source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8610: Mul-recip callback of the parametric UV scheme: nothing (jr $ra).
+004b8610 00000008 F uvAnimParamMulRecip source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8620: Add callback of the parametric UV scheme: nothing (jr $ra).
+004b8620 00000008 F uvAnimParamAdd source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8630: Converts a matrix into the parametric UV values: angle = atan2 of the first row, then the matrix rotated back  ...
+004b8630 00000110 F uvAnimParamFromMatrix source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8740: RpUVAnim's engine-open callback: creates the 68-byte custom-data free list (0x7CE8B0), initialises the UV-anim ...
+004b8740 00000088 F uvAnimOpen source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B87D0: RpUVAnim's engine-close callback: drops the open count, closes the dictionary schema and destroys the custom-d ...
+004b87d0 00000054 F uvAnimClose source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8830: Attaches RpUVAnim (id 0x135): the engine plugin, a 48-byte material extension (offset 0x7CE8B4: two UV matrice ...
+004b8830 000000a4 F RpUVAnimPluginAttach source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B88E0: Material constructor of RpUVAnim: zeroes the 48-byte extension.
+004b88e0 00000038 F uvAnimMaterialCtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8920: Material destructor of RpUVAnim: destroys the two UV matrices and, per used slot, releases the animation (refc ...
+004b8920 000000a8 F uvAnimMaterialDtor source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B89D0: Material copy callback of RpUVAnim: per slot a new interpolator for the source slot's animation with its frame ...
+004b89d0 00000134 F uvAnimMaterialCopy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8B10: Creates or destroys the material's two UV matrices: matrix c exists only while some slot's animation maps a no ...
+004b8b10 00000120 F uvAnimMaterialUpdateMatrices source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8C30: Material stream-write of RpUVAnim: a chunk with the slot mask and the 32-byte name of each slot's animation.
+004b8c30 00000114 F uvAnimMaterialStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8D50: Makes a 2-keyframe UV animation that holds the identity (used when a named animation is missing from the dicti ...
+004b8d50 00000114 F uvAnimCreateIdentity source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B8E70: Material stream-read of RpUVAnim: the slot mask, and per set bit an animation name looked up in the current UV ...
+004b8e70 000001b8 F uvAnimMaterialStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B9030: Material stream-size of RpUVAnim: 0 without animations, else 16 + 32 per used slot.
+004b9030 0000006c F uvAnimMaterialStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B90A0: Reads a UV animation's custom data: a record from the 0x7CE8B0 free list, the 32-byte name and the 8 channel i ...
+004b90a0 000000a0 F uvAnimCustomDataStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B9140: Writes the name and the 8 channel ints of a UV animation's custom data.
+004b9140 00000064 F uvAnimCustomDataStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B91C0: RpUVAnimCreate-like: an animation of the linear ($t0 = 0) or parametric ($t0 = 1) UV scheme ($a0 name, $a1 cha ...
+004b91c0 00000108 F uvAnimCreate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B92D0: Releases a UV animation: drops its custom data's refcount and, at zero, frees the record and destroys the anim ...
+004b92d0 00000078 F RpUVAnimDestroy source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B9350: Raises a UV animation's refcount (custom data +64). Returns the animation.
+004b9350 00000018 F RpUVAnimAddRef source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B9370: Applies a material's UV interpolators: resets both UV matrices to identity, then for every node of every slot  ...
+004b9370 00000368 F RpUVAnimMaterialApplyInterpolators source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B96E0: The custom data (the name comes first) of a UV animation.
+004b96e0 00000008 F uvAnimGetName source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B96F0: Puts animation $a1 in slot $a2 of material $a0: a new interpolator started on it, the UV matrices updated, the ...
+004b96f0 000000bc F RpUVAnimMaterialSetAnim source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B97B0: The interpolator in slot $a1 of material $a0's UV extension.
+004b97b0 00000018 F RpUVAnimMaterialGetInterpolator source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B97D0: Sets slot $a2 of material $a0's UV extension to $a1. Returns $a0.
+004b97d0 0000001c F uvAnimMaterialSetInterpolator source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4B97F0: 1 when any of the material's eight UV slots holds an interpolator.
+004b97f0 00000044 F RpUVAnimMaterialHasAnims source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F7300: Packs a float into the scheme's 16-bit format (sign, 5-bit exponent biased by 112, 11-bit mantissa) with round ...
+004f7300 00000170 F cmpKeyFloatToHalf source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F7470: Apply callback (scheme id 2): writes an interpolated frame's quaternion as a rotation matrix and its translati ...
+004f7470 000000f0 F cmpKeyFrameApply source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F7560: Interpolate callback: decompresses the two keyframes (16-bit quaternion and translation; the translation scale ...
+004f7560 000009d4 F cmpKeyFrameInterpolate source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F7F40: Blend callback: slerps the quaternions and lerps the translations of two interpolated frames with weight $f12.
+004f7f40 0000061c F cmpKeyFrameBlend source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F8560: Stream-read callback: per keyframe the time (real), 7 int16 (quaternion + translation) and the previous-frame  ...
+004f8560 00000124 F cmpKeyFrameStreamRead source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F8690: Stream-write callback: per keyframe the time, the 7 int16 and the previous frame's byte offset; then the custo ...
+004f8690 00000100 F cmpKeyFrameStreamWrite source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F8790: Stream-size callback: 22 bytes per keyframe + 24.
+004f8790 00000014 F cmpKeyFrameStreamGetSize source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F87B0: Mul-recip callback: multiplies keyframe $a0 by the inverse of $a1 (conjugate quaternion product, translation d ...
+004f87b0 000004f4 F cmpKeyFrameMulRecip source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F8CB0: Add callback: out = quaternion product of the two frames and the sum of their translations.
+004f8cb0 00000158 F cmpKeyFrameAdd source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim
+# sub_4F8E10: Registers the compressed keyframe scheme (id 2, 24-byte keyframes, 36-byte interpolated frames, 24 bytes of cu ...
+004f8e10 0000009c F cmpKeyRegisterScheme source=phase5-anim verified=yes ev=INTEGRATION_LOG.md#anim

@@ -1,0 +1,20 @@
+{"records": [
+  {"name": "gBtl", "anchors": [{"how": "gslot", "addr": "0x7CE3EC"}], "fields": [
+    {"off": 24, "width": 2, "type": "u16", "name": "flags24"},
+    {"off": 2836, "width": 4, "type": "ptr", "name": "boss_archive"},
+    {"off": 2884, "width": 4, "type": "u32", "name": "boss_work0"},
+    {"off": 2888, "width": 4, "type": "u32", "name": "boss_phase"},
+    {"off": 2892, "width": 4, "type": "u32", "name": "boss_work2"},
+    {"off": 2896, "width": 4, "type": "u32", "name": "boss_work3"},
+    {"off": 2900, "width": 4, "type": "u32", "name": "boss_pick"},
+    {"off": 2904, "width": 4, "type": "u32", "name": "boss_value"},
+    {"off": 2912, "width": 4, "type": "u32", "name": "boss_once"},
+    {"off": 2944, "width": 4, "type": "u32", "name": "boss_cam_done"}]},
+  {"name": "btlAction", "anchors": [{"how": "param", "fn": "0x2F3A80", "index": 0}, {"how": "param", "fn": "0x2F05F0", "index": 0}, {"how": "param", "fn": "0x2F5030", "index": 0}], "fields": [
+    {"off": 48, "width": 4, "type": "ptr", "name": "unit"},
+    {"off": 56, "width": 4, "type": "ptr", "name": "targets"},
+    {"off": 106, "width": 2, "type": "u16", "name": "target_count"},
+    {"off": 108, "width": 2, "type": "u16", "name": "cmd_kind"},
+    {"off": 110, "width": 2, "type": "u16", "name": "cmd_skill"},
+    {"off": 118, "width": 2, "type": "u16", "name": "summon_ids"}]}
+]}

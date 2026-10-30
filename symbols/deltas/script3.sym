@@ -1,0 +1,207 @@
+# script3.sym  Phase 5 slice delta (game/include/p3fes/game/script3.h, game/src/script/script3.cpp); SLUS_216.21
+# generated 2026-10-21 from the instructions (the p3fes_handgen bodies, the K_Assert file strings scrScriptProcess.c /
+#   scrCommonCommand.c / scrComuCommand.c / mt_evtPolygonMovie.c / mt_evtEffect.c / mt_evtCutin.c / mt_evtPMFileReader.c /
+#   mt_evtCustomEvent.c / mt_evtMessage.c, the task names, the sScrCommandTable 0x7B92B0 rows read from the ELF) and
+#   checked by tests/game/test_script3.cpp. Only functions whose functions.json name is sub_*; COMM handlers are named
+#   by their table row. Rows: <addr8> <size8> F <name> source=phase5-script3 verified=yes ev=<doc>#<section>.
+#   Not imported by the agent.
+# sub_35AC50: prints the string in $a0 with "%s\n" (gp-25240) forever -- the font layer's fatal-error spin (callers frAddFontStyle / frFreeFontStyles on a full ...
+0035ac50 00000028 F frFontFatal source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_35AD80: the dds3 process API over the kwln kernel -- drops a2 / a3 (always 1, 1 at the script call sites) and calls kwlnTaskInit(name, priority, update, ...
+0035ad80 0000002c F dds3InitProcess source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_35ADB0: a tail wrapper of kwlnTaskDestroyWithHierarchy (arguments passed through). SCR_KILL, the field's script sweep sub_35BFB0 and the event viewer use it.
+0035adb0 00000020 F dds3KillProcess source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_35B0D0: printf("PUTSTR -> %s\n", scrGetStrPara(0)); returns 1.
+0035b0d0 0000003c F scrCommand_PUTSTR source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_35BFB0: the field root's sweep over the running-script list -- prints the count before and after; every task whose record does not equal the battle ...
+0035bfb0 000000dc F scrKillAllScripts source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_35F4A0: one step of a social-link event for the COMM handlers 125 / 222 -- sub_172990 gives the event record; when *state == 1 and the sequence system is ...
+0035f4a0 00000110 F comuCmdRunEventStep source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_393E30: t0 = mode, t1 = word): the event player's cut start -- player->flags (+4) |= 0x80, clears the 28-byte block at +2400; flag 8 set: +2400 = 1, else ...
+00393e30 000000f4 F mtEvt_StartCut source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_393F30: resets the player's camera block at +2272 (+24 = +16, +28 = -1, +2272 / +2276 / +2328 = 0); when the current cut has camera keys (sub_3977C0 gives ...
+00393f30 00000104 F mtEvt_ResetCamera source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394040: on != 0 -> $f13 = to * t + from * (1 - t) through the ACC (mula.s / madd.s); returns $f13 in $f0 (from itself when on == 0). v0 = 1.0f's bits on ...
+00394040 0000002c F mtEvt_Lerp source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394070: asserts out (line 181); t = 0 when on == 0; with both keys the 4 floats at +32 and the 4 at +0 are interpolated (from + (to - from) * t, ACC ops), ...
+00394070 000001f8 F mtEvt_LerpKey source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394270: a 304-byte zeroed block from the event heap (sub_386AE0(304, tag 1)); assert line 1057 and returns 0 when the heap is empty.
+00394270 00000074 F mtEvtPM_AllocWork source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394C30: frees work+300 when set, closes the message slot when it is open (sub_39EEE0 / sub_39EE80) and, if the event's flags (work+148 -> +32) have bit 3, ...
+00394c30 000000a8 F mtEvtPM_FreeWork source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394CE0: a 32-byte default PM1 (the two quadwords at 0x6A0CD0) copied into a fresh event-heap block (sub_386AE0(32, tag 4)); *slot = the block, also ...
+00394ce0 00000074 F mtEvtPM_DefaultPm1 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394D60: the same with the 84-byte default PM2 at 0x6A0CF0 (copied to the stack as 5 quadwords + a word, then into sub_386AE0(84, tag 5)).
+00394d60 00000090 F mtEvtPM_DefaultPm2 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394DF0: the same with the 32-byte default PM3 at 0x6A0D50 (tag 6).
+00394df0 00000074 F mtEvtPM_DefaultPm3 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_394E70: the development host paths "hdd:/" + "persona3_data/event/e%03d/E%03d_%03d.PM1|PM2|PM3" (major rounded down to tens for the folder) -- sprintf / ...
+00394e70 00000188 F mtEvtPM_HostPaths source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395000: the disc paths "event/e%03d/E%03d_%03d.PM1|PM2|PM3|PAK" (folder = major rounded down to tens) into four buffers (asserts 1710..1713). The PM file ...
+00395000 00000170 F mtEvtPM_DiscPaths source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395200: sub_3580B0(0, n) -- a random integer below n from the effect layer's generator.
+00395200 00000028 F MT_Misc_Rand source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395230: sub_3580B0(0, 100) < percent.
+00395230 00000038 F MT_Misc_Chance source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395270: sub_1099D0((s16)id, 1) (the sound layer); returns 0.
+00395270 00000030 F MT_Misc_StopSe source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3952D0: file != 0 -> sprintf("SOUND2/EVENT/EVE_%03d.ADX", file) on the stack and sub_10A370(channel, path) (stream it); file == 0 -> sub_109F60(channel, ...
+003952d0 0000007c F MT_Misc_PlayEventVoice source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395350: on -> sub_10A100(channel, 0), else sub_109F60(channel, 0); returns 0.
+00395350 00000058 F MT_Misc_StreamCtl source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3953E0: kwlnTaskCreate(parent, "FrameVar", 4207, sub_3953B0, 0, 0).
+003953e0 0000003c F mtEvt_CreateFrameVarTask source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395430: clamps r < 256, g < 16, b < 16 (else 0), packs r << 16 | g << 8 | b and calls sub_3CF160(colour, add ? 0x300 : 0x200); player->flags |= 0x1000.
+00395430 000000b0 F mtEvt_SetFade source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3954E0: sub_3CF3A0(which != 0) gives the fade object; when there is one, sub_3CF240(obj, which ? 0x500 : 0x400).
+003954e0 00000070 F mtEvt_FadeOut source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395550: player != 0 -> +1648 = 1, +1652 = a1, +1656 = a2.
+00395550 00000020 F mtEvt_SetFlash source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3957D0: +1684 = 1 (draw request for sub_395810), copies the 64-byte quad (8 doublewords) to +1696 and stores the float at +1760.
+003957d0 00000040 F mtEvt_SetFilterQuad source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395810: when +1684 is set: five RwRenderStateSet calls through the slot 0x960090 (jalr: states 1 = 0, 7 = 2, 12 = 1, 10 = 3, 11 = 6), sub_359380(player + ...
+00395810 000000f8 F mtEvt_DrawFilterQuad source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395910: player != 0 -> +1660 = 1 (sub_3962C0 then calls sub_386E50 once).
+00395910 00000018 F mtEvt_RequestRedraw source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_395930: player != 0 -> +1772 = 1, +1776 = a1, +1788 = a2.
+00395930 00000020 F mtEvt_SetLetterbox source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396250: +1764 = 1, +1768 = value.
+00396250 00000014 F mtEvt_SetWord1768 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396270: player != 0 -> +1664 = 1, +1680 = $f12, +1668..+1676 = the three floats at xyz, then +1672 = +1672 + (gp-32656 float) * $f12 (ACC ops).
+00396270 00000050 F mtEvt_SetScreenRect source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396410: "event Draw 3D" (priority 4182, sub_3962C0) and "event Draw 2D" (4207, sub_3963C0) as children of parent (kwlnTaskCreate, no work).
+00396410 00000070 F mtEvt_CreateDrawTasks source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396480: appends a 44-byte entry (reg + 16 + 44 * count): kind 0 (in memory), empty name, no handle, data pointer = data; count + 1.
+00396480 00000040 F MT_RegEff_AddMemory source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3964C0: a 400-byte effect registry from the event heap (sub_386AE0(400, tag 11), assert line 112), zeroed, state 0.
+003964c0 0000006c F MT_RegEff_Create source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396530: H_Cdvd_Destroy of every file entry (kind 1) handle, then the 400 bytes back to the event heap (sub_386B70(reg, 11, 400)). Null: nothing.
+00396530 0000009c F MT_RegEff_Destroy source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3965D0: state = 1, cursor = 0.
+003965d0 00000014 F MT_RegEff_StartLoad source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3965F0: one step of loading the registered effects -- state 1 only (else returns 1): cursor == count -> state 2 (done); a memory entry prints "reg effect ...
+003965f0 0000016c F MT_RegEff_Load source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396760: slot < 16, entry < count and the scene ready (sub_3B5CF0): deletes the slot's old resource (u16 id at reg + 368 + 2 * slot: sub_3B5D10 finds, ...
+00396760 00000140 F MT_RegEff_CreateResource source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3968A0: the slot's u16 resource id when slot < 16 and the scene is ready, else 0.
+003968a0 00000070 F MT_RegEff_GetResource source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396910: deletes the slot's resource (sub_3B5D10 / sub_3B7090, "MT_RegEff_Delete() delete effect Resrc") and clears the id.
+00396910 00000098 F MT_RegEff_Delete source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3969B0: MT_RegEff_Delete for the 16 slots (the scene check per slot).
+003969b0 000000c0 F MT_RegEff_DeleteAll source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396BF0: 36 zeroed bytes from the event heap (tag 11) and kwlnTaskCreate(parent, "koma_Manager", 16, sub_396A70, sub_396BA0, work).
+00396bf0 00000080 F koma_CreateManagerTask source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396C70: finds "koma_Manager"; panel < 3: destroys the panel's old task, builds the 16-byte parameter {f32 x, f32 y, u16 u0..u3} on the stack (an 8-byte ...
+00396c70 000001b4 F koma_Open source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396E30: sets the panel's close request when it has a task; returns 1 then, else 0.
+00396e30 0000009c F koma_RequestClose source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396ED0: the panel's state word (0 without the manager / panel >= 3).
+00396ed0 00000080 F koma_GetState source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_396F50: a panel with a task in state 1 or 2 is destroyed (sub_397030); any other non-zero state is finished by sub_111500 and cleared.
+00396f50 000000d4 F koma_Close source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397030: kwlnTaskDestroyWithHierarchy of the panel's task, task and state cleared.
+00397030 0000009c F koma_Destroy source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3970D0: koma_Destroy's body for the 3 panels (the manager looked up again per panel).
+003970d0 000000c4 F koma_DestroyAll source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3971A0: frame 0 opens the panel (koma_Open, assert line 282); frame 1 requests its close (koma_RequestClose inlined, assert line 288); later frames wait ...
+003971a0 00000240 F CUTIN source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3973E0: frame 0 closes the panel (koma_Close) and returns 0; returns 1 the frame after.
+003973e0 00000064 F CUTIN_END source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397450: with the scene ready, deletes the three placed NPC resources 0xC00 | (900 + i) & 0x3FF (printf "haiti npc id=%x" / "haiti npc delete").
+00397450 000000a8 F mtEvt_DeleteHaitiNpcs source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397500: the current cut index (+2416).
+00397500 0000000c F mtEvt_GetCut source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397510: +2416 = cut.
+00397510 0000000c F mtEvt_SetCut source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397520: the event data (+8) and its cut table (+96) present -> *count = the table's u16 at +2, returns 1; else 0.
+00397520 00000058 F mtEvt_GetCutCount source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397580: the current cut valid (cut < count) -> *out = the u16 at row + 2 * i (140-byte rows at table+4), returns 1.
+00397580 000000a8 F mtEvt_GetCutWord source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397630: i < 10 -> *out = row byte 22 + i, returns 1.
+00397630 000000bc F mtEvt_GetCutByte22 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3976F0: i < 10 -> the two bytes at row + 32 + 2 * i, returns 1.
+003976f0 000000c8 F mtEvt_GetCutPair source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3977C0: the u16s at row + 10 / 14 / 18, returns 1.
+003977c0 000000b0 F mtEvt_GetCutCamera source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397870: i < 10 -> the four u16 at row + 52 + 8 * i, returns 1.
+00397870 000000d8 F mtEvt_GetCutQuad source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397EC0: 64 zeroed bytes from the event heap (tag 1): major / minor / a2 / the defaults flag, single-file mode; kwlnTaskInitEx("evtPMFileReader", 15, 1, 1, ...
+00397ec0 000000bc F mtEvtPMR_Create source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_397F80: the same for the event viewer, and the new process's work +8 cleared again afterwards. Returns the process.
+00397f80 000000d4 F mtEvtPMR_CreateFromViewer source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_398060: asserts the process exists (line 277); work state == 7.
+00398060 00000074 F mtEvtPMR_IsDone source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3980E0: asserts it exists (line 295); its work.
+003980e0 00000054 F mtEvtPMR_GetWork source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_398140: once loaded, scans the PM2's table (count at pm2+16, 16-byte descriptors at pm2+32) for the first descriptor whose type word is 0 and returns its ...
+00398140 00000188 F mtEvtPMR_FindEntry0 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3982D0: asserts it exists and is loaded (lines 277 / 373); sub_3BD8B0(major, minor, a2) != -1.
+003982d0 000000b4 F mtEvtPMR_HasEvent source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_398390: timer = {0, limit}.
+00398390 00000010 F mtEvt_TimerSet source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3983A0: 1 once count >= limit, else count + 1 and 0.
+003983a0 00000034 F mtEvt_TimerTick source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_3983E0: the message of an invitation answer -- variant 2 when sub_172160(link) == 1, 1 when sub_1717C0(link) == 1, else 0; kinds 0..3 pick a group of 3 in ...
+003983e0 00000150 F mtEvtCustom_MessageIndex source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39E700: rescans the event data's model table (+8 -> count +56, 32-byte rows at +52) for type-1 rows: up to 10 attach models get id 30000 + n (u16 at ...
+0039e700 000000c0 F mtEvtModel_RegistAttach source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39E7C0: for every resource of scene list 3 (sub_3B5D50(3), next at +248) sub_39E820 on its model (+296).
+0039e7c0 00000058 F mtEvtModel_DetachAll source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39E820: sub_39EA20(model, i) for the three attach slots.
+0039e820 00000058 F mtEvtModel_Detach3 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39E880: n < attach count and slot < 3: an occupied slot (flag bit 0 at model + 948 + 12 * slot and a pointer at +952) is detached first (sub_3196F0); when ...
+0039e880 00000198 F mtEvtModel_Attach source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EA20: slot <= 2 and model: detaches an occupied slot (sub_3196F0).
+0039ea20 00000080 F mtEvtModel_DetachSlot source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EAA0: clears the 56-byte pack table at +2036, then up to 5 type-2 rows of the model table: id 31000 + n (u16 at +2060), data (+2040), size (+2072); ...
+0039eaa0 000000e4 F mtEvtModel_RegistPack source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EB90: deletes the eight scene resources 0xC00 | (910 + i) & 0x3FF that exist.
+0039eb90 00000074 F mtEvtModel_DeletePacks source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EC10: n <= 4 -> size (+2072), u16 id (+2060), returns the data (+2040); else 0.
+0039ec10 0000004c F mtEvtModel_GetPack source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EC60: n + 910.
+0039ec60 0000000c F mtEvtModel_PackResId source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EC70: kind 0 (the dialogue window) -- asserts the slot is closed (line 31), opens a message handle on the BMD (itfMesMngInitialize, window type 4), ...
+0039ec70 000000ac F MT_Msg_Open source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39ED20: the same with kind 1 (text centred at y 2208).
+0039ed20 000000b0 F MT_Msg_OpenKind1 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EDD0: the same with kind 2 (text centred at y 1520).
+0039edd0 000000b0 F MT_Msg_OpenKind2 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EE80: an active slot ends its message (sub_39F350), destroys the handle and is zeroed (32 bytes).
+0039ee80 00000060 F MT_Msg_Close source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EEE0: active != 0.
+0039eee0 00000010 F MT_Msg_IsOpen source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EEF0: an active slot sets message number parameter i (sub_3A4010(handle, i, value, 0)).
+0039eef0 00000038 F MT_Msg_SetNumber source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EF30: an active slot sets string parameter i (sub_3A4220 with a1 / a2 passed through).
+0039ef30 00000034 F MT_Msg_SetString source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EF70: string parameter i = sub_3C3F80(link).
+0039ef70 00000060 F MT_Msg_SetLinkName source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39EFD0: string parameter i = datGetArcanaName(sub_16DF30(persona)).
+0039efd0 00000078 F MT_Msg_SetArcanaName source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F050: number parameter i = (s8) sub_16DBA0(persona).
+0039f050 0000006c F MT_Msg_SetPersonaLevel source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F0C0: string parameter i = sub_3C3F40(id).
+0039f0c0 00000060 F MT_Msg_SetPartnerName source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F120: string parameter i = sub_13BCB0(a2, a3).
+0039f120 00000064 F MT_Msg_SetString13BCB0 source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F190: string parameter i = sub_3C4390(sub_16DF30(persona)).
+0039f190 00000074 F MT_Msg_SetArcanaText source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F210: an active slot ends a running request (sub_39F2A0), then phase 1, message = msg, selection = sel, its argument = sel_arg, result = -1 ...
+0039f210 00000088 F MT_Msg_Request source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F2A0: active with a phase: the window is reset (itfMesMngSetBusy 0, sub_3A2A30, sub_3A3420(h, 0), state flags 0x800000 and 0x100000 cleared, SetBusy 1), ...
+0039f2a0 000000ac F MT_Msg_End source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F350: MT_Msg_End with the checks repeated (the original inlines it twice).
+0039f350 000000bc F MT_Msg_EndIfActive source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F410: the slot's request state machine (jump table 0x7BB060 on the phase): 1 -> no message (< 0) skips to 3; else positions the text by kind (kind 2: x ...
+0039f410 000002cc F MT_Msg_Update source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F6E0: !active || phase == 0.
+0039f6e0 00000030 F MT_Msg_IsIdle source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F710: itfMesMngGetMessageCount(handle) for an active slot, else 0.
+0039f710 00000040 F MT_Msg_GetMessageCount source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F750: asserts active (line 351); itfMesMngGetMessageType(handle, i).
+0039f750 00000064 F MT_Msg_GetMessageType source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F7C0: itfMesMngSetChoiceMask(handle, ...) for an active slot.
+0039f7c0 00000034 F MT_Msg_SetChoiceMask source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3
+# sub_39F800: asserts active (line 371); the selection result (+28).
+0039f800 0000004c F MT_Msg_GetResult source=phase5-script3 verified=yes ev=INTEGRATION_LOG.md#script3

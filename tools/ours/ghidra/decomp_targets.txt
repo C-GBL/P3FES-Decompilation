@@ -1,0 +1,14 @@
+# MMI decompiler test set for docs/ANALYSIS/06_ghidra_crosscheck.md
+# top MMI users (docs/ANALYSIS/01_functions_summary.md census)
+0x4E53E0
+0x46D6F0
+0x4E6D60
+0x472970
+0x46CD90
+# crt0 entry and main
+0x100008
+0x193980
+# small plain-integer leaf, same one Hex-Rays was tested on in 04
+0x106FF0
+# MMI-dense small function from 04 (phmadh/qfsrv/psraw)
+0x54F8C8

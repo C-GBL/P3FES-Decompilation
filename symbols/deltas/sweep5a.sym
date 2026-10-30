@@ -1,0 +1,16 @@
+# sweep5a.sym  Phase 5 slice delta (game/include/p3fes/game/sweep5a.h); SLUS_216.21
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint;
+#   no IDA database opened). Rows: <addr8> <size8> F <name> source=phase5-sweep5a verified=yes ev=<doc>#<section>.
+#   Not imported by the agent.
+# sub_103F50: allocates through sub_104140, copies min(old size at ptr-4, new size), frees the old block through
+#   sub_104280, bumps the counter at 0x7CDEB0 (interrupts off) -> realloc on the H_malloc heap
+# sub_104040: sub_104140(n * size), memset 0, bumps the counter at 0x7CDEB4 -> calloc
+# sub_104140: sub_103DA0(size + 20), 16-byte aligns the result and stores the raw block below it -> malloc
+# sub_104280: NULL check, sub_103D00(raw block at ptr-4) with interrupts off -> free (pair test: NULL makes no call)
+# sub_1052B0: vsprintf into 256 bytes, appended to the 15-line ring at 0x7E0A30, scrolling when full (read from the instructions;
+#   the function itself stays recompiled: test_ui2 names its stop)
+00103f50 000000e4 F H_Realloc source=phase5-sweep5a verified=yes ev=INTEGRATION_LOG.md#sweep5a
+00104040 000000a4 F H_Calloc source=phase5-sweep5a verified=yes ev=INTEGRATION_LOG.md#sweep5a
+00104140 0000013c F H_Malloc source=phase5-sweep5a verified=yes ev=INTEGRATION_LOG.md#sweep5a
+00104280 0000005c F H_Free source=phase5-sweep5a verified=yes ev=INTEGRATION_LOG.md#sweep5a
+001052b0 00000138 F H_DbgLogPrintf source=phase5-sweep5a verified=yes ev=INTEGRATION_LOG.md#sweep5a

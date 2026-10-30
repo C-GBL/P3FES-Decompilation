@@ -1,0 +1,63 @@
+{"records": [
+  {"name": "MwsfdPlayerHdrRing", "size": 684,
+   "anchors": [{"how": "param", "fn": "0x581840", "index": 0}, {"how": "param", "fn": "0x580270", "index": 0}, {"how": "param", "fn": "0x585F38", "index": 0}, {"how": "param", "fn": "0x5809B0", "index": 0}, {"how": "gobj", "addr": "0x7B2FBC"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "used"},
+    {"off": 4, "width": 4, "type": "s32", "name": "stat"},
+    {"off": 64, "width": 4, "type": "ptr", "name": "adxt"},
+    {"off": 72, "width": 4, "type": "ptr", "name": "lsc"},
+    {"off": 96, "width": 4, "type": "s32", "name": "in_svr"},
+    {"off": 100, "width": 4, "type": "s32", "name": "in_sfd_svr"},
+    {"off": 104, "width": 4, "type": "s32", "name": "step_ran"},
+    {"off": 112, "width": 1, "type": "u8", "name": "link_flg"},
+    {"off": 113, "width": 1, "type": "u8", "name": "term_req"},
+    {"off": 114, "width": 1, "type": "u8", "name": "pause"},
+    {"off": 124, "width": 4, "type": "s32", "name": "frm_cnt0"},
+    {"off": 128, "width": 4, "type": "s32", "name": "frm_cnt1"},
+    {"off": 168, "width": 4, "type": "ptr", "name": "sfx"},
+    {"off": 380, "width": 4, "type": "ptr", "name": "addinf_sj"},
+    {"off": 420, "width": 4, "type": "ptr", "name": "fname"},
+    {"off": 424, "width": 4, "type": "s32", "name": "fname_cap"},
+    {"off": 428, "width": 4, "type": "s32", "name": "start_pend"},
+    {"off": 444, "width": 4, "type": "ptr", "name": "input_sj"},
+    {"off": 448, "width": 4, "type": "ptr", "name": "file_sj"},
+    {"off": 640, "width": 4, "type": "s32", "name": "slave_used"}
+   ]},
+  {"name": "MwsfdSlave", "size": 24,
+   "anchors": [{"how": "param", "fn": "0x5851D0", "index": 0}, {"how": "param", "fn": "0x584C80", "index": 0}, {"how": "param", "fn": "0x585100", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "used"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "sj"},
+    {"off": 16, "width": 4, "type": "s32", "name": "index"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "handle"}
+   ]},
+  {"name": "SfdHandle",
+   "anchors": [{"how": "param", "fn": "0x599408", "index": 0}, {"how": "param", "fn": "0x59BC88", "index": 0}, {"how": "param", "fn": "0x59A458", "index": 0}],
+   "fields": [
+    {"off": 68, "width": 4, "type": "s32", "name": "time_upd"},
+    {"off": 7984, "width": 4, "type": "s32", "name": "trn0_in_end"},
+    {"off": 7988, "width": 4, "type": "s32", "name": "trn0_out_end"},
+    {"off": 7992, "width": 4, "type": "ptr", "name": "trn0_work"},
+    {"off": 8196, "width": 4, "type": "ptr", "name": "trn3_work"},
+    {"off": 8204, "width": 4, "type": "s32", "name": "trn3_in_stream"},
+    {"off": 8208, "width": 4, "type": "s32", "name": "trn3_out_stream"}
+   ]},
+  {"name": "SfdStat", "size": 28,
+   "anchors": [{"how": "param", "fn": "0x59B490", "index": 0}, {"how": "param", "fn": "0x59B4B0", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 8, "type": "s64", "name": "sum"},
+    {"off": 8, "width": 8, "type": "s64", "name": "min"},
+    {"off": 16, "width": 8, "type": "s64", "name": "max"},
+    {"off": 24, "width": 4, "type": "s32", "name": "count"}
+   ]},
+  {"name": "SfxHandle", "size": 148,
+   "anchors": [{"how": "param", "fn": "0x59FC10", "index": 0}, {"how": "param", "fn": "0x59FCC0", "index": 0}, {"how": "ret", "fn": "0x59FBC0"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "used"},
+    {"off": 36, "width": 4, "type": "ptr", "name": "zhn"},
+    {"off": 48, "width": 4, "type": "ptr", "name": "ahn"},
+    {"off": 56, "width": 4, "type": "u32", "name": "work_al"},
+    {"off": 80, "width": 4, "type": "u32", "name": "work"},
+    {"off": 84, "width": 4, "type": "s32", "name": "work_size"}
+   ]}
+]}

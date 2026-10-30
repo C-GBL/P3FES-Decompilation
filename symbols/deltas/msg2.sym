@@ -1,0 +1,75 @@
+# msg2.sym  Phase 5 BMD message manager slice 2 delta (game/include/p3fes/game/msg2.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# Names proposed for the 68 functions replaced in game/src/msg/msg2.cpp (all still sub_* in symbols/functions.json). Read from the
+# recompiled bodies (recomp/generated, i.e. the instructions) and checked by tests/game/test_msg2.cpp; behaviour per function is in
+# msg2.h. Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=phase2-msg2 verified=yes   our own name (ev= points at the doc section of the system; the per-function evidence is msg2.h)
+# Not imported by the agent: the lead merges this with tools/ours/ida/import_symbols.py and re-exports symbols/. game/ keeps the
+# sub_* names until that happens (game/README.md rule). itfMesMngText* are layout helpers of itfMesManager.c over frFont's node lists.
+003a2580 00000064 F itfMesMngGetBusy source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a25f0 00000070 F itfMesMngSetBusy source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a2750 00000064 F itfMesMngGetSelectWord84 source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a27c0 00000070 F itfMesMngSetSelectWord84 source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a2830 00000064 F itfMesMngGetSelection source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a2c90 000000ec F itfMesMngSwitchCurrentHandle source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3010 00000050 F itfMesMngGetBmdMessageCount source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3ab0 00000044 F itfMesMngResetSelectionBySlot source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3b00 00000098 F itfMesMngResetSelection source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3ba0 00000070 F itfMesMngSetChoiceMask source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3c10 000000c8 F itfMesMngSetSelection source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3ce0 000000b8 F itfMesMngSetTextPosition source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3da0 00000064 F itfMesMngGetState source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3e10 00000080 F itfMesMngSetStateFlags source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3e90 00000084 F itfMesMngClearStateFlags source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3f20 00000064 F itfMesMngGetSelection2 source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a3f90 00000078 F itfMesMngGetMessageArg source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a5120 0000007c F itfMesMngGetMessageType source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a51a0 00000068 F itfMesMngGetMessageCount source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a5940 00000038 F itfMesMngGetDialogueLine source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a5fd0 00000060 F itfMesMngPushMessageArgs source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6030 0000002c F itfMesMngGetSpeakerName source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6100 00000034 F itfMesMngCountClearBits source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6280 00000030 F itfMesMngTextGetLastNode source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a62b0 00000030 F itfMesMngTextCopyNodeStyle source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a62e0 00000028 F itfMesMngTextGetLineIndex source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6310 00000034 F itfMesMngTextOffsetNodes source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6350 0000002c F itfMesMngTextSetNodesWord20 source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6380 00000090 F itfMesMngTextSetLineAlpha source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6410 00000048 F itfMesMngTextSetGlyphColour source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6460 00000058 F itfMesMngTextGetMaxLineWidth source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a64c0 00000054 F itfMesMngTextResetNodes source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6900 0000002c F itfMesMngInitSpeakerRecord source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6930 00000050 F itfMesMngInitTextRecord source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6980 00000044 F itfMesMngInitSelectRecord source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a69d0 00000034 F itfMesMngInitPanelRecord source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6a10 00000030 F itfMesMngClearMessageArgs source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6a40 00000034 F itfMesMngInitWindowRecord source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6a80 00000080 F itfMesMngSetWindowOffset source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a6c10 00000090 F itfMesMngFormatNumber source=phase2-msg2 verified=yes ev=18_script_vm.md#5
+003a9140 00000030 F itfPnlAnimClear10 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9170 000000b4 F itfPnlAnimOpenType10 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9230 0000006c F itfPnlAnimCloseFade10 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a92a0 00000030 F itfPnlAnimClear11 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a92d0 000000cc F itfPnlAnimOpenType11 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a93a0 00000058 F itfPnlAnimCloseType11 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9400 00000068 F itfPnlAnimOpenFade15 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9470 0000006c F itfPnlAnimCloseFade5 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a94e0 00000030 F itfPnlAnimClear13 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9510 00000068 F itfPnlAnimOpenFade6 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9580 0000006c F itfPnlAnimCloseFade13 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a95f0 00000038 F itfPnlRunPhase0 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9630 00000038 F itfPnlRunPhase1 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9670 00000038 F itfPnlRunPhase2 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a96b0 00000038 F itfPnlRunPhase3 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a96f0 00000088 F itfPnlSetVertexType0 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9780 000001a4 F itfPnlSetVertexType1 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9930 00000184 F itfPnlSetVertexType2 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9ac0 00000028 F itfPnlSetVertexType3 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9af0 00000084 F itfPnlSetVertexType5 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9b80 0000007c F itfPnlSetVertexType8 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9c00 00000028 F itfPnlSetColorType0 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9c30 00000058 F itfPnlSetColorType1 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9c90 00000058 F itfPnlSetColorType2 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9cf0 00000098 F itfPnlSetColorType3 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9d90 00000018 F itfPnlSetColorType4 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9db0 00000028 F itfPnlSetColorType5 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3
+003a9de0 00000034 F itfPnlSetColorType8 source=phase2-msg2 verified=yes ev=20_menu_ui.md#4.3

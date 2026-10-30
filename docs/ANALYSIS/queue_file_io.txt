@@ -1,0 +1,40 @@
+# Phase 5 hand-decompile queue - topic 11 (file I/O). Format: addr name one-line purpose. Evidence: docs/ANALYSIS/11_file_io.md
+# Atlus game file layer (h_cdvd.c) - small, self-contained, every loader depends on it
+00100800 H_Cdvd_InitCd            sceCdInit/Mmode(DVD)/DiskReady + clears request list and 256-entry cache
+00100980 H_Cdvd_Update            per-frame FIFO request pump (open -> alloc 64-aligned -> ADXF_ReadNw -> poll -> register); one file in flight
+00100D80 H_Cdvd_Request           create/dedup an 868-byte request node from a game path (+ archive flag)
+00100EC0 H_Cdvd_Destroy           refcounted release of a request and its buffer/cache entries
+00101010 H_Cdvd_BuildPathUppercase "VOL:\" + path, '/'->'\', uppercase
+00101240 H_Cdvd_BuildVolumePaths  route: directory in BTL table -> "BTL:" else "VOL:"; splits dir/file
+001013F0 H_Cdvd_NormalizePath     strips .\ and ..\ components
+00101520 H_Cdvd_SetRofsDir        selects the in-ELF #DirLst# table for a directory and calls ROFS_SetDir
+00101E30 H_Cdvd_AddFile           name-first PAK walk (252-byte name + u32 size, 64-byte aligned data) into sCdvdCache
+00102100 H_Cdvd_ArchiveGetFile    nth PAK entry -> data pointer + size
+001021C0 H_Cdvd_CacheFindFile     cache lookup by normalized name
+001023A0 H_Cdvd_ReadSync          blocking load (spins H_Cdvd_Update)
+001016D0 H_Cdvd_RtFsPak_FOpen     RenderWare rtFS "pak:" device over the cache
+# CRI ROFS directory lookup (rofs_dir.c) - defines the #DirLst# record semantics (byte +13 hash, sorted search)
+0056BC10 rfdir_getSearchID        byte +13 = ((218 + sum(toUpperFname(c))) >> 2) & 0xFF
+0056BCB0 rfdir_getOneDirEnt       ISO9660 directory record -> 48-byte #DirLst# entry (strips ";1", keeps trailing '.')
+0056C320 rfdir_nameBinarySearch   sorted-table lookup; files get '.' appended when no extension; returns 1-based index
+0056C4B0 rfdir_nameSequentialSearch hash-filtered linear lookup
+0056C5B0 RFDIR_SearchName         picks binary vs sequential by vol.lba_offset
+# CRI ROFS core (rofs_mai.c / rofs_hn.c) - path -> (lba,size) -> sector request
+00568388 RFMAI_OpenG              "VOL:name" -> volume -> table search -> handle (lba, 64-bit size)
+00569058 RFMAI_SetDirG            ROFS_SetDir: stores the external #DirLst# pointer when cond0 == 1
+00567C58 RFMAI_MountG             mounts a volume over a CVFS handle: CVM header, zone header, PVD (sectors 0,1,16)
+005674C0 rfmai_getCvmfInfo        parses the CVMH header (BE) -> lba_offset 3, zone sector 1
+00565E10 RFHN_ReqRdG              issues dcfReqRdCda(lba_offset, img, start+pos, nsct, buf); busy state
+00568710 rfmai_updateHnStat       completes a handle from pfs GetStat/GetNumTr
+00569538 RFMAI_ReadWG             synchronous metadata sector read (mount only)
+0056AA98 dcfReqRdCda              adds the 3-sector CVM header offset, then seek + ReqRd on the CVFS handle
+# CRI CVFS / DVCI / SRD - the actual libcdvd issuers
+0055A1F0 dvCiOpen                 "\NAME;1" via sceCdSearchFile RPC -> start LSN, size
+0055A490 dvCiReqRd                InvalidDCache + SRD_ReqRdDvd(start_lsn + pos, nsct, buf, mode 0/0/0)
+00559E80 dvCiExecHndl             SRD completion -> handle status
+00557B80 SRD_ReqRdDvd             single-slot DVD request queue
+00558138 srd_exec_dvd             sceCdRead / sceCdSync(1) / sceCdGetError state machine (the only data-path sceCdRead caller)
+00558500 SRD_ExecServer           server entry run from the ADX fs thread
+0053FCF8 adxm_fs_proc             ADX file-system thread body (SVM_ExecSvrFs + sleep)
+0053E0E0 adxt_ExecFsSvr           fs server chain (SRD, ADXSTM, ADXF)
+00546788 adxstmf_ExecRead         chunked cvFsReqRd reader used by ADXF_ReadNw and ADX/Sofdec streams

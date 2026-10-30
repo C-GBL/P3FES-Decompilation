@@ -1,0 +1,70 @@
+{"records": [
+  {"name": "FrFontLineNode", "size": 68, "anchors": [{"how": "param", "fn": "0x3B0970", "index": 4}, {"how": "ret", "fn": "0x3B0970"}, {"how": "param", "fn": "0x3B0030", "index": 0}],
+   "fields": [
+    {"off": 12, "width": 4, "type": "s32", "name": "width"},
+    {"off": 16, "width": 2, "type": "u16", "name": "last_size_w"},
+    {"off": 18, "width": 2, "type": "u16", "name": "last_size_h"},
+    {"off": 20, "width": 4, "type": "f32", "name": "z"},
+    {"off": 24, "width": 4, "type": "s32", "name": "glyph_count"},
+    {"off": 32, "width": 4, "type": "ptr", "name": "last_glyph"},
+    {"off": 48, "width": 4, "type": "s32", "name": "wait_code"},
+    {"off": 52, "width": 4, "type": "s32", "name": "wait_armed"},
+    {"off": 56, "width": 4, "type": "s32", "name": "wait_flag"},
+    {"off": 60, "width": 4, "type": "s32", "name": "wait_ticks"}
+   ]},
+  {"name": "FrFontGlyphNode", "size": 44, "anchors": [{"how": "param", "fn": "0x3B0430", "index": 0}],
+   "fields": [
+    {"off": 28, "width": 4, "type": "ptr", "name": "cache_record"},
+    {"off": 32, "width": 4, "type": "s32", "name": "no_cache"},
+    {"off": 36, "width": 4, "type": "ptr", "name": "prev"}
+   ]},
+  {"name": "FrFontGlyphCache", "size": 16, "anchors": [{"how": "ret", "fn": "0x3B0430"}],
+   "fields": [
+    {"off": 0, "width": 2, "type": "u16", "name": "glyph"},
+    {"off": 4, "width": 2, "type": "u16", "name": "refs"},
+    {"off": 8, "width": 4, "type": "ptr", "name": "gsl_entry"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "raster_slot"}
+   ]},
+  {"name": "FontRasterSlot", "anchors": [{"how": "ret", "fn": "0x3B3E60"}, {"how": "param", "fn": "0x3B3F90", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 4, "width": 4, "type": "s32", "name": "glyph"},
+    {"off": 8, "width": 2, "type": "s16", "name": "colour_set"},
+    {"off": 10, "width": 2, "type": "s16", "name": "ticks"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "glyph_buffer"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "cache_record"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "raster"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "next"}
+   ]},
+  {"name": "FontRasterSlotManager", "size": 24, "anchors": [{"how": "gslot", "addr": "0x7CE644"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "count"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "slots"},
+    {"off": 8, "width": 4, "type": "ptr", "name": "active_head"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "active_tail"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "free_head"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "free_tail"}
+   ]},
+  {"name": "FrFontStyle", "size": 32, "anchors": [{"how": "gobj", "addr": "0x95ACF0"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "owner"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "fnt"},
+    {"off": 8, "width": 4, "type": "u32", "name": "width_bytes"},
+    {"off": 12, "width": 4, "type": "u32", "name": "block2_bytes"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "widths"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "block2"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "glyph_table"},
+    {"off": 28, "width": 4, "type": "ptr", "name": "huffman"}
+   ]},
+  {"name": "FmGslEntry", "size": 32, "anchors": [{"how": "gslot", "addr": "0x95AEBC"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "index"},
+    {"off": 4, "width": 4, "type": "s32", "name": "x0"},
+    {"off": 8, "width": 4, "type": "s32", "name": "y0"},
+    {"off": 12, "width": 4, "type": "s32", "name": "x1"},
+    {"off": 16, "width": 4, "type": "s32", "name": "y1"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "work"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "prev"},
+    {"off": 28, "width": 4, "type": "ptr", "name": "next"}
+   ]}
+]}

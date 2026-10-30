@@ -1,0 +1,7 @@
+# <addr8> <TypeName>[<count>]  -- Phase 2 topic 10; types in symbols/types/frame_loop_gs.h; evidence docs/ANALYSIS/10_frame_loop_gs.md §2
+00964990 RwSkyFlipData
+00965730 RwVideoMode
+00965748 RwVideoMode
+0077E710 RwVideoMode[90]
+00965770 qword128[13]
+007B5080 qword128[12]

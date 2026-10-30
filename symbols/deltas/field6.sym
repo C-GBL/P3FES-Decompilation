@@ -1,0 +1,174 @@
+# field6.sym  Phase 5 slice delta (game/include/p3fes/game/field6*.h); SLUS_216.21
+# generated 2026-10-23 from the instructions (p3fes_handgen bodies, the K_Assert file names, the COMM table
+#   0x7B92B0, the snapshots; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-field6
+#   verified=yes: our own names, each from what the body does (its role block). Not imported by the agent.
+# sub_1C0190: Requests the automatic dungeon's script: when the dungeon task (gp 0x7CE268) exists and its script copy (work +52) is still empty, H_Cdvd_Request("fie
+001c0190 00000080 F K_FldDungeon_RequestScript source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C0210: (request) -> 1 when done: no dungeon task or no request -> 1; the request still loading -> 0; loaded -> the script is copied into RwCalloc(1, size, 0x
+001c0210 000000c4 F K_FldDungeon_TryLoadScript source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C02E0: Frees the dungeon script copy (work +52, RwFree through the slot 0x96017C) and clears the pointer; nothing without the dungeon task or a copy. $v0 is 
+001c02e0 00000050 F K_FldDungeon_FreeScript source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C0330: (block set) -> H_Cdvd_Request of "field/script/dungeonat%02d.bf" ("dungeonat%02d_aegis.bf" in The Answer), the 128-byte path built on the stack; the f
+001c0330 0000007c F K_FldDungeon_RequestBlockScript source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C03F0: Requests "field/btl_effect/btl_eff.pac" (H_Cdvd_Request(path, 1)) into gp 0x7CE258 unless the EPLs are already made (sField +4596) or the request exis
+001c03f0 00000050 F K_Fldrc_RequestBtlEffPack source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C0440: (no args) -> 1 when the battle-effect EPLs are ready: no btl_eff.pac request -> 1; the pack still loading -> 0; loaded -> every empty EPL slot of sFie
+001c0440 000002f4 F K_Fldrc_TryCreateBtlEffEpls source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C0740: (no args) -> 1 when the btl_eff.pac request may go: 0 while one of the ten EPLs (sField +4596 [10]) is not ready (sub_1A9180 = 0); then the request (g
+001c0740 000000a8 F K_Fldrc_TryReleaseBtlEffPack source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C07F0: Destroys the ten battle-effect EPL tasks (sField +4596 [10], kwlnTaskDestroyWithHierarchy) and clears the slots. Callers: K_Field_DestroyFieldRootTask
+001c07f0 00000088 F K_Fldrc_DestroyBtlEffEpls source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C0D70: (task) the update of the "trans wall CTL" task (sub_1C1F30): state 1 -> -1 (the kernel destroys the task); else, in state 0, two rays from the camera 
+001c0d70 000010a8 F K_FldWall_Update source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C1E20: (task) the destroy callback of the "trans wall CTL" task: every alive field object whose model alpha is 0 gets an "RMD fade CTL" task that restores it
+001c1e20 00000108 F K_FldWall_Destroy source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C1F30: (parent, unit) -> the "trans wall CTL" task (priority 2109; update sub_1C0D70, destroy sub_1C1E20) over a 524-byte RwCalloc work with the target unit 
+001c1f30 000000c8 F K_FldWall_Create source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2010: COMM 0x021 (4 args: major, minor, entry, sub-id). Leaves to another field: the calendar ends its sequence (sub_17F8D0 [clndCalendarEndSequence]), a 28
+001c2010 00000098 F K_Cmd_CALL_FIELD source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C20B0: COMM 0x1D3 (4 args). As COMM 0x021, after setting the scene record's NPC placement set (+20) to -1 (the next field places no FBN set). 1.
+001c20b0 000000a4 F K_Cmd_CALL_FIELD_NO_NPC source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2160: COMM 0x076 (3 args: the event's three ids). Plays an event PM file (sequence 3): sub_16E920(255); the first call (command timer 0) issues adminiChange
+001c2160 000000d8 F K_Cmd_CALL_EVENT source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2240: COMM 0x191 (4 args: the three ids, a value). As COMM 0x076 with sub_16E920(arg 3) first and, when done, sub_171B50(arg 3).
+001c2240 00000100 F K_Cmd_CALL_EVENT_EX source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2340: COMM 0x078 (1 arg: the floor). Enters Tartarus: the calendar ends its sequence, the 8-byte sequence-5 packet {s32 floor, s32 entry 0} goes to adminiCh
+001c2340 00000068 F K_Cmd_CALL_DUNGEON source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C23B0: COMM 0x128 (2 args: floor, entry). As COMM 0x078 with the entry, and the think task of every live party unit (+364) gets kwlnTaskSetFlags. 1.
+001c23b0 000000c8 F K_Cmd_CALL_DUNGEON_AT source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2480: COMM 0x0D6 (no args). With a field root: the skip target time 8 (sub_16F170 [datSetTimeSkipTarget]), the skip-to flag (sub_16F180), today's day (datGe
+001c2480 0000007c F K_Cmd_SKIP_TIME source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2550: COMM 0x07A (no args): clndReqSkip (sub_17FA10). 1.
+001c2550 00000024 F K_Cmd_REQ_SKIP source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2580: COMM 0x07E (no args): the party units flagged (sub_1D0270) and the dungeon moved to the next floor (sub_1BFCC0 [K_FldDungeon_GoToNextFloor]). 1.
+001c2580 0000002c F K_Cmd_NEXT_FLOOR source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C25B0: COMM 0x00D (1 arg: the BGM id). Stops the field BGM (sub_1085C0) and, for a nonzero id, plays it (sub_1086A0((s16)id)). 1.
+001c25b0 00000054 F K_Cmd_BGM source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2900: COMM 0x089 (5 args: resource id, animation, loop, frames (float), unused float). Starts an animation on a scene resource's model: mdlModelSetAnim (sub
+001c2900 00000274 F K_Cmd_RES_ANIM source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2B80: COMM 0x0E9 (1 arg: resource id) -> 1 when the model's animation byte +238 is 1 (finished), else 0; 1 when the resource is missing. The resource id arg
+001c2b80 000000fc F K_Cmd_RES_ANIM_END source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2C80: COMM 0x1DD (2 args: resource id, scale). Scales the model uniformly: the vector (s, s, s) on the stack, sub_318A90(model, &v, 2) (scrGetFloatPara(1) r
+001c2c80 00000144 F K_Cmd_RES_SCALE source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C2DD0: COMM 0x1F5 (2 args: resource id, size). For an NPC (type 3) with a shadow object (+496): sub_19C320(shadow, scrGetFloatPara(1)); types 10 and 1 ignore
+001c2dd0 000000c8 F K_Cmd_RES_SHADOW source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C37C0: COMM 0x0D8 (2 args: degrees, frames): sub_1D6270 [K_FldCamera_CreateTurnToHero](0, frames, degrees). 1.
+001c37c0 00000054 F K_Cmd_CAMERA_TURN_TO_HERO source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C3820: COMM 0x0D9 (2 args: degrees, frames): sub_1D6630 [K_FldCamera_CreateTurnToAngle](0, frames, degrees). 1.
+001c3820 00000054 F K_Cmd_CAMERA_TURN_TO_ANGLE source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C3AD0: COMM 0x0E7 (no args): removes the special chest's box model (sub_1D22A0(gp 0x7CE284)). 1.
+001c3ad0 00000028 F K_Cmd_REMOVE_CHEST source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4120: COMM 0x138 (2 args: resource id, placement index). Moves a scene resource onto a type-14 placement resource (the first of sub_3B5D50(14)'s list whose 
+001c4120 000004bc F K_Cmd_RES_PLACE source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C45E0: COMM 0x165 (2 args: major, minor) -> the model loaded from "field/rmd/m" + "%03d_" (major) + "%03d.RMD" (minor), or "field/grmd/fobj" + "%03d.RMD" whe
+001c45e0 00000120 F K_Cmd_LOAD_MODEL source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4700: COMM 0x166 (2 args: model, object index) -> 0 while the model loads (sub_316F70 != 1; the return value is 0); when a field object 0x2800 | index alrea
+001c4700 000001f0 F K_Cmd_PLACE_MODEL source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C48F0: COMM 0x1EA (1 arg: model) -> 0 while it loads; then a resource of the type sub_1A5C50(10) gives (sub_3B65D0) whose id is returned. 1 when made.
+001c48f0 00000094 F K_Cmd_MODEL_TO_RES source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4990: COMM 0x167 (2 args: resource id, value): resource +272 = value when the resource exists. 1.
+001c4990 00000064 F K_Cmd_RES_SET_FLAG source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4A00: COMM 0x139 (2 args: major, minor) -> the character model (sub_316E00(major, minor, 0)) as the return value. 1.
+001c4a00 00000060 F K_Cmd_LOAD_CHARA source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4A60: COMM 0x13A (2 args: model, index) -> 0 while it loads; then an NPC resource (sub_3B6270(sub_1A5C50(3), index, model)) with a blob shadow (sub_317450(g
+001c4a60 000000d0 F K_Cmd_CHARA_TO_RES source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4B30: COMM 0x1AC (2 args: resource id, radius). Sets the frame controller's collision radius (K_FldFrame_CtlSetSphereCollisRadius: type 3 +488, type 1 +480)
+001c4b30 00000120 F K_Cmd_RES_RADIUS source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C4C50: COMM 0x13C (1 arg: mode). Runs the "TraEst" task (sub_1DC910 [K_TraEst_CreateTask](0, mode), kept as the script's user data): 0 while it exists (kwlnT
+001c4c50 000000b8 F K_Cmd_TRA_EST source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C56A0: COMM 0x178 (no args) -> the number of NPC resources (type 3, sub_3B5D50(3) list) as the return value. 1.
+001c56a0 00000058 F K_Cmd_COUNT_NPC source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C5700: COMM 0x179 (1 arg: n) -> for the n-th NPC resource: its model's u16 +214 / 50 + 1, 0 when it is above 500 (or no such NPC). 1.
+001c5700 000000a8 F K_Cmd_NPC_RANK source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C5900: COMM 0x1D5 (1 arg, unused). Hides the party for COMM 0x1D6: sub_1D1860(1) [K_FldUnit_SetPcVisible], sub_1D1910, sub_1D1B60, sub_1D4180 [K_FldUnit_Stop
+001c5900 00000078 F K_Cmd_PARTY_HIDE source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C5980: COMM 0x1D6 (1 arg: character id). Re-creates the party, three frames' worth of steps in gp 0x7CE278: * step 0: waits for the shadows / boxes (sub_1D1A
+001c5980 000003b0 F K_Cmd_PARTY_RECREATE source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C5D30: COMM 0x1E7 (no args). Resets gp 0x7CE274 / 0x7CE270; when the field event value is 0 (sub_45AF40 [fldEvtGetValue]) plays event voice 135 (sub_3952D0 [
+001c5d30 00000050 F K_Cmd_DARK_HOUR_BEGIN source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C5D80: COMM 0x1E8 (no args) -> the return value 2 = the main field script restarted, 0 = still waiting. Without the COMM 0x1E7 latch: returns at once (1, ret
+001c5d80 000000d8 F K_Cmd_DARK_HOUR_WAIT source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1C7F20: (request) -> 1 when the exit table is installed: request 0 -> 1; .pac resident -> the member "field/pack/h%03d_%03d.bin" of the scene record's ids fro
+001c7f20 000001a0 F K_Fldrc_TryLoadFieldHitTable source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1CE960: (no args) -> 1 when the party units are placed, 0 while something still loads. Pass 1 over gFldUnitsPc [4] (448-byte units, +72 the DatUnit, +84 the s
+001ce960 00000fdc F K_FldUnit_FinishPcs source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1D4610: (no args) Draws the field's screen filter when an entry is selected (gp 0x7CE2A0 != 0): advances the blend (0x7CE2A8 += 1 / 0x7CE2AC up to 1.0, then t
+001d4610 00000aa4 F K_FldFilter_Draw source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1EDF10: (pack) Draws one after-effect pack: saves six render states (20, 10, 11, 8, 6, 14), sets the pack blend (9 = 2, 20 = 1, 8 = 0, 6 = 1, 14 = 0, 12 = 1),
+001edf10 000002c0 F afpackDrawPack source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1EF060: (no args) -> 0. eff_afpack.c's per-frame pass over its pack list (gp 0x7CE2CC head, +28 next): (1) packs with flag 8 (every frame) or 2 (once; cleared
+001ef060 000002dc F afpackUpdateAll source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F07A0: (task) -> 0. The first "battle result draw" callback: with flag 0x10000 the level-up quad at work +42640 is drawn as two triangles (render states 8 / 
+001f07a0 00000120 F brRoot_UpdateDrawTask0 source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F0990: (task) the destroy body of the "battle result" task (called by sub_1F0970): closes the message windows when a page used them (flags 4 / 8 / 0x20: sub_
+001f0990 000000d0 F brRoot_Destroy source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F0AD0: (task, battle packet) copies the battle's outcome into the work: packet flag 1 -> work flag 2 (Shuffle Time), the unit list ({u16 id, s32 value} x pac
+001f0ad0 00000170 F brRoot_CopyPacket source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F13B0: (task) The level-up pass: the hero gains the battle's exp (sub_16D560 / sub_16CEF0 with the level from the exp table), "player lv %d -> %d" is printed
+001f13b0 000006ec F brRoot_ApplyExp source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F2FD0: (task) the destroy callback of the "shuffle root" task: tail-calls sub_1F2FF0.
+001f2fd0 00000020 F sflRootDestroyCallback source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F2FF0: (task) shuts Shuffle Time down: the modules in reverse (sub_27BBA0, sub_25B4B0, the result sub_1F5950, .. sub_20E030), the message windows (sub_3C77A0
+001f2ff0 000000bc F sflRootDestroy source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F30F0: (task) the card table's camera set-up: the field camera (sub_198590 / sub_4C9D70), sub_21A840, root work +228 = 0, the two pose objects +49204 / +4930
+001f30f0 0000017c F sflRootSetupCamera source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F3270: (task) builds the deal: the card counts and rates of the hero's level band (sub_209E10 .. sub_209DD0; in The Answer the level maps through the table 0
+001f3270 000013dc F sflRootBuildDeal source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F4750: (task) the pick's message: by the picked card's kind (sub_256030 +4) -- 2 blank: message 4 and the sound (sub_10A4E0(1, 15, 6, 11)); 1 arcana: the arc
+001f4750 00000180 F sflRootShowPick source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F4A00: (no args) builds the shuffle command script (K_Assert sfl_root.c 254 without the root work): root +4 |= 0x20, the hero's persona refreshed (sub_173660
+001f4a00 000009a0 F sflRootBuildShuffle source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F53A0: (no args) after the pick: from states 17 / 21 (others K_Assert sfl_root.c 2371) -- a blank card (flag 0x1000) shows its message (sub_1F54A0, state 24)
+001f53a0 00000100 F sflRootGoResult source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F54A0: (no args) the blank-card message 50 with its sound (sub_10A4E0(1, 15, 6, 12)); root state 24.
+001f54a0 00000070 F sflRootBlankMessage source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F55E0: (no args) stops the shuffle: sub_255F80, sub_25A7D0, sub_23F3E0, sub_25B4F0; root state 11.
+001f55e0 0000006c F sflRootStopShuffle source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F5950: (no args) sfl_result's shutdown (K_Assert sfl_result.c 140 without the work, gp 0x7CE2E0): the pages released (sub_1F98D0), the result script released
+001f5950 0000005c F sflResultDestroy source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F59B0: (no args) starts the result: flags 1 | 2, +16 = 0, +24 = 100, +13504 = 0, the result script loaded from the embedded BF 0x684850 (sub_35BD20 -> +13508
+001f59b0 0000016c F sflResultStart source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F5B20: (no args) the result's per-frame update (K_Assert sfl_result.c 140): flag 2 is a one-frame delay; with flag 1: the 30-frame card fades (flag 0x100: +1
+001f5b20 000009a0 F sflResultUpdate source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F64C0: (no args) draws the result cards in mode 1 when flags 1 and 0x400 are set: the kind-1 entries (+60 [+13340]) then the kind-0 entries (+28 [+13336]), e
+001f64c0 00000114 F sflResultDrawCards source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F6630: (no args) builds the result lists (K_Assert sfl_result.c 140): clears the counters +13312..+13332; the kind-1 (persona) entries go to the "new persona
+001f6630 00000430 F sflResultBuildLists source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F6A60: (no args) picks the next result page from step +4 (jump table 0x7B6EF0), falling through the empty ones: 1 the new personas (flag 8: sub_1F99F0), 2 th
+001f6a60 000002c0 F sflResultNextPage source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F6E80: (no args) shows new persona +13324: in mode 1 the entries' cards line up at x = 320 + 220 (i - current), y = 184 (sub_20C500 / sub_20C400, the FPU acc
+001f6e80 000001b0 F sflResultShowPersona source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F7030: (no args) message 14 with the hero's name (sub_1775A0(1)) and the persona of list +13280 [+13328]; step 5.
+001f7030 0000009c F sflResultShowListA source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F70D0: (no args) message 16 with the hero's name and the persona of list +13296 [+13332]; step 6.
+001f70d0 0000009c F sflResultShowListB source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F7170: (no args) registers every kind-1 entry's persona (sub_217590(entry +96)) and sub_215B00; step 4.
+001f7170 000000a0 F sflResultRegisterPersonas source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F7210: (no args) the reward roll of an arcana card (K_Assert sfl_result.c 140; five jump tables): by the card's suit -- sword (a weapon), coin (money), wand 
+001f7210 00001eec F sflResultRollReward source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F9100: (no args) commits the result's persona lists: sub_217410(+13296, +13316), sub_2174D0(+13280, +13312), sub_216800().
+001f9100 0000006c F sflResultCommitPersonas source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F9170: (condition row) -> 1 when one of the 13 conditions of row n of sub_209D00's table (26-byte rows, a byte per condition) holds: 0 / 1 the hero's / a mem
+001f9170 000004c0 F sflCardCondition source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F98D0: (no args) releases what sub_1F59B0 requested when flag 0x80: mode 1 frees every entry's texture (sub_21A670 / sub_21A760), mode 0 rebuilds the lists (
+001f98d0 00000120 F sflResultRelease source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F99F0: (no args) the new-personas page: +13324 = 0, in mode 1 the card fade-in (+13512..+13520, flag 0x100), the first persona shown (sub_1F6E80); step 2.
+001f99f0 00000088 F sflResultPageNewPersonas source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F9A80: (no args) the reward page: in mode 1 the kind-0 cards are scaled (10, 10, 10), lined up at x = 320 + 220 i, y = 184, z + 100, turned (sub_4BDDE0 / sub
+001f9a80 000001e0 F sflResultPageReward source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1F9C60: (no args) sets up the reward effect object +13536: colour (-1 x 4), sub_34FF70, position (0, 120, 200), sub_34FE30, sub_34FD30, sub_34FD70(.., 7).
+001f9c60 00000104 F sflResultSetupRewardEffect source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FB560: (persona id) -> the persona a level-up "shift" turns it into. Lists the hero's stock (sub_1756F0 / sub_174A90), looks the id up in the shift list (br_
+001fb560 0000050c F brDataPickShiftPersona source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FBA70: (persona id) -> an item id: the drop list (br_data +36, 6-byte rows {u16 persona, u16 item, u8 percent}) is rolled in order (RpRandom() % 100 < percen
+001fba70 00000230 F brDataPickDrop source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FC980: (unit, out u16[], out count) lists the unit's persona skills usable on the field (datCalcIsSkillUsableOnField, not blocked by sub_17B660) that are 192
+001fc980 000001ac F brDataListFieldSkills source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FCB30: (unit, out u32[], out count) lists the items of the unit's 12 slots (sub_1706C0 / sub_170670) that are usable (sub_17B4E0 on the item record +8), woul
+001fcb30 00000190 F brDataListHealItems source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FDC00: (task) the destroy body of the "battle panel" task (sub_1FDBE0): K_Assert (bp_root.c 386) when work flag 0x400 is still set, the panel modules shut do
+001fdc00 00000118 F bpRootDestroy source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FF890: (no args) The command menu's set-up for a unit's turn (bcm_main.c; K_Assert 356 without the work gp 0x7CE2E8): prints the seven commands' state from t
+001ff890 000003c4 F bcmMainSetup source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6
+# sub_1FFF40: (no args) The command menu's per-frame update (bcm_main.c, called by bpRoot_UpdateBattlePanelTask): with the work (gp 0x7CE2E8) and gBtl (gp 0x7CE3EC)
+001fff40 00001764 F bcmMainUpdate source=phase5-field6 verified=yes ev=INTEGRATION_LOG.md#field6

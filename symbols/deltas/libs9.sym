@@ -1,0 +1,25 @@
+# libs9.sym  Phase 5 slice delta (game/include/p3fes/game/libs9.h); SLUS_216.21
+# generated 2026-10-28 from the instructions (p3fes_handgen bodies; the ADX header layout the encoder writes and the
+#   decoders of cri1.h read; no IDA database opened).
+#   Rows: <addr8> <size8> F <name> <tags>, source=phase5-libs9, verified=yes: our own names, each from what the body
+#   does (its role block in game/src/cri/libs9.cpp). Not imported by the agent.
+# sub_541058: re-entry guarded call of the ADXT server (sub_549EA0) and ADXT_UpdateFsStat, the file-system thread's tick.
+00541058 00000048 F adxm_ExecFsSvr source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_5413A0: the last release of ADXM_SetupThrdEx's use count destroys the threads and restores the priority.
+005413A0 000000AC F ADXM_ShutdownThrd source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_544900: writes the 0x8001 end marker, the padding length and the zero padding to the encoder's output joint.
+00544900 000000FC F adxenc_WriteFooter source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_544A00: writes the ADX header (0x8000, offset, encoding, block, bits, channels, rate, samples, high-pass, v4, loops, AINF / CINF, copyright).
+00544A00 00000754 F adxenc_WriteHdr source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_545158: use-counted init that clears the 8 x 760-byte encoder pool 0x790A38.
+00545158 00000054 F ADXENC_Init source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_5451B0: the matching finish (the last call clears the pool).
+005451B0 00000058 F ADXENC_Finish source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_545208: takes a free encoder handle, stores the joints and the defaults (44100 Hz, 18-byte blocks, 4 bits).
+00545208 000001D0 F ADXENC_Create source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_5453D8: frees the handle's two work buffers and marks it free, under the CRI lock.
+005453D8 00000068 F ADXENC_Destroy source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_545448: pre-fills each input joint's alignment samples with silence and enters the header stage.
+00545448 00000124 F ADXENC_Start source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9
+# sub_545B90: runs every in-use encoder handle by its state.
+00545B90 00000060 F ADXENC_ExecServer source=phase5-libs9 verified=yes ev=INTEGRATION_LOG.md#libs9

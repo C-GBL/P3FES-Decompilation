@@ -1,0 +1,29 @@
+# render_game.sym  Phase 5 delta for the game-side draw layer (docs/ANALYSIS/22_rendering.md sections 1, 2, 6);
+# SLUS_216.21 SHA-256 d1b163eb...3957bc. Written 2026-10-20 from the recompiled bodies (recomp/generated, emitted from the ELF) and the
+# ELF's strings; the IDA master was not opened. Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=phase5-render_game verified=yes   our own name (no hint was used)
+#   ev=game/src/render/draw_layer.cpp        the hand-decompiled body (pair-tested against the recompiled one in
+#                                            tests/game/test_render_game.cpp)
+# Not imported by the agent: the lead merges this with tools/ours/ida/import_symbols.py and re-exports symbols/. game/ keeps the sub_*
+# names until then (game/README.md rule). Already proposed in rendering.sym and not repeated: the 3D-on-2D / etc / K_SPipe passes and
+# btlUpdateDraw3DTask. No name is proposed for sub_126710, sub_269F50 and sub_422670 (the callers that would say what they draw were
+# not read).
+# --- camera passes ---
+00199740 0000005c F kwlnRootUpdateShadowNodeCameraTask source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+0027b310 000000d8 F btlDrawMessagePass source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+# --- the HUD moon icon (camp/i_moon_00.spr, 0x5E4190) ---
+00187be0 0000020c F H_MoonIcon_UpdateTask source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+001875f0 000005f0 F H_MoonIcon_Draw source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+# --- screen fades ---
+001075b0 000002f0 F H_Fade_DrawBlue source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+001078a0 00000274 F H_Fade_DrawWhite source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+001081e0 0000038c F H_Fade_DrawColour source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+# --- Im2D helpers ---
+002699d0 00000040 F drawIm2DIndexedTriList source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+002bc9c0 0000030c F btlDrawTexturedQuad source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+001997e0 00000478 F drawGradientQuad source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+# --- debug print ---
+00395570 00000258 F dbgDrawRect source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+00104420 000002f0 F dbgPrintDrawScreen source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+00104710 00000600 F dbgPrintDrawStrings source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp
+001053f0 00000410 F dbgPrintDrawWindow source=phase5-render_game verified=yes ev=game/src/render/draw_layer.cpp

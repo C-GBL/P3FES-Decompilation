@@ -1,0 +1,94 @@
+# Phase 5 hand-decompile queue - topic 20 (menu / UI). Format: addr name one-line purpose. Evidence: docs/ANALYSIS/20_menu_ui.md
+# Leaf-first. Names are the IDA master's (symbols/p3fes.sym; the menu_ui.sym delta was merged into the master 2026-10-20, so the names it
+# proposed are now the exported ones; a row still sub_* on the master keeps its candidate name in brackets).
+# --- done in this wave (game/src/ui/ui_calendar.cpp, ui_tables.cpp, ui_cursor.cpp) ---
+0016ef20 datGetDaysSinceApr5                           s16 at 0x83679C: days since April 5
+0016ef30 datGetTime                                    u8 at 0x83679E: day part
+0017d830 clndGetMonthFromDaysSinceApr5                 April walk over tbl_clndMonthLengths 0x5E3B60
+0017d9c0 clndGetDayOfMonthFromDaysSinceApr5              remainder of the walk + 1
+0017d8b0 clndGetDaysSinceStartFromDate                 inverse: month lengths from April + day - 5
+0017dae0 clndGetWeekDay                                (days + 7) % 7, 0 = Sunday
+0017db00 clndGetCurrentWeekDay                         weekday of the current day
+0017d920 clndGetCurrentMonth                           month of the current day
+0017da40 clndGetCurrentDay                             day of the current day
+00181b50 clndGetMoonPhase                              tbl_clndMoonPhase 0x5E38D0[days]
+0016f190 datGetFlag                                    bit id%32 of word id/32 at 0x83A21C
+001120a0 sprFontGetFile                                sSprFontFiles 0x833A40[i]
+0011a810 H_Camp_GetAcademicLevelString                 tbl 0x5D7EB4[(s16)level]
+0011a840 H_Camp_GetCharmLevelString                    tbl 0x5D7E98[(s16)level]
+0011a870 H_Camp_GetCourageLevelString                  tbl 0x5D7E7C[(s16)level]
+00177280 datGetAcademicLevel                           threshold search 0x5E3068, levels 1..6
+001772f0 datGetCharmLevel                              threshold search 0x5E3078
+00177360 datGetCourageLevel                            threshold search 0x5E3088
+00100710 H_Cursor_SetPos                               work+0x114/+0x118 = {x, y} packed in a1
+00100740 H_Cursor_SetRect                              work+0x11C..+0x128 = rect[4]
+00100770 H_Cursor_SetZOffset                           work+0x12C = f12
+00100780 H_Cursor_SetColor                             work+0x130..+0x13F = rgba x4
+# --- leaves: no calls (or K_Assert/K_Abort only) ---
+00100570 H_Cursor_GetShouldDraw                        returns &work->should_draw (task+0x3C+0x140)
+00111f30 sprFileIsReady                                spr file handle state == 5 (39 callers)
+0011b9a0 H_Camp_GetRootSelection                       root work +0xC
+00184d90 H_DayPartsDraw_IsIdle                         work state == 2
+00181b10 clndGetCurrentMoonPhase                       tbl_clndMoonPhase[datGetDaysSinceApr5()]
+00195540 kwlnTaskGetWorkData                           task+0x3C
+00195530 kwlnTaskSetWorkData                           task+0x3C = a1
+00195520 kwlnTaskGetTimer                              task+0x28
+0017d810 sub_17D810                                    load 0x83A6F8 (Aigis calendar state)
+0017d820 sub_17D820                                    store 0x83A6F8
+00191240 H_Memcard_ClearChkAreaSeq                     zero gp-0x4CB4/-0x4CB8/-0x4CBC
+0025a110 sub_25A110                                    sfl cursor: work ptr to gp-0x4990, +0 = 0
+0025a120 sub_25A120                                    sfl cursor: gp-0x4990 = 0
+003951d0 MT_Misc_BitChk                                datGetFlag(a0) != 0 (calls the replaced leaf)
+003b1a10 frFontGetStyleGlyphWidth                      sFrFontStyles[style].fnt->+0x10
+003b1a40 frFontGetStyleGlyphHeight                     sFrFontStyles[style].fnt->+0x12
+003b05c0 frFontInitLineNode                            zero a 0x44-byte line node, code 0x20, alpha 0xFF
+003b0840 frFontKerningAdjust                           pair kerning for a/e/o/u/80C1.. before T/Y (uses gp-0x46B8)
+003b01d0 frFontSetGlyphMetrics                         advance/offset from the FNT width table (mult, sra; no calls)
+003b4770 fmGslGetGlyphBlocks                           three region pointers of the Huffman block
+003b46b0 rbAlloc                                       ring-buffer pop
+003b46f0 rbFree                                        ring-buffer push
+003b4520 fmGslAllocEntry                               unlink the first free GS-list entry
+003b4580 fmGslReleaseEntry                             relink an entry (K_Assert on NULL)
+0016f2e0 datClearFlagAll                               zero the 176 flag words
+001126b0 sprGetSpriteWidth                             (u1 - u0 or override) * scale12.4 as float
+00112740 sprGetSpriteHeight                            (v1 - v0 or override) * scale12.4 as float
+0017dcf0 clndIsHolidayOrSunday                         Sunday or a tbl_clndHolidays entry (calls the replaced walk)
+0017e480 clndIsDateInRange                             day-count comparison of two (month, day) pairs
+0017e5d0 clndIsDateInRangeFromStart                    as above from a start and a length (H_Dbprt_FmtLog on 0)
+0016f1f0 datSetFlag                                    set/clear one flag bit (K_Assert, printf on id 0x1376)
+0016ef70 datSetDaysSinceApr5                           store the date + weekday flags 0xA08..0xA0F (calls sub_172890/sub_172E10)
+# --- second layer: memcpy / ring buffers / one or two leaf callees ---
+003b47b0 fmGslDecodeGlyph                              Huffman glyph decoder (memcpy x3)
+003b3dd0 frFontRasterFind                              cache lookup through frFontRasterLookup
+003b3770 frFontRasterAgeSlots                          age the 256 raster slots (list surgery, no calls)
+003b0620 frFontCreateGlyphNode                         glyph index + node init (rbAlloc, frFontCacheGlyph, metrics)
+0011abd0 H_Camp_MoveListCursor                         list navigation with wrap (H_Snd_PlaySfx per move)
+00112370 sprAddFile                                    RwHeapCalloc + strcpy + list append
+001158b0 sprCreateHandle                               RwHeapCalloc(0x34) + list link
+00112420 sprCreateHandleFromData                       in-memory spr handle
+003a8d60 itfPnlRelease                                 H_Free x2 (printf)
+003a8dc0 itfPnlSetPosition                             store + per-type callback (printf)
+003a8fb0 itfPnlSetColor                                store + per-type callback (printf)
+0016c2f0 datItemTblSetSections                         section pointers of event/itemtbl.bin
+00238980 bpIfontDrawNumber                             sprintf + per-digit sub_238FD0
+# --- task bodies (state machines over kwln tasks, sprites and Im2D; last) ---
+00100230 H_Cursor_UpdateDrawTask                       rebuilds 4 Im2D vertices, RwIm2DRenderPrimitive
+001005b0 H_Cursor_CreateTask                           RwHeapCalloc + kwlnTaskCreate
+001842c0 H_DayPartsDraw_DrawHud                        the date HUD incl. "Next N"
+00183410 H_DayPartsDraw_UpdateTask                     9-state HUD task
+001832c0 H_DayPartsPos_UpdateTask                      HUD slide (flags 0x141D / 0x1407)
+00184db0 H_DayParts_CreateTask                         the HUD task pair
+00185b40 H_DayChgDraw_DrawStrip                        8-day strip of the date change
+00112110 sprFileHandleUpdate                           .SPR loader (uttmxCreateRaster)
+0011b420 H_Camp_UpdateRootDrawTask                     camp main list (input state 6)
+0011a050 H_Camp_UpdateDrawTask                         camp menu root (21 states)
+003b0970 frFontBuildGlyphList                          text -> glyph nodes
+003b1360 frFontDraw                                    glyph list -> frFontRasterDrawGlyph
+003b38f0 frFontRasterDrawGlyph                         glyph quad through Im2D
+003afad0 frAddFontStyle                                FNT header -> style record
+003a7e90 itfMesManagerDrawMsg                          dialogue window draw per handle
+003a8170 itfMesManagerDrawSprite                       window frame sprites 0x12/0x13
+0027de40 btlTableLoadAll                               battle .TBL loader loop
+00192b50 H_FileSetup_UpdateChoiceDataFileSetupTask     Journey / Answer prompt
+00188690 clndUpdateBootupCheckMemcardTask              boot memory-card check
+0017e680 clndUpdateDrawTask                            day/time advance controller (4,684 B, three jr tables)

@@ -1,0 +1,6 @@
+# sweep3.sym  Phase 5 slice delta (game/include/p3fes/game/sweep3.h, game/src/battle/sweep3.cpp); SLUS_216.21
+# generated 2026-10-28 from the instructions (the p3fes_handgen body, its callers) and checked by
+#   tests/game/test_sweep3.cpp (the gBtl+400 record unlink on b_5800: middle / head / tail). A proposal only: the code
+#   keeps the symbols/ name. Our own name (no community hint).
+# <addr8> <size8> <F|D|L> <name> source=phase5-sweep3 verified=yes ev=<anchor>
+002bb610 000000d8 F btlRecRelease source=phase5-sweep3 verified=yes ev=INTEGRATION_LOG.md#sweep3

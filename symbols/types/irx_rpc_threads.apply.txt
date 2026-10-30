@@ -1,0 +1,21 @@
+# <addr8> <TypeName>[<count>] -- topic 12 (docs/ANALYSIS/12_irx_rpc_threads.md)
+0077fbc0 KPatchEntry[2]
+0077f8e8 KPatchEntry[8]
+00780380 KPatchEntry[3]
+00780b08 KPatchEntry[8]
+0096da18 SceThreadParam
+0095ff30 SceSemaParam
+0096e040 SceSifRpcClientData
+0096dcc0 SceSifRpcClientData
+0096dce8 SceSifRpcClientData
+0096a0c0 SceSifRpcClientData
+00969d00 SceSifRpcClientData
+00833640 SceSifDmaData
+0096dfc0 SceSifDmaData
+00969ec0 LfModuleLoadArg
+0096df00 PadRpcBuf
+0096e000 SdrRemoteArgBlock
+00782b80 SkCmdBlock
+00782bc0 SkCmdBlock
+00782c00 SkCmdBlock
+00833710 HSndcomSlot[6]

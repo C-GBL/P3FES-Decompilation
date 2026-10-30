@@ -1,0 +1,10 @@
+# Phase 5 hand-decompile queue — topic 13 (overlays). Format: addr name one-line purpose
+0x50D780 InitExecPS2 libkernel: if PatchIsNeeded, Copy 0x7A8 B 0x77FBD8->0x80074000, FlushCache(0/2), SetSyscall 0x5A/0x5B (+1 GetEntryAddress entry from 0x780390)
+0x50CC78 InitTLBFunctions libkernel: Copy 0x330 B 0x77F568->0x80075000, FlushCache(0/2), SetSyscall 0x5A/0x5B/0x54 + loop 0x55..0x59 from tbl 0x77F8E8
+0x50DB38 InitAlarm libkernel: if INTC_MASK bit8 clear, Copy 0x740 B 0x7803A0->0x80076000 and 0x28 B 0x780AE0->0x82000, FlushCache(0/2), SetSyscall 0x5A/0x5B + loop from tbl 0x780B18
+0x50D548 InitSystemCallTableAddress libkernel: SetSyscall 0x83/0x5A, scan kernel 0x80000000-0x80080000 with _sceFindAddress for kFindAddress/kCopy_0, store base at 0x77FBB8
+0x50D880 SetArg libkernel: temporary SetSyscall(0x5A,0x50D840) then _sceCopy_2 of argv words into kernel arg area *0x77F8E0+0x40
+0x50D718 PatchIsNeeded libkernel: decides whether the ExecPS2 kernel patch is installed (gates InitExecPS2)
+0x55AD18 load_flist CRI DVCI: HST: vs cdrom path, dvCiCdSearchFile then sceCdRead(lba, 2 sectors, buf, mode{1,0,0,0}) into caller buffer - one of 2 sceCdRead sites
+0x3A8B00 itfPnlRegist2 (tge-pr4 hint name) UI panel registration storing five callbacks 0x3A9230/0x3A93A0/0x3A9400/0x3A9470/0x3A9580 that IDA had not carved as functions
+0x27FE90 btlUnitCreatePosRotColPacket (tge-pr4 hint name) battle packet ctor storing destroy/update callbacks (0x27FD70, 0x27FD90, 0x27FE70) - canonical example of the missed-callback class

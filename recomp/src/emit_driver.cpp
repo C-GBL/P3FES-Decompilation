@@ -1,0 +1,538 @@
+#include "emit_driver.h"
+
+#include <algorithm>
+#include <cctype>
+#include <cstdio>
+#include <filesystem>
+#include <map>
+#include <set>
+
+namespace p3fes::recomp {
+
+namespace {
+
+// Reference mode (runtime/STATE.md "Reference mode"): every call to a replaced function goes through
+// fn_<name>_<addr8>__sel, which reads the function's own flag p3fes::rt::g_reference_<addr8> (defined in
+// dispatch.cpp) and runs the __recomp body when it is set, the hand-written plain symbol otherwise. Each unit
+// declares the selectors it uses itself (inline, identical in every unit and in dispatch.cpp), so functions.h
+// stays independent of --replace and a unit's text changes only when a function it defines or calls changes
+// status.
+//   selectors_used: the {symbol, addr8} of every `fn_..._<addr8>__sel(` and `fn_..._<addr8>_at_<pc8>__sel(` (a
+//   replaced function's mid-body entry: the function's own flag) in `text`.
+std::map<std::string, std::string> selectors_used(const std::string& text) {
+    std::map<std::string, std::string> out;
+    std::size_t pos = 0;
+    while ((pos = text.find("__sel(", pos)) != std::string::npos) {
+        std::size_t b = pos;
+        while (b > 0 && (std::isalnum(static_cast<unsigned char>(text[b - 1])) || text[b - 1] == '_')) --b;
+        const std::string sym = text.substr(b, pos - b);
+        if (sym.size() > 12 && sym.compare(0, 3, "fn_") == 0 && sym[sym.size() - 9] == '_') {
+            const bool at = sym.size() >= 24 && sym.compare(sym.size() - 12, 4, "_at_") == 0 && sym[sym.size() - 21] == '_';
+            out[sym] = at ? sym.substr(sym.size() - 20, 8) : sym.substr(sym.size() - 8);
+        }
+        pos += 6;
+    }
+    return out;
+}
+// One selector, self-contained and guarded (the tests' generated buckets #include several units into one file):
+// the flag's declaration, the __recomp declaration and the inline selector. The guard names the symbol's tail
+// (<addr8>, or <addr8>_at_<pc8> for an entry), the flag the function's start.
+void selector_block(std::string& out, const std::string& sym, const std::string& addr8) {
+    const std::size_t at = sym.find("_" + addr8 + "_at_");
+    const std::string guard = at == std::string::npos ? addr8 : sym.substr(at + 1);
+    out += "#ifndef P3FES_SEL_"; out += guard; out += "\n#define P3FES_SEL_"; out += guard; out += "\n";
+    out += "namespace p3fes::rt { extern unsigned char g_reference_"; out += addr8; out += "; }\n";
+    out += "namespace p3fes::recomp_gen {\nvoid "; out += sym; out += "__recomp(p3fes::EEContext&);\n";
+    out += "inline void "; out += sym; out += "__sel(p3fes::EEContext& ctx) { if (::p3fes::rt::g_reference_"; out += addr8;
+    out += ") "; out += sym; out += "__recomp(ctx); else "; out += sym; out += "(ctx); }\n}  // namespace p3fes::recomp_gen\n#endif\n";
+}
+
+std::FILE* open_file(const std::filesystem::path& p, bool write) {
+#ifdef _WIN32
+    return _wfopen(p.c_str(), write ? L"wb" : L"rb");
+#else
+    return std::fopen(p.c_str(), write ? "wb" : "rb");
+#endif
+}
+
+// True when `p` already holds exactly `text`.
+bool same_content(const std::filesystem::path& p, const std::string& text) {
+    std::error_code ec;
+    const auto size = std::filesystem::file_size(p, ec);
+    if (ec || size != text.size()) return false;
+    std::FILE* f = open_file(p, false);
+    if (!f) return false;
+    std::string old(text.size(), '\0');
+    const bool ok = std::fread(old.data(), 1, old.size(), f) == old.size();
+    std::fclose(f);
+    return ok && old == text;
+}
+
+// Writes `text` to `p` unless the file already holds it: an unchanged unit keeps its timestamp, so re-emitting
+// the same program (every gate run) does not make the build recompile ~75 large generated units.
+bool write_text(const std::filesystem::path& p, const std::string& text, std::string& error) {
+    if (same_content(p, text)) return true;
+    std::FILE* f = open_file(p, true);
+    if (!f) {
+        error = "cannot write " + p.string();
+        return false;
+    }
+    const bool ok = std::fwrite(text.data(), 1, text.size(), f) == text.size();
+    std::fclose(f);
+    if (!ok) error = "short write to " + p.string();
+    return ok;
+}
+
+void hex8(std::string& out, std::uint32_t v) {
+    char buf[16];
+    std::snprintf(buf, sizeof buf, "%08x", v);
+    out += buf;
+}
+void hexu(std::string& out, std::uint32_t v) {
+    char buf[20];
+    std::snprintf(buf, sizeof buf, "0x%xu", v);
+    out += buf;
+}
+void json_hex(std::string& out, std::uint32_t v) {
+    char buf[20];
+    std::snprintf(buf, sizeof buf, "\"0x%x\"", v);
+    out += buf;
+}
+void json_num(std::string& out, std::size_t v) {
+    char buf[24];
+    std::snprintf(buf, sizeof buf, "%zu", v);
+    out += buf;
+}
+void json_str(std::string& out, const std::string& s) {
+    out += '"';
+    for (char c : s) {
+        if (c == '"' || c == '\\') { out += '\\'; out += c; }
+        else if (static_cast<unsigned char>(c) < 0x20) out += ' ';
+        else out += c;
+    }
+    out += '"';
+}
+
+const char kPrelude[] =
+    "// Generated by p3fes_recomp; do not edit. Shared prelude of every generated translation unit.\n"
+    "#pragma once\n"
+    "#include \"p3fes_recomp_rt.h\"\n"
+    "#include <cstdint>\n"
+    "// Every branch target gets a label whether or not something jumps to it in the final text;\n"
+    "// unreferenced labels are expected. Nothing else is silenced.\n"
+    "#if defined(__clang__)\n"
+    "#pragma clang diagnostic ignored \"-Wunused-label\"\n"
+    "#elif defined(_MSC_VER)\n"
+    "#pragma warning(disable : 4102)\n"
+    "#endif\n"
+    "#include \"functions.h\"\n"
+    "namespace p3fes::recomp_gen { namespace rt = ::p3fes::rt; }\n";
+
+void add_stats(FunctionStats& a, const FunctionStats& b) {
+    a.words += b.words; a.data_words += b.data_words; a.branches += b.branches;
+    a.dead_words += b.dead_words; a.dead_data_words += b.dead_data_words; a.reached_data_words += b.reached_data_words;
+    a.likely_branches += b.likely_branches; a.calls += b.calls; a.mid_body_calls += b.mid_body_calls;
+    a.tail_calls += b.tail_calls; a.indirect_calls += b.indirect_calls; a.indirect_tails += b.indirect_tails;
+    a.returns += b.returns; a.switches += b.switches; a.switch_targets += b.switch_targets;
+    a.syscalls += b.syscalls; a.breaks += b.breaks; a.erets += b.erets;
+    a.slots_outside_chunk += b.slots_outside_chunk; a.slot_labels += b.slot_labels;
+    a.unreachable_ends += b.unreachable_ends;
+    a.noreturn_calls += b.noreturn_calls; a.noreturn_tail_calls += b.noreturn_tail_calls;
+}
+
+}  // namespace
+
+bool emit_program(Program& prog, const EmitOptions& opt, EmitReport& report, std::string& error) {
+    const FunctionList& fl = prog.functions();
+    report = EmitReport{};
+    report.functions_total = fl.functions.size();
+
+    // 1. Entry pre-pass over the whole program (independent of the selection).
+    prog.compute_entries_and_returns(&report.unowned);
+    report.returning_roots = prog.returning_roots();
+    report.entry_points = prog.entry_count();
+    for (const Function& f : fl.functions)
+        if (prog.has_entries(f)) ++report.functions_with_entries;
+
+    // 2. Selection.
+    std::set<std::uint32_t> only(opt.only.begin(), opt.only.end());
+    std::vector<const Function*> selected;
+    for (const Function& f : fl.functions) {
+        if (!only.empty() && !only.count(f.start)) continue;
+        if (opt.has_band && (f.start < opt.band_lo || f.start >= opt.band_hi)) continue;
+        selected.push_back(&f);
+    }
+    report.functions_selected = selected.size();
+    if (!only.empty()) {
+        for (std::uint32_t a : only)
+            if (!fl.find(a)) { error = "--only: no function starts at 0x" + [&] { std::string s; hex8(s, a); return s; }(); return false; }
+    }
+
+    // 2b. Phase 5 replacements: validated against the function list before anything is generated.
+    std::set<std::uint32_t> replaced;
+    for (const EmitOptions::Replace& r : opt.replace) {
+        const Function* f = fl.find(r.start);
+        if (!f) { error = "--replace: no function starts at 0x" + [&] { std::string s; hex8(s, r.start); return s; }(); return false; }
+        if (!r.name.empty() && r.name != f->name) {
+            error = "--replace: 0x" + [&] { std::string s; hex8(s, r.start); return s; }() + " is " + f->name + " in functions.json, not " + r.name +
+                    " (stale replacement list?)";
+            return false;
+        }
+        // A function with mid-body entries lists them (`@0x<pc>`), exactly: game/ defines fn_<name>_<addr>_at_<pc8> for
+        // each from the same row (game/forwarders.cmake), so the row and the program cannot drift apart silently.
+        {
+            const std::set<std::uint32_t>& es = prog.entries_of(*f);
+            const std::set<std::uint32_t> listed(r.entries.begin(), r.entries.end());
+            if (listed != es) {
+                std::string want;
+                for (std::uint32_t e : es) { want += " @"; hexu(want, e); }
+                error = "--replace: " + f->name + (es.empty() ? " has no mid-body entries; drop its @ tokens" : " must list its mid-body entries:" + want);
+                return false;
+            }
+        }
+        if (!replaced.insert(r.start).second) { error = "--replace: " + f->name + " listed twice"; return false; }
+    }
+
+    // 3. Analyse + generate.
+    GenOptions gopt;
+    gopt.annotate = opt.annotate;
+    gopt.cycles = opt.cycles;
+    gopt.check_events = opt.check_events;
+    gopt.replaced = opt.selectors ? &replaced : nullptr;
+    GenOptions gopt_replaced = gopt;
+    gopt_replaced.symbol_suffix = "__recomp";
+    struct Unit { std::string text; std::uint32_t lo, hi; std::size_t count; };
+    std::vector<Unit> units;
+    struct DataWord { const Function* fn; std::uint32_t pc; bool reached; };
+    std::vector<DataWord> data_words;
+    struct Unsupported { const Function* fn; std::uint32_t pc, word; };
+    std::vector<Unsupported> unsupported;
+    std::vector<const Function*> emitted;
+    std::string cur;
+    std::uint32_t cur_lo = 0, cur_hi = 0;
+    std::size_t cur_n = 0;
+    const std::size_t group = opt.group_size ? opt.group_size : 200;
+    // --stable-units: the band (position in the whole function list / group) of the unit being filled
+    std::size_t cur_band = 0;
+    std::vector<std::size_t> unit_bands;
+    auto band_of = [&](const Function* f) { return static_cast<std::size_t>(f - fl.functions.data()) / group; };
+    for (const Function* f : selected) {
+        if (opt.stable_units && cur_n && band_of(f) != cur_band) {  // the next band starts a new unit
+            units.push_back({std::move(cur), cur_lo, cur_hi, cur_n});
+            unit_bands.push_back(cur_band);
+            cur.clear();
+            cur_n = 0;
+        }
+        if (opt.stable_units) cur_band = band_of(f);
+        FunctionAnalysis a = analyze_function(prog, *f);
+        if (!a.problems.empty()) {
+            ++report.problem_functions;
+            for (const Problem& p : a.problems) report.problems.push_back({f, p});
+            if (!opt.keep_going) continue;  // still analyse the rest so the report is complete
+        }
+        add_stats(report.stats, a.stats);
+        if (!a.returns) ++report.noreturn_functions;
+        for (const ChunkAnalysis& ch : a.chunks)
+            for (const Item& it : ch.items) {
+                if (it.kind == Item::Kind::Data) data_words.push_back({f, it.pc, it.reachable});
+                else if (it.reachable && it.insn.op == Op::Invalid) unsupported.push_back({f, it.pc, it.insn.word});
+            }
+        if (cur_n == 0) cur_lo = f->start;
+        if (replaced.count(f->start)) {
+            ++report.replaced;
+            cur += "// replaced by game/ (Phase 5): the recompiled body is kept under the __recomp symbol; the dispatch\n"
+                   "// row and every call site use the __sel selector (the hand-written body, or this one in reference mode).\n";
+            generate_function(cur, prog, a, gopt_replaced, report.gen);
+        } else {
+            generate_function(cur, prog, a, gopt, report.gen);
+        }
+        cur_hi = f->start;
+        emitted.push_back(f);
+        if (!opt.stable_units && ++cur_n >= group) {
+            units.push_back({std::move(cur), cur_lo, cur_hi, cur_n});
+            cur.clear();
+            cur_n = 0;
+        } else if (opt.stable_units) {
+            ++cur_n;
+        }
+    }
+    if (cur_n) {
+        units.push_back({std::move(cur), cur_lo, cur_hi, cur_n});
+        unit_bands.push_back(cur_band);
+    }
+    if (opt.stable_units) {
+        // name each unit after its whole band, whatever part of it the selection holds
+        for (std::size_t i = 0; i < units.size(); ++i) {
+            const std::size_t lo = unit_bands[i] * group, hi = std::min(lo + group, fl.functions.size()) - 1;
+            units[i].lo = fl.functions[lo].start;
+            units[i].hi = fl.functions[hi].start;
+        }
+    }
+    report.functions_emitted = emitted.size();
+    report.files = units.size();
+
+    if (!report.problems.empty() && !opt.keep_going) {
+        error = "structural problems found; nothing written (use --keep-going to emit traps instead)";
+        return false;
+    }
+
+    // 4. Write.
+    std::error_code ec;
+    const std::filesystem::path out_dir(opt.out_dir);
+    std::filesystem::create_directories(out_dir, ec);
+    if (ec) { error = "cannot create " + opt.out_dir; return false; }
+    std::string header =
+        "// Generated by p3fes_recomp from SLUS_216.21 (sha256 " + opt.elf_sha256 + "); do not edit.\n";
+
+    if (!write_text(out_dir / "gen_prelude.h", header + kPrelude, error)) return false;
+
+    {
+        // functions.h is the same text whatever --replace lists: every generated unit includes it, so a change of
+        // the replacement set recompiles only the units holding or calling a function that changed status (its body
+        // is defined under the other symbol; its callers' __sel selectors are declared in their own unit text). The
+        // __recomp bodies need no declaration there (the selectors declare what they call); replaced.h declares them
+        // for code that wants them.
+        std::string decls = header;
+        decls += "#pragma once\n#include \"p3fes/ee_context.h\"\n#include <cstdint>\nnamespace p3fes::recomp_gen {\n";
+        std::string repl = header;
+        repl += "// The recompiled bodies of the functions game/ replaces (--replace): fn_<name>_<addr>__recomp. The plain\n"
+                "// symbols (functions.h) are defined in game/. No generated unit includes this file.\n"
+                "#pragma once\n#include \"p3fes/ee_context.h\"\nnamespace p3fes::recomp_gen {\n";
+        for (const Function& f : fl.functions) {
+            generate_declaration(decls, prog, f);
+            if (replaced.count(f.start)) {
+                repl += "void "; repl += function_symbol(f); repl += "__recomp(p3fes::EEContext&);\n";
+                for (std::uint32_t e : prog.entries_of(f)) { repl += "void "; repl += at_symbol(f, e); repl += "__recomp(p3fes::EEContext&);\n"; }
+            }
+        }
+        decls += "}  // namespace p3fes::recomp_gen\n";
+        repl += "}  // namespace p3fes::recomp_gen\n";
+        if (!write_text(out_dir / "functions.h", decls, error)) return false;
+        if (!write_text(out_dir / "replaced.h", repl, error)) return false;
+    }
+
+    std::vector<std::string> unit_names;
+    for (std::size_t i = 0; i < units.size(); ++i) {
+        std::string name = "fn_";
+        char idx[8];
+        std::snprintf(idx, sizeof idx, "%04zu", opt.stable_units ? unit_bands[i] : i);
+        name += idx; name += '_'; hex8(name, units[i].lo); name += '_'; hex8(name, units[i].hi); name += ".cpp";
+        std::string text = header;
+        text += "// functions 0x"; hex8(text, units[i].lo); text += "..0x"; hex8(text, units[i].hi);
+        text += " ("; json_num(text, units[i].count); text += ")\n#include \"gen_prelude.h\"\n";
+        {
+            // the reference-mode selectors of the replaced functions this unit calls
+            for (const auto& [sym, addr8] : selectors_used(units[i].text)) selector_block(text, sym, addr8);
+        }
+        text += "namespace p3fes::recomp_gen {\n\n";
+        text += units[i].text;
+        text += "}  // namespace p3fes::recomp_gen\n";
+        if (!write_text(out_dir / name, text, error)) return false;
+        unit_names.push_back(name);
+    }
+    {
+        // Remove stale generated units (a narrower run, or other unit boundaries) so no old file is left behind.
+        const std::set<std::string> keep(unit_names.begin(), unit_names.end());
+        std::vector<std::filesystem::path> stale;
+        for (const auto& de : std::filesystem::directory_iterator(out_dir, ec)) {
+            const std::string n = de.path().filename().string();
+            if (n.rfind("fn_", 0) == 0 && de.path().extension() == ".cpp" && !keep.count(n)) stale.push_back(de.path());
+        }
+        for (const auto& p : stale) std::filesystem::remove(p, ec);
+    }
+
+    {
+        // Dispatch table: every function start and every mid-body entry of the program. In a
+        // subset run the functions that were not emitted resolve to their missing_stubs.cpp
+        // definitions, which fail naming the function, rather than to a generic lookup miss.
+        std::vector<std::pair<std::uint32_t, std::string>> rows;
+        for (const Function& f : fl.functions) {
+            const bool sel = opt.selectors && replaced.count(f.start);
+            rows.emplace_back(f.start, function_symbol(f) + (sel ? "__sel" : ""));
+            for (std::uint32_t e : prog.entries_of(f)) rows.emplace_back(e, at_symbol(f, e) + (sel ? "__sel" : ""));
+        }
+        std::sort(rows.begin(), rows.end());
+        for (std::size_t i = 1; i < rows.size(); ++i)
+            if (rows[i].first == rows[i - 1].first) {
+                error = "dispatch: two rows for 0x" + [&] { std::string s2; hex8(s2, rows[i].first); return s2; }();
+                return false;
+            }
+        std::string d = header;
+        d += "// LOOKUP_FUNC: sorted {va, fn} table + binary search behind a direct-mapped cache; a miss is a hard error\n"
+             "// naming the VA.\n";
+        d += "#include \"gen_prelude.h\"\n#include <atomic>\n#include <cstddef>\n\n";
+        {
+            // Reference mode: one flag per replaced function and its selector (the dispatch rows point at it).
+            std::string sels, defs, list;
+            for (const Function& f : fl.functions) {
+                if (!replaced.count(f.start)) continue;
+                std::string addr8;
+                hex8(addr8, f.start);
+                selector_block(sels, function_symbol(f), addr8);
+                for (std::uint32_t e : prog.entries_of(f)) selector_block(sels, at_symbol(f, e), addr8);  // the function's own flag
+                defs += "unsigned char g_reference_"; defs += addr8; defs += " = 0;\n";
+                list += "    &g_reference_"; list += addr8; list += ",\n";
+            }
+            d += sels;
+            d += "namespace p3fes::rt {\n";
+            d += defs;
+            d += "unsigned char* const kReferenceFlags[] = {\n"; d += list.empty() ? std::string("    nullptr,\n") : list; d += "};\n";
+            d += "const std::size_t kReplacedCount = "; json_num(d, static_cast<std::size_t>(std::count(list.begin(), list.end(), '&'))); d += ";\n";
+            d += "// --reference-mode (runtime/STATE.md): every replaced function runs as its recompiled original.\n";
+            d += "void set_reference_mode(bool on) { for (std::size_t i = 0; i < kReplacedCount; ++i) *kReferenceFlags[i] = on ? 1 : 0; }\n";
+            d += "bool reference_mode() { return kReplacedCount != 0 && *kReferenceFlags[0] != 0; }\n";
+            d += "std::size_t replaced_count() { return kReplacedCount; }\n";
+            d += "}  // namespace p3fes::rt\n\n";
+        }
+        d += "namespace p3fes::recomp_gen {\n\n";
+        d += "struct DispatchRow { std::uint32_t va; ::p3fes::rt::Fn fn; };\n\n";
+        d += "extern const DispatchRow kDispatchTable[];\nextern const std::size_t kDispatchTableSize;\n\n";
+        d += "const DispatchRow kDispatchTable[] = {\n";
+        for (const auto& [va, sym] : rows) { d += "    {"; hexu(d, va); d += ", &"; d += sym; d += "},\n"; }
+        if (rows.empty()) d += "    {0u, nullptr},\n";
+        d += "};\nconst std::size_t kDispatchTableSize = "; json_num(d, rows.size()); d += ";\n\n";
+        d += "}  // namespace p3fes::recomp_gen\n\n";
+        d += "namespace p3fes::rt {\n\n";
+        // A direct-mapped cache of the binary search's answers in front of it (every jalr and task callback goes
+        // through here): one relaxed 64-bit load on a hit, the entry packing (va, row + 1) so a racing writer can
+        // never pair one row's va with another's index. A miss in the table still reaches lookup_miss.
+        d += "namespace {\n"
+             "constexpr std::size_t kLookupCacheSize = 4096;  // power of two\n"
+             "std::atomic<std::uint64_t> g_lookup_cache[kLookupCacheSize];\n"
+             "}  // namespace\n\n";
+        d += "Fn lookup_func(std::uint32_t va) {\n"
+             "    using ::p3fes::recomp_gen::kDispatchTable;\n"
+             "    std::atomic<std::uint64_t>& slot = g_lookup_cache[(va >> 2) & (kLookupCacheSize - 1)];\n"
+             "    const std::uint64_t e = slot.load(std::memory_order_relaxed);\n"
+             "    if (static_cast<std::uint32_t>(e >> 32) == va && static_cast<std::uint32_t>(e) != 0)\n"
+             "        return kDispatchTable[static_cast<std::uint32_t>(e) - 1].fn;\n"
+             "    std::size_t lo = 0, hi = ::p3fes::recomp_gen::kDispatchTableSize;\n"
+             "    while (lo < hi) {\n"
+             "        const std::size_t mid = lo + (hi - lo) / 2;\n"
+             "        const std::uint32_t v = kDispatchTable[mid].va;\n"
+             "        if (v == va) {\n"
+             "            slot.store((static_cast<std::uint64_t>(va) << 32) | static_cast<std::uint32_t>(mid + 1), std::memory_order_relaxed);\n"
+             "            return kDispatchTable[mid].fn;\n"
+             "        }\n"
+             "        if (v < va) lo = mid + 1; else hi = mid;\n"
+             "    }\n"
+             "    lookup_miss(va);\n"
+             "}\n\n}  // namespace p3fes::rt\n";
+        if (!write_text(out_dir / "dispatch.cpp", d, error)) return false;
+    }
+
+    {
+        // Declared but not emitted: aborting definitions so subset builds link.
+        std::set<std::uint32_t> emitted_starts;
+        for (const Function* f : emitted) emitted_starts.insert(f->start);
+        std::string m = header;
+        m += "// Functions declared in functions.h but not emitted in this run (subset builds). Each aborts\n"
+             "// through rt::missing_function naming the function start. Empty in a full run.\n";
+        m += "#include \"gen_prelude.h\"\nnamespace p3fes::recomp_gen {\n\n";
+        std::size_t n = 0;
+        for (const Function& f : fl.functions) {
+            if (emitted_starts.count(f.start)) continue;
+            ++n;
+            m += "void "; m += function_symbol(f); m += "(p3fes::EEContext&) { rt::missing_function("; hexu(m, f.start); m += "); }\n";
+            if (prog.has_entries(f)) {
+                m += "void "; m += entry_symbol(f); m += "(p3fes::EEContext&, std::uint32_t entry_pc) { rt::bad_entry("; hexu(m, f.start); m += ", entry_pc); }\n";
+                for (std::uint32_t e : prog.entries_of(f)) {
+                    m += "void "; m += at_symbol(f, e); m += "(p3fes::EEContext&) { rt::missing_function("; hexu(m, e); m += "); }\n";
+                }
+            }
+        }
+        m += "\n}  // namespace p3fes::recomp_gen\n// "; json_num(m, n); m += " missing functions\n";
+        if (!write_text(out_dir / "missing_stubs.cpp", m, error)) return false;
+    }
+
+    {
+        std::string j = "{\n  \"tool\": \"p3fes_recomp\",\n  \"elf_sha256\": "; json_str(j, opt.elf_sha256);
+        j += ",\n  \"selection\": {\"only\": "; json_num(j, only.size());
+        j += ", \"band\": "; if (opt.has_band) { j += '['; json_hex(j, opt.band_lo); j += ", "; json_hex(j, opt.band_hi); j += ']'; } else j += "null";
+        j += ", \"group_size\": "; json_num(j, group); j += ", \"annotate\": "; j += opt.annotate ? "true" : "false";
+        j += ", \"keep_going\": "; j += opt.keep_going ? "true" : "false";
+        j += ", \"cycles\": "; j += opt.cycles ? "true" : "false";
+        j += ", \"check_events\": "; j += opt.check_events ? "true" : "false"; j += "},\n";
+        j += "  \"functions\": {\"total\": "; json_num(j, report.functions_total);
+        j += ", \"selected\": "; json_num(j, report.functions_selected);
+        j += ", \"emitted\": "; json_num(j, report.functions_emitted);
+        j += ", \"with_problems\": "; json_num(j, report.problem_functions);
+        j += ", \"with_mid_body_entries\": "; json_num(j, report.functions_with_entries);
+        j += ", \"mid_body_entry_points\": "; json_num(j, report.entry_points);
+        j += ", \"replaced\": "; json_num(j, report.replaced); j += "},\n";
+        j += "  \"replaced\": [";
+        {
+            bool first_r = true;
+            for (const Function& f : fl.functions) {
+                if (!replaced.count(f.start)) continue;
+                if (!first_r) j += ','; first_r = false;
+                j += "\n    {\"function\": "; json_str(j, f.name); j += ", \"start\": "; json_hex(j, f.start); j += '}';
+            }
+        }
+        j += "\n  ],\n";
+        const FunctionStats& s = report.stats;
+        const GenStats& g = report.gen;
+        j += "  \"counts\": {\n";
+        auto kv = [&](const char* k, std::size_t v, bool last = false) { j += "    \""; j += k; j += "\": "; json_num(j, v); j += last ? "\n" : ",\n"; };
+        kv("instruction_words", s.words); kv("data_words_skipped", s.data_words);
+        kv("data_words_reached", s.reached_data_words); kv("data_words_unreached", s.dead_data_words);
+        kv("statements", g.statements);
+        kv("branches", s.branches); kv("likely_branches", s.likely_branches); kv("calls", s.calls);
+        kv("mid_body_calls", s.mid_body_calls); kv("static_tail_calls", s.tail_calls); kv("indirect_calls_jalr", s.indirect_calls);
+        kv("indirect_tail_jumps", s.indirect_tails); kv("returns", s.returns); kv("switches", s.switches);
+        kv("switch_targets", s.switch_targets); kv("syscalls", s.syscalls); kv("breaks", s.breaks); kv("erets", s.erets);
+        kv("delay_slots_outside_chunk", s.slots_outside_chunk); kv("delay_slots_that_are_targets", s.slot_labels);
+        kv("chunk_ends_into_no_function", s.unreachable_ends);
+        kv("calls_to_noreturn_roots", s.noreturn_calls); kv("tail_calls_to_noreturn_roots", s.noreturn_tail_calls);
+        kv("functions_that_cannot_return", report.noreturn_functions);
+        kv("nops_dropped", g.nops_dropped);
+        kv("zero_writes_dropped", g.zero_writes_dropped); kv("unreached_code_words", s.dead_words);
+        kv("dangling_labels", g.dangling_labels); kv("unsupported_words_emitted", g.invalid_words);
+        kv("cycle_adds", g.cycle_adds); kv("cycle_words_charged", g.cycle_words);
+        kv("entry_checks", g.entry_checks); kv("backedge_checks", g.backedge_checks, true);
+        j += "  },\n  \"files\": [";
+        for (std::size_t i = 0; i < unit_names.size(); ++i) { if (i) j += ", "; json_str(j, unit_names[i]); }
+        j += "],\n  \"mid_body_entries\": [";
+        bool first = true;
+        for (const Function& f : fl.functions) {
+            if (!prog.has_entries(f)) continue;
+            if (!first) j += ','; first = false;
+            j += "\n    {\"function\": "; json_str(j, f.name); j += ", \"start\": "; json_hex(j, f.start); j += ", \"entries\": [";
+            bool f2 = true;
+            for (std::uint32_t e : prog.entries_of(f)) { if (!f2) j += ", "; f2 = false; json_hex(j, e); }
+            j += "]}";
+        }
+        j += "\n  ],\n  \"data_words\": [";
+        first = true;
+        for (const DataWord& dw : data_words) {
+            if (!first) j += ','; first = false;
+            j += "\n    {\"pc\": "; json_hex(j, dw.pc); j += ", \"function\": "; json_str(j, dw.fn->name);
+            j += ", \"reached\": "; j += dw.reached ? "true" : "false"; j += '}';
+        }
+        j += "\n  ],\n  \"unsupported_words\": [";
+        first = true;
+        for (const Unsupported& u : unsupported) {
+            if (!first) j += ','; first = false;
+            j += "\n    {\"pc\": "; json_hex(j, u.pc); j += ", \"word\": "; json_hex(j, u.word);
+            j += ", \"function\": "; json_str(j, u.fn->name); j += '}';
+        }
+        j += "\n  ],\n  \"problems\": [";
+        first = true;
+        for (const FunctionProblem& fp : report.problems) {
+            if (!first) j += ','; first = false;
+            j += "\n    {\"function\": "; json_str(j, fp.fn->name); j += ", \"pc\": "; json_hex(j, fp.problem.pc);
+            j += ", \"kind\": \""; j += problem_name(fp.problem.kind); j += "\", \"target\": "; json_hex(j, fp.problem.target); j += '}';
+        }
+        j += "\n  ],\n  \"targets_in_no_function\": [";
+        first = true;
+        for (const auto& [from, to] : report.unowned) {
+            if (!first) j += ','; first = false;
+            j += "\n    {\"from\": "; json_hex(j, from); j += ", \"target\": "; json_hex(j, to); j += '}';
+        }
+        j += "\n  ]\n}\n";
+        if (!write_text(out_dir / "manifest.json", j, error)) return false;
+    }
+    return true;
+}
+
+}  // namespace p3fes::recomp

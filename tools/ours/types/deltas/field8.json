@@ -1,0 +1,23 @@
+{"records": [
+  {"name": "RtFsHddFile", "anchors": [{"how": "param", "fn": "0x102AD0", "index": 0}, {"how": "param", "fn": "0x102B60", "index": 0}, {"how": "param", "fn": "0x102BF0", "index": 1}], "size": 144,
+   "fields": [
+    {"off": 0, "width": 8, "type": "s64", "name": "size", "note": "field8: H_Cdvd_RtFsHdd_Fopen stores sceLseek(fd, 0, SEEK_END)"},
+    {"off": 16, "width": 8, "type": "s64", "name": "pos", "note": "field8: read / write add the count, seek sets it (sub_102BF0 copies the quadword to the result)"},
+    {"off": 48, "width": 4, "type": "s32", "name": "opened_word", "note": "field8: cleared by the open"},
+    {"off": 56, "width": 4, "type": "s32", "name": "state", "note": "field8: 1 after the close (sub_102A70), 3 after a read"},
+    {"off": 60, "width": 4, "type": "s32", "name": "is_open", "note": "field8: 1 after a successful open"},
+    {"off": 116, "width": 4, "type": "s32", "name": "fd", "note": "field8: the pfs0 descriptor every callback passes to sce*"}]},
+  {"name": "ResmanControl", "anchors": [{"how": "param", "fn": "0x10C7D0", "index": 0}, {"how": "gobj", "addr": "0x7CDF30"}], "size": 8,
+   "fields": [
+    {"off": 0, "width": 2, "type": "u16", "name": "go", "note": "field8: H_ResrcMan_Update sets 1 with the request; the worker clears it before sleeping"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "request", "note": "field8: the request the worker serves (ResmanRequest)"}]},
+  {"name": "ResmanRequest", "anchors": [{"how": "gslot", "addr": "0x7E5860"}], "size": 476,
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "next", "note": "field8: H_ResrcMan_Update / the worker chain"},
+    {"off": 164, "width": 1, "type": "u8", "name": "file_name", "note": "field8: char[]; empty = no file (H_Cdvd_Request(name, archive))"},
+    {"off": 420, "width": 4, "type": "s32", "name": "state", "note": "field8: 0 new, 1 loading, 2 with the worker, 3 done"},
+    {"off": 424, "width": 4, "type": "s32", "name": "archive", "note": "field8: H_Cdvd_Request's second argument"},
+    {"off": 428, "width": 4, "type": "s32", "name": "kind", "note": "field8: 0..9, the worker's loader (jump table 0x7B52B0)"},
+    {"off": 432, "width": 4, "type": "ptr", "name": "cdvd_node", "note": "field8: destroyed by the worker after the load"},
+    {"off": 464, "width": 2, "type": "s16", "name": "frames_waited", "note": "field8: H_ResrcMan_Update counts the frames in state 2"}]}
+]}

@@ -1,0 +1,39 @@
+{"records": [
+  {"name": "gBtl", "anchors": [{"how": "gslot", "addr": "0x7CE3EC"}], "fields": [
+    {"off": 266, "width": 2, "type": "u16", "name": "cam_mode"},
+    {"off": 2568, "width": 4, "type": "u32", "name": "support_uid"},
+    {"off": 2806, "width": 2, "type": "u16", "name": "voice_ready"},
+    {"off": 2812, "width": 4, "type": "ptr", "name": "voice_buf"},
+    {"off": 2828, "width": 4, "type": "fnptr", "name": "boss_act_end_hook"},
+    {"off": 2932, "width": 4, "type": "ptr", "name": "cam_last_target"},
+    {"off": 2936, "width": 2, "type": "u16", "name": "cam_side_shot"},
+    {"off": 2976, "width": 4, "type": "ptr", "name": "help_window"}]},
+  {"name": "BtlCameraShot", "anchors": [{"how": "param", "fn": "0x2E76A0", "index": 0}, {"how": "param", "fn": "0x2E87B0", "index": 0}, {"how": "param", "fn": "0x2B2880", "index": 0}], "fields": [
+    {"off": 156, "width": 4, "type": "f32", "name": "point"},
+    {"off": 224, "width": 4, "type": "ptr", "name": "action"},
+    {"off": 256, "width": 4, "type": "ptr", "name": "target"},
+    {"off": 268, "width": 2, "type": "u16", "name": "calls"},
+    {"off": 284, "width": 4, "type": "ptr", "name": "target_copy"},
+    {"off": 288, "width": 4, "type": "ptr", "name": "motion_unit"},
+    {"off": 292, "width": 2, "type": "u16", "name": "motion"}]},
+  {"name": "BtlVoiceLinePktData", "size": 24, "anchors": [{"how": "param", "fn": "0x2E2A60", "index": 0}], "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "speaker"},
+    {"off": 4, "width": 2, "type": "u16", "name": "situation"},
+    {"off": 8, "width": 4, "type": "u32", "name": "arg0"},
+    {"off": 12, "width": 4, "type": "u32", "name": "arg1"},
+    {"off": 20, "width": 4, "type": "u32", "name": "started"}]},
+  {"name": "BtlVoiceBankPktData", "size": 8, "anchors": [{"how": "param", "fn": "0x2E2920", "index": 0}], "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "request"},
+    {"off": 4, "width": 4, "type": "u32", "name": "started"}]},
+  {"name": "BtlAiScriptPktData", "size": 16, "anchors": [{"how": "param", "fn": "0x2D1C20", "index": 0}], "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "action"},
+    {"off": 4, "width": 4, "type": "s32", "name": "procedure"},
+    {"off": 8, "width": 4, "type": "u32", "name": "started"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "script"}]},
+  {"name": "BtlSoundPktData", "size": 12, "anchors": [{"how": "param", "fn": "0x2E3010", "index": 0}], "fields": [
+    {"off": 0, "width": 2, "type": "u16", "name": "bank"},
+    {"off": 2, "width": 2, "type": "u16", "name": "channel"},
+    {"off": 4, "width": 2, "type": "u16", "name": "id"},
+    {"off": 6, "width": 2, "type": "u16", "name": "flags"},
+    {"off": 8, "width": 4, "type": "u32", "name": "started"}]}
+]}

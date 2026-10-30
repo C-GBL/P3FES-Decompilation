@@ -1,0 +1,17 @@
+# libs17.sym  Phase 5 slice delta (game/include/p3fes/game/libs17.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint;
+#   no IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-libs17 verified=yes: each name is
+#   the one the function's own CRI error string gives (the string the body loads into $a2 for sub_59FD10 / sub_5A10E8).
+#   ev=<doc>#<section>. Not imported by the agent.
+# sub_59EAF8: raises "E201312: sfxcnv_IsCnvUpHalf : compo is invalid." (0x7CA610); returns 1 for the upper-half compositions
+0059eaf8 000000d8 F sfxcnv_IsCnvUpHalf source=phase5-libs17 verified=yes ev=INTEGRATION_LOG.md#libs17
+# sub_59EF90: loads "E202282: SFX_MakeTblZ16 : zclip is not set." (0x7CA818); passes depth 16
+0059ef90 00000074 F SFX_MakeTblZ16 source=phase5-libs17 verified=yes ev=INTEGRATION_LOG.md#libs17
+# sub_59F008: loads "E202281: SFX_MakeTblZ32 : zclip is not set." (0x7CA848); passes depth 32
+0059f008 00000074 F SFX_MakeTblZ32 source=phase5-libs17 verified=yes ev=INTEGRATION_LOG.md#libs17
+# sub_59F518: raises "E4011801: sfxcnv_ExecCopyAlphaByCbFunc : frame format is invalid." (0x7CA900); runs the copy callback +108
+0059f518 000001b0 F sfxcnv_ExecCopyAlphaByCbFunc source=phase5-libs17 verified=yes ev=INTEGRATION_LOG.md#libs17
+# sub_5A0B00: raises "E201314: SFXZ_SetZclip : zclip is invalid." (0x7CAAA0); stores the clip pair $f12 / $f13
+005a0b00 00000064 F SFXZ_SetZclip source=phase5-libs17 verified=yes ev=INTEGRATION_LOG.md#libs17
+# sub_5A1088: raises "E201313: sfxcnv_CnvZbitToCft : zbit is invalid." (0x7CAB40); maps 16 / 24 / 32 to 1 / 2 / 3
+005a1088 00000060 F sfxcnv_CnvZbitToCft source=phase5-libs17 verified=yes ev=INTEGRATION_LOG.md#libs17

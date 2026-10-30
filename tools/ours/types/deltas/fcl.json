@@ -1,0 +1,45 @@
+{"records": [
+  {"name": "NmListObject", "anchors": [{"how": "param", "fn": "0x3C4A90", "index": 0}],
+   "fields": [
+    {"off": 28, "width": 4, "type": "fnptr", "name": "remove_filter"},
+    {"off": 32, "width": 4, "type": "u32", "name": "payload_size"}]},
+  {"name": "MsgAssistWork", "size": 160, "anchors": [{"how": "gslot", "addr": "0x7CE67C"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "requests"},
+    {"off": 4, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 12, "width": 4, "type": "u32", "name": "owner"},
+    {"off": 20, "width": 4, "type": "u32", "name": "mask"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "slot_list"},
+    {"off": 28, "width": 4, "type": "u32", "name": "slot0_flags"},
+    {"off": 32, "width": 4, "type": "s32", "name": "slot0_index"}]},
+  {"name": "FclMsgWin", "anchors": [{"how": "gobj", "addr": "0x95BE90"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "handle"},
+    {"off": 4, "width": 1, "type": "s8", "name": "state"},
+    {"off": 5, "width": 1, "type": "s8", "name": "hidden"},
+    {"off": 13, "width": 1, "type": "s8", "name": "selection"}]},
+  {"name": "FclCmbEffWork", "size": 96, "anchors": [{"how": "param", "fn": "0x41B5C0", "index": 0}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 8, "width": 4, "type": "ptr", "name": "draw_task"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "draw3d_task"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "draw2d_task"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "drawsp_task"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "psmodel_task"},
+    {"off": 52, "width": 4, "type": "ptr", "name": "resources"},
+    {"off": 56, "width": 4, "type": "u32", "name": "camera_frame"},
+    {"off": 60, "width": 4, "type": "ptr", "name": "runner"},
+    {"off": 64, "width": 4, "type": "ptr", "name": "requests"},
+    {"off": 68, "width": 4, "type": "ptr", "name": "script"}]},
+  {"name": "FclCmbEffRunner", "size": 20, "anchors": [{"how": "param", "fn": "0x4180A0", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "resource_list"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "active_list"},
+    {"off": 8, "width": 4, "type": "s32", "name": "frame"},
+    {"off": 12, "width": 4, "type": "s32", "name": "started"},
+    {"off": 16, "width": 4, "type": "u32", "name": "flags"}]},
+  {"name": "FclCmbEffScript", "size": 8, "anchors": [{"how": "param", "fn": "0x41B5C0", "index": 1}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "commands"},
+    {"off": 4, "width": 4, "type": "s32", "name": "count"}]}
+]}

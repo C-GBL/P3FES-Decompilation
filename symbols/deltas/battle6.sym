@@ -1,0 +1,351 @@
+# battle6.sym  Phase 5 slice delta (game/include/p3fes/game/battle6.h); SLUS_216.21
+# generated 2026-10-25 from the instructions (p3fes_handgen bodies, the K_Assert file names, the strings, the state
+#   table sBtlActionTbl 0x693410, the staff roll data DATA/OPED/ED_SR.BIN; no IDA database opened).
+#   Rows: <addr8> <size8> F <name> <tags>, source=phase5-battle6, verified=yes: our own names, each from what the body
+#   does (its role block in game/src/battle/battle6_*.cpp). Not imported by the agent.
+# sub_242C20: Sets a battle info slot's two words (a0 a slot of the bi work, 3,920 bytes each: b4::bi; sub_1FE650): flag 0x20, +3908 = a1, +3904 = a2
+00242C20 0000001C F biSlotSetWords source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_243150: Draws the battle panel command work (bpc_main.c, *$gp 0x7CE320; K_Assert line 151; bpRoot's draw task)
+00243150 00000FD0 F bpcDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_244E80: Sets the three persona marks of the battle panel command work (K_Assert line 151) from the cursor unit's DatUnit (sub_1FF430 of uid +16; K_Assert 1008 / 1009: open with one listed unit): for each pair ...
+00244E80 00000548 F bpcSetPersonaMarks source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2459D0: Prepares a battle panel command entry (a0) of an analysed enemy for its slide-in: clears +1808 (the slide counter) and flags 0x10 / 0x20, sets 0x200
+002459D0 00000030 F bpcEntryPrepareAnalysed source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_245CD0: Sets the relation word of every listed battle panel command entry (K_Assert line 151): of the entries flagged 0x80, the cursor unit's own entry gets 0, an entry whose DatUnit has the cursor unit's id  ...
+00245CD0 00000128 F bpcSetEntryRelations source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_248580: Opens the battle panel message window (bpm_main.c, *$gp 0x7CE324; K_Assert line 61) with the text a0 / a1: closes the open one first (sub_2491F0), builds the text task (sub_3A52C0(100, 100, -1, 2, 6,  ...
+00248580 000000A0 F bpmOpenText source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_249420: Shows the item-get message of the bpe work (bpe_main.c, *$gp 0x7CE328; K_Assert lines 55 / 140): the message files 0 / 1 (sub_21C550), the item record (sub_30C0C0) sets its seen flag (4800 + item) and ...
+00249420 000001D4 F bpeShowItemMessage source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24A6E0: Opens the bas work (bas_main.c, *$gp 0x7CE32C; K_Assert line 29) for a0: sub_1FE580(a0), +4 = a0, flag 1
+0024A6E0 0000006C F basOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24A750: Nonzero while the bas work is open (flag 1; K_Assert line 29)
+0024A750 00000044 F basIsOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24A7A0: Closes the bas work (clears flag 1; K_Assert line 29)
+0024A7A0 0000004C F basClose source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24AC90: Closes the persona birth work (brp_birth.c, *$gp 0x7CE330; K_Assert lines 127 / 259: not busy): the texture set (sub_239280), sub_20E030, the resources (brpResTerm), sub_21A1B0, the effect objects of  ...
+0024AC90 00000154 F brpBirthTerm source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24BA50: Closes the persona birth resource work (brp_res.c, *$gp 0x7CE334; K_Assert line 57): frees the four loaded files (+16..+28, flag 1), the message file copy (+32, flag 2) and the block +36 (flag 4) thro ...
+0024BA50 000000E0 F brpResTerm source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24BB30: Per-frame step of the persona birth resource work (K_Assert lines 57 / 142): once the archive request (+8, flag 1) is loaded it takes its six files -- 0 the texture set (sub_20E800), 1 the model set ( ...
+0024BB30 0000030C F brpResUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24BF80: Requests facility/msg/msg_combine.bmd for the persona birth (K_Assert lines 191 / 192: not loading, not loaded) through H_Cdvd_Request (kind 0) into +12; sets flag 2
+0024BF80 000000B8 F brpResRequestMessages source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D160: Closes the Shuffle Time camera work (K_Assert lines 59 / 78) and clears its $gp slot 0x7CE33C
+0024D160 0000005C F sflCameraTerm source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D1C0: Per-frame update of the Shuffle Time camera work (K_Assert lines 59 / 88: not inside a draw, *0x960070 clear): while active (flag 1) with a camera picked (flag 2) it finds the picked camera record (+1 ...
+0024D1C0 000000BC F sflCameraUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D280: Sets the Shuffle Time camera work's RW camera (+16 = a0) and marks it active (flag 1; K_Assert line 59)
+0024D280 00000058 F sflCameraSetRwCamera source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D2E0: Adds the camera record a1 under the id a0 to the Shuffle Time camera list (K_Assert line 121: the id is new): record +4 the id, appended after the tail (+8 / +12 the links), its time +64 = 0
+0024D2E0 000000C8 F sflCameraAdd source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D3B0: Nonzero when the Shuffle Time camera list has a record with the id a0
+0024D3B0 00000080 F sflCameraExists source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D430: The Shuffle Time camera record with the id a0 (K_Assert line 175 when none; returns 0 then)
+0024D430 00000090 F sflCameraFind source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D4C0: Picks the Shuffle Time camera a0 (K_Assert line 175 when missing): +12 = the id, flag 2; a record of kind 1 restarts its orientation node (+168, sub_24F090), points its position node's first child at  ...
+0024D4C0 00000114 F sflCameraPick source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D5E0: Steps a Shuffle Time camera record (a0; K_Assert lines 208 / 252: kind 1 only): time +64 += 1.0 (16.16); the position follows the position node (+68 -> +32, flag +48); with a look-at node (+56 / +60)  ...
+0024D5E0 000001E4 F sflCameraStep source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D7D0: Copies a Shuffle Time camera record's rotation into the RW camera's frame (a0 +4): the quaternion a1 +16..+28 becomes the 3x3 matrix (2 / |q|^2 scaling), the translation cleared, the matrix flags 3, t ...
+0024D7D0 00000100 F sflCameraApply source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D8D0: Initialises a Shuffle Time camera record (a0): kind 1, the position / look-at flags +48 / +56 set, its orientation node (+168) as a random-wobble node (sub_24FD20) and its position node (+68) as a sum ...
+0024D8D0 00000064 F sflCameraInitRecord source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D940: Sets a Shuffle Time camera record's anchor node (+52 = a1; K_Assert line 292: kind set)
+0024D940 00000054 F sflCameraSetAnchor source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24D9A0: Sets a Shuffle Time camera record's look-at node (+60 = a1; K_Assert line 297)
+0024D9A0 00000054 F sflCameraSetLookAt source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24DA20: Closes the gc_pose work (K_Assert line 93) and clears its $gp slot 0x7CE340
+0024DA20 0000003C F gcPoseTerm source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24DB90: Advances every active gc_pose node by one frame (K_Assert line 93): time += 1.0 (16.16) and dirty (gcPoseAddTime)
+0024DB90 00000080 F gcPoseTickAll source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24DC10: Evaluates every gc_pose node (K_Assert line 93): clears the evaluation stack (+520) and runs gcPoseEval on each node of the list
+0024DC10 00000074 F gcPoseEvalAll source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24DC90: Evaluates a gc_pose node (a0) and the dirty nodes it depends on, depth first on the work's 128-entry stack (+8, count +520; K_Assert lines 230 / 306 / 408 / 452 / 530 on overflow)
+0024DC90 000013F4 F gcPoseEval source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24F210: Sets a wander position node's parameters (K_Assert 779 / 780: kind 0, mode 1): range +84 = f12, period +88 = a1 frames, +92 = f13; marks it dirty
+0024F210 000000A4 F gcPoseSetWander source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24F2C0: Sets a wander position node's scale (+96 = f12; K_Assert 795 / 796) and marks it dirty
+0024F2C0 00000084 F gcPoseSetWanderScale source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24F350: Restarts a wander position node (K_Assert 809 / 810) with the defaults range 10.0, period 180, +92 10.0, scale 1.0: new random start / target (gcPoseWanderPick) and the spline from (0, 0, +92) (gcPose ...
+0024F350 000000BC F gcPoseWanderRestart source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24F410: Picks a wander position node's current and target points (K_Assert 833 / 834): +36..+44 and +72..+80, each axis range/2 - range * (rand() & 0xFFF) / 4096 (libc rand, sub_488F30)
+0024F410 00000364 F gcPoseWanderPick source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24F780: Stops a timed-move position node (K_Assert 853 / 854: kind 0, mode 3): +40 = 0
+0024F780 0000006C F gcPoseMoveStop source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24F7F0: Builds a wander position node's spline toward its target (a0, a1 = the start tangent f32[3]): +48 = +36 + a1, the normalised chords to and from the target and their cross products give the control poi ...
+0024F7F0 00000170 F gcPoseWanderSpline source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FAA0: A position or direction node's value (node + 20; K_Assert line 910 for an orientation)
+0024FAA0 0000004C F gcPoseGetVector source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FBA0: Copies an orientation node's quaternion (+20..+32) to a1 (K_Assert 934 / 935: kind 2, mode < 5)
+0024FBA0 00000098 F gcPoseGetQuat source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FC40: Sets a fixed orientation node's quaternion from a1 (K_Assert 942 / 953: kind 2, modes 0..3)
+0024FC40 000000C8 F gcPoseSetQuat source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FD10: Makes a0 a fixed position node (kind 0, mode 0)
+0024FD10 00000010 F gcPoseInitFixed source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FD20: Makes a0 a wander position node (kind 0, mode 1)
+0024FD20 00000014 F gcPoseInitWander source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FD40: Makes a0 a sum position node (kind 0, mode 2) with no children
+0024FD40 00000040 F gcPoseInitSum source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FD80: Makes a0 a timed-move position node (kind 0, mode 3)
+0024FD80 00000014 F gcPoseInitMove source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FDC0: Makes a0 a product orientation node (kind 2, mode 2) with no children
+0024FDC0 00000040 F gcPoseInitProduct source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FE20: Makes a0 a wobble orientation node (kind 2, mode 4)
+0024FE20 00000018 F gcPoseInitWobble source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FE40: Restarts a wobble orientation node (K_Assert 1051 / 1052) with the defaults ranges (5.0, 15.0, 15.0), period 180, +104 1.0, scale 1.0: new random angles (gcPoseWobblePick) and the spline from (0, 0, + ...
+0024FE40 000000CC F gcPoseWobbleRestart source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_24FF10: Picks a wobble orientation node's current and target angles (K_Assert 1076 / 1077): +40..+48 and +76..+84, each range/2 - range * (rand() & 0xFFF) / 4096 with the per-axis ranges +88..+96
+0024FF10 00000368 F gcPoseWobblePick source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250280: Builds a wobble orientation node's spline toward its target angles (as gcPoseWanderSpline, one word further on: +52 = +40 + a1, control point +64 from +76, scale +104)
+00250280 00000170 F gcPoseWobbleSpline source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2503F0: Sets child a1 (0..2) of a sum position node to a2 (K_Assert 1116 / 1117)
+002503F0 0000008C F gcPoseSetSumChild source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250480: Stops a timed-move position node's run flag (+40 bit 1; K_Assert 1126 / 1127)
+00250480 00000078 F gcPoseMoveHalt source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250500: Starts a straight timed move of a position node (K_Assert line 1137: mode 3): kind 0 (lerp), the end +48 = a1, the start +60 = the current value, time 0, duration +44 = a2 frames (16.16), running
+00250500 000000AC F gcPoseMoveLinear source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2505B0: Starts a curved timed move (K_Assert 1193 / 1194): kind 1, the start velocity a3 (+60), the end a1 (+84), the start = the current value (+72); the acceleration +48 is solved so that the arc starting w ...
+002505B0 00000308 F gcPoseMoveCurve source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2508C0: Starts a decelerating timed move (K_Assert 1238 / 1239): kind 1 from the current value to a1 in a2 frames, arriving at rest: velocity +60 = 2 d / t, acceleration +48 = -2 d / t^2 (t = a2 / 30 s)
+002508C0 0000016C F gcPoseMoveEaseOut source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250A30: Starts an accelerating timed move (K_Assert 1269 / 1270): kind 1 from rest to a1 in a2 frames: velocity 0, acceleration 2 d / t^2
+00250A30 00000160 F gcPoseMoveEaseIn source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250B90: Nonzero while a timed-move position node runs (+40 bit 1; K_Assert line 1298)
+00250B90 00000050 F gcPoseMoveIsRunning source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250BE0: Sets child a1 of a product orientation node to a2 (K_Assert 1327 / 1328)
+00250BE0 00000090 F gcPoseSetProductChild source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250C70: Stops a spin orientation node (+44 bit 1; K_Assert 1337 / 1338: kind 2, mode 3)
+00250C70 0000007C F gcPoseSpinHalt source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250E70: Nonzero while a spin orientation node runs (+44 bit 1; K_Assert 1405 / 1406)
+00250E70 00000074 F gcPoseSpinIsRunning source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250EF0: Sets a wobble orientation node's scale (+108 = f12; K_Assert 1416 / 1417) and marks it dirty
+00250EF0 00000088 F gcPoseSetWobbleScale source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_250F80: Projects the world point a1 to the screen (a0 = f32[2]): the active camera's view matrix (sub_198590 +32, sub_4C6BE0), then x * 640 / w and y * 448 / w
+00250F80 0000008C F sflProjectToScreen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_251010: Adds a1 to a pose node's time (+16) and marks it dirty
+00251010 00000020 F gcPoseAddTime source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_251030: Marks a pose node dirty (+8 bit 2)
+00251030 00000014 F gcPoseTouch source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2510D0: Per-frame update of the battle tutorial (bp_tut.c, *$gp 0x7CE344; K_Assert line 57; bpRoot's task) while open: phase 0 waits for the panel (sub_21C860) and the picture task (sub_1114B0), shows the tut ...
+002510D0 000007DC F bpTutUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2518B0: Opens the battle tutorial of kind a0 (K_Assert line 57): sets its seen flag 4871 + kind (0..3), the message set (sub_21C7F0), starts the picture task (sub_110F80(0, 0x200040004)) into +16, phase 0, fl ...
+002518B0 0000011C F bpTutOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_251A20: Closes the battle tutorial's windows (K_Assert line 57): sub_3C77A0, sub_21C930
+00251A20 00000048 F bpTutClose source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_251A80: Per-frame update of the second battle tutorial (bp_tuta.c, *$gp 0x7CE348; K_Assert line 49) while open: phase 0 waits for the panel, then shows message 0 (5 for the alternate episode, sub_17D800) with ...
+00251A80 00000390 F bpTutaUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_251ED0: Closes the second battle tutorial's windows (K_Assert line 49): sub_3C77A0, sub_21C930
+00251ED0 00000048 F bpTutaClose source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_251F40: Opens the bpo banner (bpo_main.c, *$gp 0x7CE34C; K_Assert line 54) of kind a0: the plate (texture 57 for kind 0, 58 for kind 1, of set 1) into its three quads (+16 / +272 / +528), sound request (1, 15 ...
+00251F40 00000118 F bpoOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_253A40: Per-frame update of the Shuffle Time cards (sfl_card.c; K_Assert line 188): clears the 'models loading' flag 0x200 once sub_21A120 says so; while open: counts frames (+75392); flag 0x20 holds while le ...
+00253A40 00001150 F sflCardsUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2564C0: Per-frame update of one Shuffle Time card (a0; K_Assert lines 188 / 1603): the flipped cards' sway (a 90 frame cycle, -1000 * sin) into their point lights; a fade (flag 0x200, +4684: 3 in, 2 out over  ...
+002564C0 00000A5C F sflCardUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_258B40: Shuffles the Shuffle Time cards (K_Assert lines 188 / 1146): releases the stacked cards (sub_258F80), then permutes the slot numbers 0..n-1 (n = +75388) with (rand() & 15) + 1024 random swaps of two d ...
+00258B40 00000434 F sflCardsShuffle source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25A130: Per-frame update of the Shuffle Time card cursor (sfl_cursor.c; K_Assert line 71) while open: the 60-frame blink counter (+52); a running move (flag 2) by its kind (+3232): 0 slides the cursor from +4 ...
+0025A130 0000030C F sflCursorUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25A440: Draws the Shuffle Time card cursor (K_Assert line 71; the draw-1 task): the 2D render states, the frame quads (+3248 / +3504 with texture 4, +3760 with texture 2 of the second set), then per card mark ...
+0025A440 0000038C F sflCursorDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25A7D0: Opens the Shuffle Time card cursor (K_Assert line 71): flags cleared, the frame quads' UVs from the texture sizes (117 x 32 and 63 x 20 cells), the cursor's start point (sub_258540(0, +28)), every mar ...
+0025A7D0 0000029C F sflCursorOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25D8A0: Lays out the item stock-over panel (br_item.c, *$gp 0x7CE370; K_Assert line 117) for the texture set a0 (+8): the plates 52 / 53 / 54 / 58 into the quads +1040 / +1296 / +1552 / +1808 with alpha 30 /  ...
+0025D8A0 00000140 F brItemOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25D9E0: Starts the item stock-over panel's opening (K_Assert line 117): frame +12 = 0, mode +4 = 0, flag 2
+0025D9E0 00000050 F brItemStartOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25DA30: Lays out the item stock-over panel for the current frame (K_Assert line 117): advances the frame (+12) of the opening (mode 0, 10 frames, then flag 2 clears) or the closing (mode 1, 10 frames, then fl ...
+0025DA30 0000130C F brItemLayout source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25ED40: Draws the item stock-over panel (K_Assert line 117): the backdrop quads (+784, +16), the band (+1808, texture 58) and its shadow (+2064), the frame (+528), the window (+272, its blend by the mode) and ...
+0025ED40 00000628 F brItemDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_25F510: Destroy callback of the 'stock over bg' task: clears the $gp slots 0x7CE370 / 0x7CE374 and frees the task's work (a0 +60) through the RwFree slot (K_Assert line 117)
+0025F510 00000060 F brItemTaskDestroy source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_260A50: Opens the persona-select banner (sfl_psel2.c; K_Assert line 87): the plates 52 / 53 / 54 / 58 of the panel texture set (sub_20EC50) into the quads +1040 / +1296 / +1552 / +1808 with alpha 30 / 30 / 30 ...
+00260A50 0000017C F sflPselOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_261480: Lays out the persona-select banner for the current frame (K_Assert line 87): by the mode (+4: 0 opening, 1 closing) each quad slides and fades over its own frame span (the plates 52..54 over 5 / 6 fra ...
+00261480 0000125C F sflPselLayout source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_262790: Opens the result screen's hero panel (br_hero.c, *$gp 0x7CE37C; K_Assert lines 83 / 137..139): the hero's level (sub_16C7E0), the experience to the next level (sub_16D2F0, capped at 99,999), HP / max  ...
+00262790 00000948 F brHeroOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_263170: Places the result screen's hero panel for the current frame (K_Assert line 83) while open: the frame counter cycles 0..1050 (+14688); every quad's position from its texture cell (sub_21D8E0, the slide ...
+00263170 00000C38 F brHeroLayout source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_263DB0: Draws the result screen's hero panel (K_Assert line 83) while open: the quads in panel order (textures 22..29, the rank plates, the bars, the level-up plates, the numbers sub_239140) and the name line ...
+00263DB0 00000EE4 F brHeroDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_264EF0: Switches the result screen's persona panel to persona a0 (br_persona.c, *$gp 0x7CE380; K_Assert lines 39 / 89: a different one): its record shown in the status task set (sub_3C9B00)
+00264EF0 00000094 F brPersonaSet source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_266F60: Opens the battle panel persona status (bp_persona.c, *$gp 0x7CE398; K_Assert line 36) for persona a0: its record (sub_1749A0), a status task set (fclMisc_CreatePsStatusTasks(0, 0, 5, 0)) into +4 showi ...
+00266F60 00000108 F bpPersonaOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_267070: Switches the battle panel persona status to persona a0 (K_Assert line 92: a different one): +8, the record shown (sub_3C9B00), flag 2
+00267070 000000A4 F bpPersonaSet source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_267210: Flag 2 of the battle panel persona status (set when a persona is shown; K_Assert line 36)
+00267210 00000044 F bpPersonaIsShown source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_272810: Per-frame update of the result screen's persona sequence (brp_seq.c, *$gp 0x7CE3C0; K_Assert line 176) while open, by its step (+16): 0 waits for the model (flag 0x100, sub_276CC0); 1 the level-up mes ...
+00272810 00000F88 F brpSeqUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_273C00: Persona sequence: go to the new-skill step (K_Assert line 176): sub_279750, sound (1, 0, 8, 2), substep +24 = 0, step 3
+00273C00 00000070 F brpSeqStepSkills source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_273C70: Persona sequence: go to the power-up offer step (K_Assert lines 176 / 1007): clears flag 0x10, the persona's name (sub_173220 of +4) into the message, message 8 with choice list 9 (type 0), sound (1,  ...
+00273C70 000000E0 F brpSeqStepEvolve source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_273D50: Persona sequence: go to the skill change step (K_Assert line 176): the persona's name and the skill name of +160 (the 19-byte skill name rows *0x7CE4EC) into the message, message 13 with choice list 9 ...
+00273D50 000000BC F brpSeqStepChange source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_274100: Persona sequence: the next new skill (K_Assert line 176): +432 counts; the learn-list views (sub_279120, sub_2792C0, sub_274C00, sub_279840); after the last (+436) the sequence moves on (sub_273800),  ...
+00274100 000000E4 F brpSeqNextSkill source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_275440: Creates the 'persona grow' screen (a script command, sub_3D3D20): a 17,680-byte work (RwMalloc) with the persona sequence (+0, sub_272330), the panel works +528 / +608 / +2176 / +2192 (sub_233970, sub ...
+00275440 000000DC F brpRootCreate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_275520: Destroys the 'persona grow' screen (brp_root.c; K_Assert line 70): the persona status, sequence and panels (sub_276C30, sub_272380, sub_233E70, sub_275A80, sub_276920, sub_276D30), both tasks, the wor ...
+00275520 000000A4 F brpRootDestroy source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2755D0: Starts the 'persona grow' screen for the start block a0 (K_Assert line 70): the panels (sub_275A90, sub_277070), the sequence (sub_272400(a0)), sub_276D90, the ADX SOUND2\EVENT\EVE_530.ADX on channel  ...
+002755D0 0000009C F brpRootStart source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_275670: Nonzero while the 'persona grow' screen runs (flag 1 of +17664; K_Assert line 70)
+00275670 00000044 F brpRootIsRunning source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2756C0: Update callback of the 'persona grow' task: the panel updates (sub_234070, sub_275BC0), the persona sequence (brpSeqUpdate), sub_276930, sub_2770F0; the music flag 2 clears once the sequence is done w ...
+002756C0 000000D8 F brpRootTaskUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2757A0: Draw callback of the 'persona grow' task: printf('%x', *0x960070), sub_275CB0, the parameter panel's draw (brpParamDraw); returns 0
+002757A0 00000040 F brpRootTaskDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2757E0: Installs the 'persona grow' screen's resource pack a0 (K_Assert line 201: 3 entries): entry 0 (sub_234710 with its size), entries 1 / 2 (sub_234690 0 / 1) by their offsets +8 / +16 / +24
+002757E0 000000FC F brpRootLoadPack source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2758E0: Fills the 'persona grow' screen's parameter panel for persona a1: sub_2769C0, sub_276BA0; its record (sub_1749A0): the skills (sub_176A30 count, sub_173370 list) into sub_2791B0, the next skill to lea ...
+002758E0 0000018C F brpRootFillParams source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2768C0: Clears flag 8 of the result screen level panel (br_lvpnl.c, *$gp 0x7CE3C8; K_Assert line 59)
+002768C0 0000004C F brLvPanelClearFlag8 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_276A80: Shows the result screen persona status page 16 (brp_persona.c, *$gp 0x7CE3CC; K_Assert lines 37 / 89: open): sub_3C9D00(16), flag 4
+00276A80 00000084 F brpPersonaShowPage source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_276B10: Back to the result screen persona status page 8 (K_Assert lines 37 / 98): sub_3C9D00(8), flag 4 cleared
+00276B10 00000088 F brpPersonaShowMain source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_276C30: Closes the result screen persona status (K_Assert lines 37 / 116): sub_3C9D80(2), flag 2 cleared
+00276C30 00000088 F brpPersonaClose source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2771F0: Lays out the result screen's parameter panel (brp_param.c, *$gp 0x7CE3D0; K_Assert line 97): the frame quads (textures 21 / 23), the eight skill cells (272 bytes from +16, two columns of four) and the ...
+002771F0 00001358 F brpParamLayout source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_278550: Draws the result screen's parameter panel (K_Assert line 97): the frame, the skill cells and their names (frFontDraw), the stat bars, numbers (sub_239140) and marks through the Im2D slot
+00278550 00000BD0 F brpParamDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279940: Builds the staff roll script object from the loaded ed_sr.bin file 0 (a0 = the file): allocates (RwMalloc slot, hint 0x40000) a 20-byte head + the string table (4 bytes per string, +12 of them) + the  ...
+00279940 00000174 F edScriptBuild source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279AC0: Frees the staff roll script object (a0) through the RwFree slot 0x96017C
+00279AC0 00000028 F edScriptFree source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279AF0: The staff roll script's string a1 (head +8 table[a1])
+00279AF0 00000018 F edScriptGetString source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279B10: The staff roll script's command stream (head +16)
+00279B10 0000000C F edScriptGetCommands source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279B20: The staff roll script's string count (head +4)
+00279B20 0000000C F edScriptGetStringCount source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279B30: Initialises the staff roll scroll work (a0, 4,656 bytes inside the ed_sr work) and registers it at $gp 0x7CE3D4: flags 0, the line colour 0xFFFFFFFF, the 32 line slots free; the clear colour white (su ...
+00279B30 000000BC F edScrollInit source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279BF0: Closes the staff roll scroll work (K_Assert line 88 when none): frees every used line slot's glyph lists (sub_27A560) and clears the $gp slot
+00279BF0 0000009C F edScrollTerm source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279C90: Starts the staff roll scroll: the frame counter, string index and command cursor to 0, the start y (+4632) and the next line's y (+4636) to 448.0 (the screen bottom), places the lines (sub_27A5D0), se ...
+00279C90 0000007C F edScrollStart source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279D10: Nonzero while the staff roll scroll runs (flag 1)
+00279D10 00000044 F edScrollIsRunning source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_279D60: Per-frame update of the staff roll scroll (K_Assert line 88)
+00279D60 00000648 F edScrollUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27A3B0: Draws the staff roll (the 'edsr draw' task's pass; K_Assert line 88): every glyph list of every used line slot through frFontDraw (a0 list, 1, 0) while the scroll runs
+0027A3B0 000000F0 F edScrollDraw source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27A4A0: Takes the first free staff roll line slot (of 32, 144 bytes from +4), marks it used and returns it (K_Assert line 407 when all are used)
+0027A4A0 000000B4 F edScrollAllocLine source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27A560: Frees a staff roll line slot (a0): each of its +132 glyph lists through sub_3B0170, then clears the used flag
+0027A560 00000070 F edScrollFreeLine source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27A5D0: Places every used staff roll line: position (x 57.0, the slot's y +140) through sub_27A930 and the work's line colour (+4652) through sub_27AA00
+0027A5D0 000000C8 F edScrollPlaceLines source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27A6A0: Breaks a staff roll string (a1) into words for a line slot (a0): walks the string to its NUL; each word (ended by a tab, space or the NUL) becomes a glyph list (frFontBuildGlyphList of the strncpy'd w ...
+0027A6A0 00000290 F edScrollBuildLine source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27A930: Positions a staff roll line slot's glyph lists (a0) at the point a1 {f32 x, y}: each list at (16 * (x + its offset), 8 * y) in the font's fixed-point units, then sub_3B2C60
+0027A930 000000C4 F edScrollPlaceLine source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AA00: Sets the colour of a staff roll line slot's glyph lists (a0) from the bytes a1[0..3] (packed r << 24 | g << 16 | b << 8 | a) through frFontLineSetRgba
+0027AA00 00000094 F edScrollSetLineRgba source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AAA0: The staff roll command at the script cursor (the command stream's byte at +4620)
+0027AAA0 00000064 F edScrollPeekCommand source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AB10: The staff roll command's operand (the byte after the cursor: the blank line count of command 3)
+0027AB10 00000064 F edScrollPeekOperand source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AB80: Steps the staff roll command cursor past the current command: 1 / 2 / 4 one byte, 3 two bytes (its operand), 0 stays (the end)
+0027AB80 000000DC F edScrollStepCommand source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AC60: Initialises the staff roll resource work (a0, 16 bytes) and registers it at $gp 0x7CE3D8: both flag words 0
+0027AC60 00000014 F edResInit source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AC80: Closes the staff roll resource work (K_Assert line 49): releases the loaded resources (sub_27AFD0) and clears the $gp slot
+0027AC80 00000058 F edResTerm source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27ACE0: Per-frame step of the staff roll resource work (K_Assert line 49): once the requested archive is loaded (flag 1, H_Cdvd_IsFileLoaded) it takes its three files -- 0 the script (edScriptBuild), 1 / 2 th ...
+0027ACE0 000001A4 F edResUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AE90: Requests the staff roll archive (K_Assert lines 118 / 119: not loading, not loaded): oped/ed_sr_f.bin for the alternate episode (sub_17D800), else oped/ed_sr.bin, through H_Cdvd_Request (kind 1); sets ...
+0027AE90 000000E8 F edResRequest source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AF80: Nonzero while the staff roll archive loads (flag 1)
+0027AF80 00000044 F edResIsLoading source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27AFD0: Releases the staff roll resources (K_Assert line 142 when not loaded): the script object, the fonts 6 and 7 (sub_3AFC30), clears the loaded flag
+0027AFD0 0000009C F edResRelease source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B070: The staff roll script object (resource work +12; K_Assert line 49)
+0027B070 00000040 F edResGetScript source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B0B0: Per-frame update of the staff roll ('edsr' task, ed_sr.c; K_Assert line 61), while running: step 0 waits for the archive, starts the fade-in (sub_1085C0) -> 1; step 1 once the fade is idle (sub_108710 ...
+0027B0B0 0000014C F edSrUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B200: Starts the staff roll's movie and scroll: movie 42 for the alternate episode (sub_17D800), else 32 with flag 2958 set or 33; starts the scroll (edScrollStart), creates the 'H_SfdPlay' movie task under ...
+0027B200 000000B0 F edSrStartMovie source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B2B0: The 'edsr' task's update callback: runs edSrUpdate and returns 0 while the staff roll runs, -1 (the task ends) once it stopped
+0027B2B0 00000060 F edSrTaskUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B3F0: The 'edsr' task's destroy callback: closes the scroll and resource works and frees the task's work (a0 +60) through the RwFree slot
+0027B3F0 00000064 F edSrTaskDestroy source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B460: Starts or polls the staff roll (a script command's handler): with no staff roll task (*$gp 0x7CE3E0) it allocates the 4,696-byte work, creates the 'edsr' task (edSrTaskUpdate / edSrTaskDestroy) and it ...
+0027B460 00000148 F edSrStart source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27B9F0: Opens the battle select marker (bp_select.c, *$gp 0x7CE3E4; K_Assert line 39): texture 58 of set 2 into its quad (+16), the frame +272 = 0, clears flag 2 (closing), places it (sub_27B6C0), flag 1
+0027B9F0 00000098 F bpSelectOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BA90: Starts closing the battle select marker: frame +272 = 0, flag 2 (K_Assert line 39)
+0027BA90 0000004C F bpSelectClose source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BAE0: Moves the battle select marker to the screen point a0 {f32 x, y} (+276 / +280; K_Assert line 39) and places it again while open (sub_27B6C0)
+0027BAE0 00000070 F bpSelectSetPos source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BC00: Opens the Shuffle Time persona status for persona a0 (sfl_persona.c; K_Assert line 41): its record (sub_1749A0, or a fresh 52-byte one built by sub_176680 on the stack when it has none), a status task ...
+0027BC00 00000110 F sflPersonaOpen source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BD10: Switches the Shuffle Time persona status to persona a0 (K_Assert line 107: a different one), with a stack record when it has none; flag 2
+0027BD10 000000D4 F sflPersonaSet source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BDF0: Closes the Shuffle Time persona status: destroys its task set and clears flag 1 (K_Assert line 41)
+0027BDF0 00000060 F sflPersonaClose source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BF60: Flag 2 of the Shuffle Time persona status (a persona is shown; K_Assert line 41)
+0027BF60 00000044 F sflPersonaIsShown source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_27BFB0: Starts hiding the Shuffle Time persona status: sub_3C9D00(16), frame +12 = 0, flag 8 (K_Assert line 41)
+0027BFB0 00000064 F sflPersonaHide source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_280200: A point on a unit (a0) from a short vector (a1 = s16[3]): the vector times the unit's scale (+44) turned by the unit's rotation (+28, sub_4BE1E0) plus its position (+4), written to a2 (f32[3])
+00280200 000000C4 F btlUnitPointFromS16 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_283750: The length in frames of a unit's motion a1 at speed f12: the motion row index comes from the per-side table 0x693290 (26 bytes per side, by motion; side 1 asks sub_2FB860 first and falls back to the t ...
+00283750 00000178 F btlUnitMotionFrames source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_284470: Update callback of the unit shake packet (sub_2849A0 creates it; data {unit, f32 amplitude, u32 count}): marks the unit changed; once the amplitude is 0.5 or less it zeroes the shake offset (+16), cle ...
+00284470 00000164 F btlPktShakeUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_284690: Update callback of the unit hop packet (data {f32 start[3], unit +12, u16 frames +16, u16 step +18, f32 t +20}): marks the unit changed; on step 0 notes the start point and t = 0.5; t advances by 1 /  ...
+00284690 00000250 F btlPktHopUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_284D10: Update callback of packet kind 258 (sub_284D80): when the unit (data +0) has a model (flag 2) it calls sub_318770(model, 0); returns 1 (done at once)
+00284D10 00000050 F btlPktModelResetUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_284D60: End callback shared by the unit packets: releases the unit (data +0) -- its busy count (+160) minus one
+00284D60 00000018 F btlPktUnitRelease source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_284D80: Creates packet kind 258 (8 data bytes) for unit a0 with the word a1 at data +4: init sub_284CF0, update btlPktModelResetUpdate, end btlPktUnitRelease
+00284D80 00000070 F btlPktCreateModelReset source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285DE0: Init callback of packet kind 275: holds the unit (data +0): busy count (+160) plus one
+00285DE0 00000018 F btlPktUnitHold275 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285E00: Update callback of packet kind 275: sub_287490(unit); returns 1
+00285E00 00000028 F btlPktUnitCall275 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285E30: End callback of packet kind 275: busy count minus one
+00285E30 00000018 F btlPktUnitRelease275 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285E50: Creates packet kind 275 (4 data bytes: the unit a0) with the callbacks 0x285DE0 / 0x285E00 / 0x285E30; the boss handlers sub_2EABF0 / sub_2EB2C0 use it
+00285E50 00000060 F btlPktCreate275 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285EB0: Init callback of packet kind 276: holds the unit (busy count plus one)
+00285EB0 00000018 F btlPktUnitHold276 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285ED0: Update callback of packet kind 276: sub_287510(unit); returns 1
+00285ED0 00000028 F btlPktUnitCall276 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285F00: End callback of packet kind 276: busy count minus one
+00285F00 00000018 F btlPktUnitRelease276 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_285F20: Creates packet kind 276 (the unit a0) with the callbacks 0x285EB0 / 0x285ED0 / 0x285F00 (sub_2EABF0 / sub_2EB2C0)
+00285F20 00000060 F btlPktCreate276 source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_286380: Init callback of the model effect packet (kind 273): holds the unit; unless the data flags have 0x10 it starts the model's effect (sub_31C7E0) when the model's effect slot (+1016) is free, and marks i ...
+00286380 00000064 F btlPktModelFxInit source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2863F0: Update callback of the model effect packet: starts the effect on the first update if the init did not (returns 0), then returns 1 once the model's effect (+1016) finished (sub_31EBE0), else 0
+002863F0 00000084 F btlPktModelFxUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_286480: End callback of the model effect packet: busy count minus one
+00286480 00000018 F btlPktModelFxEnd source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_2864A0: Creates the model effect packet (kind 273, 16 data bytes) for unit a0: clears the packet's byte +71 bit 1, callbacks btlPktModelFxInit / Update / End; data {unit, u16 side + 1, u16 a1, u16 a2, started ...
+002864A0 0000009C F btlPktCreateModelFx source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_286540: Per-frame update of every battle unit (btlUpdateTask), the four unit lists in turn: the walk / motion steps (sub_280DA0, sub_2826D0), a persona's instance (side 2, sub_1A0E50), the enemies' boss hook  ...
+00286540 00000EBC F btlUnitsUpdate source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_287860: Releases what a unit (a0) carries before it is destroyed (sub_2879F0): sub_287740; with a child unit (+2560) sub_2878D0; the status aura (+2552) through sub_2BBD00 and the effect handle (+2556) throug ...
+00287860 00000070 F btlUnitReleaseAttachments source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_28B230: btlAction state START, update: unless the battle is over or an effect packet of the kinds 1792 / 1284 / 1286 / 769 / 260 still runs: with regeneration bits (+1156) left it plays the lowest one -- 0x1  ...
+0028B230 000005D0 F btlActionUpdateStart source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_28CA00: btlAction state ANALYZE, update (row 7), a step machine in +1156 (unless effect packet 2048 runs): 1 the analysed unit (sub_2DB690 / sub_289030) alive and in the battle: the flags 320 / 321 pick the a ...
+0028CA00 000003A0 F btlActionUpdateAnalyze source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_28CF20: btlAction state AUTO, init (row 9): resets the target list (sub_2D15A0 of +56), fills the target candidates (sub_2BFF60 into +136) and the cursor (sub_2C0970)
+0028CF20 00000054 F btlActionInitAuto source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_28CF80: btlAction state AUTO, update: command kind 1 (attack) with the unit's attack skill (sub_308930), the first candidate as the single target (sub_2C0880 / sub_2C08A0); the hero (side 0, id 1) gets the vo ...
+0028CF80 000000F0 F btlActionUpdateAuto source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6
+# sub_28D080: btlAction state SUPPORT, update (row 10; unless effect packet 1286 runs): the first of the unit's timed effects that ran out (sub_302F50, kinds 0..16 by a jump table) is cleared (datCalcClearEffect: 0 ...
+0028D080 000004E0 F btlActionUpdateSupport source=phase5-battle6 verified=yes ev=INTEGRATION_LOG.md#battle6

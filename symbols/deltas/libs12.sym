@@ -1,0 +1,19 @@
+# libs12.sym  Phase 5 slice delta (game/include/p3fes/game/libs12.h, game/src/cri/libs12.cpp); SLUS_216.21
+# generated 2026-10-28 from the instructions (the p3fes_handgen bodies) and the binary's own texts: each MWSFD name
+#   below is the one the function prints in its "handle is invalid" error string (0x7C8A48.. in .rodata), and SFD_Init
+#   is the function that stores the "CRI SFD/PS2EE Ver.1.958" banner pointer and runs the SFD module inits. Checked by
+#   tests/game/test_libs12.cpp (the link byte, the getters and the bad-handle reports on the live movie player).
+#   A proposal only: the code keeps the symbols/ name. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs12 verified=yes ev=<anchor>
+00580588 000000a0 F mwPlyStartSj source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00581270 00000064 F mwPlyGetNumDropFrm source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+005812d8 00000074 F mwPlyGetNumSkipDec source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00582040 00000054 F mwPlyGetNumSkipEmptyB source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00582118 0000004c F mwPlyGetInputSj source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00583058 00000078 F mwPlyFxGetCompoMode source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00584190 0000009c F mwPlyStartSeamless source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00584230 00000060 F mwPlySetLpFlg source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00584290 000000a8 F mwPlyStartFnameLp source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00584338 000000b0 F mwPlyReleaseLp source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+00584830 000000a8 F mwPlyLinkStm source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12
+0058bc30 00000068 F SFD_Init source=phase5-libs12 verified=yes ev=INTEGRATION_LOG.md#libs12

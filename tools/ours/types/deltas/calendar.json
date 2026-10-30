@@ -1,0 +1,19 @@
+{"records": [
+  {"name": "gGlobalWork", "anchors": [{"how": "gobj", "addr": "0x836200"}],
+   "fields": [
+    {"off": 1447, "width": 1024, "type": "u8[1024]", "name": "dated list", "note": "calendar: 256 x 4-byte entries {a, b, c, d} at +0x5A7 (a = 0 ends it): sub_17AC60 push (remove the matching key, append), sub_17AD90 pop, sub_17ADF0 clear, sub_17AE30 address"},
+    {"off": 17640, "width": 4, "type": "s32", "name": "battle counter", "note": "calendar: sub_17B160 clear, sub_17B170 get, sub_17B180 add (btlMainInitStateInit)"},
+    {"off": 17644, "width": 4, "type": "s32", "name": "return field major", "note": "calendar: sub_181B70 / sub_181CC0 enter field (major, minor) through adminiChangeSeq(2)"},
+    {"off": 17648, "width": 4, "type": "s32", "name": "return field minor", "note": "calendar: sub_181B70 / sub_181CC0"},
+    {"off": 17652, "width": 4, "type": "u32", "name": "return to dungeon", "note": "calendar: sub_181B70 / sub_181CC0 test it: non-zero returns to the dungeon floor of counter 53"},
+    {"off": 17660, "width": 28, "type": "u8[28]", "name": "block 44FC", "note": "calendar: sub_17C190 clear, sub_17C1C0 copy in, sub_17C220 copy out"},
+    {"off": 17688, "width": 16, "type": "u32[4]", "name": "entries 4518", "note": "calendar: sub_17C280 clears each and sets its s16 +0 to -1"},
+    {"off": 18116, "width": 44, "type": "u32[11]", "name": "bit array 46C4", "note": "calendar: sub_17B1A0 clear, sub_17B1E0 set, sub_17B220 clear, sub_17B260 test"},
+    {"off": 18160, "width": 424, "type": "u32[106]", "name": "bit array 46F0", "note": "calendar: 336 x 10 bits, sub_17B2A0 clear, sub_17B2E0 set/clear, sub_17B3D0 test"}
+   ]},
+  {"name": "ScheduledEventTable", "size": 8, "anchors": [{"how": "ret", "fn": "0x3BD880"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "rows", "note": "calendar: sub_181720 / sub_181950 read 24-byte rows (month, day, slot, id, major, minor, skip date, link, flags, done flag)"},
+    {"off": 4, "width": 4, "type": "s32", "name": "count", "note": "calendar: sub_181720's loop bound"}
+   ]}
+]}

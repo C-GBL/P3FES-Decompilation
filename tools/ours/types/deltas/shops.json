@@ -1,0 +1,376 @@
+{
+ "note": "slice shops: the shop work record, the facility element, the shop background manager and the facility sprite bank, named from the instructions of game/src/facility/shops.cpp and checked on the shop route's snapshots (extracted/_ours/shop_ref_4100, shop_3700, shop_3200)",
+ "records": [
+  {
+   "name": "ShopWork",
+   "size": 156,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x3E86C0",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x3E8740",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x3E8E20",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x3E97F0",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "s32",
+     "name": "type"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "s32",
+     "name": "state"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "u32",
+     "name": "flags"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_root"
+    },
+    {
+     "off": 20,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_buy"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_sell"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_talk"
+    },
+    {
+     "off": 64,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_bg"
+    },
+    {
+     "off": 68,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_money"
+    },
+    {
+     "off": 72,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_subtitle"
+    },
+    {
+     "off": 76,
+     "width": 4,
+     "type": "ptr",
+     "name": "step_load"
+    },
+    {
+     "off": 88,
+     "width": 4,
+     "type": "ptr",
+     "name": "pak_node"
+    },
+    {
+     "off": 92,
+     "width": 4,
+     "type": "ptr",
+     "name": "pak_data"
+    },
+    {
+     "off": 128,
+     "width": 4,
+     "type": "ptr",
+     "name": "task"
+    },
+    {
+     "off": 132,
+     "width": 4,
+     "type": "ptr",
+     "name": "ps_status"
+    },
+    {
+     "off": 138,
+     "width": 2,
+     "type": "u16",
+     "name": "item_id"
+    },
+    {
+     "off": 148,
+     "width": 4,
+     "type": "ptr",
+     "name": "sub_task"
+    },
+    {
+     "off": 152,
+     "width": 4,
+     "type": "ptr",
+     "name": "elements"
+    }
+   ]
+  },
+  {
+   "name": "FclElement",
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x3E6400",
+     "index": 1
+    }
+   ],
+   "fields": [
+    {
+     "off": 4,
+     "width": 4,
+     "type": "ptr",
+     "name": "node"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "u32",
+     "name": "flags"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "s32",
+     "name": "state"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "s32",
+     "name": "id"
+    },
+    {
+     "off": 20,
+     "width": 2,
+     "type": "s16",
+     "name": "x"
+    },
+    {
+     "off": 22,
+     "width": 2,
+     "type": "s16",
+     "name": "y"
+    },
+    {
+     "off": 24,
+     "width": 2,
+     "type": "s16",
+     "name": "x0"
+    },
+    {
+     "off": 26,
+     "width": 2,
+     "type": "s16",
+     "name": "y0"
+    },
+    {
+     "off": 28,
+     "width": 2,
+     "type": "s16",
+     "name": "x1"
+    },
+    {
+     "off": 30,
+     "width": 2,
+     "type": "s16",
+     "name": "y1"
+    },
+    {
+     "off": 32,
+     "width": 2,
+     "type": "s16",
+     "name": "scale"
+    },
+    {
+     "off": 34,
+     "width": 2,
+     "type": "s16",
+     "name": "scale0"
+    },
+    {
+     "off": 36,
+     "width": 2,
+     "type": "s16",
+     "name": "scale1"
+    },
+    {
+     "off": 38,
+     "width": 2,
+     "type": "s16",
+     "name": "alpha"
+    },
+    {
+     "off": 40,
+     "width": 2,
+     "type": "s16",
+     "name": "alpha0"
+    },
+    {
+     "off": 42,
+     "width": 2,
+     "type": "s16",
+     "name": "alpha1"
+    },
+    {
+     "off": 44,
+     "width": 2,
+     "type": "s16",
+     "name": "delay"
+    },
+    {
+     "off": 46,
+     "width": 2,
+     "type": "u16",
+     "name": "frame"
+    },
+    {
+     "off": 48,
+     "width": 2,
+     "type": "u16",
+     "name": "frames"
+    },
+    {
+     "off": 52,
+     "width": 4,
+     "type": "ptr",
+     "name": "extra"
+    }
+   ]
+  },
+  {
+   "name": "FclBgManager",
+   "size": 32,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x4015A0",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x4015E0",
+     "index": 0
+    },
+    {
+     "how": "ret",
+     "fn": "0x400D60"
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "u32",
+     "name": "flags"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "list"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "ptr",
+     "name": "task"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "ptr",
+     "name": "scene"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "s32",
+     "name": "mode"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "s32",
+     "name": "shop_type"
+    }
+   ]
+  },
+  {
+   "name": "FclSpriteBank",
+   "anchors": [
+    {
+     "how": "ret",
+     "fn": "0x40E450"
+    },
+    {
+     "how": "gslot",
+     "addr": "0x7CE6A0"
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "s32",
+     "name": "loaded"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "ptr",
+     "name": "desc"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "handles"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "ptr",
+     "name": "sprites"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "u32",
+     "name": "extra"
+    }
+   ]
+  }
+ ]
+}

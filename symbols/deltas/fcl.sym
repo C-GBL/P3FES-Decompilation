@@ -1,0 +1,267 @@
+# fcl.sym  Phase 5 slice delta (game/include/p3fes/game/fcl.h); SLUS_216.21
+# generated 2026-10-22 from the slice's role comments (game/src/facility/fcl_*.cpp), each from what the body does
+#   (p3fes_handgen bodies, the IDA pseudocode reference as a reading hint; no IDA database opened); the file of each
+#   function is its band's K_Assert string (fclMisc.c, fclBankManager.c, fclShopBGManager.c, fclCombineEffect.c,
+#   nmlist.c, g_data.c). Rows: <addr8> <size8> F <name> <tags>, source=phase5-fcl verified=yes: our own names.
+#   Functions that already have a name, or no bracketed proposal, are not listed. ev=<doc>#<section>. Not imported
+#   by the agent.
+# sub_16BC80: [gDataGetColourA] ($a0 table, $a1 entry, $a2 float[4] out) The first RGBA word (+20) of entry $a1 of table $a0 in the g_data colour set (gp slot 0x7CD
+0016bc80 00000130 F gDataGetColourA source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_16BDB0: [gDataGetColourB] As sub_16BC80 for the second RGBA word (+24) of the entry; K_Assert g_data.c:175.
+0016bdb0 00000130 F gDataGetColourB source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_20D650: [FrameSetTranslation] Copies the vector $a1 (3 floats) to $a0 +32 / +36 / +40 (the position row of a 16-byte-aligned frame matrix)
+0020d650 00000020 F FrameSetTranslation source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C44D0: [nmListObjCreate] ($a0 payload size, $a1 on-insert, $a2 on-remove, $a3 remove filter) RwMalloc(40 + size) through the RW slot 0x960178 (K_Assert nmlis
+003c44d0 00000120 F nmListObjCreate source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C49E0: [nmListRemove] ($a0 object, $a1 its list header (object + 4), $a2 node) Unlinks the node (nmListUnlink), moves the cursor to the returned neighbour wh
+003c49e0 000000b0 F nmListRemove source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C4A90: [nmListClear] ($a0 object, $a1 its list header) For every node from the head: on-remove callback (+24), memset of its size, RW free; then head / tail 
+003c4a90 000000c0 F nmListClear source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C78D0: [msgWinPollSelection] The facility message window 0x95BE90 (sub_3C7D50): when it has a handle (+0 >= 0) and itfMesMngGetSelectWord84 reports a choice 
+003c78d0 000000b8 F msgWinPollSelection source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C7D50: [msgWinGet] The facility message-window record 0x95BE90 (+0 the itfMesMng handle, +4 s8 state, +5 s8 hidden, +13 s8 the last selection).
+003c7d50 00000010 F msgWinGet source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C7D60: [fclMiscTableWord] The word $a0 of table 0x6A3E50
+003c7d60 0000001c F fclMiscTableWord source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8400: [msgAssistSlotStart] ($a0 MsgAssist work, $a1 slot 0..11; K_Assert fclMisc.c:918 / 919 otherwise) Unless the slot (+28 + 12 i) is already running (fla
+003c8400 0000014c F msgAssistSlotStart source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8770: [msgAssistSlotStop] ($a0 work, $a1 slot 0..11; K_Assert fclMisc.c:1003 / 1004) Sets flag 4 (stop) on the slot
+003c8770 00000094 F msgAssistSlotStop source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8810: [msgAssistPurge] ($a0 work) Removes (sub_3C49E0) every node of the slot list (+24) whose slot has no index word (+8 == 0), then every node of the requ
+003c8810 000000bc F msgAssistPurge source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8D80: [msgAssistSlotsIdle] 1 when the MsgAssist slot list (0x7CE67C -> +24) has no node, else 0.
+003c8d80 0000001c F msgAssistSlotsIdle source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8DA0: [msgAssistOrMask] MsgAssist work +20 |= $a0
+003c8da0 00000018 F msgAssistOrMask source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8DC0: [msgAssistSetMask] MsgAssist work +20 = $a0.
+003c8dc0 00000010 F msgAssistSetMask source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8DD0: [msgAssistSetOwner] MsgAssist work +12 = $a0 (the owner new requests record, sub_3C8DE0).
+003c8dd0 00000010 F msgAssistSetOwner source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8DE0: [msgAssistRequest] ($a0 key, $a1 a, $a2 b, $a3 s16 c) Appends a 48-byte request to the MsgAssist request list (key = count + 1): payload +0 the node, 
+003c8de0 000000b8 F msgAssistRequest source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8EA0: [msgAssistRequestCount] The u16 node count of the MsgAssist request list.
+003c8ea0 00000014 F msgAssistRequestCount source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8EC0: [msgAssistHasRequest] 1 when a request with key $a0 (+44) and a == $a1 (+32) is queued, else 0
+003c8ec0 00000054 F msgAssistHasRequest source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8F20: [msgAssistFlag2] MsgAssist work +4 |= 2
+003c8f20 00000018 F msgAssistFlag2 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C8F40: [msgAssistPurgeAll] sub_3C8810 on the MsgAssist work (0x7CE67C)
+003c8f40 00000024 F msgAssistPurgeAll source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9340: [msgWinState] ($a0 a msgWin-shaped record) 0 when it has no handle (+0 < 0) or when it is hidden (+5) in state 2; else its s8 state +4.
+003c9340 0000004c F msgWinState source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9570: [msgAssistPlaceWindow] ($a0 itfMesMng handle) Places a message window from the current font tag's parameters (frFontTagGetParam0..3): param 2 = -1 pic
+003c9570 00000214 F msgAssistPlaceWindow source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9840: [fclReturn0] Returns 0 (a no-op callback in five handler tables).
+003c9840 0000000c F fclReturn0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9B00: [psStatusSetPersona] ($a0 psStatus task, $a1 52-byte persona record or 0, $a2 84-byte block or 0) Copies the block to the status work +28 (or clears i
+003c9b00 00000098 F psStatusSetPersona source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9BA0: [psStatusSetPersonaRecord] Copies the 52-byte persona record $a1 to work +32 (K_Assert fclMisc.c:1687 on null).
+003c9ba0 00000068 F psStatusSetPersonaRecord source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9C10: [psStatusSetCompare] ($a1 current, $a2 next persona record; K_Assert fclMisc.c:1694 on null) Copies them to work +32 and +116; the first time (flag 0x
+003c9c10 000000c0 F psStatusSetCompare source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9CD0: [psStatusSetWord24] psStatus work +24 = $a1.
+003c9cd0 00000030 F psStatusSetWord24 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9D80: [psStatusSetStateOff] Clears the state bits $a1 of work +8, then prints "[fclMisc.c:1721]" and "psStatusSetStateOFF %d\n" and logs it (sub_1052B0)
+003c9d80 0000007c F psStatusSetStateOff source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9E00: [psStatusSetWord234] psStatus work s16 +234 = $a1.
+003c9e00 00000030 F psStatusSetWord234 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9E30: [psStatusSetPages] psStatus work +233 = $a1 (page count), +232 = $a2 (page).
+003c9e30 00000040 F psStatusSetPages source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9E70: [psStatusSetPage] work +232 = $a1 clamped to 0 .
+003c9e70 00000064 F psStatusSetPage source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9EE0: [psStatusGetPage] The s8 page +232.
+003c9ee0 00000024 F psStatusGetPage source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9F10: [psStatusSetSpeedA] work u16 +12 = $a1, 1 when 0.
+003c9f10 00000048 F psStatusSetSpeedA source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9F60: [psStatusSetSpeedB] work u16 +14 = $a1, 1 when 0.
+003c9f60 00000048 F psStatusSetSpeedB source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3C9FB0: [psStatusSetPageHeight] work s16 +20 = 15.
+003c9fb0 00000028 F psStatusSetPageHeight source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# nullsub_122: [fclNop122] An empty draw handler (jr $ra) in a handler table.
+003ccc30 00000008 F fclNop122 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# nullsub_123: [fclNop123] An empty draw handler (jr $ra) in a handler table.
+003cd0a0 00000008 F fclNop123 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# nullsub_124: [fclNop124] An empty draw handler (jr $ra) in a handler table.
+003cd590 00000008 F fclNop124 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDA60: [psModelCreate] ($a0 parent task, $a1 unused) RwMalloc(256), zeroed: state +8 = 1, persona +12 = 0, a frame matrix at +64 (sub_4C31B0 with the rotatio
+003cda60 00000140 F psModelCreate source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDBA0: [psModelSetPersona] ($a0 psModel task, $a1 persona id; K_Assert fclMisc.c:2530 on no work) Same id: clears the pending id (+14), returns 0
+003cdba0 000000dc F psModelSetPersona source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDC80: [psModelIsReady] +4 bit 0 of the psModel work (K_Assert fclMisc.c:2561).
+003cdc80 00000050 F psModelIsReady source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDCD0: [psModelPlayAnim] When the model is ready: sub_3182D0(model +24, 0, $a1, $a2, $a3) (start an animation), else 0 (K_Assert fclMisc.c:2568).
+003cdcd0 000000a4 F psModelPlayAnim source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDD80: [psModelAnimDone] 1 when the model is not ready or its animation state byte (+24 -> +238) is 1 (K_Assert fclMisc.c:2576).
+003cdd80 00000074 F psModelAnimDone source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDE00: [psModelSetFlags] work +4 |= $a1 << 16 (K_Assert fclMisc.c:2584).
+003cde00 00000064 F psModelSetFlags source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDE70: [psModelClearFlags] work +4 &= ~($a1 << 16) (K_Assert fclMisc.c:2590).
+003cde70 00000068 F psModelClearFlags source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDEE0: [psModelSetWord0] work u16 +0 = $a1 (K_Assert fclMisc.c:2598).
+003cdee0 00000058 F psModelSetWord0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CDF40: [psModelFadeColour] ($a1 RGBA bytes, $a2 frames; K_Assert fclMisc.c:2641) Starts a fade of the model colour +128: target +164 = $a1, start +168 = the 
+003cdf40 00000118 F psModelFadeColour source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CE060: [psModelFadeColourA] As sub_3CDF40 for the float colour A +132 (target +176, start +192, timer +208, duration +210; K_Assert fclMisc.c:2657).
+003ce060 00000118 F psModelFadeColourA source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CE180: [psModelFadeColourB] As sub_3CDF40 for the float colour B +148 (target +212, start +228, timer +244, duration +246; K_Assert fclMisc.c:2679).
+003ce180 00000118 F psModelFadeColourB source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CF520: [fclBankMarkBlocked] For the three bank slots of the fclBank work (0x7CE680 -> +36, +4 + 20 i): an active slot (bit 0) that is playing (8) or loading 
+003cf520 000000a8 F fclBankMarkBlocked source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CF8F0: [fclBankFindSlot] The index 0..2 of the active bank slot whose bank number (+4) is $a0, else -1
+003cf8f0 00000064 F fclBankFindSlot source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CF960: [fclBankRequest] ($a0 bank number, $a1 flags in the high byte) When a slot already holds the bank: replaces the slot's high flag byte with $a1's, prin
+003cf960 00000154 F fclBankRequest source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_3CFAC0: [fclBankConflict] ($a0 a bank slot) For each other active slot that is playing (8) with the same 0x100 bit as $a0: marks it 0x400 and, when it is not 
+003cfac0 00000090 F fclBankConflict source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40D3B0: [fclBgForEachDraw] ($a0, $a1, $a2 s16, $a3 the background manager) Calls the element-set walker sub_3E0680 on the set of manager +36 -> +68 -> +8 with
+0040d3b0 0000004c F fclBgForEachDraw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# nullsub_67: [fclBgNop] An empty handler (jr $ra) in the background handler tables.
+0040d400 00000008 F fclBgNop source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40D5B0: [fclDrawNumberTail] Tail call of sub_40D5E0 with the caller's arguments
+0040d5b0 00000024 F fclDrawNumberTail source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40DCC0: [fclDrawFan] ($a0 / $a1 centre, $a2 / $a3 / $t0 three radii, $t1 RGBA, $t3 0 = set the render states, $f12 depth, $f13..$f15 three angles) Draws one R
+0040dcc0 00000634 F fclDrawFan source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40EBC0: [fclDrawDigitsCentred] Copies the 5-entry offset table 0x6AF980 to the stack and calls sub_40EC20 with the offset for size class $a3 and the glyph cal
+0040ebc0 00000060 F fclDrawDigitsCentred source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40F030: [fclBgCurtain] A background element handler (manager $a0, node $a1: area +12, event $a2): two panels of 20 bytes {flags, x, y, x0, -, alpha, alpha max
+0040f030 000003f8 F fclBgCurtain source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40F430: [fclBgCurtainDraw] Draws the two curtain panels (sprite 86..89 for shop type 2, else the per-type sprite of 0x6AF9D8) at their positions and alpha (su
+0040f430 000001a0 F fclBgCurtainDraw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40F5D0: [fclBgSlide5] A background element handler: five 12-byte keys {s16 x, y, alpha, start frame; f32 scale}
+0040f5d0 000004d4 F fclBgSlide5 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40FAB0: [fclBgDraw8] Draws the sprites 90..97 at the positions of the keys picked by the index table 0x6AFAF0 (offset 16 / 13, alpha from the key) with sub_40
+0040fab0 000000d8 F fclBgDraw8 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_40FB90: [fclBgPulseA] A background element handler with a 7-case event switch (jump table 0x7BBF40): 4 fades out (state 2), 5..7 load one of three 16-byte key
+0040fb90 00000614 F fclBgPulseA source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4101B0: [fclBgPulseDraw] When visible (flag 2): draws sprites 86..89 as a 2 x 2 quad around (x, y) scaled by +16 (252 x 233 at scale 1) with alpha +12 (sub_40
+004101b0 00000428 F fclBgPulseDraw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4105E0: [fclBgSpotlight] A background element handler: event 1 loads key set 0, 5 / 6 key sets 1 / 2 (table 0x6AFB90) and copy the loop phase from the scene's
+004105e0 00000428 F fclBgSpotlight source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_410A10: [fclBgSpotlightDraw] Draws sprite 85 four times centred on (x, y) at scale +8 (251 x 249 at scale 1) with alpha +4 (sub_40E3F0)
+00410a10 00000318 F fclBgSpotlightDraw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4110E0: [fclBgReturn0] Returns 0 (a no-op handler in 19 table slots).
+004110e0 0000000c F fclBgReturn0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4113F0: [fclBgPanels4] A background element handler: four 20-byte panels as in sub_40F030; event 1 resets them (alpha max 255, slide-in), 4 slides them out; p
+004113f0 00000318 F fclBgPanels4 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_411710: [fclBgPanels4Draw] Draws the four panels with sprites 97..100 (sub_40E3C0)
+00411710 0000007c F fclBgPanels4Draw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_411790: [fclBgSparkles] A background element handler with five 20-byte sparkles: events 5 / 6 / 7 load three layouts (positions in 1/16 px, the drift table 0x
+00411790 00000748 F fclBgSparkles source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4120A0: [fclBgSlide5B] As sub_40F5D0 with the key tables 0x6B0450 (in) / 0x6B04D0 (out).
+004120a0 000004d4 F fclBgSlide5B source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_412610: [fclBgSlide4] As sub_40F5D0 with four keys (48 bytes; tables 0x6B0A00 / 0x6B0A60, state +48).
+00412610 000004d4 F fclBgSlide4 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_412AF0: [fclBgDraw4] Draws four sprites (ids from the float-encoded table 0x6B0AC0) at the four keys' positions and alpha (sub_40E3F0)
+00412af0 000000c8 F fclBgDraw4 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_412BC0: [fclBgOrbit] A background element handler: events 1 / 4 / 5 / 10 pick one of four key sets (two tables, 0x6B0AD0 and 0x6B0CB0, in / out halves; +124 =
+00412bc0 00000444 F fclBgOrbit source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_413010: [fclBgOrbitDraw] Draws the orbit's keys with the sprite / offset table of its set (0x6B0DE0 or 0x6B0E30 by +124 / 2; sub_40E3F0, half-size scale)
+00413010 00000190 F fclBgOrbitDraw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4131A0: [fclBgSlide3] As sub_40F5D0 with three keys (36 bytes; tables 0x6B10E0 / 0x6B1130, state +36).
+004131a0 000004d4 F fclBgSlide3 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_413680: [fclBgSlide3Draw] Draws the three keys: keys 0 / 1 rotated by their angle (cosf / sinf, sub_40E3C0), key 2 straight (sub_40E3F0), two sprites each fro
+00413680 00000254 F fclBgSlide3Draw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4138E0: [fclBgFade] A background element handler (area {s16 state, s16 timer, f32 value, s16 alpha, s16 set}): event 5 fades in over 8 frames (value from 0x7C
+004138e0 00000224 F fclBgFade source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_413B10: [fclBgFadeDraw] Draws sprite 104 full screen (116 x 125 scale) with the fade's alpha (+8) through sub_40E3F0
+00413b10 00000060 F fclBgFadeDraw source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414100: [fclBgPart414100] A sub-handler of the dispatchers sub_414E10 / sub_415C30 / sub_417030 ($a2 x, $a3 y, $t1 alpha): sprites 35, 36, 37, 39, 41 at (x - 
+00414100 000000dc F fclBgPart414100 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4141E0: [fclBgPart4141E0] Sub-handler: sprites 129, 130 at (x, y).
+004141e0 00000098 F fclBgPart4141E0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414280: [fclBgPart414280] Sub-handler: sprites 47, 48 at (x + 249, y + 298).
+00414280 00000098 F fclBgPart414280 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414320: [fclBgPart414320] Sub-handler: sprites 146, 141 at (x + 32, y + 101), then 142 / 143 with alpha * the factor 0x7CADA4, then 144, 145.
+00414320 000001dc F fclBgPart414320 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414500: [fclBgPart414500] Sub-handler: sprites 153..156 at (x + 376, y + 92).
+00414500 000000e8 F fclBgPart414500 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4145F0: [fclBgPart4145F0] Sub-handler: sprites 147..149 at (x - 12, y - 14).
+004145f0 000000c0 F fclBgPart4145F0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4146B0: [fclBgPart4146B0] Sub-handler: sprites 150..152 at (x + 248, y - 1).
+004146b0 000000c0 F fclBgPart4146B0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4148B0: [fclBgPart4148B0] Sub-handler: sprites 45, 46 at (x + 249, y + 285).
+004148b0 00000098 F fclBgPart4148B0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414950: [fclBgPart414950] Sub-handler: sprites 43, 44 at (x + 249, y + 303).
+00414950 00000098 F fclBgPart414950 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4149F0: [fclBgPart4149F0] Sub-handler: sprites 35, 36, 38, 40, 41 at (x - 6, y - 10).
+004149f0 000000dc F fclBgPart4149F0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414AD0: [fclBgPart414AD0] Sub-handler: sprites 35, 36, 37, 39, 41, 215 at (x - 6, y - 10).
+00414ad0 000000fc F fclBgPart414AD0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414BD0: [fclBgPart414BD0] Sub-handler: sprites 43, 44 at (x + 290, y + 222).
+00414bd0 00000098 F fclBgPart414BD0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414C70: [fclBgPart414C70] Sub-handler: sprites 35, 36, 37, 39, 42, 215 at (x - 6, y - 10).
+00414c70 000000fc F fclBgPart414C70 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414D70: [fclBgPart414D70] Sub-handler: sprites 43, 44 at (x + 290, y + 222) (a second copy of sub_414BD0).
+00414d70 00000098 F fclBgPart414D70 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414E10: [fclBgPartsDispatchA] Draws a background element's parts: picks the part list of its set (+152 / 2) from the on-stack table built from 0x6B14C0 (lists
+00414e10 000001c8 F fclBgPartsDispatchA source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_414FE0: [fclBgPartsMove] A background element handler: events 5..14 pick one of ten key sets (+152 = 0, 2, 4, 6, 8 for 5..9 and 1, 3, .
+00414fe0 00000500 F fclBgPartsMove source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4154E0: [fclBgPart4154E0] Sub-handler: sprites 90 at (x, y) and 91 at (x, y + 216), half alpha (sub_40E3F0).
+004154e0 00000164 F fclBgPart4154E0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_415650: [fclBgPart415650] Sub-handler: sprites 92 at (x, y) and 93 at (x, y + 406), half alpha.
+00415650 00000164 F fclBgPart415650 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4157C0: [fclBgPart4157C0] Sub-handler: sprites 94 at (x + 44, y + 100), 95 at (x - 20, y + 50), 96 at (x - 26, y + 184).
+004157c0 000000c0 F fclBgPart4157C0 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_415880: [fclBgPart415880] Sub-handler: sprites 97 at (x, y), 98 at (x, y + 306), 99 at (x, y + 407), half alpha.
+00415880 000001e8 F fclBgPart415880 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_415A70: [fclBgPart415A70] Sub-handler: sprites 101 at (x + 91, y + 49), 102 at (x - 20, y + 47), 103 at (x - 38, y + 149).
+00415a70 000000c0 F fclBgPart415A70 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_415B30: [fclBgPart415B30] Sub-handler: sprite 100 at (x + 401, y + 150).
+00415b30 00000040 F fclBgPart415B30 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_415B70: [fclBgPart415B70] Sub-handler: sprites 105..107 at (x + 352, y + 92).
+00415b70 000000c0 F fclBgPart415B70 source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_415C30: [fclBgPartsDispatchB] As sub_414E10 with the part lists of 0x6B16E0 (0x7CDA28, 0x7CDA30.., 0x6B16C8.., 0x7CDA38, 0x7CDA40..).
+00415c30 0000018c F fclBgPartsDispatchB source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4167D0: [fclBgPartStatus] Sub-handler: the status panel -- sprites 177..183 at (x + 381, y + 151..207) and the four numbers of the two 80-byte records at area
+004167d0 000003bc F fclBgPartStatus source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_416D20: [fclBgPartDate] Sub-handler: the date panel -- sprites 186..192 at (x - 7, y + 71), the month (area +188 +2) and day (+3) as one or two digits (sprite
+00416d20 0000030c F fclBgPartDate source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_417030: [fclBgPartsDispatchC] As sub_414E10 for the part lists of 0x6B1830 / 0x7CDA60, picked by area +76 / 2.
+00417030 00000128 F fclBgPartsDispatchC source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_417330: [fclCmbEffRequest] ($a0 calc task, $a1 script id) Appends a 4-byte request {id} to the cut-in's request list (+64)
+00417330 00000050 F fclCmbEffRequest source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_417380: [fclCmbEffBusy] 1 while the cut-in is loading (flag 2), finishing (flag 4) or has queued requests (sub_41B530), else 0.
+00417380 00000060 F fclCmbEffBusy source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4173E0: [fclCmbEffGetPsModel] The cut-in's psModel task (+24).
+004173e0 00000024 F fclCmbEffGetPsModel source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_417680: [fclCmbEffDestroy] Destroy callback of "fclCmbEffCalc": destroys the resource list object (+52 -> +20), the runner's two lists (sub_4180A0) and the re
+00417680 00000070 F fclCmbEffDestroy source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4176F0: [fclCmbEffAddResource] ($a0 work, $a1 s16 kind, $a2 file name or 0) Appends a resource node (payload 9 + strlen bytes, key = count + 1) to the resourc
+004176f0 000000ec F fclCmbEffAddResource source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4177E0: [fclCmbEffLoadResources] Builds the resource list of the cut-in: a 28-byte-payload list object (payload +0 = 0, +20 = the object) into +52, the 16 {ki
+004177e0 000000d8 F fclCmbEffLoadResources source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_418030: [fclCmbEffRunnerCreate] The command runner: a 20-byte-payload list object (resource on-insert sub_418130, on-remove sub_418230; payload +0 = the objec
+00418030 00000068 F fclCmbEffRunnerCreate source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4180A0: [fclCmbEffRunnerDestroy] Destroys the runner's two list objects (+0, +4) with sub_3C45F0.
+004180a0 0000003c F fclCmbEffRunnerDestroy source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_4180E0: [fclCmbEffRunnerAdd] Appends a 12-byte node with key $a1 to the runner's resource list (+0); payload +2 = $a1
+004180e0 00000044 F fclCmbEffRunnerAdd source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_418130: [fclCmbEffResourceOnInsert] On-insert of the runner's resource list: by the node key's low byte allocates the resource's buffer into payload +8 (4 -> 
+00418130 000000f8 F fclCmbEffResourceOnInsert source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_418340: [fclCmbEffCmdFlags] Command handler: resource u16 flags |= command +12, then &= ~command +16
+00418340 00000044 F fclCmbEffCmdFlags source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_419B00: [fclCmbEffCmdRestart] Command handler: runner flags |= 2 (restart the command list)
+00419b00 0000001c F fclCmbEffCmdRestart source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_419B20: [fclCmbEffCmdEnd] Command handler: runner flags |= 1 (end of script)
+00419b20 0000001c F fclCmbEffCmdEnd source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_419B40: [fclCmbEffCmdEndWhenIdle] Command handler: when at most one command is active (runner active list count < 2) sets runner flag 1 and returns 1; else 0 
+00419b40 0000003c F fclCmbEffCmdEndWhenIdle source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_419C10: [fclCmbEffCmdPsColour] Command handler for opcode 64 / sub-op 3: converts the command's RGBA word (+12) to floats and, by +16 (0 colour, 1 colour A, 2
+00419c10 00000310 F fclCmbEffCmdPsColour source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41A2C0: [fclCmbEffCmdAnim] Command handler: sub_3182D0(resource +8 (the model), 0, s16 work +32, command +16 low / high halves) -- starts a model animation
+0041a2c0 0000004c F fclCmbEffCmdAnim source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41A900: [fclCmbEffCmdRing] Command handler: places the resource's objects (+8: count +4, objects +8..) on a ring: radius from table 0x6B2FD0 by count, swingin
+0041a900 000002c0 F fclCmbEffCmdRing source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41ADD0: [fclCmbEffCmdHide] Command handler: clears bit 0 of the u16 flags of every object of the resource (+8)
+0041add0 00000050 F fclCmbEffCmdHide source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41B530: [fclCmbEffHasRequest] 1 when the request list (+64) has a node, else 0.
+0041b530 00000014 F fclCmbEffHasRequest source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41B550: [fclCmbEffStartRequest] Takes the first request: +68 = the script entry 0x6B2AA0 + 8 * id, runner frame +8 = 0, runner flag 1 cleared, and removes the
+0041b550 00000068 F fclCmbEffStartRequest source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41B5C0: [fclCmbEffRunScript] One frame of the command runner ($a1 the script {commands, count}, 28-byte commands {frame, s8 op / u8 key, sub, s16 handler}): e
+0041b5c0 0000024c F fclCmbEffRunScript source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41BA60: [fclCmbEffDraw2D] Draws the visible 2D resources: walking the runner's resource list from its cursor (+12), every node whose u16 flags have 8 and 1 an
+0041ba60 00000088 F fclCmbEffDraw2D source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl
+# sub_41BC90: [fclCmbEffVertexBuffer] ($a0 positions (12 bytes each), $a1 uv pairs, $a2 RGBA words, $a3 count, $t0 texture; K_Assert fclCombineEffect.c:2279 on bad 
+0041bc90 000001b4 F fclCmbEffVertexBuffer source=phase5-fcl verified=yes ev=INTEGRATION_LOG.md#fcl

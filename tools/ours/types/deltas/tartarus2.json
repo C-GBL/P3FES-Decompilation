@@ -1,0 +1,1545 @@
+{
+ "note": "slice tartarus2: fields named from the instructions of game/src/field/tartarus2*.cpp (the party think, the stratum-parts task, the Kyoto NPCs, the enemy band creators, the mini-map task); the same offsets as the constexprs of game/include/p3fes/game/tartarus2.h (namespace tart2)",
+ "records": [
+  {
+   "name": "PcThinkWork",
+   "size": 4708,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "u8",
+     "name": "byte0"
+    },
+    {
+     "off": 1,
+     "width": 1,
+     "type": "s8",
+     "name": "mode"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "s32",
+     "name": "pc"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "hero_res"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "ptr",
+     "name": "own_res"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "ptr",
+     "name": "unit"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "ptr",
+     "name": "chest"
+    },
+    {
+     "off": 44,
+     "width": 4,
+     "type": "ptr",
+     "name": "treasure_task"
+    },
+    {
+     "off": 208,
+     "width": 4,
+     "type": "f32",
+     "name": "cell_pos_x"
+    },
+    {
+     "off": 212,
+     "width": 4,
+     "type": "f32",
+     "name": "cell_pos_y"
+    },
+    {
+     "off": 216,
+     "width": 4,
+     "type": "f32",
+     "name": "cell_pos_z"
+    },
+    {
+     "off": 220,
+     "width": 1,
+     "type": "s8",
+     "name": "cell_x"
+    },
+    {
+     "off": 221,
+     "width": 1,
+     "type": "s8",
+     "name": "cell_z"
+    },
+    {
+     "off": 224,
+     "width": 4,
+     "type": "f32",
+     "name": "walk_pos_x"
+    },
+    {
+     "off": 228,
+     "width": 4,
+     "type": "f32",
+     "name": "walk_pos_y"
+    },
+    {
+     "off": 232,
+     "width": 4,
+     "type": "f32",
+     "name": "walk_pos_z"
+    },
+    {
+     "off": 236,
+     "width": 4,
+     "type": "f32",
+     "name": "step_pos_x"
+    },
+    {
+     "off": 240,
+     "width": 4,
+     "type": "f32",
+     "name": "step_pos_y"
+    },
+    {
+     "off": 244,
+     "width": 4,
+     "type": "f32",
+     "name": "step_pos_z"
+    },
+    {
+     "off": 248,
+     "width": 1,
+     "type": "u8",
+     "name": "walk_x"
+    },
+    {
+     "off": 249,
+     "width": 1,
+     "type": "u8",
+     "name": "walk_z"
+    },
+    {
+     "off": 252,
+     "width": 4,
+     "type": "s32",
+     "name": "timer"
+    },
+    {
+     "off": 256,
+     "width": 1,
+     "type": "s8",
+     "name": "step_dir"
+    },
+    {
+     "off": 257,
+     "width": 1,
+     "type": "s8",
+     "name": "hand"
+    },
+    {
+     "off": 258,
+     "width": 1,
+     "type": "s8",
+     "name": "facing"
+    },
+    {
+     "off": 259,
+     "width": 1,
+     "type": "u8",
+     "name": "goal_x"
+    },
+    {
+     "off": 260,
+     "width": 1,
+     "type": "u8",
+     "name": "goal_z"
+    },
+    {
+     "off": 261,
+     "width": 1,
+     "type": "u8",
+     "name": "start_x"
+    },
+    {
+     "off": 262,
+     "width": 1,
+     "type": "u8",
+     "name": "start_z"
+    },
+    {
+     "off": 263,
+     "width": 1,
+     "type": "u8",
+     "name": "byte263"
+    },
+    {
+     "off": 265,
+     "width": 1,
+     "type": "u8",
+     "name": "visits"
+    },
+    {
+     "off": 524,
+     "width": 4,
+     "type": "s32",
+     "name": "count"
+    },
+    {
+     "off": 2576,
+     "width": 4,
+     "type": "s32",
+     "name": "queue"
+    },
+    {
+     "off": 4628,
+     "width": 1,
+     "type": "u8",
+     "name": "exploring"
+    },
+    {
+     "off": 4629,
+     "width": 1,
+     "type": "u8",
+     "name": "held"
+    },
+    {
+     "off": 4630,
+     "width": 1,
+     "type": "u8",
+     "name": "avoid_fights"
+    },
+    {
+     "off": 4631,
+     "width": 1,
+     "type": "u8",
+     "name": "mode_change"
+    },
+    {
+     "off": 4632,
+     "width": 1,
+     "type": "s8",
+     "name": "fight_state"
+    },
+    {
+     "off": 4633,
+     "width": 1,
+     "type": "s8",
+     "name": "fight_enemy"
+    },
+    {
+     "off": 4634,
+     "width": 1,
+     "type": "u8",
+     "name": "fight_level"
+    },
+    {
+     "off": 4640,
+     "width": 1,
+     "type": "s8",
+     "name": "explore_state"
+    },
+    {
+     "off": 4641,
+     "width": 1,
+     "type": "u8",
+     "name": "byte4641"
+    },
+    {
+     "off": 4642,
+     "width": 1,
+     "type": "u8",
+     "name": "busy"
+    },
+    {
+     "off": 4643,
+     "width": 1,
+     "type": "s8",
+     "name": "follow_state"
+    },
+    {
+     "off": 4644,
+     "width": 1,
+     "type": "u8",
+     "name": "byte4644"
+    },
+    {
+     "off": 4646,
+     "width": 2,
+     "type": "s16",
+     "name": "skill_target"
+    },
+    {
+     "off": 4648,
+     "width": 4,
+     "type": "f32",
+     "name": "hide_pos_x"
+    },
+    {
+     "off": 4652,
+     "width": 4,
+     "type": "f32",
+     "name": "hide_pos_y"
+    },
+    {
+     "off": 4656,
+     "width": 4,
+     "type": "f32",
+     "name": "hide_pos_z"
+    },
+    {
+     "off": 4660,
+     "width": 1,
+     "type": "u8",
+     "name": "hide_index"
+    },
+    {
+     "off": 4661,
+     "width": 1,
+     "type": "u8",
+     "name": "via_stairs"
+    },
+    {
+     "off": 4662,
+     "width": 1,
+     "type": "s8",
+     "name": "mode_script_state"
+    },
+    {
+     "off": 4663,
+     "width": 1,
+     "type": "s8",
+     "name": "skill_state"
+    },
+    {
+     "off": 4664,
+     "width": 1,
+     "type": "u8",
+     "name": "skill_use"
+    },
+    {
+     "off": 4665,
+     "width": 1,
+     "type": "s8",
+     "name": "skill_kind"
+    },
+    {
+     "off": 4667,
+     "width": 1,
+     "type": "u8",
+     "name": "byte4667"
+    },
+    {
+     "off": 4692,
+     "width": 1,
+     "type": "u8",
+     "name": "support"
+    },
+    {
+     "off": 4693,
+     "width": 1,
+     "type": "s8",
+     "name": "support_state"
+    },
+    {
+     "off": 4696,
+     "width": 4,
+     "type": "ptr",
+     "name": "fight_task"
+    },
+    {
+     "off": 4700,
+     "width": 4,
+     "type": "ptr",
+     "name": "script_task"
+    },
+    {
+     "off": 4704,
+     "width": 1,
+     "type": "s8",
+     "name": "mode_order"
+    }
+   ]
+  },
+  {
+   "name": "TreasureFreeWork",
+   "size": 12,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "ptr",
+     "name": "res"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "chest"
+    }
+   ]
+  },
+  {
+   "name": "StratumWork",
+   "size": 2396,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x44A990",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "sprites"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "parts"
+    },
+    {
+     "off": 232,
+     "width": 4,
+     "type": "u32",
+     "name": "sprites2"
+    },
+    {
+     "off": 238,
+     "width": 2,
+     "type": "s16",
+     "name": "slide_a"
+    },
+    {
+     "off": 244,
+     "width": 2,
+     "type": "s16",
+     "name": "slide_b"
+    },
+    {
+     "off": 572,
+     "width": 4,
+     "type": "ptr",
+     "name": "script_task"
+    },
+    {
+     "off": 576,
+     "width": 4,
+     "type": "u32",
+     "name": "script_file"
+    },
+    {
+     "off": 580,
+     "width": 4,
+     "type": "s32",
+     "name": "script_size"
+    },
+    {
+     "off": 584,
+     "width": 4,
+     "type": "ptr",
+     "name": "script_copy"
+    },
+    {
+     "off": 588,
+     "width": 4,
+     "type": "u32",
+     "name": "data_file"
+    },
+    {
+     "off": 592,
+     "width": 1,
+     "type": "u8",
+     "name": "mode"
+    },
+    {
+     "off": 593,
+     "width": 1,
+     "type": "u8",
+     "name": "from_map"
+    },
+    {
+     "off": 594,
+     "width": 1,
+     "type": "u8",
+     "name": "end_wait"
+    },
+    {
+     "off": 595,
+     "width": 1,
+     "type": "u8",
+     "name": "count595"
+    },
+    {
+     "off": 596,
+     "width": 1,
+     "type": "u8",
+     "name": "count596"
+    },
+    {
+     "off": 628,
+     "width": 4,
+     "type": "ptr",
+     "name": "tiles"
+    },
+    {
+     "off": 652,
+     "width": 4,
+     "type": "ptr",
+     "name": "tile_tasks"
+    },
+    {
+     "off": 716,
+     "width": 4,
+     "type": "f32",
+     "name": "tile_pos"
+    },
+    {
+     "off": 896,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_requests"
+    },
+    {
+     "off": 968,
+     "width": 4,
+     "type": "ptr",
+     "name": "tiles_u"
+    },
+    {
+     "off": 988,
+     "width": 4,
+     "type": "ptr",
+     "name": "tile_u_tasks"
+    },
+    {
+     "off": 1060,
+     "width": 4,
+     "type": "ptr",
+     "name": "background"
+    },
+    {
+     "off": 1064,
+     "width": 4,
+     "type": "ptr",
+     "name": "title_tex"
+    },
+    {
+     "off": 1068,
+     "width": 4,
+     "type": "ptr",
+     "name": "bg_task"
+    },
+    {
+     "off": 1072,
+     "width": 4,
+     "type": "ptr",
+     "name": "title_task"
+    },
+    {
+     "off": 1148,
+     "width": 4,
+     "type": "ptr",
+     "name": "tri_list"
+    },
+    {
+     "off": 1152,
+     "width": 4,
+     "type": "s32",
+     "name": "wobble_frame"
+    },
+    {
+     "off": 2152,
+     "width": 4,
+     "type": "ptr",
+     "name": "cursor_a"
+    },
+    {
+     "off": 2156,
+     "width": 4,
+     "type": "ptr",
+     "name": "cursor_b"
+    },
+    {
+     "off": 2366,
+     "width": 1,
+     "type": "s8",
+     "name": "cursor"
+    },
+    {
+     "off": 2367,
+     "width": 1,
+     "type": "s8",
+     "name": "rows"
+    },
+    {
+     "off": 2368,
+     "width": 1,
+     "type": "s8",
+     "name": "entries"
+    },
+    {
+     "off": 2369,
+     "width": 1,
+     "type": "s8",
+     "name": "scroll"
+    }
+   ]
+  },
+  {
+   "name": "FieldParams",
+   "size": 200,
+   "anchors": [
+    {
+     "how": "gslot",
+     "addr": "0x7CE6EC"
+    }
+   ],
+   "fields": [
+    {
+     "off": 162,
+     "width": 2,
+     "type": "s16",
+     "name": "floor"
+    },
+    {
+     "off": 164,
+     "width": 1,
+     "type": "s8",
+     "name": "block"
+    },
+    {
+     "off": 165,
+     "width": 1,
+     "type": "u8",
+     "name": "done"
+    },
+    {
+     "off": 166,
+     "width": 1,
+     "type": "u8",
+     "name": "block_states"
+    },
+    {
+     "off": 172,
+     "width": 1,
+     "type": "u8",
+     "name": "layout"
+    },
+    {
+     "off": 173,
+     "width": 1,
+     "type": "s8",
+     "name": "blocks_open"
+    }
+   ]
+  },
+  {
+   "name": "SmapWork",
+   "size": 2996,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "file0"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "u32",
+     "name": "file1"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "u32",
+     "name": "file2"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "u32",
+     "name": "file3"
+    },
+    {
+     "off": 20,
+     "width": 4,
+     "type": "u32",
+     "name": "file4"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "u32",
+     "name": "file5"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "u32",
+     "name": "file6"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "u32",
+     "name": "file7"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "u32",
+     "name": "file8"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex0"
+    },
+    {
+     "off": 44,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex1"
+    },
+    {
+     "off": 48,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex2"
+    },
+    {
+     "off": 52,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex3"
+    },
+    {
+     "off": 56,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex4"
+    },
+    {
+     "off": 60,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex5"
+    },
+    {
+     "off": 64,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex6"
+    },
+    {
+     "off": 68,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex7"
+    },
+    {
+     "off": 72,
+     "width": 4,
+     "type": "ptr",
+     "name": "tex8"
+    },
+    {
+     "off": 76,
+     "width": 4,
+     "type": "ptr",
+     "name": "corners"
+    },
+    {
+     "off": 92,
+     "width": 4,
+     "type": "ptr",
+     "name": "cell_tasks"
+    },
+    {
+     "off": 2140,
+     "width": 4,
+     "type": "f32",
+     "name": "corner_x"
+    },
+    {
+     "off": 2144,
+     "width": 4,
+     "type": "f32",
+     "name": "corner_y"
+    },
+    {
+     "off": 2148,
+     "width": 1,
+     "type": "s8",
+     "name": "shown"
+    },
+    {
+     "off": 2149,
+     "width": 1,
+     "type": "s8",
+     "name": "frozen"
+    },
+    {
+     "off": 2152,
+     "width": 4,
+     "type": "f32",
+     "name": "frozen_pos"
+    },
+    {
+     "off": 2164,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req0"
+    },
+    {
+     "off": 2168,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req1"
+    },
+    {
+     "off": 2172,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req2"
+    },
+    {
+     "off": 2176,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req3"
+    },
+    {
+     "off": 2180,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req4"
+    },
+    {
+     "off": 2184,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req5"
+    },
+    {
+     "off": 2188,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req6"
+    },
+    {
+     "off": 2192,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req7"
+    },
+    {
+     "off": 2196,
+     "width": 4,
+     "type": "u32",
+     "name": "tex_req8"
+    },
+    {
+     "off": 2200,
+     "width": 4,
+     "type": "ptr",
+     "name": "symbol_task"
+    },
+    {
+     "off": 2204,
+     "width": 4,
+     "type": "f32",
+     "name": "symbol_x"
+    },
+    {
+     "off": 2208,
+     "width": 4,
+     "type": "f32",
+     "name": "symbol_y"
+    },
+    {
+     "off": 2240,
+     "width": 4,
+     "type": "f32",
+     "name": "pc_mark1_x"
+    },
+    {
+     "off": 2244,
+     "width": 4,
+     "type": "f32",
+     "name": "pc_mark1_y"
+    },
+    {
+     "off": 2354,
+     "width": 2,
+     "type": "s16",
+     "name": "pc_blink1"
+    },
+    {
+     "off": 2360,
+     "width": 1,
+     "type": "s8",
+     "name": "pc_drawn1"
+    },
+    {
+     "off": 2361,
+     "width": 1,
+     "type": "s8",
+     "name": "pc_drawn2"
+    },
+    {
+     "off": 2362,
+     "width": 1,
+     "type": "s8",
+     "name": "pc_drawn3"
+    },
+    {
+     "off": 2364,
+     "width": 4,
+     "type": "f32",
+     "name": "ec_mark_x"
+    },
+    {
+     "off": 2368,
+     "width": 4,
+     "type": "f32",
+     "name": "ec_mark_y"
+    },
+    {
+     "off": 2556,
+     "width": 2,
+     "type": "s16",
+     "name": "ec_blink"
+    },
+    {
+     "off": 2560,
+     "width": 4,
+     "type": "f32",
+     "name": "chest_mark_x"
+    },
+    {
+     "off": 2564,
+     "width": 4,
+     "type": "f32",
+     "name": "chest_mark_y"
+    },
+    {
+     "off": 2816,
+     "width": 4,
+     "type": "f32",
+     "name": "exit_mark_x"
+    },
+    {
+     "off": 2820,
+     "width": 4,
+     "type": "f32",
+     "name": "exit_mark_y"
+    },
+    {
+     "off": 2824,
+     "width": 1,
+     "type": "s8",
+     "name": "exit_cell_x"
+    },
+    {
+     "off": 2825,
+     "width": 1,
+     "type": "s8",
+     "name": "exit_cell_z"
+    },
+    {
+     "off": 2827,
+     "width": 1,
+     "type": "s8",
+     "name": "stair_door_x"
+    },
+    {
+     "off": 2828,
+     "width": 1,
+     "type": "s8",
+     "name": "stair_door_z"
+    },
+    {
+     "off": 2832,
+     "width": 4,
+     "type": "f32",
+     "name": "stair_pos"
+    },
+    {
+     "off": 2844,
+     "width": 4,
+     "type": "ptr",
+     "name": "stair_task"
+    },
+    {
+     "off": 2848,
+     "width": 4,
+     "type": "ptr",
+     "name": "boxfill"
+    },
+    {
+     "off": 2852,
+     "width": 4,
+     "type": "ptr",
+     "name": "mask_task"
+    },
+    {
+     "off": 2856,
+     "width": 1,
+     "type": "s8",
+     "name": "view_cells"
+    },
+    {
+     "off": 2857,
+     "width": 1,
+     "type": "s8",
+     "name": "cell_px"
+    },
+    {
+     "off": 2858,
+     "width": 1,
+     "type": "s8",
+     "name": "layer_count"
+    },
+    {
+     "off": 2940,
+     "width": 2,
+     "type": "s16",
+     "name": "layer_entry"
+    },
+    {
+     "off": 2960,
+     "width": 2,
+     "type": "s16",
+     "name": "scene_entry"
+    }
+   ]
+  },
+  {
+   "name": "EneThinkWork",
+   "size": 4248,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "u8",
+     "name": "byte0"
+    },
+    {
+     "off": 1,
+     "width": 1,
+     "type": "s8",
+     "name": "unit"
+    },
+    {
+     "off": 2,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 3,
+     "width": 1,
+     "type": "s8",
+     "name": "sub_state"
+    },
+    {
+     "off": 4,
+     "width": 1,
+     "type": "s8",
+     "name": "sub_state2"
+    },
+    {
+     "off": 5,
+     "width": 1,
+     "type": "s8",
+     "name": "sub_state3"
+    },
+    {
+     "off": 7,
+     "width": 1,
+     "type": "u8",
+     "name": "byte7"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "u32",
+     "name": "kind4_word"
+    },
+    {
+     "off": 24,
+     "width": 1,
+     "type": "s8",
+     "name": "behaviour"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "f32",
+     "name": "stair_pos_x"
+    },
+    {
+     "off": 44,
+     "width": 4,
+     "type": "f32",
+     "name": "stair_pos_y"
+    },
+    {
+     "off": 48,
+     "width": 4,
+     "type": "f32",
+     "name": "stair_pos_z"
+    },
+    {
+     "off": 64,
+     "width": 1,
+     "type": "u8",
+     "name": "paused"
+    },
+    {
+     "off": 139,
+     "width": 1,
+     "type": "u8",
+     "name": "target_x"
+    },
+    {
+     "off": 140,
+     "width": 1,
+     "type": "u8",
+     "name": "target_z"
+    }
+   ]
+  },
+  {
+   "name": "EneDeadEffectWork",
+   "size": 16,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_x"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_y"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_z"
+    }
+   ]
+  },
+  {
+   "name": "SymbolDirpWork",
+   "size": 336,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "file"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "texture"
+    },
+    {
+     "off": 280,
+     "width": 4,
+     "type": "u32",
+     "name": "arg1"
+    },
+    {
+     "off": 284,
+     "width": 4,
+     "type": "u32",
+     "name": "arg2"
+    },
+    {
+     "off": 288,
+     "width": 4,
+     "type": "f32",
+     "name": "centre_x"
+    },
+    {
+     "off": 292,
+     "width": 4,
+     "type": "f32",
+     "name": "centre_y"
+    },
+    {
+     "off": 296,
+     "width": 4,
+     "type": "f32",
+     "name": "depth"
+    },
+    {
+     "off": 300,
+     "width": 4,
+     "type": "s32",
+     "name": "floor"
+    },
+    {
+     "off": 304,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_x"
+    },
+    {
+     "off": 308,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_y"
+    },
+    {
+     "off": 312,
+     "width": 4,
+     "type": "f32",
+     "name": "angle"
+    },
+    {
+     "off": 316,
+     "width": 4,
+     "type": "f32",
+     "name": "u"
+    },
+    {
+     "off": 320,
+     "width": 4,
+     "type": "f32",
+     "name": "v"
+    },
+    {
+     "off": 324,
+     "width": 4,
+     "type": "ptr",
+     "name": "hero_res"
+    },
+    {
+     "off": 328,
+     "width": 1,
+     "type": "u8",
+     "name": "shown"
+    }
+   ]
+  },
+  {
+   "name": "KyotoNpcThinkWork",
+   "size": 1204,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 1,
+     "type": "s8",
+     "name": "state"
+    },
+    {
+     "off": 1,
+     "width": 1,
+     "type": "s8",
+     "name": "route"
+    },
+    {
+     "off": 2,
+     "width": 1,
+     "type": "s8",
+     "name": "index"
+    },
+    {
+     "off": 4,
+     "width": 2,
+     "type": "s16",
+     "name": "waypoint"
+    },
+    {
+     "off": 6,
+     "width": 1,
+     "type": "s8",
+     "name": "lap"
+    },
+    {
+     "off": 7,
+     "width": 1,
+     "type": "s8",
+     "name": "catch"
+    },
+    {
+     "off": 8,
+     "width": 1,
+     "type": "u8",
+     "name": "paused"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "ptr",
+     "name": "script_task"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "ptr",
+     "name": "wait_task"
+    },
+    {
+     "off": 20,
+     "width": 1,
+     "type": "u8",
+     "name": "waiting"
+    },
+    {
+     "off": 22,
+     "width": 2,
+     "type": "s16",
+     "name": "wait_frames"
+    },
+    {
+     "off": 24,
+     "width": 2,
+     "type": "s16",
+     "name": "steps"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "f32",
+     "name": "saved_pos_x"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "f32",
+     "name": "saved_pos_y"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "f32",
+     "name": "saved_pos_z"
+    },
+    {
+     "off": 40,
+     "width": 2,
+     "type": "s16",
+     "name": "move_count"
+    },
+    {
+     "off": 48,
+     "width": 4,
+     "type": "f32",
+     "name": "home_pos_x"
+    },
+    {
+     "off": 52,
+     "width": 4,
+     "type": "f32",
+     "name": "home_pos_y"
+    },
+    {
+     "off": 56,
+     "width": 4,
+     "type": "f32",
+     "name": "home_pos_z"
+    },
+    {
+     "off": 1196,
+     "width": 4,
+     "type": "ptr",
+     "name": "marker_a"
+    },
+    {
+     "off": 1200,
+     "width": 4,
+     "type": "ptr",
+     "name": "marker_b"
+    }
+   ]
+  },
+  {
+   "name": "KyotoWaitWork",
+   "size": 12,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 2,
+     "type": "s16",
+     "name": "frames"
+    },
+    {
+     "off": 2,
+     "width": 2,
+     "type": "s16",
+     "name": "count"
+    },
+    {
+     "off": 4,
+     "width": 2,
+     "type": "s16",
+     "name": "proc"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "ptr",
+     "name": "script"
+    }
+   ]
+  },
+  {
+   "name": "TimeLimitWork",
+   "size": 96,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 4,
+     "width": 1,
+     "type": "u8",
+     "name": "byte4"
+    },
+    {
+     "off": 5,
+     "width": 1,
+     "type": "u8",
+     "name": "byte5"
+    },
+    {
+     "off": 66,
+     "width": 1,
+     "type": "u8",
+     "name": "byte66"
+    },
+    {
+     "off": 67,
+     "width": 1,
+     "type": "u8",
+     "name": "byte67"
+    },
+    {
+     "off": 68,
+     "width": 2,
+     "type": "s16",
+     "name": "word68"
+    },
+    {
+     "off": 72,
+     "width": 4,
+     "type": "u32",
+     "name": "word72"
+    },
+    {
+     "off": 76,
+     "width": 1,
+     "type": "u8",
+     "name": "byte76"
+    },
+    {
+     "off": 80,
+     "width": 4,
+     "type": "u32",
+     "name": "seconds"
+    },
+    {
+     "off": 84,
+     "width": 1,
+     "type": "u8",
+     "name": "min_tens"
+    },
+    {
+     "off": 85,
+     "width": 1,
+     "type": "u8",
+     "name": "min_ones"
+    },
+    {
+     "off": 86,
+     "width": 1,
+     "type": "u8",
+     "name": "sec_tens"
+    },
+    {
+     "off": 87,
+     "width": 1,
+     "type": "u8",
+     "name": "sec_ones"
+    },
+    {
+     "off": 92,
+     "width": 1,
+     "type": "u8",
+     "name": "byte92"
+    },
+    {
+     "off": 93,
+     "width": 1,
+     "type": "u8",
+     "name": "byte93"
+    }
+   ]
+  }
+ ]
+}

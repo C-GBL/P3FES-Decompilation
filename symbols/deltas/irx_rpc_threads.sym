@@ -1,0 +1,131 @@
+# Phase 2 topic 12 delta -- IOP modules / SIF RPC / threads / kernel patch (docs/ANALYSIS/12_irx_rpc_threads.md)
+# Row format: <addr8> <size8> <F|D|L> <name> source=<src> verified=yes ev=<doc anchor>
+#   source=phase2-irx_rpc_threads = our own name (evidence in the doc section named by ev=).
+#   source=tge-pr4 verified=yes   = community hint promoted after verification (ADR-0009).
+# Rows are ordered so that renames which free a name run before the row that reuses it.
+# IDA master update #5: sceSifInitCmd 0x506148 (source=phase2-irx_rpc_threads below) is also the tge-pr4 (and snaku) hint name
+# the master carried there (unverified), so the exporter withheld it as sub_506148 since this delta's merge. Update #5 imported it
+# as a promotion (source=tge-pr4 verified=yes; ADR-0009, behaviour verified in 12_irx_rpc_threads.md section 7): symbols/p3fes.sym
+# exports it with source=tge-pr4. kwlnVBlankStartHandler / kwlnInstallVBlankStartHandler (0x19D320 / 0x19D360) stay superseded
+# by frame_loop_gs.sym's kwlnVsyncFieldGate / kwlnInstallVsyncFieldGate.
+#
+# --- promoted hints ---
+00196fe0 00000050 F kwlnT0OverflowHandler source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#43-timers-and-alarms
+00505fc0 000000c8 F sceSifSetDmaInternal source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#7-naming-changes-and-conflicts
+0051dc70 000000d4 F sceSkSsHSYNTH_Bind source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0051dd48 000000a8 F sceSkSsHSYNTH_Unbind source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0051ddf0 000000bc F sceSkSsSESQ_Bind source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0051deb0 000000a8 F sceSkSsSESQ_Unbind source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0051df58 000000cc F sceSkSsSESQ_Control source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0051e028 000000b4 F sceSkSsSESQ_Status source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+# --- promoted hints, second pass (behaviour read in this topic; see doc sections in ev=) ---
+00103000 00000108 F H_Pad_Init source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#3-pad-memory-card-osd-params
+00103110 00000468 F H_Pad_UpdateWorkPad source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#3-pad-memory-card-osd-params
+0010bff0 00000054 F H_ResrcMan_MaybeResumeThread source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+0010c050 0000014c F H_ResrcMan_Init source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+0010c7d0 000002e4 F H_Resman_ThreadProc source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+0010cac0 00000214 F H_Sndcom_Init source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0010cdd0 00000914 F H_Sndcom_Update source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0010d910 00000034 F H_Sndcom_IsChannelPlaying source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0010d950 00000118 F H_Sndcom_UnbindSfx source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0010da70 000000f0 F H_Sndcom_StopVoice source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0010db60 000001a8 F H_Sndcom_PlayVoice source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0018f100 00000064 F H_Memcard_Init source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#3-pad-memory-card-osd-params
+0018f190 0000010c F H_Memcard_Check source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#3-pad-memory-card-osd-params
+0018f2c0 000012bc F H_Memcard_UpdateSeqMode source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#3-pad-memory-card-osd-params
+00197030 0000031c F kwlnInitPS2Systems source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#1-irx-loading
+00197fe0 0000002c F kwlnGsSyncVCallback source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#44-interrupt-handlers
+00198010 00000390 F kwlnInitMain source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+004bfbb0 00000068 F RwFsInit source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#42-semaphores
+004d47f0 00000268 F _rwDMAVSYNCHandler source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#44-interrupt-handlers
+004d6470 00000130 F _rwDMAHook source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#44-interrupt-handlers
+0050dcb0 00000154 F InitTimer source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#43-timers-and-alarms
+0050def0 00000090 F StartTimerSystemTime source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#43-timers-and-alarms
+0050e250 000002b4 F cbTimerHandler source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#43-timers-and-alarms
+0053fb00 00000058 F adxm_safe_proc source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+0053fbf0 00000104 F adxm_vsync_proc source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+0053fde8 00000138 F adxm_mwidle_proc source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+00540178 000000a4 F adxm_SetupSafeThrd source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+00540220 000000b8 F adxm_SetupUsrVsyncThrd source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+005402d8 00000088 F adxm_SetupVsyncThrd source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+005403e8 00000098 F adxm_SetupMwIdleThrd source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+00540480 000000d0 F adxm_SetupUsrIdleThrd source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+005411b0 000001ec F ADXM_SetupThrdEx source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+00540d80 00000128 F ADXPS2_ExecVint source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#44-interrupt-handlers
+00559508 0000006c F dtx_svr_proc source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+00559588 0000006c F dtx_create_rmt source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+005595f8 0000004c F dtx_destroy_rmt source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00559aa8 000000f0 F DTX_Init source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00559c10 00000108 F DTX_CallUrpc source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00559140 000000bc F DTR_ExecServer source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+005593a8 000000b0 F DTR_Stop source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+0055ff70 000002cc F PS2RNA_Init source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00560298 000000dc F PS2RNA_InitIopSnd source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00560558 0000008c F PS2RNA_StartPcmTrans source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+005605e8 00000084 F PS2RNA_StopPcmTrans source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00560758 000003a0 F PS2RNA_Create source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00561138 000000a4 F PS2RNA_ExecServer source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00594130 00000078 F viBufCreate source=tge-pr4 verified=yes ev=12_irx_rpc_threads.md#42-semaphores
+# --- our names (functions) ---
+00506148 00000280 F sceSifInitCmd source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#7-naming-changes-and-conflicts
+00506088 00000088 F sceSifSetDma source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+00506110 00000038 F isceSifSetDma source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+0019d320 00000040 F kwlnVBlankStartHandler source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#44-interrupt-handlers
+0019d360 00000090 F kwlnInstallVBlankStartHandler source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#44-interrupt-handlers
+0010c5f0 000001d4 F H_ResrcMan_Update source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#41-thread-table
+0010cce0 000000e8 F H_Sndcom_CopyToIop source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+# --- our names (data) ---
+0077fbc0 00000010 D tbl_kpatch_syscalltable source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+0077f8e8 00000040 D tbl_kpatch_tlb source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+00780380 00000018 D tbl_kpatch_execps2 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+00780b08 00000040 D tbl_kpatch_alarm source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+0077f568 00000330 D kpayload_tlb_80075000 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+0077fbd8 000007a8 D kpayload_execps2_80074000 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+007803a0 00000740 D kpayload_alarm_80076000 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+00780ae0 00000028 D kpayload_alarm_vector_82000 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#5-kernel-patch-payload
+0096e040 00000000 D sdr_rpc_cd source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+0096e000 00000040 D sdr_rpc_argblk source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+0096dcc0 00000000 D pad_rpc_cd0 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+0096dce8 00000000 D pad_rpc_cd1 source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+0096df00 00000080 D pad_rpc_buf source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+0096a0c0 00000000 D lf_rpc_cd source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00969d00 00000000 D heap_rpc_cd source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#21-iop-servers-bound-by-the-ee
+00782b80 00000040 D sk_sound_cmdblk source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+00782bc0 00000040 D sk_hsynth_cmdblk source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+00782c00 00000040 D sk_sesq_cmdblk source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+00833640 00000010 D g_sndcomSifDmaReq source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+005d53a0 00000000 D tbl_H_Sndcom_BankFiles source=phase2-irx_rpc_threads verified=yes ev=12_irx_rpc_threads.md#23-shared-memory--direct-sif-protocols
+#
+# comments  (function comments; grammar: "# comment <addr> <text>", applied as IDA function comments by the topic agent,
+#            ignored by import_symbols.py -- the lead re-applies them with tools/ours/ida/apply_cmts or by hand)
+# comment 00197030 kwlnInitPS2Systems: IOP bring-up. InitRpc/InitIopHeap/CdInit/CdMmode(2); reboot IOP with rom0:UDNL cdrom0:\LIB31\IOPRP310.IMG;1 (retry loop); SyncIop; re-init; T0 time base + INTC9 handler; 15x sceSifLoadModule (SIO2MAN,SIO2D,PADMAN,DBCMAN,MC2_S1,LIBSD,CRI_ADXI "sdinit=0 spucore=1",SDRDRV,MODHSYN,MODMSIN,MODSESQ,SKSOUND,SKHSYNTH x2,SKSESQ "maxtrack=16\0maxentry=16") each retried while <0; H_Pad_Init; H_Memcard_Init; saves main thread id to gp-0x4C28. ev: 12 s1
+# comment 00196fe0 INTC 9 (TIM0) handler: when T0_MODE.OVFF, add 0x10000 to the 64-bit tick counter at gp-0x4C58 (T0 runs at BUSCLK/16). ev: 12 s4.3
+# comment 0019d320 INTC 2 (VBLANK_START) handler installed by kwlnInstallVBlankStartHandler: sync;ei; returns 0 if GS_CSR.FIELD else -1. ev: 12 s4.4
+# comment 0019d360 AddIntcHandler(2, kwlnVBlankStartHandler, 0) + EnableIntc(2); handler id at gp-0x6BA8. Called from kwlnInitRenderer. ev: 12 s4.4
+# comment 0010c5f0 Per-frame resource-manager pump (from kwlnRootUpdateShowRasterTask): walks sResrcMan request list, issues H_Cdvd_Request, and when a file is loaded sets the thread control block (gp-0x4DC0) and WakeupThread(H_Resman_ThreadProc). ev: 12 s4.1
+# comment 0010cce0 EE->IOP memory copy for sound banks: {src,dst,size,0} at g_sndcomSifDmaReq, FlushCache, sceSifSetDma, busy-wait sceSifDmaStat. Asserts (h_sndcom.c:263) if the DMA could not be queued. ev: 12 s2.3
+# comment 00506088 libsifcmd public sceSifSetDma: when sifcmd is initialised routes through sceSifSetDmaInternal (adds 16-byte sync packet), else raw syscall. Used by libpad _send_to_iop, sceSdTransToIOP, H_Sndcom_CopyToIop, CRI DTR. ev: 12 s2.3
+# comment 00506110 libsifcmd isceSifSetDma (interrupt-context variant of 0x506088). ev: 12 s2.3
+# comment 00505fc0 Builds the SIF DMA list (<=32 entries) plus a trailing 16-byte packet (header dword_7BDD00 -> IOP cmd buffer dword_966A60) and issues (i)sceSifSetDma. FLIRT had this as sceSifInitCmd (wrong; the real init is 0x506148). ev: 12 s7
+# comment 00506148 sceSifInitCmd: sifcmd init -- cmd buffer 0x966A58, handlers change_addr/set_sreg, AddDmacHandler(5, sceSifCmdIntrHdlr), EnableDmac(5), exchanges IOP cmd-buffer address via SIF regs 0x80000000/0x80000001 and cmd 0x80000002. ev: 12 s2.2
+# comment 0051dc70 SK HSYNTH Bind: 64-byte block {0x1000000, 0, a1..a6} sent via sceSdRemote(1,0x9100,blk,64). Game: Bind(3,-1,iopHd,hdSize,spuAddr,bdSize)->id and Bind(5,-1,id,0)->id2. ev: 12 s2.3
+# comment 0051dd48 SK HSYNTH Unbind: block {0x1000000, 1, kind, id}. ev: 12 s2.3
+# comment 0051ddf0 SK SESQ Bind: block {0x4000000, 0, a1..a4}. Game: Bind(0,-1,iopSq,sqSize)->id3; Bind(5,hsynId2,id3)->control handle. ev: 12 s2.3
+# comment 0051deb0 SK SESQ Unbind: block {0x4000000, 1, kind, id}. ev: 12 s2.3
+# comment 0051df58 SK SESQ Control: block {0x4000000, 2, ctl, op, 10, arg, a5}; op 0 = play(seq)->handle, op 2 = stop(handle). ev: 12 s2.3
+# comment 0051e028 SK SESQ Status: block {0x4000000, 3, ctl, op, handle}. ev: 12 s2.3
+# comment 00512f80 Thread (prio 32, stack 0x96E080/4096) hosting EE-side RPC server 0x80000704 (_sdrCB): IOP->EE libsd callbacks. ev: 12 s2.2
+# comment 0050d658 libkernel _InitSys: supplement_crt0, InitSystemCallTableAddress, InitAlarm, InitTimer(2), StartTimerSystemTime, InitThread, InitExecPS2, InitTLBFunctions. Three kernel patches copy payloads to 0x80074000/0x80075000/0x80076000 via SetSyscall(0x5A,kCopy)+Copy; stock SDK, not game-specific. ev: 12 s5
+# comment 0050d780 ExecPS2 kernel patch (only if PatchIsNeeded): SetSyscall(0x5A,kCopy_1); Copy(0x80074000, kpayload_execps2_80074000, 1960); SetSyscall(0x5B,0x80074000); SetSyscall(0xFFFFC402, GetEntryAddress(0xFFFFC402)) (negative index = patches a kernel word). ev: 12 s5
+# comment 0050db38 Alarm kernel patch (only if T3_MODE bit8 clear): Copy(0x80076000, kpayload_alarm_80076000, 1856); Copy(0x82000, kpayload_alarm_vector_82000, 40); SetSyscall(0x5B,0x80076000); SetSyscall(n, GetEntryAddress(n)) for n=0xFC,0xFE,0xFD,0xFF,0x12C,0x08. ev: 12 s5
+# comment 0050cc78 TLB kernel patch (unconditional): Copy(0x80075000, kpayload_tlb_80075000, 816); SetSyscall(0x5B,0x80075000); SetSyscall(0x54,_kExitTLBHandler); SetSyscall(n,GetEntryAddress(n)) n=0x55..0x59; dword_77F8E0=GetEntryAddress(3). ev: 12 s5
+# comment 0050d718 PatchIsNeeded: GetOsdConfigParam, set bits 13-15 to 001, SetOsdConfigParam, read back, restore; returns 1 when the bits read 0 (old kernel). ev: 12 s5
+# comment 0010c050 Creates 1 thread H_Resman_ThreadProc (prio 28, stack sResrcManThreadStack 0x20000) with arg = control block gp-0x4DC0; StartThread. ev: 12 s4.1
+# comment 00103000 scePadInit(0); scePadPortOpen(0,0,sPad0Port); scePadPortOpen(1,0,sPad1Port); gWorkPads[i].port=i, slot=0, mode=3. ev: 12 s3
+# comment 0018f100 sceDbcInit; sceMc2Init(0); sceMc2CreateSocket({2,2,0}, sMemcardMc2Socket) -> handle gp-0x4CCC. Memory card goes libmc2 (EE FAT) -> DBC page RPC 0x8000141C. ev: 12 s3
+# comment 0010cac0 sceSdRemoteInit; sceSkInit(0); sceSkSsInit(32); sceSpu2MemInit(0x8338B0,32,0); SOUND_Control(0,143,0),(3,131,261),(3,132,60),(3,130,1); SetParam(0x800,4032),(0x801,4044); SOUND_Control(3,128,127); SPU2 RAM budget 614400+716800+4x102400. ev: 12 s2.3
+# comment 0010cdd0 Per-frame sound bank state machine (6 slots x 17 words at sSndcomWork): loads hd/bd/sq files from tbl_H_Sndcom_BankFiles, stages them in IOP RAM (sceSifAllocSysMemory + H_Sndcom_CopyToIop), uploads bodies to SPU2 with sceSkSsSOUND_Send(1,iop,spu,n) in 4096/65536-byte chunks, then HSYNTH_Bind/SESQ_Bind. ev: 12 s2.3
+# comment 0010c7d0 Resource-manager worker thread: SleepThread until control->go; dispatches request kinds 0-9 (RpWorldStreamRead, RpClumpStreamRead, RwTexDictionaryStreamRead, RwStreamRead, ...), destroys the CDVD request, marks done (state 3) and chains to the next request. ev: 12 s4.1
+# comment 004d47f0 INTC 2 handler (RenderWare sky): when a flip is pending, sceGsPutDispEnv for the back buffer, writes DISPFB1/2, kicks the deferred GIF packet on DMAC ch2 or calls _rwDMAHandler(-1). fes-pc-recomp vblankStartHandler_candidate confirmed. ev: 12 s4.4
+# comment 004d6470 Installs INTC 2 -> _rwDMAVSYNCHandler, DMAC 1 (VIF1) and DMAC 2 (GIF) -> _rwDMAHandler; EnableIntc(2), EnableDmac(1,2). ev: 12 s4.4
+# comment 00197fe0 sceGsSyncVCallback handler (INTC 2): ADXM_ExecVint -> ADXPS2_ExecVint wakes the ADX vsync/fs threads. ev: 12 s4.4

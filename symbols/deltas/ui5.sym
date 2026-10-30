@@ -1,0 +1,150 @@
+# ui5.sym  Phase 5 slice delta (game/include/p3fes/game/ui5.h, game/src/ui/ui5.cpp); SLUS_216.21
+# generated 2026-10-22 from the instructions (the p3fes_handgen bodies, the task-name strings H_CampSprSetupFile /
+#   CampPersonaTexControl / h_camp_flash_control / h_camp_pc_kani_control / h_camp_persona_kani_control /
+#   H_CampPcStatusRoot / H_CampStatusDraw / H_CampSoubi1Draw / CampPersonaDispCtl* / H_CampComuDraw / H_FRStatusDisp ...,
+#   the file strings camp/*.pak / *.anm / *.tmx, the callers) and checked by tests/game/test_ui5.cpp (the dorm and
+#   b_5800 / climb replay snapshots, camp_all.pak, documented-rule checks). Our own names (no community hint).
+#   Rows: <addr8> <size8> F <name> source=phase5-ui5 verified=yes ev=<doc>#<section>. Not imported by the agent.
+# sub_119AA0: Update of "H_CampSprSetupFile" (20_menu_ui.md 2.2 state 0).
+00119aa0 00000358 F H_Camp_UpdateCampSprSetupFileTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_119E00: Destroy of "H_CampSprSetupFile": releases the 14 sprite files (sub_1124B0), the pak
+# (H_Cdvd_Destroy), the tween records (RwFree, and clears gp-19876), clears 0x833B70[0..13], frees the work, ...
+00119e00 00000104 F H_Camp_DestroyCampSprSetupFileTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_119F10: (parent, message): creates "H_CampSprSetupFile" (72-byte work, priority 6335) unless one exists
+# (gp-19880), requests camp/camp_all2.pak in The Answer (sub_17D800() != 0) else camp/camp_all.pak ...
+00119f10 00000134 F H_Camp_CreateCampSprSetupFileTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11A710: Destroy of "H_CampDraw": forgets the side-portrait, flash and root-list tasks (gp-19868, -19864,
+# -19872, -19860), clears flag 0x1407 (camp open, read by the date HUD) and frees the work.
+0011a710 00000058 F H_Camp_DestroyDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11A8A0: Update of "H_CampStatusSprSetupFile" (created by sub_1675E0): as sub_119AA0 for
+# camp/camp_status.pak: its 8 entries become sprite files 1, 2, 7, 9..13 of the table; no tween records, no
+# message.
+0011a8a0 00000234 F H_Camp_UpdateStatusSprSetupFileTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11AAE0: Destroy of "H_CampStatusSprSetupFile": as sub_119E00 without the message.
+0011aae0 000000f0 F H_Camp_DestroyStatusSprSetupFileTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11B0B0: Update of "CampPersonaTexControl": state 0 formats camp/persona/pst_%03X.tmx from the persona id
+# (+4) into +20 and requests it (+8; id 0: straight to 3); 1: once loaded, starts the texture build ...
+0011b0b0 0000015c F H_Camp_UpdatePersonaTexControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11B210: Destroy of "CampPersonaTexControl": a build still running (+16) is handed to a
+# "CampPersonaDispCtlFree" task (sub_133D30) that releases it when done; otherwise the file (+8) and the texture
+# (+12, ...
+0011b210 00000098 F H_Camp_DestroyPersonaTexControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11B2B0: (parent, persona id): creates "CampPersonaTexControl" (276-byte work, priority 6335), +4 = the id,
+# gp-19856 = the task.
+0011b2b0 000000b4 F H_Camp_CreatePersonaTexControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11B370: (persona id): when the id differs from the shown one, releases the current texture as sub_11B210
+# does and restarts the loader on the new id (state 0).
+0011b370 000000a4 F H_Camp_PersonaTexSetPersona source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11BAA0: Destroy of "H_CampRootDraw": frees the work, gp-19860 = 0.
+0011baa0 00000030 F H_Camp_DestroyRootDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11C550: (root work): starts the main list's slide-in on the tween records at gp-19876 (sub_18BC10 with mode
+# 2, curve 1): records 0..6 = the seven rows from x 46 - 200 to 46 at y 59 + 19 i over frames i + 4 ..
+0011c550 00000330 F H_Camp_RootSlideIn source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11CC80: (root work): the same records as sub_11C550 over frames 0..10 with mode 0 (fade in); the cursor
+# bar's y 59 + 19 cursor through adda.s / madd.s.
+0011cc80 00000328 F H_Camp_RootFadeIn source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11D3A0: (root work): the same records over frames 0..10, mode 0 / curve 2 (fade out) -- the close of the
+# list (sub_11B9B0 / sub_11BA00).
+0011d3a0 00000328 F H_Camp_RootFadeOut source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11DA80: (root work): a copy of sub_11D3A0 used by the item and skill screens (the same records from the same
+# input).
+0011da80 00000328 F H_Camp_RootFadeOut2 source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11E380: (flash task, screen): when the flash task is idle (state 0) picks the transition for (the screen
+# shown, +8; the requested one) through three jump tables -- the dispatcher state of sub_11EA20 -- ...
+0011e380 000006a0 F H_CampFlash_Request source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11EA20: Update of "h_camp_flash_control" (jump table 0x7B55E0, 59 states): an odd state arms a transition
+# (state + 1, done +16 = 0, step +4 = 0), an even state runs its player (sub_11F260 ..
+0011ea20 00000700 F H_CampFlash_UpdateTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11F120: Destroy of "h_camp_flash_control": the two files +100 / +104, the work.
+0011f120 00000088 F H_CampFlash_DestroyTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_11F1B0: (parent): creates "h_camp_flash_control" (108-byte work, priority 6335, update sub_11EA20), +8 = 0
+# (main list).
+0011f1b0 000000a4 F H_Camp_CreateFlashControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_121FF0: Update of "h_camp_pc_kani_control" (the protagonist side portrait; jump table 0x7B58B0): every state
+# draws the pose through sub_123640 at (30, 219) with the pose of +20; states 1/2 (21-frame pose ...
+00121ff0 00000638 F H_Camp_UpdatePcKaniControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_122660: (parent): creates "h_camp_pc_kani_control" (24-byte work, priority 6337, update sub_121FF0): +12
+# screen 0, +20 pose 1.
+00122660 000000ac F H_Camp_CreatePcKaniControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_122940: Update of "h_camp_persona_kani_control" (the persona side portrait; jump table 0x7B5AB0): as
+# sub_121FF0 for the persona of +16 (datPersonaGetByPcId when it changes), drawn through sub_124E00.
+00122940 00000688 F H_Camp_UpdatePersonaKaniControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_123000: (parent, persona): creates "h_camp_persona_kani_control" (28-byte work, priority 6337, update
+# sub_122940): +12 screen 0, +16 persona, +24 pose 1.
+00123000 000000bc F H_Camp_CreatePersonaKaniControlTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1230C0: Update of "H_CampPcStatusRoot" (the Status screen root): state 0 creates the status draw
+# (sub_127B00, page 0) and starts the scrolling strip (gp-19792 = 320); 1 waits for the page's answer ...
+001230c0 00000478 F H_Camp_UpdatePcStatusRootTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_123570: (parent, priority, pc): creates "H_CampPcStatusRoot" (36-byte work, update sub_1230C0), +12 = the
+# party member.
+00123570 000000c4 F H_Camp_CreatePcStatusRootTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_127B00: (parent, priority, xy, a, b): creates "H_CampStatusDraw" (72-byte work, update sub_1269A0): +4/+8
+# position, +14 / +16 the two arguments, +32 = 1; clears the flash task's done flag (flash work +16).
+00127b00 000000f4 F H_Camp_CreateStatusDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_128040: (parent, priority, xy, a, b): creates "H_CampStatusPersonaDraw" (32-byte work, update sub_127C00):
+# +4/+8 position, +14 / +18 the two arguments, +24 = 1; clears the flash done flag.
+00128040 000000f4 F H_Camp_CreateStatusPersonaDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_130F20: (parent, priority, xy, pc): creates the equipment screen "H_CampSoubi1Draw" (708-byte work, update
+# sub_12C430): +8/+12 position, +18 the party member, +20 = 1.
+00130f20 000000d8 F H_Camp_CreateSoubi1DrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1336B0: (parent, priority, xy, pc): creates the persona screen "H_CampStatusPersonaDraw" (108-byte work,
+# update sub_1311D0): +16/+20 position, +24 the party member.
+001336b0 000000d0 F H_Camp_CreateCampStatusPersonaDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_133780: Update of "CampPersonaDispCtlDraw" (a persona picture): as sub_11B0B0 with the build at +32, the
+# file at +36, the texture at +40 and the path at +44 ("_h_camp_persona.c", 960); starting a load ...
+00133780 00000174 F H_Camp_UpdatePersonaDispCtlDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1339A0: (parent, priority, persona, ?, z in $f12): creates "CampPersonaDispCtlDraw" (300-byte work): +4
+# persona, +12, +16 z.
+001339a0 000000dc F H_Camp_CreatePersonaDispCtlDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_133B80: (task, persona, ?): when either value changed, releases the current picture as sub_133900 and
+# restarts the loader.
+00133b80 000000bc F H_Camp_PersonaDispCtlSetPersona source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_133D30: (build, file): creates a parentless "CampPersonaDispCtlFree" task (8-byte work: build, file) that
+# waits for a texture build and releases it; prints "*** REQ KEY RELEASE".
+00133d30 000000e0 F H_Camp_CreatePersonaDispCtlFreeTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_134A10: The social-link screen's file loader (jump table 0x7B5CA0): camp/camp_comu.pak -> 11 sprite files
+# (work +208.., then the table 0x833B40), camp/camp_card.pak -> 23 card texture builds (sub_10C1A0, ...
+00134a10 00000368 F H_Camp_UpdateComuFileTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_136750: (parent, priority): creates the social-link screen "H_CampComuDraw" (416-byte work, update
+# sub_1355C0) and requests camp/comu/datComuHelp.bmd into +336.
+00136750 000000cc F H_Camp_CreateComuDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_13BE50: (item work, target): uses the selected item on the protagonist (0), the n-th party member (n) or
+# everyone (-2): sub_17BC20 / sub_17B860 per member (skipping those sub_1C7CE0 rejects); when ...
+0013be50 000003e4 F H_Camp_ItemUseOnTarget source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_14EE80: (parent, priority): creates the item screen "H_CampNewItem" (200-byte work, update sub_14C5C0),
+# requests camp/camp_item.pak (+8), state 2.
+0014ee80 000000d4 F H_Camp_CreateNewItemTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1548A0: (parent, priority): creates "H_CampSystemMenuDraw" (380-byte work, update sub_14F7D0); The Answer
+# starts on entry 4.
+001548a0 000000cc F H_Camp_CreateSystemMenuDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_15C460: (parent): creates "H_ConfigMenuDraw" (the title screen's config, update sub_15B430) and its own camp
+# sprite set-up (sub_119F10(task, 1)).
+0015c460 000000bc F H_Camp_CreateConfigMenuDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_15C520: (skill work, target): casts the selected healing skill from the camp (protagonist 0, the n-th
+# member, everyone -2): sub_17B860 per member, then the caster pays the cost (HP / SP through ...
+0015c520 00000314 F H_Camp_SkillUseOnTarget source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1617D0: (parent, priority): creates the skill screen "H_NewCampSkillDraw" (80-byte work, update sub_160800)
+# and requests camp/camp_skil.pak (+48).
+001617d0 000000cc F H_Camp_CreateNewCampSkillDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_166A50: (parent, priority, member, ?, mode): creates "H_CampPartyStatusDraw" (56-byte work, update
+# sub_164920) and requests the member's camp/camp_fr%02d.pak (The Answer: AGS_camp_fr03 for members 1 / 3, ...
+00166a50 000001b0 F H_Camp_CreatePartyStatusDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1675E0: Update of "H_FRStatusDisp" (the party-status screen a script opens): state 0 sets flag 0x1407, the
+# camp_status.pak set-up ("H_CampStatusSprSetupFile") and the flash draw (sub_168770); 1 waits for ...
+001675e0 00000300 F H_Camp_UpdateFrStatusDispTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_167F40: (parent, priority, xy, a, b, c): creates "H_CampFrStatusPersonaDraw" (44-byte work, update
+# sub_167930).
+00167f40 000000f8 F H_Camp_CreateFrStatusPersonaDrawTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_168220: Update of "H_FrStatusFlashDraw" (jump table 0x7B62E0): loads camp/anm_status.pak, then plays the
+# nakama01 / 07 / 09 / equ_trade01 transitions chosen by sub_1685E0 (+12), keeps the shown .anm ...
+00168220 00000384 F H_Camp_UpdateFrStatusFlashTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_1685E0: (task, screen): picks the party-status transition for (shown screen +8, new screen) and sets the
+# state / kind.
+001685e0 00000138 F H_Camp_FrStatusFlashRequest source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_168770: (parent, priority): creates "H_FrStatusFlashDraw" (28-byte work, update sub_168220).
+00168770 000000a0 F H_Camp_CreateFrStatusFlashTask source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_18B6D0: (count): RwCalloc(count, 68, 0x40000) -- an array of 68-byte tween records.
+0018b6d0 00000030 F H_Camp_AllocTweens source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5
+# sub_18BC10: (record, kind, mode, curve, from xy, to xy, a, b, z in $f12, first frame, last frame): starts a
+# tween record: +4 = 1 active, +8 kind, +12 mode, +16 curve, +40 / +48 from / to (two floats each), ...
+0018bc10 0000006c F H_Camp_TweenStart source=phase5-ui5 verified=yes ev=INTEGRATION_LOG.md#ui5

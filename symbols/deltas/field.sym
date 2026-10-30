@@ -1,0 +1,73 @@
+# field.sym  Phase 5 analysis delta (docs/ANALYSIS/26_field.md); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-20 from ida/work_field.i64 (copy of the master; the master was not opened). Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=tge-pr4 verified=yes         community name whose behaviour was verified here from the instructions (promotion, ADR-0009 S2b)
+#   source=phase2-field verified=yes    our own name (no community name, or the community name does not describe the behaviour)
+#   ev=<doc>#<section> points into docs/ANALYSIS/26_field.md. Not imported by the agent (one master owner at a time).
+# game/ keeps the sub_* names of the 15 replaced functions until the master takes this delta (game/README.md rule).
+# --- the sequence layer (admini.c) and the field sequences (k_sequence.c) (section 1) ---
+0068f020 00000060 D sSequenceList source=tge-pr4 verified=yes ev=26_field.md#1
+0027c080 00000194 F adminiChangeSeq source=tge-pr4 verified=yes ev=26_field.md#1
+0027c3b0 000001ec F adminiUpdateTask_Call source=tge-pr4 verified=yes ev=26_field.md#1
+0027ca70 0000002c F adminiSeqCallBtl source=tge-pr4 verified=yes ev=26_field.md#1
+0027caa0 00000038 F adminiSeqExitBtl source=tge-pr4 verified=yes ev=26_field.md#1
+001b77b0 0000009c F K_Seq_CallField source=tge-pr4 verified=yes ev=26_field.md#1
+001b7850 00000050 F K_Seq_ExitField source=tge-pr4 verified=yes ev=26_field.md#1
+001b78a0 00000054 F K_Seq_CheckField source=tge-pr4 verified=yes ev=26_field.md#1
+001b7900 000000a0 F K_Seq_CallFieldEvent source=phase2-field verified=yes ev=26_field.md#1
+001b79a0 00000050 F K_Seq_ExitFieldEvent source=phase2-field verified=yes ev=26_field.md#1
+001b7a50 00000034 F K_Seq_CallDungeon source=tge-pr4 verified=yes ev=26_field.md#1
+001b7a90 00000030 F K_Seq_ExitDungeon source=tge-pr4 verified=yes ev=26_field.md#1
+# --- the field root (k_field.c) and the scene (section 2) ---
+00869f60 0000121c D sField source=tge-pr4 verified=yes ev=26_field.md#2.1
+001b90f0 00000030 F K_Field_Init source=tge-pr4 verified=yes ev=26_field.md#2.1
+001b9120 00000010 F K_Field_Get source=tge-pr4 verified=yes ev=26_field.md#2.1
+001b9130 0000000c F K_Fld_GetPhase source=tge-pr4 verified=yes ev=26_field.md#2.2
+001b9480 00000f50 F K_Field_UpdateFieldRootTask source=tge-pr4 verified=yes ev=26_field.md#2.2
+001ba3d0 00000220 F K_Field_DestroyFieldRootTask source=tge-pr4 verified=yes ev=26_field.md#2.3
+001ba5f0 00000288 F k_Field_CreateFieldRootTask source=tge-pr4 verified=yes ev=26_field.md#2.1
+001ba880 00000044 F K_Field_SetShouldShutdown source=tge-pr4 verified=yes ev=26_field.md#2.2
+001bab20 00000010 F K_Field_GetMajorId source=tge-pr4 verified=yes ev=26_field.md#2.1
+001bab30 00000010 F K_Field_GetMinorId source=tge-pr4 verified=yes ev=26_field.md#2.1
+003b5760 00000154 F MT_Scene_Load source=tge-pr4 verified=yes ev=26_field.md#3.1
+001a0250 00000068 F K_Scene_IsRandomFloor source=phase2-field verified=yes ev=26_field.md#3.2
+0019f730 000001bc F K_SceneDraw_CreateTasks source=tge-pr4 verified=yes ev=26_field.md#2.4
+# --- the player: collision controller, collision, camera (section 4) ---
+001aaad0 00000340 F K_FldFrame_IsPointInTriangle source=tge-pr4 verified=yes ev=26_field.md#4.3
+001aae10 0000011c F K_FldFrame_ClosestPointOnSegment source=phase2-field verified=yes ev=26_field.md#4.3
+001ac750 000001f4 F K_FldFrame_HandleCollis source=tge-pr4 verified=yes ev=26_field.md#4.3
+001ad2f0 00000338 F K_FldFrame_UpdateCtlTask source=tge-pr4 verified=yes ev=26_field.md#4.2
+001ad660 0000020c F K_FldFrame_CreateCtlTask source=tge-pr4 verified=yes ev=26_field.md#4.2
+001ad8b0 00000010 F K_FldFrame_CtlGetSphereCollisRadius source=tge-pr4 verified=yes ev=26_field.md#4.2
+001ad8c0 00000050 F K_FldFrame_CtlSetSphereCollisRadius source=tge-pr4 verified=yes ev=26_field.md#4.2
+001ad910 00000010 F K_FldFrame_CtlGetXGrid source=tge-pr4 verified=yes ev=26_field.md#4.2
+001ad920 00000010 F K_FldFrame_CtlGetZGrid source=tge-pr4 verified=yes ev=26_field.md#4.2
+001addf0 000000c4 F K_FldFrame_CtlMoveInDir source=tge-pr4 verified=yes ev=26_field.md#4.2
+001d5a90 00000164 F K_FldCamera_CreateFieldCameraControlerTask source=tge-pr4 verified=yes ev=26_field.md#4.4
+001d5220 000007c0 F K_FldCamera_UpdateFieldCameraControlerTask source=phase2-field verified=yes ev=26_field.md#4.4
+# --- events, field hits, exits (k_event.c) (section 5) ---
+001c5ee0 000001a0 F K_FldEvent_FindFldHitAt source=tge-pr4 verified=yes ev=26_field.md#5.2
+001c7b10 00000018 F K_FldEvent_IsUnitHero source=tge-pr4 verified=yes ev=26_field.md#5.1
+001c7b30 000001b0 F K_FldEvent_IsUnitNearFldHit source=tge-pr4 verified=yes ev=26_field.md#5.2
+001c7e70 000000b0 F K_Fldrc_RequestFieldHitTableFile source=tge-pr4 verified=yes ev=26_field.md#5.3
+001c8620 00004f48 F K_FldEvent_UpdateFldEventTask source=tge-pr4 verified=yes ev=26_field.md#5.1
+001cd5a0 000000a4 F K_FldEvent_CreateTasks source=tge-pr4 verified=yes ev=26_field.md#5.1
+# --- the automatic dungeon (k_dungeon.c) and the floor population (k_unit.c) (section 6) ---
+00867f60 00002000 D gFldDngFloorsData source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bf570 00000580 F K_FldDungeon_UpdateTask source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bfbc0 000000f8 F K_FldDungeon_CreateTask source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bff00 00000020 F K_FldDungeon_RequestShutdown source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bff20 00000028 F K_FldDungeon_GetCurrentFloor source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bff50 00000050 F K_FldDungeon_IsCurrentFloorExplorable source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bffa0 00000034 F K_FldDungeon_GetCurrentFloorData source=tge-pr4 verified=yes ev=26_field.md#6.1
+001bffe0 00000028 F K_FldDungeon_GetScrMemory source=tge-pr4 verified=yes ev=26_field.md#6.1
+001c0010 00000028 F K_FldDungeon_GetScrSize source=tge-pr4 verified=yes ev=26_field.md#6.1
+001c0040 00000028 F K_FldDungeon_GetFloorKind source=phase2-field verified=yes ev=26_field.md#6.3
+0086eda0 00002a00 D gFldUnitsEc source=tge-pr4 verified=yes ev=26_field.md#6.4
+008717a0 00000700 D gFldUnitsPc source=tge-pr4 verified=yes ev=26_field.md#6.4
+001cfc50 0000017c F K_FldUnit_CreateReaper source=tge-pr4 verified=yes ev=26_field.md#6.4
+001d32a0 0000041c F K_Unit_UpdateEnemyPopSchedulerTask source=tge-pr4 verified=yes ev=26_field.md#6.4
+# --- the encounter task (k_battle.c) (section 7) ---
+001d89b0 00000148 F K_FldCamera_DestroyBattleKosakaTask source=tge-pr4 verified=yes ev=26_field.md#7.2
+001d8d80 000000d4 F K_Battle_FindTaskOfUnit source=phase2-field verified=yes ev=26_field.md#7.2
+001d7b70 000000f0 F K_Battle_GetNthDatUnit source=phase2-field verified=yes ev=26_field.md#7.2
+001d7c60 000000dc F K_Battle_GetNthFieldUnit source=phase2-field verified=yes ev=26_field.md#7.2

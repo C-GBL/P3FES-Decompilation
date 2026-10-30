@@ -1,0 +1,293 @@
+# sweep1.sym  Phase 5 slice delta (game/include/p3fes/game/sweep1.h); SLUS_216.21
+# generated 2026-10-23 from the instructions (p3fes_handgen bodies, the K_Assert file names, the strings, the step
+#   descriptors 0x6A70B0.., the effect kind rows 0x69C850 / 0x69C970, the COMM table 0x7B92B0; no IDA database opened).
+#   Rows: <addr8> <size8> F <name> <tags>, source=phase5-sweep1, verified=yes: our own names, each from what the body
+#   does (its role block in game/src/sweep/sweep1_*.cpp). Not imported by the agent.
+# sub_100210: crt0's tail after main returns: `j exit` with main's result still in $v0 as the exit code (IDA's "possibly undefined v0": the value is the caller's).
+00100210 00000008 F crt0_CallExit source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_100218: exit()'s final step: `j Exit` (the libkernel Exit syscall wrapper); never returns.
+00100218 00000008 F crt0_ExitThunk source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_101800: The "pak:" device's close callback (fs +44): nothing to release (the data belongs to the PAK's H_Cdvd node); `jr $ra`.
+00101800 00000008 F H_Cdvd_RtFsPak_FClose source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_1018A0: (file) -> -1 at the end / 0. The "pak:" device's end-of-file callback (fs +68): position (+256) >= size (+252), signed, as 0 / -1 (`slt` + `subu zero`
+001018a0 0000001c F H_Cdvd_RtFsPak_FEof source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_1018C0: (result*, file, offset, whence). The "pak:" device's seek callback (fs +56); the 128-bit result (the new position as a 64-bit value) is stored through
+001018c0 000000dc F H_Cdvd_RtFsPak_FSeek source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_1019E0: (fs). The "pak:" device's close-file-system callback (fs +24): frees the file-object array (+88) through the RwFree slot 0x96017C.
+001019e0 0000002c F H_Cdvd_RtFsPak_FsClose source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_101A10: (fs, name) -> 1 / 0. The "pak:" device's exists callback (fs +76): the same name build / normalize and the walk over the 256 sCdvdCache slots as the o
+00101a10 000000c0 F H_Cdvd_RtFsPak_FExists source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_1028D0: The "hdd:" device's end-of-file callback (fs +68): prints " HDD EOF " (scePrintf) and returns scePrintf's result.
+001028d0 00000028 F H_Cdvd_RtFsHdd_FEof source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_102D90: (fs, index) -> file object / 0. The "hdd:" device's get-file-object callback (fs +20): prints a debug line, then index below the file count (+4) -> th
+00102d90 00000070 F H_Cdvd_RtFsHdd_Get source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_102E00: (fs). The "hdd:" device's close-file-system callback (fs +24): prints "HDD FSClose" and frees the file-object array (+88) through the RwFree slot.
+00102e00 00000048 F H_Cdvd_RtFsHdd_FsClose source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_103D00: (block) h_chkmem.c's free: for a non-null block, the 16-byte header before it gives the size (-16) and a clear flag (-4); the running total 0x7CDEAC d
+00103d00 0000009c F H_ChkMem_Free source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_103DA0: (size) -> block / 0. h_chkmem.c's malloc: size 172 prints a marker; the running total 0x7CDEAC grows by the size; newlib malloc(size + 16) inside DInt
+00103da0 000001a4 F H_ChkMem_Malloc source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_108740: (no args) kwlnInitMain's sound set-up: the ADXM parameters {f32 0x7CAD28, 1, 1, 0} at 0x7E4410 to sub_57F768, the CRI library starts (0x54CFE8, 0x54D4
+00108740 00000474 F H_Snd_InitAdx source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_108E80: (req) One step of an SE-bank request (40-byte records 0x7E5770, stepped by sub_108BC0): state 0 -> 1; state 2 -> the h_sndcom slot (+4) is asked to lo
+00108e80 000000e4 F H_Snd_StepSeBankRequest source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_109070: (ch) -> 1. Stops ADX channel `ch` when it is active: the CRI stop (0x54D100) of its stream (+16), started (+12) = 0, active = 0, id (+8) = -1. (The tw
+00109070 00000100 F H_Snd_StopChannel source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_109CA0: (slot, bank) -> 1. kwlnRootCreateTask's SE-bank request for request record `slot` (0x7E5770 + 40 slot): when sub_109DF0() is non-zero and the record a
+00109ca0 0000014c F H_Snd_RequestSeBank source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_109E30: (ch) For an active ADX channel: 0x54D220(stream, 10) and then the same stop as sub_109070 (CRI stop, started = 0, active = 0, id = -1). K_Field_Destro
+00109e30 0000012c F H_Snd_FadeStopChannel source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_10A2E0: (data, ch, id) -> 1. Plays an in-memory ADX on channel `ch`: active = 1, id (+8), the data address (+0x11C), started = 0, start type 5, then H_Snd_Sta
+0010a2e0 00000088 F H_Snd_PlayMemoryAdx source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_10A5A0: (task) -> 0. Update callback of "H_AfsSetProc" (work +60): state 0 -> time 0, the voice pack name "sound/v%03d%03d.afs" (work +12, +16) loaded into th
+0010a5a0 00000128 F H_Afs_UpdateTask source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_10BB00: (task) Destroy callback of "H_SfdPlay" (work +60): the MW player (+4) is stopped (0x584338 when started, +216) and destroyed (0x57DB58); the two buffe
+0010bb00 00000120 F H_SfdPlay_DestroyTask source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_10BCE0: (parent, movie) -> task / 0. Creates an "H_SfdPlay" task (priority 7383; update sub_10A860, destroy sub_10BB00) on a 544-byte RwCalloc work: owned (+5
+0010bce0 000000bc F H_SfdPlay_CreateTask source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_10D6F0: (slot, bank) An idle h_sndcom slot (0x833710 + 68 slot; state 1) drops its bound bank (H_Sndcom_UnbindSfx when +24 is set), takes the bank id (+8) and
+0010d6f0 000000b4 F H_Sndcom_RequestBank source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_10D7B0: (slot, bank, hd, hdSize, bd, bdSize, sq, sqSize) The same for a bank in memory: an idle slot unbinds, takes the bank id, state 8, the three sources (+
+0010d7b0 0000015c F H_Sndcom_RequestBankFrom source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BA00: (set, i) -> $f0. ps_model.bin record i of set `set` (u16 each): K_Assert(g_data.c, 134) when the table is not loaded, then $f0 = the record's f32 +8 (
+0016ba00 00000074 F datPsModelGetF32 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BA80: (set, i) -> s16. ps_model.bin record i of set `set`: the s16 at +0 (K_Assert line 139 without the table).
+0016ba80 00000080 F datPsModelGetS16_0 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BB00: (set, i) -> s16. The record's s16 at +2 (K_Assert line 144).
+0016bb00 00000080 F datPsModelGetS16_2 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BB80: (set, i) -> s16. The record's s16 at +4 (K_Assert line 149).
+0016bb80 00000080 F datPsModelGetS16_4 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BC00: (set, i) -> s16. The record's s16 at +6 (K_Assert line 154).
+0016bc00 00000080 F datPsModelGetS16_6 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BEE0: (set, i, dst) Copies the 16-byte sub-record that record i of set `set` names (its s16 +18) into dst (memcpy; K_Assert line 184 without the table).
+0016bee0 0000009c F datPsModelCopySub source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16BF80: (set, i, dst) Copies record i of set `set` (32 bytes) into dst (memcpy); K_Assert(g_data.c, 195) on a null dst.
+0016bf80 00000088 F datPsModelCopyRecord source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16C010: (no args) Loads facility/ps_model.bin synchronously (H_Cdvd_Request / ReadSync), allocates one RwMalloc block (slot 0x960178, hint 0x40000) of 32 + 32
+0016c010 000001b8 F datPsModelLoad source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16C1D0: (no args) A kwlnInitMain step: loads help/datMsg.pak (H_Cdvd_Request with the archive flag, ReadSync), registers its eight message files -- their name
+0016c1d0 00000114 F datLoadMsgPakAndItemTable source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_16E190: (kind) -> s16. Of the three {social link, value} pairs of row `kind` of the s16 table 0x5E3240 (copied to the stack, 6 words), returns the value of th
+0016e190 0000011c F datPickComuTag source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_1715F0: (item) -> u8 / 0 / 255. The item table lookup of a byte value: items 3000..3999 and >= 4000 -> 0; items 0..999 take the u16 +20 of their 40-byte secti
+001715f0 000001b4 F datItemGetSection10Byte source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_172B80: (a, b, rec) Copies the 56-byte record `rec` into gGlobalWork's second event block 0x8364BC (cleared first), sets its flag (sub_395170(0x983)) and pass
+00172b80 000000d0 F datSetEventB source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_172E50: (i, extra, cost) comuFunction.c entry i: money 0x83A6DC - cost (K_Assert line 3463 below 0); unless entry i is already accepted, it is accepted (0x836
+00172e50 00000118 F comuAcceptEntry source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_172F70: (out*) -> 1 / 0. The first comuFunction.c entry that is accepted and not done and whose date (record +2 month, +3 day; clndGetDaysSinceStartFromDate) 
+00172f70 000000c8 F comuFindExpiredEntry source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_173040: (i) Completes comuFunction.c entry i (K_Assert: accepted, line 3516; not yet done, line 3519): done = 1; for each of its extra-byte + 2 rewards (recor
+00173040 000001d4 F comuCompleteEntry source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_331650: (psys) The update of particle-system type 11 (fx2: the "track" rows 0x69C510): with the owning effect's emission on (+184 of the parameters +32), the 
+00331650 0000097c F psysType11Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33B0D0: (inst) Class-10 kind 3 slot 0: locks the mesh (geometryLock 2), clears its 12-byte vertices (memset, the kind's vertex count), unlocks (sub_4933D0), s
+0033b0d0 000000e8 F k10Streak3Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33B1C0: (params) -> kind object. Class-10 kind 3 slot 1: one RwMalloc block of 16 + 44 * count bytes (records right after the 16-byte head, +8 the block itsel
+0033b1c0 00000090 F k10Streak3Create source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33B250: (obj) Class-10 kind 3 slot 2: destroys the mesh (sub_3237C0) and frees the block (RwFree).
+0033b250 00000044 F k10Streak3Destroy source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33B2A0: (inst) Class-10 kind 3 slot 4: emits / ages the streaks (the spark parameters' rate, life and random ranges from +96) and rebuilds the grid vertices o
+0033b2a0 00000938 F k10Streak3Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33BBE0: (inst) Class-10 kind 3 slot 5: the mesh colour from the instance colour x the colour track on VU0 (scale 1/255, 0x7CAE4C; ppacb), placed at the effect
+0033bbe0 000001c0 F k10Streak3Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33E700: (inst) Class-10 kind 7 slot 0: the same body as k10Streak3Init (clear the vertices, free every record).
+0033e700 000000e8 F k10Streak7Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33E7F0: (params) -> kind object. Class-10 kind 7 slot 1: the 16 + 44 * count block and a 3 x 5 grid mesh (layout 0x69BD60, stride 72).
+0033e7f0 00000094 F k10Streak7Create source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33E890: (obj) Class-10 kind 7 slot 2: destroys the mesh and frees the block.
+0033e890 00000044 F k10Streak7Destroy source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33E8E0: (inst) Class-10 kind 7 slot 4: emits / ages the streaks and rebuilds the 3 x 5 grid vertices on VU0 (the kind-7 random ranges).
+0033e8e0 00000a00 F k10Streak7Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_33F2E0: (inst) Class-10 kind 7 slot 5: colour, place and queue the mesh (the same body as k10Streak3Draw).
+0033f2e0 000001c0 F k10Streak7Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_344AA0: (inst) Class-16 kind 3 slot 0: every record of the parameters' count is freed (word 0 = -1) and its mesh vertex colour (the triangle list +40) set fro
+00344aa0 000000d0 F k16Streamer3Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_344B70: (obj, params) The streamer mesh of class-16 kind 3: with a count (+56), locks the mesh (geometryLock 4088) and fills its segments (+140 + 1 rows): the
+00344b70 00000338 F k16Streamer3BuildMesh source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_345080: (inst) Class-16 kind 3 slot 2: destroys the mesh (sub_324310) and frees the block (RwFree).
+00345080 00000044 F k16Streamer3Destroy source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3450D0: (inst) Class-16 kind 3 slot 4: emits / ages the streamer points along the effect's path and rebuilds the strip vertices (VU0).
+003450d0 000008a0 F k16Streamer3Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_345970: (inst) Class-16 kind 3 slot 5: the strip colour from the instance colour, the colour track and the global colour 0x7CE544 on VU0, placed (sub_3244C0) 
+00345970 00000374 F k16Streamer3Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_348950: (params, quad) A screen-filter quad builder (sub_34A800's): the four Im2D vertices (64 bytes each) of the rectangle +24..+36 with the RGBA bytes +0..+
+00348950 00000274 F fltBuildRotQuad source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_349090: (params, cells) The cell pulse of a screen-filter kind (sub_349FD0's): for each 52-byte cell: a delay counts down with alpha 0; otherwise the phase +4
+00349090 000001c8 F fltPulseCellsA source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_349620: (params, cells) The cell pulse of another filter kind (sub_34A370's): a negative phase counts up; otherwise scale +24 = 1 + amplitude x sinf x (1 - ph
+00349620 00000248 F fltPulseCellsB source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_34DC00: (eff) The effect-clump draw (sub_321360's): the colour word +4 scaled to floats on VU0 (pextlb / pextlh, x 0x7CAE08); with a clump (+88 +8 / +16): its
+0034dc00 00000788 F effDrawClump source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_34EAE0: (obj, pos, part, colour, ...) The EPL texture-particle draw (sub_34F910's): the particle colour x the instance colour on VU0 (ppach / ppacb); visible 
+0034eae0 00000bc8 F eplDrawTexParticle source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A0220: (task) -> 0. Draw callback "CardEff DrawProc" of the card effect (work +60): the global wobble 0x7CE61C += 0.5; while drawing is on (+184): the backgr
+003a0220 00000384 F evtCardEff_Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A05B0: (work, n) Places card model n (scene model 250 + n, sub_3B64C0; kept in +236 + 2 n) when slot n is loaded (+116 + 4 n): 800 units in front of the fiel
+003a05b0 000003a8 F evtCardEff_PlaceCardModel source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A0960: (work, n, unit) Places card model n beside scene unit `unit` (sub_3B5D10): at the unit's bone 2 position (sub_318ED0; for type-1 units after sub_318B6
+003a0960 000001e8 F evtCardEff_PlaceUnitModel source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A0E90: (task) -> 0 / -1. Update callback of the card effect (work +60, state +148, 36 states through the jump table 0x7BB0C0; the cases are labelled below). 
+003a0e90 00000d68 F evtCardEff_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A1F30: (task) Destroy callback: releases the +104.. textures (sub_4D0F00, +112 of them), the seven card models (+236.., sub_3B7090), the file nodes +16 / +20
+003a1f30 00000160 F evtCardEff_Destroy source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A7120: (handle) The page step of a message being shown (busy +52 == 1, request state 4): counts frames (+476); unless auto-advance (bit 23) is set the page e
+003a7120 00000364 F itfMesMngStepPage source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A7490: (handle) The selection step (selection record +64, phase +84): 4 -> scroll in (sub_3A7940) while the text is below y 2840, else phase -1; 3 -> slide (
+003a7490 000004a4 F itfMesMngStepSelection source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3A7A40: (handle) -> 0 / 1. The selection's pad input: up / down (0x7E0952 / 0x7E095A with the repeat words) move the cursor (sub_3A7CB0, wrapping only on a fr
+003a7a40 00000264 F itfMesMngSelectInput source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D2740: (seq, step) -> next step. fclCombine.c's set-up step over the sequence's command table (0x6A4380, 8-byte records {u16 op, ..., name}, the step's index
+003d2740 000004b4 F fclCombine_SetupStep source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D2C10: (owner) -> step. Adds menu step 1 to the fclCombine sequence ($gp 0x7CE684; nmSequenceAddStep with the 20-byte record copied from 0x6A46B0), stores it
+003d2c10 000000c4 F fclCombine_OpenMenuA source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D2CE0: (owner) -> result / -1. Waits for that step: once its object's flags (+20 +20) have bit 3 (done), panel 4 is shown again, owner +20 cleared and the st
+003d2ce0 000000a0 F fclCombine_WaitMenuA source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D2E00: (seq, step) -> 0 / nmSeqNullStep. A fclCombine menu step: finished (sub_3D3010) -> nmSeqNullStep; else the decided row (sub_3D3050) - 1 goes to the st
+003d2e00 000000e8 F fclCombine_MenuStep source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D3050: (menu) -> row id / -1 / 0. The decided row of a fclCombine command list: when the list (+8) has one and the element (+16, sub_3DF010) is ready: the el
+003d3050 00000114 F fclCombine_DecidedRow source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D3D20: (seq, step) -> next step. The fclCombine root's main step (state +4 of the step payload, jump table 0x7BB620): hides / shows the field (sub_1A0040, su
+003d3d20 00000f54 F fclCombine_RootUpdate source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D4DE0: (owner) -> step. Adds menu step 4 (the record 0x6A48A0) to the fclCombine sequence, stores it in owner +32 and hides panel 7.
+003d4de0 000000b0 F fclCombine_OpenMenuB source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D4E90: (owner) -> result / -1. Waits for that step (bit 3 of its object's flags): owner +32 cleared, panel 7 shown, the payload's first word returned; otherw
+003d4e90 000000a0 F fclCombine_WaitMenuB source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3D4FF0: (seq, step) -> 0 / nmSeqNullStep. A fclCombine list step: the cursor sounds (sub_10A4E0 0 on move down / scroll, 5 on page / move up), then its states
+003d4ff0 000003f0 F fclCombine_ListStep source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DA700: (list) -> 0 / 1 / 2. The update of the two-persona list menu (fclCombineList.c): when the command list (+20) reports closed, 1 (flag bit 4) or 2 with 
+003da700 00000e80 F fclCombineList_Update2 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DC2D0: (x, y, alpha, ..., entry, highlight, active) The persona panel of one list entry: the arcana frame (sub_40E3C0 sprite 37, frame 2 (arcana - 1) + 1), t
+003dc2d0 00000430 F fclCombinePanel_Single source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DC700: (x, y, alpha, list, entry, highlight) The panels of a multi-persona entry: for each selected persona its arcana frame, name, level (as in fclCombinePa
+003dc700 00000304 F fclCombinePanel_Multi source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DCC90: (x, y, alpha, ..., entry, highlight) The result panel: the result persona's arcana frame (sprite 57), name and level, or for a persona built from an i
+003dcc90 00000320 F fclCombinePanel_Result source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DDB90: (src, out) Builds the 168-byte preview record of a fusion: cleared (memset), flags bit 0, the counts and the persona (memcpy 84 + 52 bytes from the so
+003ddb90 0000018c F fclCombineList_MakePreview source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DDD20: (preview) -> 0 / 1 / 2. The preview's state machine (+4, jump table 0x7BB8B0): open, show, the yes / no message (msgWinRequestMessage, msgWinLastSelec
+003ddd20 00000438 F fclCombineList_PreviewStep source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3DE470: (list) -> 0 / 1 / 2. The update of the three-or-more-persona list menu: as fclCombineList_Update2 for its recipes: the decided row's record (+20 +28) 
+003de470 000006a8 F fclCombineList_UpdateN source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3E0B70: (no args) Closes the shop's nm sequence ($gp 0x7CE688): when open, sub_3E0A10 and nmSequenceDestroy; the slot is cleared either way.
+003e0b70 0000003c F fclShop_CloseSequence source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3E5B00: (bg, mode, base, n, alpha) Emits up to n particles into the 64 16-byte slots of the backdrop (a slot is free when its life +22 is 0): life 30..49 (mod
+003e5b00 00000314 F fclShopBg_EmitParticles source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3E5E20: (bg, p) One backdrop particle per frame: a delay counts down; otherwise it drifts (x by (speed + wobble) / 4, y by 2 or 4), the wobble re-rolled (RpRa
+003e5e20 0000030c F fclShopBg_StepParticle source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3E9160: (seq, step) -> 0. The ROOT step's fini: for shop type 8 (the shop work record's word +0) the help element (sub_40C9A0 of the step payload +16) closes 
+003e9160 00000098 F fclShopRoot_Fini source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EAF90: (seq, step) -> 0 / nmSeqNullStep. The ARMSCOMBINE (weapon fusion) step's update: hidden (flags bit 1) -> 0; its list finished (sub_3FE5D0) -> nmSeqNul
+003eaf90 000009a4 F fclShopArmsCombine_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EBCB0: (seq, step) -> 0 / nmSeqNullStep. The TRADE step's update: its list finished (sub_3FF570) -> nmSeqNullStep; phase 1 releases the list; phase 2 the dec
+003ebcb0 00000328 F fclShopTrade_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EC210: (seq, step) -> 0. The QUEST step's init: the request list of the shop (sub_405AC0(shop, 0): the open requests) into the payload +12, phase 1.
+003ec210 00000068 F fclShopQuest_Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EC2C0: (seq, step) -> 0 / nmSeqNullStep. The QUEST step's update (Elizabeth's requests): list finished (sub_405E30) -> nmSeqNullStep; the decided request (pa
+003ec2c0 000003dc F fclShopQuest_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EC870: (seq, step) -> 0. The QUESTCANCEL step's init: the list of the accepted requests (sub_405AC0(shop, 1)) into the payload +12, phase 1.
+003ec870 00000068 F fclShopQuestCancel_Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EC920: (seq, step) -> 0 / nmSeqNullStep. The QUESTCANCEL step's update: the decided accepted request (not flag bit 1): confirm sound, the cancel question wit
+003ec920 000003b8 F fclShopQuestCancel_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3ECEB0: (seq, step) -> 0. The BOOK (compendium summon) step's init: the compendium list (sub_409F50(shop, 0)) into the payload +16, its panel object from the 
+003eceb0 000000c8 F fclShopBook_Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3ECFE0: (seq, step) -> 0 / nmSeqNullStep. The BOOK step's update: list finished (sub_40A2B0) -> nmSeqNullStep; phases 1 / 2 the decided persona (confirm sound
+003ecfe0 0000032c F fclShopBook_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3ED4E0: (seq, step) -> 0. The BOOKREGIST step's init: the registration list (sub_409F50(shop, 1): the stock) into the payload +12, its panel object from the w
+003ed4e0 000000b8 F fclShopBookRegist_Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3ED5E0: (seq, step) -> 0 / nmSeqNullStep. The BOOKREGIST step's update (jump table 0x7BBCD0): list finished (sub_40A490) -> nmSeqNullStep; the registration me
+003ed5e0 000007a0 F fclShopBookRegist_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EDF20: (seq, step) -> 0. The HELP step's init: the help element (sub_40C6F0(1)) into the payload +8, state 2.
+003edf20 00000058 F fclShopHelp_Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EDF80: (seq, step) -> 0. The HELP step's fini: the help element closes (sub_40C9A0 of the payload +8).
+003edf80 00000034 F fclShopHelp_Fini source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EDFC0: (seq, step) -> 0 / nmSeqNullStep. The HELP step's update: the facility state 3 (sub_40CA00) -> nmSeqNullStep; the cursor sounds; states (jump table 0x
+003edfc0 00000304 F fclShopHelp_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3EE2D0: (seq, step) -> 0. The HELP step's draw: the help element (sub_40CAD0 of the payload +8).
+003ee2d0 00000034 F fclShopHelp_Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F2940: (list, entries, n, flags) -> rows added. Adds the shop lineup's entries to a list: for each non-empty entry id (s16, 12-byte entries) the item's kind 
+003f2940 00000414 F fclShopLineup_AddRows source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F2F70: (list, shop, flags) -> 1 / 0. Builds a shop's lineup list: shop index <= 8 (K_Assert fclShopMisc.c 185); the lineup record of 0x6AC9D0 (36 bytes; the 
+003f2f70 00000308 F fclShopLineup_Build source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F3FC0: (x, y, alpha, list) The list drawer of the drawer tables' entry 0: the window alpha by the list status (nmCmdListStatus28: 1 / 12 full, 20 the given a
+003f3fc0 0000038c F fclShopList_DrawFrame0 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F4350: (x, y, alpha, list) The list drawer of entries 1 / 5..7: the frame sprite 34 and the scroll-bar sprites 36 / 37 (position = 104 x the scroll word / 0x
+003f4350 00000288 F fclShopList_DrawFrame1 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F4870: (x, y, alpha, list) The list drawer of entry 3: frame sprite 22, scroll-bar sprites 24 / 25 (86 x scroll / 0xFFFF), the rows and the help line.
+003f4870 0000021c F fclShopList_DrawFrame3 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F7390: (x, y, alpha, ..., row) The weapon-fusion result panel: sprites 219..228, for each of the two ingredients its icon (sprite 27), name (sub_171110 -> su
+003f7390 00000394 F fclShopArmsCombine_DrawResult source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F7A80: (x, y, alpha, list, row) The help line of an item row through the item text drawer sub_3C7E20: a persona row (work +6 == -1 with flag 0x1000) as kind 
+003f7a80 000001d4 F fclShopList_DrawHelp source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F7C60: (x, y, alpha, list, row) The same help line without the item-table lookup (kind 0 for plain items).
+003f7c60 000000ec F fclShopList_DrawHelp2 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F7D50: (x, y, alpha, list, row) A row drawer for the sliding list (status 12): the slide-in offset from the row's distance to the cursor (5 steps of 30 / 5 p
+003f7d50 00000284 F fclShopRow_DrawSlide source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F7FE0: (x, y, alpha, list, row) The row drawer for status 20: the cursor sprite 35 on the selected row and the row body by the list kind (sub_3F55B0 / sub_3F
+003f7fe0 00000198 F fclShopRow_DrawNormal source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F8180: (x, y, alpha, list, row) The row drawer for status 1 (open): on the selected row the frame sprites of the table 0x6AEEE0 (6 x 4 by the list's +4: plai
+003f8180 00000420 F fclShopRow_DrawOpen source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F85A0: (x, y, alpha, list, row) The row drawer of the drawer tables' entries 9..11: by the list status (1 open, 20 normal at the work's offsets +40 / +42, 12
+003f85a0 00000100 F fclShopRow_Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F86A0: (x, y, alpha, list, row) A row drawer (table entry 8): status 1 the frame sprites of 0x6AEEE0 and the row body (sub_3F55B0); 20 / 12 the same with the
+003f86a0 00000360 F fclShopRow_DrawAlt0 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F8A00: (x, y, alpha, list, row) A row drawer (table entry 9): the frame sprites, the slide (div1) and the row body (sub_3F55B0) by the list status.
+003f8a00 00000410 F fclShopRow_DrawAlt1 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3F9220: (x, y, alpha, list, row) A row drawer (table entry 11): the slide and fade by the cursor distance for status 12, the cursor sprite and the row body (s
+003f9220 000002e8 F fclShopRow_DrawAlt3 source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FB6B0: (sel) -> 0 / 1 / 2. The quantity selector's dialogue (jump table 0x7BBD80): open (flag bit 0) -> 3 the slide-in (+42 alpha 255, +48 -500), the count c
+003fb6b0 0000054c F fclShopQuantity_Update source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FBE70: (sel, row) Initialises the 152-byte quantity selector from a row: cleared, the equipped item of the row's kind (datGetEquipmentIdx(1, kind) -> sub_3F1
+003fbe70 000000a0 F fclShopQuantity_Init source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FCAD0: (x, y, alpha, list) The help line of the equipment list's selected row at (293, 227) through sub_3C7E20 (persona kind 2 / equipment kind 1 with its by
+003fcad0 00000108 F fclShopEquip_DrawHelpA source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FCDC0: (x, y, alpha, list, row) An equipment row: the slot frame (sprite 0, frame 2 kind + selected), the name (sub_171110 -> sub_3B2CB0, style 6 on the curs
+003fcdc0 0000024c F fclShopEquip_DrawRow source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FD010: (x, y, alpha, list, row) The 0x7CD970 drawer set's row draw A: a tail call into sub_3FCDC0.
+003fd010 00000020 F fclShopEquip_DrawRowA source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FD030: (x, y, alpha, list) The help line at (83, 250): the drawer set's list draw B (same body as A).
+003fd030 00000108 F fclShopEquip_DrawHelpB source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FD320: (x, y, alpha, list, row) The drawer set's row draw B: sub_3FCDC0's body with the colours of 0x7CD960.
+003fd320 0000024c F fclShopEquip_DrawRowB source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FD570: (shop, list*) Builds the party list of the equipment screen: the hero (row 1) and every member of the 11 flags of 0x6AF140 that is set (member 343 onl
+003fd570 000001b4 F fclShopEquip_BuildMembers source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FD730: (member, row) Refreshes the four equipment rows of a member: for slots 0..3 the equipped item (datGetEquipmentIdx -> sub_3F1DC0) copied (28 bytes) int
+003fd730 000000ac F fclShopEquip_RefreshMember source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FDCC0: (screen, view, list*) The equipment screen draw: with the view's alpha (+38), for mode 3 the frame (sprite 72) and every member row (sub_3FD140) at th
+003fdcc0 000002b4 F fclShopEquip_Draw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_3FE020: (side, member) -> list. The four-slot equipment list of a member: an 88-byte list (sub_3C58F0(0, 88, 5, 36)), side < 2 (K_Assert fclShopMisc.c 5258) i
+003fe020 000001c8 F fclShopEquip_BuildList source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_4026B0: (item, n, flags) -> 1 / 0. Gives n copies of an item if they fit: a kind-4 item (sub_171250) succeeds at once; otherwise needs 300 - the owned count (
+004026b0 00000148 F fclShopGiveItems source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_402800: (request) Fills message slot 8's arguments for a request (sub_3C7D60(8)): the reward text by the reward kind (+10: 4 "oooooooo", 3 "%d", 1 / 2 the ite
+00402800 00000474 F fclShopRequest_SetMessageArgs source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_402C80: (request) The same arguments for the message window (sub_3C7BC0 / sub_3C7C20 instead of the message slot).
+00402c80 00000428 F fclShopRequest_SetWindowArgs source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_4045D0: (list) Adds the open requests: for each of the request table's records (64 bytes, $gp 0x7CD8F0 / count 0x7CD8F4; request 55 only with sub_17D7B0) that
+004045d0 0000017c F fclShopRequest_AddOpen source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_405970: (list, row) -> 0. Marks a request row: done (flag 4464 + id) -> 3; available (sub_3F04F0(+8, 0)) -> taken or not (sub_17C610); else 2 (locked); a mark
+00405970 00000120 F fclShopRequest_MarkRow source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_405AC0: (shop, accepted) -> list. The request list: a 12-byte-row list (sub_3C58F0(0, 12, 5, 28)); accepted -> the accepted requests (sub_17C700 / sub_17C670)
+00405ac0 00000298 F fclShopRequest_BuildList source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_405F70: (x, y, alpha, list, ...) The request detail panel: the two coordinate tables 0x6AF5E0 / 0x6AF600, the deadline in days ("%02d", datGetDaysSinceApr5 / 
+00405f70 0000056c F fclShopRequest_DrawPanel source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_4064E0: (x, y, alpha, list) The selected request's reward panel: sprites 81..88, the message arguments (sub_402800), the reward's text (sub_3C7E20 kind 6 with
+004064e0 000005b4 F fclShopRequest_DrawReward source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_409F50: (shop, regist) -> list. The compendium list: a 40-byte list (sub_3C58F0(0, 40, 8, 24)); regist -> the stock personas that can be registered (sub_174A9
+00409f50 000002b0 F fclShopBook_BuildList source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_40A2B0: (list) -> 1 closed / 0. The compendium list's per-frame step: its elements and the rows' elements stepped (sub_3E0650), the list updated (nmCmdListUpd
+0040a2b0 000001d4 F fclShopBook_UpdateList source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_40A490: (list) -> 1 closed / 0. The registration list's per-frame step: the element and the rows' elements stepped, the list updated, the cursor sounds, layou
+0040a490 00000118 F fclShopBookRegist_UpdateList source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_40B840: (list) The compendium's detail panel for the decided persona: work +24 = 0, +16 = 1, open flag; the panel (+8) given the persona (sub_3C9B00), mode 8,
+0040b840 000000c8 F fclShopBook_OpenDetail source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_40B910: (list) -> 0 / 1 / 2. The compendium summon dialogue (work +16, jump table 0x7BBE60): states 1..4 wait for the list (nmCmdListStatus & 5); 5 the checks
+0040b910 0000083c F fclShopBook_SummonStep source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_40E420: (x, y, alpha, sprite, frame, ...) Draws a sprite of the facility sprite bank ($gp 0x7CE6A0): sub_40E930 with the bank as its sixth argument.
+0040e420 00000030 F fclSprite_DrawBank source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_40E930: (x, y, alpha, sprite, frame, bank, ...) Draws one facility sprite: the bank's 8-byte sprite record (+12 table: {u8 file, s16 index, s16 dx, s16 dy}), 
+0040e930 0000021c F fclSprite_DrawScaled source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_413B70: (task, view, req) The draw step of two fcl tasks (descriptors 0x6B1900 / 0x6B1920, 156-byte work): the coordinate tables 0x6B1190 / 0x6B1220 / 0x6B134
+00413b70 00000584 F fclBank_UpdateDraw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1
+# sub_415DC0: (task, view, req) The draw step of the fcl task of descriptor 0x6B19C8 (216-byte work): the coordinate table 0x6B1710 copied to the stack, the request
+00415dc0 0000047c F fclTask_UpdateDraw source=phase5-sweep1 verified=yes ev=INTEGRATION_LOG.md#sweep1

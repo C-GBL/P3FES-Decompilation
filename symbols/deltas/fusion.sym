@@ -1,0 +1,49 @@
+# fusion.sym  Phase 5 slice delta (game/include/p3fes/game/fusion.h, fusion_menu.h); SLUS_216.21
+# generated 2026-10-21 by hand from the instructions (p3fes_handgen / recomp bodies, the K_Assert file strings
+#   fclCombineMisc.c 0x6A5F70 / fclCombineList.c 0x6A6020, the tables 0x6A56B9 / 0x6A58E9 / 0x6A5AD9 / 0x6A5F40 /
+#   0x6A5410) and checked by tests/game/test_fusion.cpp (host rules over the real tables, the fusion route snapshot).
+#   Rows: <addr8> <size8> F <name> source=phase5-fusion verified=yes ev=<doc>#<section>. Not imported by the agent.
+# sub_3D5510: matches a recipe's 8 ingredient words (id or arcana with bit 14, bit 15 required) against the 12-entry stock; K_Assert fclCombineMisc.c 40
+003d5510 00000214 F fclCombineMatchRecipe source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D5730: recipe <index> of category <a1> from 0x6A5F40 when available (sub_3D5BB0), matched by sub_3D5510 with a1 + 2 ingredients
+003d5730 00000118 F fclCombineGetRecipe source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D5A40: the sub_3D5510 walk over a plain u16 id array: the mask of matched entries, the count to $t0
+003d5a40 0000016c F fclCombineRecipeMask source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D5BB0: the 67 flag rules of 0x6A5410 for one persona id (datGetFlag)
+003d5bb0 000000d8 F fclCombineIsPersonaAvailable source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D5CD0: the 12-entry stock {0, persona, table record} from the hero persona slots (sub_175410 / sub_174A90)
+003d5cd0 000000ec F fclCombineBuildStock source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D5E60: sorts three personas by level then arcana, chart 0x6A58E9 of the two lower, chart 0x6A5AD9 with the highest
+003d5e60 00000394 F fclCombineTriangleArcana source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D6200: the first matching available recipe of a category: persona (sub_176680) + the recipe skills; returns its arcana
+003d6200 00000294 F fclCombineSpecial source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D64A0: two-persona fusion: recipe category 0, else chart 0x6A56B9, level (l0 + l1) / 2 + 1, same-arcana -> sub_3D7DA0 else sub_3D7AC0; the fusion route makes 1 + 46 -> 14 with it
+003d64a0 0000029c F fclCombineNormal source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D6740: three-persona fusion: recipe category 1, else sub_3D5E60, level sum / 3 + 5, sub_3D7AC0
+003d6740 000001d0 F fclCombineTriangle source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D6910: dispatches by kind (0 normal, 1 triangle, 2..4 special recipes of 0x6A5FE0[kind] ingredients) and inherits (sub_176AC0)
+003d6910 000001c4 F fclCombineByKind source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D6AE0: the 84-byte fusion result: fused persona, inheritance (sub_3D7A30), level-above-hero flag, stat deltas, added skills
+003d6ae0 000001a4 F fclCombinePreview source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D6C90: the accident roll by kind (flag 3037 picks the rates), RpRandom
+003d6c90 000001c8 F fclCombineRollAccident source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D6F80: accident result: random arcana 2..20 and level around the hero (sub_3D7AC0), not held, within [hero - 10, hero + 1]
+003d6f80 000001f4 F fclCombineAccidentRandom source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D71D0: accident result: the best Fool persona at or below hero level + 3 (sub_3D7DA0(1, ..))
+003d71d0 00000114 F fclCombineAccidentFool source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D74F0: weighted skill inheritance over a RwMalloc array (tables 0x6A48F0 / 0x6A48D0, SKILL.TBL elements); K_Assert fclCombineMisc.c 934 / 903 / 994
+003d74f0 00000540 F fclCombineInheritSkills source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D7AC0: the lowest available fusion-result persona of an arcana at or above a level, not excluded; K_Assert fclCombineMisc.c 1115
+003d7ac0 000002d4 F fclCombineFindResultUp source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D7DA0: the highest available fusion-result persona of an arcana at or below a level, not excluded; K_Assert fclCombineMisc.c 1148
+003d7da0 000002d4 F fclCombineFindResultDown source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D8080: ingredients leave the hero list (sub_174B40), the result takes a slot (sub_174E20), the current persona updated (sub_175130)
+003d8080 000001a4 F fclCombineCommit source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D8260: mask of stock entries that fuse with entry a1 (sub_3D64A0); K_Assert fclCombineMisc.c 1226
+003d8260 00000104 F fclCombineNormalPartnerMask source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3D8370: mask of stock entries that complete a triangle with entries a1, a2 (sub_3D6740); K_Assert fclCombineMisc.c 1244
+003d8370 00000144 F fclCombineTrianglePartnerMask source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3DA0C0: the list-menu window of a stock for kind 0 / 1 (2 / 3 slots); K_Assert fclCombineList.c 952
+003da0c0 000001d4 F fclCombineListCreate source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion
+# sub_3DE290: the recipe list-menu window for categories 2..4 (4..6 slots); K_Assert fclCombineList.c 2406
+003de290 000001dc F fclCombineRecipeListCreate source=phase5-fusion verified=yes ev=INTEGRATION_LOG.md#fusion

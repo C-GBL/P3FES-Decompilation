@@ -1,0 +1,7 @@
+# libc.sym  Phase 5 slice delta (game/include/p3fes/game/libc.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-23 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint; no
+#   IDA database opened, no library source opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-libc
+#   verified=yes: the names of the C standard functions whose contract the body implements. Not imported by the agent.
+# sub_51F690: returns *(0x782F30), the _impure_ptr; its callers (open / sbrk / stat / unlink) store their error code
+#   through the result, and _reent +0 is the word strtol stores ERANGE into: the address of errno.
+0051f690 0000000c F __errno source=phase5-libc verified=yes ev=INTEGRATION_LOG.md#libc

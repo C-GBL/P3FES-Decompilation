@@ -1,0 +1,263 @@
+# events.sym  Phase 5 slice delta (game/include/p3fes/game/events.h, game/src/event/events.cpp); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-21 by hand from the instructions (p3fes_handgen bodies and the Hex-Rays reference as a reading hint; no IDA
+#   database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-events verified=yes: our own names, each from what the
+#   body does (its role in events.cpp; the record layouts checked on the live event in extracted/_ours/events_dorm_2100) and its
+#   callers. ev=<doc>#<section>. Not imported by the agent (one master owner at a time).
+# sub_360110: COMM 0x14C (no arguments; sScrCommandTable 0x7B92B0) : for the social link in 0x7CE5D4 (kGpComuIndex), sub_3BEB10 gives its member record; for ...
+00360110 00000134 F scrComu_SetMemberMessageParams source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3604A0: COMM 0x0EA (2 arguments) : arg0 = social link (asserted valid by sub_16DCE0, line 722), arg1 >= 0 (line 726); when the link is active (sub_16E100) ...
+003604a0 000000cc F scrComu_SetLinkValue source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360570: COMM 0x11D (1 argument) : arg0 = social link (line 746); when active, its rank (sub_16DBA0, s8) in 1..9 becomes rank + 1 through sub_16E410. ...
+00360570 000000cc F scrComu_RankUp source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3607A0: COMM 0x124 (1 argument) : arg0 = social link (line 829); message parameters of the script's message (line 835): 0 = sub_3C3F80(link) (a name ...
+003607a0 00000140 F scrComu_SetLinkMessageParams source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360990: COMM 0x126 (2 arguments) : a two-phase command. First frame (scrGetCmdTimer() == 0): creates the task sub_3A2090(0, arg0, arg1, 1024) into ...
+00360990 000000a4 F scrComu_WaitMessageTask source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360A40: COMM 0x129 (no arguments) : first frame creates the "RevMailSeq" task (comu_CreateRevMailSeqTask(0, 3072)) into 0x7CE5C0 and yields; later frames ...
+00360a40 0000006c F scrComu_RunRevMailSeq source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360C50: COMM 0x19E (3 arguments) : arg0 == 1 -> sub_395350(arg1 + 3, 0); arg0 == 0 -> sub_3952D0(0, arg2, arg1 + 3) (the event sound channels 3.. also ...
+00360c50 000000a0 F scrComu_PlayVoice source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360CF0: COMM 0x1A8 (1 argument) : resets the cursor 0x7CE5C8, stores the list sub_3BEE80(arg0, &count) in 0x7CE5CC (count in 0x7CE5D0) and returns the ...
+00360cf0 0000004c F scrComu_GetSkillList source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360D40: COMM 0x1A9 (no arguments) : for entry 0x7CE5C8 of COMM 0x1A8's list (asserted below the count, line 1063; message asserted, line 1060): message ...
+00360d40 00000184 F scrComu_SetSkillListMessage source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_360ED0: (key) -> 1 when the key fires. Keys of unit types without conditions (sub_36F500 == 0) always fire. kCondType 2: MT_Misc_BitChk(flag + bank base) ...
+00360ed0 00000174 F evtKeyCondTrue source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361050: (work, frame): kJumpFrame = frame, kJumpRequest = 1 -- the next frame advance jumps there.
+00361050 00000014 F evtRequestJump source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361070: (work): clears the 2448-byte record except +0 (self) and the 23 words at kField2344.. (task handles), which it keeps through a 92-byte copy in the ...
+00361070 000000c4 F evtWorkReset source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361140: (unit, key): links the key into the unit's list sorted by kFrame (before the first key with a greater frame; at the tail otherwise) and counts it.
+00361140 000000b8 F evtUnitInsertKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361200: (unit, key): unlinks the key (head / tail fixed up), clears its links, uncounts it.
+00361200 00000064 F evtUnitUnlinkKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361270: (unit): one pass of re-sorting: for each key, the first later key with a smaller frame is unlinked and re-inserted through sub_361140 (the outer ...
+00361270 000000d4 F evtUnitSortKeys source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361350: (unit, frame, work) -> key: allocates an 84-byte key (sub_386AE0, memory class 8; asserted, line 562), zeroes it, sets kFrame, kName = -1, kPath = ...
+00361350 000004e0 F evtCreateKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361830: (work) -> the key at index kEdKeyIndex + kEdKeyScroll of the editor's unit (0 past the end or without a unit). An editor helper (mt_evtMenu.c).
+00361830 00000058 F evtEdGetCursorKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361890: (unit, key): unlinks the key (sub_361200's code inlined), frees its camera record (class 9; not for type-18 units) and its path (class 10, 304 ...
+00361890 000000e8 F evtUnitFreeKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361B60: (unit, work): links the unit into the work's unit list sorted by the rank of its type (byte table 0x69D590: the type itself except 47 / 49 -> 5, ...
+00361b60 000000d0 F evtWorkInsertUnit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361C30: (unit, work): unlinks the unit from the work's list and uncounts it.
+00361c30 00000064 F evtWorkUnlinkUnit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361CA0: (type, work) -> unit: allocates a 156-byte unit (sub_386AE0, class 7), zeroes it, kType = type, kName = -1, kResId = 0, kPathMove = 0, kCamMode = ...
+00361ca0 000000b4 F evtCreateUnit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361D60: (unit, resId, model): kResId = resId, kModelFlags = the +40 flags of sub_3B5D10(resId) (0 when there is no such model), kModel = model. Does ...
+00361d60 00000068 F evtUnitSetModel source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361DD0: (type, work, resId, model) -> unit: sub_361CA0 and sub_361D60 inlined.
+00361dd0 0000010c F evtCreateModelUnit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361EE0: (type, work) -> the number of units of that type.
+00361ee0 00000034 F evtCountUnitsOfType source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361F20: (work) -> the number of units in the work's list.
+00361f20 00000034 F evtCountUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361F60: (kind, work) -> the summed key counts of the sound units: kind 2 = all units except types 5 and 19, kind 3 = types 5 and 19 only; other kinds 0. ...
+00361f60 0000007c F evtCountSoundKeys source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_361FE0: (name, work) -> index: the index of `name` in the work's name table, or appends it (strcpy; asserts when the table already holds one, line 1426: ...
+00361fe0 00000118 F evtAddName source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362120: (resume, frame, work): for every model unit (types 1 / 48) with a resource, sub_3B8310(resId, !resume); then for every field object (sub_3B5D50(7) ...
+00362120 0000011c F evtSetModelsPaused source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362240: (work): sub_362120(0, frame, work) when kStopped == 1, else sub_362120(1, ...).
+00362240 00000050 F evtApplyStopState source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362290: (work) -> the message-unit key (type 2 units) with the smallest frame after kFrame, or 0.
+00362290 00000080 F evtFindNextMessageKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362310: (work) -> the message-unit key with the greatest frame before kFrame, or 0.
+00362310 00000080 F evtFindPrevMessageKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362F20: (work): with a stage loaded (sub_3B5D00), switches between the event cameras 0x1E58 and 0x1E59 (sub_38A0B0 / sub_38A0C0).
+00362f20 00000080 F evtToggleCamera source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362FA0: (work): with a scene, closes the work's message when one is open (sub_39EEE0 / sub_39F350).
+00362fa0 00000050 F evtCloseMessage source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_362FF0: (work): draws the memory overlay (sub_386D50) while kMetrics is set.
+00362ff0 00000034 F evtDrawMetrics source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_363030: (unit, key, frame, work): the one-shot keys of the "event" unit types, run by sub_366AC0 for every key whose frame (or [frame, frame + hold)) ...
+00363030 000008a4 F evtApplyEventKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3638E0: (unit, prevKey, key, frame, work): the "state" unit types, run by sub_366AC0 every frame with the unit's current key (the latest one that fired; ...
+003638e0 00000b84 F evtApplyStateKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_364470: (frame, unit): the model unit's latest firing key with command 4 at or before the frame; when it fires now: rotate the actor (sub_3B8B30 with the ...
+00364470 00000148 F evtUnitApplyRotKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3645C0: (frame, unit): command 10: when the key fires now, sub_3B8C30(resId, {s, s, s} from +24, time +20). Returns the key.
+003645c0 00000104 F evtUnitApplyScaleKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3646D0: (frame, unit): command 3 keys with a target (+22): mode 0 = sub_3B8470(resId, target) (take the target's place), mode 1 = turn towards the target ...
+003646d0 00000210 F evtUnitApplyPosChangeKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3648E0: (work, frame, unit): command 0 (show / hide): when the key fires now, sub_3B9550(resId, +20 == 0); without any key the actor follows its setup ...
+003648e0 00000150 F evtUnitApplyShowKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_364A30: (frame, unit): command 9: when the key fires now, sub_3BB180(resId, +20 == 0).
+00364a30 000000dc F evtUnitApplyKey9 source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_364B10: (frame, unit): command 1 (move): mode 0 walks to the point at +24 (sub_3B8730) and turns (sub_3B8690 / sub_3B8B30) unless +38; mode 1 follows the ...
+00364b10 00000330 F evtUnitApplyMoveKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_364E40: (frame, work, unit): command 6 on the model's head controller (model +296 for model kinds 1 / 3): at the key's frame mode 0 looks at the angles at ...
+00364e40 00000274 F evtUnitApplyLookKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3650C0: (frame, work, unit): command 7 on the model's controller (model +296): mode 0 sub_39E880(work, ctl, +21, +22, +24), mode 1 sub_39EA20(ctl, +21); ...
+003650c0 00000190 F evtUnitApplyExprKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365250: (frame, work, unit): command 5 keys firing now: sub_3BB010(resId, value) with the value at +20 (mode +21 == 0) or the one sub_397630(work, +20) ...
+00365250 00000104 F evtUnitApplyKey5 source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365360: (frame, work, unit): command 8 keys firing now: sub_3B8E10(resId, motion +24, blend +20, loop +25 != 0).
+00365360 000000d0 F evtUnitApplyMotionKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365430: (frame, work): for every model unit (types 1 / 48) whose actor exists: at the start frame (not in play mode) put it at its setup position / ...
+00365430 000001b4 F evtApplyModelUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3655F0: (frame, unit, work): the camera-model unit's latest firing key; when it fires now: mode 0 moves the camera model 0x1E58 to the key's position / ...
+003655f0 000001f0 F evtCameraUnitApplyKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3657E0: (frame, work): for each type-33 unit: at the start frame reset the camera model (sub_3BB400, sub_3B78B0 with the unit's setup pose, sub_3B8F30, ...
+003657e0 000000c8 F evtApplyCameraUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3658B0: (frame, work): type-47 units: keys firing now on an existing model (+18): command 1 sub_3B8FF0, command 0 sub_3B9500.
+003658b0 0000018c F evtApplyModelShowUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365A40: (frame, work): type-49 units: command-0 keys firing now on an existing model (+18): sub_3B9550(model, +20 == 0).
+00365a40 00000128 F evtApplyVisibilityUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365B70: (frame, work): type-35 units: keys firing now: command 0 sub_395430(work, channel, +24, +26, +28), command 1 sub_3954E0(channel); without keys at ...
+00365b70 00000160 F evtApplyVolumeUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365CD0: (frame, work): with an effect set (kEffectSet): at the start frame sub_3969B0; type-37 units, for each of the 16 effect slots in order, keys of ...
+00365cd0 000002ac F evtApplyP3EffectUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_365F80: (frame, work): with a scene and an open message handle: the message unit's (type 4) keys whose condition holds, sound is on and the message number ...
+00365f80 00000288 F evtApplyMessageUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_366210: (frame, work): the type-34 unit's current key (sub_38C460) at its own frame: command 1 waits for a fade (kFlagFadeWait while sub_108710() == 0); ...
+00366210 00000120 F evtApplyFadeWaitUnit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_366330: (frame, work): the first type-38 key firing at this frame requests a jump to its frame at +16.
+00366330 000000b8 F evtApplyJumpUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3663F0: (frame, work): the first type-40 key firing now picks one of four jump frames (+24.. +30) with sub_388DF0(4, the four weights at +16..+19) and ...
+003663f0 00000144 F evtApplyRandomJumpUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_366540: (work, unit, frame, slot) -> the latest command-2 key at or before the frame for animation slot `slot` (+20, or sub_3976F0's slot for indirect ...
+00366540 00000120 F evtFindMotionKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_366660: (frame, model, unit, work): for a model with a motion controller (+296, kinds 1 / 3) and each of its 4 animation slots: the current motion key ...
+00366660 0000030c F evtModelApplyMotionKeys source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_366970: (frame, work): sub_366660 for every model of the stage (sub_3B5D00 list) and every field object (sub_3B5D50(3)) that a unit drives (kModel).
+00366970 00000144 F evtApplyMotionUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_366AC0: (frame, work): everything a frame of the timeline does. Clears kFlagFilter / kFlagShake and the light words, resets the camera slots (sub_38CA00), ...
+00366ac0 000003dc F evtApplyFrame source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36D030: (work): clears the wait flags whose waits are over (message closed, comu message, effect channels, sub_3CF630, fade, sub task), recomputes ...
+0036d030 000002e4 F evtUpdateStopState source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36D320: (work) -> 0 for the editor menus (and sub-modes of menu 26) during which the timeline must not run, else 1 (menu 46 -> 0).
+0036d320 00000150 F evtEdMenuAllowsPlay source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36D470: (work) -> 0, or -6 for the editor's menu 5 on a type-33 unit (types 3 / 17 / 26 -> 0).
+0036d470 00000084 F evtEdMenuFrameStep source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36D500: (process step): waits until the PM reader task kPmTask has ended plus 5 more frames (0x7CE5E4), then restarts the scene (sub_393E30 with ...
+0036d500 000000f0 F evtStepWaitPmReader source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36DA10: (work) -> 1 when the event's field is ready: the scene header (+148) names a field (major +16, minor +20); in play mode that is all; else when ...
+0036da10 00000108 F evtLoadEventField source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36DB20: (process step) "evtEventViewerProcessSceneRead": the loading state machine (kLoadState, jump table 0x7BA600). 0 free the previous scene ...
+0036db20 0000061c F evtStepSceneRead source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36E140: (process step): toggles the metrics overlay on the pad bit 0x200 (in play mode only when sub_39E6F0 allows it), draws it, and returns to ...
+0036e140 00000114 F evtStepOverlay source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36E260: (process step): waits for the screen fade (sub_108710; "wait fade end") and, with kMode bit 2, for the field fade (sub_2FF310); then -1 (the ...
+0036e260 00000084 F evtStepEnd source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36E690: (process step): one frame of a playing event. Hands over to sub_36E260 (kFlagEnd), sub_36DB20 (kFlagReload), sub_36E2F0 (0x10000) or sub_36E140 ...
+0036e690 0000069c F evtStepPlay source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36ED30: (process step): after the PM data of a movie event: sound bank 2576 (sub_3951A0), sub_3953E0(own task), sub_396410, sub_1A4580(sub_198590()), ...
+0036ed30 00000094 F evtStepMovieStart source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36EDD0: (process step): sub_36DB20 when kFlagReload is set, else "polygon movie start!!" and sub_36ED30.
+0036edd0 00000058 F evtStepAfterPmLoad source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36EFB0: (): for the player model (resource 0x400): sub_3174E0(model +296), sub_3B7090(model id).
+0036efb0 00000050 F evtResetPlayerModel source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F000: (work): stops what the event started (sub_3CF440, nullsub_28, sub_103CB0, the filter, effects, camera slots, the message, the sound bank entries, ...
+0036f000 00000260 F evtFreeScene source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F260: the kwln destroy callback of the viewer task: sub_36F000, resource restore (sub_389F40, not in play mode), sub_3BB340, in play mode the comu index ...
+0036f260 0000010c F evtViewerShutdown source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F370: (work): kField2344 = *0x7CDEAC, the editor cursors (sub_3858C0), the memory counters (sub_386AA0), sound bank 5145 on (sub_395170).
+0036f370 0000003c F evtViewerInit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F480: () -> 0x7CE5F0 != 0: whether the field resumes free movement after the event (a type-39 key).
+0036f480 00000010 F evtGetKeyFree source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F490: (on): 0x7CE5F0 = (on == 1).
+0036f490 00000024 F evtSetKeyFree source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F4C0: () -> 0x7CE5F4: the entrance the field places the party at after the event.
+0036f4c0 0000000c F evtGetStartPos source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F4D0: (): clears 0x7CE5F0 / 0x7CE5F4 (memset 8).
+0036f4d0 0000002c F evtClearKeyFree source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F500: (type) -> 1 when keys of this unit type can carry a condition: the unit type's row of the editor table 0x69E1A0 (12 bytes: s16 count, menu ids ...
+0036f500 000000e8 F evtUnitTypeHasCondition source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F5F0: (menu, a, b, work): pushes {menu, a, b} on the editor's menu stack, kMenuId = menu.
+0036f5f0 00000048 F evtEdPushMenu source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F640: (work) -> the menu below the top (kMenuId), 0 when the stack is empty.
+0036f640 0000003c F evtEdPopMenu source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36F900: (x, y, w, h, first, ?, ?, work, header fn, row fn): the editor's list frame (sub_38A220 size, sub_385990 cursor box at 12-pixel cells), an ...
+0036f900 00000140 F evtEdDrawList source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_36FA40: (work) -> the byte at column kEdColumn (+616) of the row of the editor unit's type in the table 0x69E422.
+0036fa40 00000034 F evtEdMenuValue source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_385860: (id, arg, a, b, work) -> the menu function 0x6A0270[id](a, b, work) after noting id / arg in the work; 0 for an empty slot.
+00385860 00000060 F evtEdCallMenu source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_3858C0: (work): seven H_Cursor tasks (box 130 x 288) under the viewer task, hidden.
+003858c0 000000cc F evtEdCreateCursors source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_385B20: (work): hides the seven cursors and clears kCursorShown.
+00385b20 0000006c F evtEdHideCursors source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386AA0: (): clears the memory counters 1..12 of 0x958A60 (counter 0 kept).
+00386aa0 00000040 F evtMemResetCounters source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386AE0: (size, class) -> block: RwMalloc-style allocation through the slot 0x960184 (hint 0x40000; asserted, mt_evtMisc.c line 59) and adds the size to ...
+00386ae0 00000088 F evtAlloc source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386B70: (block, class, size): frees through the slot 0x96017C; counters 0 / 4 / 5 / 6 are cleared, the others (but 9) lose `size`.
+00386b70 000000cc F evtFree source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386C40: (class, size): counters 0 / 4 / 5 / 6 are set to `size`, the others (<= 12) grow by it.
+00386c40 00000088 F evtMemCount source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386CD0: () -> 1 when the counters 1..12 except 4 / 5 / 6 are all zero.
+00386cd0 0000007c F evtMemAllFreed source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386E10: (work) -> kMajor.
+00386e10 0000000c F evtGetMajor source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386E20: (work, major): kMajor and the global 0x7CCA68.
+00386e20 00000010 F evtSetMajor source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386E30: (work) -> kMinor.
+00386e30 0000000c F evtGetMinor source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_386E40: (work, minor): kMinor and the global 0x7CCA6C.
+00386e40 00000010 F evtSetMinor source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_388FF0: (work): frees every resource backup of kResources (slot 0x96017C), then the array, lowering the counter 0x958A90 by its size; clears the count.
+00388ff0 000000e8 F evtFreeResources source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_389F40: (): frees the 84-byte NPC backup records' buffers (+64) of the table 0x9589CC (count 0x9589C8), then the table; the counter update indexes ...
+00389f40 00000170 F evtFreeNpcBackups source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A0B0: (work) -> kCamSel.
+0038a0b0 0000000c F evtGetCameraSel source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A0C0: (work, sel): sel 0 / 1 activates the event camera 0x1E58 / 0x1E59 (sub_3BB280) and stores it.
+0038a0c0 0000007c F evtSetCameraSel source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A140: (type, src): remembers a 84-byte key image (21 words) at 0x958970 with its unit type (editor copy).
+0038a140 00000034 F evtEdCopyKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A180: (type, dst): pastes the remembered camera-model key (type 33) fields into dst.
+0038a180 0000009c F evtEdPasteKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A220: (n) -> 100 - 10 * n as a float (adda.s / msub.s): the editor's line height.
+0038a220 00000034 F evtEdTextScale source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A480: (a, b, lo, hi) -> clamp(a + b, lo, hi) (hi wins over lo).
+0038a480 00000030 F evtClampAdd source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A4B0: (work, key, out mes, out branch) -> 1 when the message key resolves: the message number is the low 12 bits of +16 (branch slot the top 4); +21 = ...
+0038a4b0 000000dc F evtMessageKeyNumber source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A590: (work, slot): copies the camera model 0x1E59's 272-byte state into kCamSaves[slot] (slot < 3).
+0038a590 00000090 F evtSaveCameraSlot source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A620: (work, slot): slot 2 only: copies kCamSave2 back into the camera model 0x1E59.
+0038a620 0000009c F evtRestoreCameraSlot source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A6C0: (work): the camera model 0x1E59 into kCamSaves[0], and kCamSelSaved = kCamSel.
+0038a6c0 00000070 F evtSaveCamera source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A730: (work): re-activates the saved camera selection (sub_3BB280) -> kCamSel.
+0038a730 00000088 F evtRestoreCameraSel source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38A900: (n) -> n + 2.0 as a float (move speed of a key).
+0038a900 00000020 F evtSpeedOf source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38C460: (unit, frame, out prev, out cur): cur = the first key whose frame + hold is after the frame, prev = the key before it (the tail when none); for ...
+0038c460 000000dc F evtUnitCurrentKey source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38CA00: (): the three 64-byte camera slots at 0x9588B0: mode 0, position 0, two vectors from the field constants 0x7CADD0 / 0x7CAFEC, the last word pair = ...
+0038ca00 00000080 F evtResetCameraSlots source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38CA80: (work): for every field object, NPC and type-12 model (at most 50), its resource backup (kResources, matched by model id) and sub_38CC10.
+0038ca80 00000190 F evtUpdateModelCameras source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38CC10: (work, model, backup, id): picks the camera slot driving this model (mode 3 following it, else mode 2, else mode 1) and writes its light / view ...
+0038cc10 00000944 F evtModelApplyCameraSlot source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D560: (slot, mode, model, a[3], b[4], c[3]): fills camera slot `slot` (< 3) at 0x9588B0: vectors b / c / a, the mode, the followed model for mode 3.
+0038d560 00000148 F evtSetCameraSlot source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D6B0: (n, value): event counter n (< 10) = g_scrGlobals + 800 + 4n.
+0038d6b0 00000034 F evtSetCounter source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D6F0: (n) -> event counter n, -1 for n >= 10.
+0038d6f0 00000030 F evtGetCounter source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D720: (work): releases each of kSeCount entries kSeIds from the scene's sound bank (scene +288, sub_3952C0); clears the count.
+0038d720 0000006c F evtReleaseSounds source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D790: (key): allocates the key's 304-byte path (class 10) when it has none (asserted, line 4705).
+0038d790 000000a4 F evtKeyAllocPath source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D840: (src, dst, reverse): copies an unpacked path (src[0] == 0): the point count byte and 3n + 1 points of 12 bytes, in reverse order when reverse == 1.
+0038d840 000000c4 F evtCopyPath source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D910: (model): when sub_31B680 says the NPC (model +296: +212 / +214) is not present today, hides it (sub_3B9500(model, 0)).
+0038d910 00000070 F evtNpcHideIfAbsent source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38D980: COMM 0x0B8 (1 argument; mt_evtMisc.c) : returns event counter arg0 (g_scrGlobals + 800 + 4 * arg0, the same counters as sub_38D6F0) in the return ...
+0038d980 00000084 F scrEvt_GetCounter source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38DA10: (key) -> 1 for keys that carry a path: type-41 keys with command 0 or 5, model keys (types 1 / 48) with command 1 and mode 1 ("unit path frameno ...
+0038da10 000000c0 F evtKeyHasPath source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38F0F0: (work): with a stage, creates a type-1 unit for the player (model 0x400) and one per NPC (sub_3B5550 / sub_3B5430 lists; "npc unit no=%d") with ...
+0038f0f0 00000348 F evtCreateFieldUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38F440: (pm, key, row): copies row `row` of the PM key table into the key: the condition (+12..+19 -> kCondFlag..), the parameters (+20.. or the version-4 ...
+0038f440 0000047c F evtKeyLoadParams source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38F8C0: (pm, work, unit, unitId): for every PM key row of unit type 1 whose unit id (+8) matches, creates the key (sub_361350) and loads it (sub_38F440).
+0038f8c0 00000150 F evtLoadUnitKeys source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38FA10: (pm, work): sets up the event camera models 0x1E58 / 0x1E59 (sub_3B5F70 when missing) at the default pose (0x6A0BF8) through sub_3BB450, selects ...
+0038fa10 0000059c F evtCreateCameraUnit source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events
+# sub_38FFB0: (pm, work): two type-35 units (channels 0 / 1) and their keys from the PM rows of type 35 (channel from the row's +21; invalid commands >= 4 cleared).
+0038ffb0 00000308 F evtCreateVolumeUnits source=phase5-events verified=yes ev=INTEGRATION_LOG.md#events

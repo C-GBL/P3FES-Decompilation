@@ -1,0 +1,124 @@
+# rendering.sym  Phase 5 analysis delta (docs/ANALYSIS/22_rendering.md); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-20 from ida/work_rendering.i64 (copy of the master; the master was not opened). Rows: <addr8> <size8> F <name> <tags>
+#   source=tge-pr4 verified=yes        community name whose behaviour was verified here from the instructions (promotion, ADR-0009 S2b)
+#   source=phase2-rendering verified=yes  our own name (no community name, or the community name does not describe the behaviour)
+#   ev=<doc>#<section> points into docs/ANALYSIS/22_rendering.md. Not imported by the agent (one master owner at a time).
+00198b10 0000000c F kwlnRootUpdate2DDrawPreEndTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00198c10 0000004c F kwlnRootUpdate3DOn2DZClearTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00198c60 000000c0 F kwlnRootUpdate3DOn2DDrawBeginTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00198d20 000000ac F kwlnRootUpdate3DOn2DDrawEndTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00198e90 000000fc F kwlnRootUpdateEtcDrawBeginTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00198f90 00000034 F kwlnRootUpdateEtcDrawTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+001993a0 00000024 F kwlnRootUpdateDrawBustupProcTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00199520 000000c8 F K_SPipe_Update3DDrwBeginTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+001995f0 000000c4 F K_SPipe_Update3DDrwEndTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+0019d410 0000008c F K_SceneDraw_UpdateDrwOpcFldTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+0019d780 00000390 F K_SceneDraw_UpdateDrwOpcFldObjTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+0019f730 000001bc F K_SceneDraw_CreateTasks source=tge-pr4 verified=yes ev=22_rendering.md#1
+001b3e50 000008c4 F K_FldSrc_DrawFieldOpaque source=tge-pr4 verified=yes ev=22_rendering.md#2
+001b4720 000006e0 F K_FldSrc_DrawFieldTrans source=tge-pr4 verified=yes ev=22_rendering.md#2
+0027ccf0 0000007c F btlUpdateDraw3DTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+0027cd70 00000030 F btlUpdateDraw3DFrontTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+0027cda0 00000044 F btlUpdateDraw2DTask source=tge-pr4 verified=yes ev=22_rendering.md#1
+00312e80 00000110 F mdlManagerSetMaterialMatFxPipeline source=tge-pr4 verified=yes ev=22_rendering.md#3.3
+00312f90 000000fc F mdlManagerSetClumpPipelines source=tge-pr4 verified=yes ev=22_rendering.md#3.3
+0046b510 000003c8 F _rpSkinMatrixUpdating source=tge-pr4 verified=yes ev=22_rendering.md#3
+0046eb10 00000080 F RpPDS_G3d_Skin_PS2AllInstanceCallBack source=tge-pr4 verified=yes ev=22_rendering.md#3
+00490860 00000064 F AtomicDefaultRenderCallBack source=tge-pr4 verified=yes ev=22_rendering.md#2
+00491630 00000094 F RpClumpRender source=tge-pr4 verified=yes ev=22_rendering.md#2
+00499320 000000e0 F WorldSectorRender source=tge-pr4 verified=yes ev=22_rendering.md#2
+00499b90 00000088 F _rpSectorDefaultRenderCallBack source=tge-pr4 verified=yes ev=22_rendering.md#2
+0049a250 0000003c F RpWorldRender source=tge-pr4 verified=yes ev=22_rendering.md#2
+0049f5d0 000004c4 F PS2AllNodeBody source=tge-pr4 verified=yes ev=22_rendering.md#3
+0049faa0 0000039c F PS2AllNodeInstance source=tge-pr4 verified=yes ev=22_rendering.md#3
+004a05d0 000000e4 F RpAtomicPS2AllPrimTypeTransTypeSetupFunc source=tge-pr4 verified=yes ev=22_rendering.md#3
+004a0dc0 00000040 F RpMeshPS2AllInstanceCallBack source=tge-pr4 verified=yes ev=22_rendering.md#3
+004c9b40 00000054 F CameraEndUpdate source=tge-pr4 verified=yes ev=22_rendering.md#2
+004c9ba0 00000060 F CameraBeginUpdate source=tge-pr4 verified=yes ev=22_rendering.md#2
+004c9d00 0000000c F RwCameraEndUpdate source=tge-pr4 verified=yes ev=22_rendering.md#2
+004c9d10 0000000c F RwCameraBeginUpdate source=tge-pr4 verified=yes ev=22_rendering.md#2
+004c9e90 00000034 F RwCameraClear source=tge-pr4 verified=yes ev=22_rendering.md#2
+004cdfe0 00000064 F RwRasterShowRaster source=tge-pr4 verified=yes ev=22_rendering.md#2
+004d51c0 000000a8 F _rwDMAAddPURef source=tge-pr4 verified=yes ev=22_rendering.md#5
+004ec100 000001a4 F open2DVU1Pkt source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ec2b0 00000204 F openVU1SetupPktNew source=tge-pr4 verified=yes ev=22_rendering.md#3
+004ec4c0 00000048 F closeAndDispatchVU1Packet source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ec8a0 000001b4 F addCopyVU1Line source=tge-pr4 verified=yes ev=22_rendering.md#6
+004eca60 00000058 F SkyIm2DRenderLine source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ecac0 00000220 F addCopyVU1Triangle source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ecce0 00000060 F SkyIm2DRenderTriangle source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ecd40 0000028c F addCopyVU1PrimLineList source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ecfd0 0000028c F addCopyVU1PrimPolyLine source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ed260 00000310 F addCopyVU1PrimTriList source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ed570 00000320 F addCopyVU1PrimTriStrip source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ed890 00000310 F addCopyVU1PrimTriFan source=tge-pr4 verified=yes ev=22_rendering.md#6
+004edba0 00000074 F SkyIm2DRenderPrimitive source=tge-pr4 verified=yes ev=22_rendering.md#6
+004edc20 000002b0 F addCopyVU1IndPrimLineList source=tge-pr4 verified=yes ev=22_rendering.md#6
+004eded0 000002b0 F addCopyVU1IndPrimPolyLine source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ee180 00000330 F addCopyVU1IndPrimTriList source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ee4b0 00000360 F addCopyVU1IndPrimTriStrip source=tge-pr4 verified=yes ev=22_rendering.md#6
+004ee810 0000033c F addCopyVU1IndPrimTriFan source=tge-pr4 verified=yes ev=22_rendering.md#6
+004eeb50 00000070 F SkyIm2DRenderIndexedPrimitive source=tge-pr4 verified=yes ev=22_rendering.md#6
+004eebc0 00000044 F _rwSkyOverloadPipelines source=tge-pr4 verified=yes ev=22_rendering.md#6
+004f1020 00000518 F RpSkyTexCacheAccessRaster source=tge-pr4 verified=yes ev=22_rendering.md#5
+004f2e70 000000fc F RxPipelineExecute source=tge-pr4 verified=yes ev=22_rendering.md#2
+# comments
+# comment 00198b10 "2D Draw Pre End" task (prio 0x146F), returns 0
+# comment 00198c10 "3D on 2D Zclear" (prio 0x147B): RwCameraClear Z
+# comment 00198c60 "3D on 2D Draw Begin" (prio 0x147D): RwCameraBeginUpdate + states 6/8
+# comment 00198d20 "3D on 2D Draw End" (prio 0x18B0): fog states 14/15/16 + RwCameraEndUpdate
+# comment 00198e90 "etc Draw Begin" (prio 0x18B3): Z clear + BeginUpdate
+# comment 00198f90 "etc Draw" (prio 0x18BF): fade sub_107060, debug print
+# comment 001993a0 "drawBustupProc" (prio 0x149C): bust-up banks sub_1058A0
+# comment 00199520 "3D Draw Begin" (prio 2098): RwCameraBeginUpdate + states 6/8
+# comment 001995f0 "3D Draw End" (prio 4167): fog states + RwCameraEndUpdate
+# comment 0019d410 "draw opaque field" (prio 2070): per field resource K_FldSrc_DrawFieldOpaque(main camera)
+# comment 0019d780 "draw opaque field obj" (prio 2071): lights, BeginUpdate, model draw sub_317A20 per object, trans field
+# comment 0019f730 creates SceneDrawCtl + the 9 field draw tasks (prio 2070..4183)
+# comment 001b3e50 field world: lights, camera into world, RpWorldRender(world/sub-worlds), sub_1A7B50 per object list
+# comment 001b4720 translucent field pass: sub_1A8140
+# comment 0027ccf0 "battle draw 3d" (prio 2081): BeginUpdate, effect pass sub_321120(2), sub_27F160(2), effects + models sub_2BB3A0, EndUpdate
+# comment 0027cd70 "battle draw 3d front" (prio 4169): sub_321120(3) + sub_2891E0
+# comment 0027cda0 "battle draw 2d" (prio 4207): sub_321120(5), sub_27F160(3), battle HUD sub_29E4B0
+# comment 00312e80 material pipe by MatFX effect: 1..6 -> PDS 0x10021..0x1002B, default 0x10020
+# comment 00312f90 skinned atomic with >= 0x41 bones: atomic pipe PDS 0x1001F + per-material SkSpt pipes
+# comment 0046b510 per bone: LTM x skin-to-bone (VU0 macro 4x4), x inverse atomic LTM -> matrix palette
+# comment 0046eb10 sub_4A1430 + skin weights sub_46B1B0
+# comment 00490860 atomic+0x6C pipeline (or global default) -> RxPipelineExecute(pipe, atomic, 1); installed by the atomic constructor sub_491880
+# comment 00491630 walks clump atomics (+8), render flag, frame LTM sub_4CB2F0, atomic->renderCallBack
+# comment 00499320 sector render + per atomic in sector: render-frame stamp, frustum sphere test, renderCallBack
+# comment 00499b90 sector+124 / world+108 / global default pipe -> RxPipelineExecute
+# comment 0049a250 sub_49C330(camera, WorldSectorRender, world): frustum sector walk
+# comment 0049f5d0 object node: setup CB (node+16) -> openVU1SetupPktNew -> per mesh: material pipe, instance (PS2AllNodeInstance) if needed, bridge CB [3], post-mesh CB [4]
+# comment 0049faa0 re-instance path: sub_49D4D0 / sub_49DC70 / instance CB; only when the resEntry is missing or stale
+# comment 004a05d0 prim type (mesh+41) and transType bits (mesh+40): camera bits (0 fog inf, 3 parallel) | clip bit 1 | list bit 2 | line bit 4
+# comment 004a0dc0 type byte 0xFF -> sub_4A42F0 (sector) else sub_4A1430 (atomic)
+# comment 004c9b40 device end (dword_9600E0), clears current camera
+# comment 004c9ba0 sets current camera, frame sync, device begin (dword_9600BC), sub_4F28E0
+# comment 004c9d00 jalr camera+28
+# comment 004c9d10 jalr camera+24 (CameraBeginUpdate -> device -> SkyCameraBeginUpdate)
+# comment 004c9e90 device clear pointer -> sub_4D8F40
+# comment 004cdfe0 resource purge + device show -> SkyRasterShowRaster
+# comment 004d51c0 ring of pending resource references (gp-17268/-17264); closes the packet when the ring is full
+# comment 004ec100 Im2D descriptor open callback (descriptors 0x7BCF70 {prog 038 lines, 039 triangles}, 0x7BCF80 (fog bit, inf) {036, 037}); opens the VIF packet
+# comment 004ec2b0 per-object VIF packet: matrix + light block UNPACK (callee of PS2AllNodeBody)
+# comment 004ec4c0 appends the 64-byte dispatch trailer (MSCALF/FLUSH tags) to the open packet
+# comment 004ec8a0 one line (SkyIm2DRenderLine)
+# comment 004eca60 addCopyVU1Line
+# comment 004ecac0 one triangle, same packet shape
+# comment 004ecce0 addCopyVU1Triangle(descriptor, 0, v0, v1, v2)
+# comment 004ecd40 Im2D prim array 0x77F1B0 slot 1 (rwPRIMTYPELINELIST)
+# comment 004ecfd0 slot 2 (POLYLINE)
+# comment 004ed260 slot 3 (TRILIST)
+# comment 004ed570 slot 4 (TRISTRIP): strip expanded to triangles, batches of <= 16 triangles (3 x 64-byte RwIm2DVertex) behind a cnt + UNPACK V4-32m header; descriptor open per batch
+# comment 004ed890 slot 5 (TRIFAN)
+# comment 004edba0 prim 1..5 -> prim-function array 0x77F1xx with descriptor 0x7BCF80 / 0x7BCF70 chosen by bit 0 of gp-16892 (fog, inf)
+# comment 004edc20 indexed array 0x77F1D0 slot 1
+# comment 004eded0 indexed slot 2
+# comment 004ee180 indexed slot 3
+# comment 004ee4b0 indexed slot 4
+# comment 004ee810 indexed slot 5
+# comment 004eeb50 indexed variant (array 0x77F1Cx)
+# comment 004eebc0 installs SkyIm2DRenderLine/Triangle/Primitive/IndexedPrimitive into the device Im2D slots 0x960098..0x9600A4 + VU1 dispatch init sub_4EC510
+# comment 004f1020 makes a raster resident (upload callback), patches TEX0 TBP/CBP, emits the TEX0/TEX1 A+D packet
+# comment 004f2e70 sets the exec context globals, calls the first node body (node->def->body at +4)

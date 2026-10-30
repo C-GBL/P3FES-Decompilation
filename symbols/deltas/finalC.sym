@@ -1,0 +1,9 @@
+# finalC.sym  Phase 5 slice delta (game/include/p3fes/game/finalC.h); SLUS_216.21
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint;
+#   no IDA database opened). Rows: <addr8> <size8> F <name> source=phase5-finalC verified=yes ev=<doc>#<section>.
+#   Not imported by the agent. The other 16 functions keep their symbols/ names (sce* / libc / CRI names).
+# sub_77FFA0: acknowledges INTC_STAT bit 2, spins until it is set, acknowledges again, then calls the seven entries of
+#   the pointer table at 0x8007474C..0x80074764 -- the body of the alarm kernel payload (kpayload_alarm,
+#   docs/ANALYSIS/06_ghidra_crosscheck.md: the blob is copied to 0x80074000.. and run in kernel mode; 0 callers at
+#   its file address). sub_7CC670 (a `break` word in data) keeps its name.
+0077ffa0 000000d0 F kpayload_alarm_body source=phase5-finalC verified=yes ev=INTEGRATION_LOG.md#finalC

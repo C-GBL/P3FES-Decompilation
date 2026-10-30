@@ -1,0 +1,76 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "_base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "architecture": { "value": "x64", "strategy": "external" },
+      "toolset": { "value": "host=x64", "strategy": "external" },
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "msvc-x64-debug",
+      "displayName": "MSVC x64 Debug (Ninja)",
+      "description": "Run from a VS 2022 x64 developer shell (VsDevCmd.bat -arch=x64 -host_arch=x64).",
+      "inherits": "_base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "cl"
+      }
+    },
+    {
+      "name": "msvc-x64-release",
+      "displayName": "MSVC x64 Release (Ninja)",
+      "description": "Run from a VS 2022 x64 developer shell (VsDevCmd.bat -arch=x64 -host_arch=x64).",
+      "inherits": "_base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "cl"
+      }
+    },
+    {
+      "name": "clangcl-x64-debug",
+      "displayName": "clang-cl x64 Debug (Ninja)",
+      "description": "clang-cl in MSVC-compatible mode, resolved from PATH: the VS Build Tools 'C++ Clang tools for Windows' component (VC/Tools/Llvm/x64/bin, put on PATH by the developer shell / tools/env.ps1) or a standalone LLVM. Run from the same VS developer shell so the MSVC STL and Windows SDK are found.",
+      "inherits": "_base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      }
+    },
+    {
+      "name": "clangcl-x64-release",
+      "displayName": "clang-cl x64 Release (Ninja)",
+      "description": "clangcl-x64-debug optimised: the gate's second-compiler suite tree (tools/ours/gate/gate.ps1), a second compiler's optimised codegen at a fraction of the Debug test time. Keep clangcl-x64-debug for debugging.",
+      "inherits": "_base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "msvc-x64-debug", "configurePreset": "msvc-x64-debug" },
+    { "name": "msvc-x64-release", "configurePreset": "msvc-x64-release" },
+    { "name": "clangcl-x64-debug", "configurePreset": "clangcl-x64-debug" },
+    { "name": "clangcl-x64-release", "configurePreset": "clangcl-x64-release" }
+  ],
+  "testPresets": [
+    {
+      "name": "_test_base",
+      "hidden": true,
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error", "stopOnFailure": false }
+    },
+    { "name": "msvc-x64-debug", "inherits": "_test_base", "configurePreset": "msvc-x64-debug" },
+    { "name": "msvc-x64-release", "inherits": "_test_base", "configurePreset": "msvc-x64-release" },
+    { "name": "clangcl-x64-debug", "inherits": "_test_base", "configurePreset": "clangcl-x64-debug" },
+    { "name": "clangcl-x64-release", "inherits": "_test_base", "configurePreset": "clangcl-x64-release" }
+  ]
+}

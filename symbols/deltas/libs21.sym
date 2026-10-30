@@ -1,0 +1,45 @@
+# libs21.sym  Phase 5 slice delta (game/include/p3fes/game/libs21.h, game/src/cri/libs21.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own texts: each name below is
+#   the one the function passes in its own error string (ROFS_*: the function-name argument of the rofs_if.c error
+#   report at 0x7C7068..; mwPly*: "E...: <name>: handle is invalid." at 0x7C89C8..). Left out: sub_5806D0 (prints
+#   "mwSfdStop", already proposed for sub_580628), sub_581350 (prints two names), sub_5830D0 (runs the body at
+#   0x583198, whose text names MWSFSFX_SetOutBufSize). sceInsockSetSendTimeout_0 (0x581C38) is a FLIRT misname: it
+#   prints "mwPlyGetTime". Checked by tests/game/test_libs21.cpp. A proposal only: the code keeps the symbols/ name.
+#   No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs21 verified=yes ev=<anchor>
+00566568 00000068 F ROFS_GetDefVolume source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00566b88 00000094 F ROFS_SetIsoDir source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00566d98 00000080 F ROFS_EntryErrFunc source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00566e18 00000080 F ROFS_GetScrambleInf source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00566e98 00000094 F ROFS_CancelScrambleG source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00580498 000000ec F mwPlyStartMem source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00580878 00000088 F mwPlyStartAfs source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00580b60 000000c0 F mwPlyStartFnameRange source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581150 00000060 F mwPlySetAudioSw source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581220 00000058 F mwPlyGetAdxtHn source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+005813f8 00000084 F mwPlySetAudioCh source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+005814b8 00000054 F mwPlyGetNumAudioCh source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581510 00000084 F mwPlySetVideoCh source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+005815d0 00000054 F mwPlyGetNumVideoCh source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+005817c8 00000074 F mwPlySetLimitTime source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581a90 000000a8 F mwPlyGetSyncMode source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581b38 00000078 F mwPlyGetNumDecPool source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581bb0 00000054 F mwPlyGetNumTotalDec source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581c38 000000cc F mwPlyGetTime source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581d68 0000006c F mwPlySetOutVol source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581dd8 00000080 F mwPlyGetOutVol source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581e58 00000070 F mwPlySetOutPan source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00581ec8 0000007c F mwPlyGetOutPan source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582098 00000080 F mwPlySetEmptyBpicSkip source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582168 000000ec F mwPlyGetPlyInf source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582258 000000f4 F mwPlyGetFlowInf source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582440 0000006c F mwPlySetSpeed source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+005824b0 000000a4 F mwPlySetFloatSpeed source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582dc8 000000b0 F mwPlyFxCnvFrmZ16 source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582e78 000000b0 F mwPlyFxCnvFrmZ32 source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00582f28 000000fc F mwPlyFxSetCompoMode source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00583238 00000074 F mwPlyFxSetOutZscale source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+005832a8 00000064 F mwPlyFxGetOutZscale source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00583308 00000074 F mwPlyFxSetOutZoffset source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00583378 00000064 F mwPlyFxGetOutZoffset source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21
+00583740 0000005c F mwPlyAttachAddInfBuf source=phase5-libs21 verified=yes ev=INTEGRATION_LOG.md#libs21

@@ -1,0 +1,69 @@
+{
+ "note": "slice read_script (readability pass over script_ops.cpp, script_vm.cpp, script_vm2.cpp, comm_b.cpp): names confirmed from the instructions of the p3fes_handgen bodies -- scrTraceCode 0x35EBF0 (frames / cmd_timer / insn), scrSetUserData 0x35C1A0 (user_data through dds3GetProcessWorkData), scrStartScript2 0x35B930 / scrFindPrcdIdxByName 0x35C090 (the BF header and its 16-byte descriptors), COMM 278 / 361 / 416 (EventWork::field and the field descriptor's id / flags / +8), COMM 364..368 / 379 (FieldParams), COMM 255 / 320 / 385 / 302 / 318 (btlAction / btlUnit / DatUnit)",
+ "records": [
+  {
+   "name": "ScrTask",
+   "size": 252,
+   "anchors": [
+    {"how": "param", "fn": "0x35EBF0", "index": 0},
+    {"how": "gslot", "addr": "0x7CE5A8"}
+   ],
+   "fields": [
+    {"off": 24, "width": 4, "type": "s32", "name": "pc"},
+    {"off": 28, "width": 4, "type": "s32", "name": "sp"},
+    {"off": 180, "width": 4, "type": "ptr", "name": "proc_labels"},
+    {"off": 184, "width": 4, "type": "ptr", "name": "jump_labels"},
+    {"off": 188, "width": 4, "type": "ptr", "name": "insn"},
+    {"off": 196, "width": 4, "type": "ptr", "name": "strings"},
+    {"off": 208, "width": 4, "type": "s32", "name": "frames"},
+    {"off": 212, "width": 4, "type": "s32", "name": "cmd_timer"},
+    {"off": 220, "width": 4, "type": "ptr", "name": "local_ints"},
+    {"off": 224, "width": 4, "type": "ptr", "name": "local_floats"},
+    {"off": 240, "width": 4, "type": "u32", "name": "user_data"}
+   ]
+  },
+  {
+   "name": "BfHeader",
+   "anchors": [
+    {"how": "param", "fn": "0x35B930", "index": 0},
+    {"how": "param", "fn": "0x35C090", "index": 0}
+   ],
+   "fields": [
+    {"off": 8, "width": 4, "type": "char[4]", "name": "magic"},
+    {"off": 16, "width": 4, "type": "u32", "name": "section_count"},
+    {"off": 32, "width": 16, "type": "BfSection[]", "name": "sections"}
+   ]
+  },
+  {
+   "name": "EventWork",
+   "anchors": [
+    {"how": "gslot", "addr": "0x7CE284"}
+   ],
+   "fields": [
+    {"off": 284, "width": 4, "type": "ptr", "name": "field"}
+   ]
+  },
+  {
+   "name": "FieldParams",
+   "anchors": [
+    {"how": "gslot", "addr": "0x7CE6EC"}
+   ],
+   "fields": [
+    {"off": 4, "width": 1, "type": "u8", "name": "entries[0].a"},
+    {"off": 6, "width": 2, "type": "u16", "name": "entries[0].b"},
+    {"off": 160, "width": 1, "type": "s8", "name": "entry_count"}
+   ]
+  },
+  {
+   "name": "btlAction",
+   "fields": [
+    {"off": 8, "width": 4, "type": "u32", "name": "id"},
+    {"off": 26, "width": 2, "type": "u16", "name": "flags2"},
+    {"off": 48, "width": 4, "type": "ptr", "name": "unit"},
+    {"off": 108, "width": 2, "type": "u16", "name": "move_kind"},
+    {"off": 110, "width": 2, "type": "u16", "name": "move_arg"},
+    {"off": 1192, "width": 4, "type": "ptr", "name": "next"}
+   ]
+  }
+ ]
+}

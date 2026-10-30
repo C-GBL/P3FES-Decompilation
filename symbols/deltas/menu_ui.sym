@@ -1,0 +1,177 @@
+# menu_ui.sym  Phase 5 topic 20 delta (docs/ANALYSIS/20_menu_ui.md); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-20 from ida/work_menu.i64 (copy of the master; the master was not opened). Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=tge-pr4 verified=yes          community name whose behaviour was verified here from the instructions (promotion, ADR-0009 S2b)
+#   source=phase2-menu_ui verified=yes   our own name (evidence in the doc section given by ev=)
+#   ev=<doc> points into docs/ANALYSIS/20_menu_ui.md
+# Not imported by the agent: the lead merges this with tools/ours/ida/import_symbols.py and re-exports symbols/. game/ keeps the
+# sub_* names of the 22 replaced functions until that happens (game/README.md rule).
+# --- h_cursor.c: the screen cursor quad (section 4.2) ---
+00100230 0000033c F H_Cursor_UpdateDrawTask source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+00100570 00000010 F H_Cursor_GetShouldDraw source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+00100580 0000002c F H_Cursor_DestroyDrawTask source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+001005b0 00000160 F H_Cursor_CreateTask source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+00100710 00000028 F H_Cursor_SetPos source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+00100740 0000002c F H_Cursor_SetRect source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+00100770 00000010 F H_Cursor_SetZOffset source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+00100780 00000068 F H_Cursor_SetColor source=tge-pr4 verified=yes ev=20_menu_ui.md#4.2
+# --- spr*: sprite files and drawing (section 5.1) ---
+00111f30 00000014 F sprFileIsReady source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.1
+00111f50 00000150 F sprFontInit source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+001120a0 0000001c F sprFontGetFile source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+00112110 00000260 F sprFileHandleUpdate source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+00112370 000000a4 F sprAddFile source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+00112420 0000008c F sprCreateHandleFromData source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+001125d0 000000dc F sprSpriteDrawAll source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+001126b0 0000008c F sprGetSpriteWidth source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.1
+00112740 0000008c F sprGetSpriteHeight source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.1
+001158b0 000000c4 F sprCreateHandle source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+001159f0 000000d4 F sprDrawSpriteBasic source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+00833a40 00000004 D sSprFontFiles source=tge-pr4 verified=yes ev=20_menu_ui.md#5.1
+# --- h_camp.c: the camp menu tree (section 2) ---
+0011a050 000006b8 F H_Camp_UpdateDrawTask source=tge-pr4 verified=yes ev=20_menu_ui.md#2.2
+0011a770 00000094 F H_Camp_CreateDrawTask source=tge-pr4 verified=yes ev=20_menu_ui.md#2.2
+0011a810 00000024 F H_Camp_GetAcademicLevelString source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+0011a840 00000024 F H_Camp_GetCharmLevelString source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+0011a870 00000024 F H_Camp_GetCourageLevelString source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+0011abd0 000004d8 F H_Camp_MoveListCursor source=phase2-menu_ui verified=yes ev=20_menu_ui.md#2.3
+0011b420 0000057c F H_Camp_UpdateRootDrawTask source=tge-pr4 verified=yes ev=20_menu_ui.md#2.3
+0011b9a0 00000010 F H_Camp_GetRootSelection source=phase2-menu_ui verified=yes ev=20_menu_ui.md#2.2
+0011bad0 000000c8 F H_Camp_CreateRootDrawTask source=tge-pr4 verified=yes ev=20_menu_ui.md#2.2
+005d7e7c 00000004 D tbl_H_Camp_CourageLevelStrings source=phase2-menu_ui verified=yes ev=20_menu_ui.md#8
+005d7e98 00000004 D tbl_H_Camp_CharmLevelStrings source=phase2-menu_ui verified=yes ev=20_menu_ui.md#8
+005d7eb4 00000004 D tbl_H_Camp_AcademicLevelStrings source=phase2-menu_ui verified=yes ev=20_menu_ui.md#8
+# --- g_data.c: date, flags, social stats (sections 3.1, 3.4, 8) ---
+0016ef20 00000010 F datGetDaysSinceApr5 source=tge-pr4 verified=yes ev=20_menu_ui.md#3.1
+0016ef30 00000010 F datGetTime source=tge-pr4 verified=yes ev=20_menu_ui.md#3.1
+0016ef70 000001d4 F datSetDaysSinceApr5 source=tge-pr4 verified=yes ev=20_menu_ui.md#3.1
+0016f190 00000058 F datGetFlag source=tge-pr4 verified=yes ev=20_menu_ui.md#3.4
+0016f1f0 000000f0 F datSetFlag source=tge-pr4 verified=yes ev=20_menu_ui.md#3.4
+0016f2e0 00000038 F datClearFlagAll source=tge-pr4 verified=yes ev=20_menu_ui.md#3.4
+00177280 00000064 F datGetAcademicLevel source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+001772f0 00000064 F datGetCharmLevel source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+00177360 00000064 F datGetCourageLevel source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+0016c2f0 0000017c F datItemTblSetSections source=phase2-menu_ui verified=yes ev=20_menu_ui.md#6
+005e3068 00000002 D academicLevelThreshold source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+005e3078 00000002 D charmLevelThreshold source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+005e3088 00000002 D courageLevelThreshold source=tge-pr4 verified=yes ev=20_menu_ui.md#8
+0083679c 00000002 D g_datDaysSinceApr5 source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.1
+0083679e 00000001 D g_datTimeOfDay source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.1
+0083a21c 00000004 D g_datFlagWords source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.4
+# --- clnd*: calendar and the date HUD (section 3) ---
+0017d830 0000007c F clndGetMonthFromDaysSinceApr5 source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017d8b0 00000070 F clndGetDaysSinceStartFromDate source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017d920 0000009c F clndGetCurrentMonth source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017d9c0 00000080 F clndGetDayOfMonthFromDaysSinceApr5 source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017da40 000000a0 F clndGetCurrentDay source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017dae0 00000018 F clndGetWeekDay source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017db00 00000038 F clndGetCurrentWeekDay source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017dcf0 000000fc F clndIsHolidayOrSunday source=tge-pr4 verified=yes ev=20_menu_ui.md#3.1
+0017e480 000000a0 F clndIsDateInRange source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+0017e5d0 000000ac F clndIsDateInRangeFromStart source=tge-pr4 verified=yes ev=20_menu_ui.md#3.2
+00181b10 00000038 F clndGetCurrentMoonPhase source=tge-pr4 verified=yes ev=20_menu_ui.md#3.1
+00181b50 00000018 F clndGetMoonPhase source=tge-pr4 verified=yes ev=20_menu_ui.md#3.1
+00181c20 000000a0 F clndScrCmd_TIME_SKIP source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.1
+001832c0 0000011c F H_DayPartsPos_UpdateTask source=tge-pr4 verified=yes ev=20_menu_ui.md#3.3
+00183410 0000042c F H_DayPartsDraw_UpdateTask source=tge-pr4 verified=yes ev=20_menu_ui.md#3.3
+001842c0 000005c4 F H_DayPartsDraw_DrawHud source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.3
+00184c80 00000104 F H_DayPartsDraw_SetDate source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.3
+00184d90 00000018 F H_DayPartsDraw_IsIdle source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.3
+00184db0 00000148 F H_DayParts_CreateTask source=tge-pr4 verified=yes ev=20_menu_ui.md#3.3
+00185b40 00000510 F H_DayChgDraw_DrawStrip source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.3
+005e38d0 00000001 D tbl_clndMoonPhase source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.1
+005e3a40 00000002 D tbl_clndHolidays source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.1
+005e3b60 00000002 D tbl_clndMonthLengths source=phase2-menu_ui verified=yes ev=20_menu_ui.md#3.1
+# --- memory card / scenario prompts (section 7) ---
+00188690 00000198 F clndUpdateBootupCheckMemcardTask source=tge-pr4 verified=yes ev=20_menu_ui.md#7
+00191240 00000014 F H_Memcard_ClearChkAreaSeq source=phase2-menu_ui verified=yes ev=20_menu_ui.md#7
+00191260 000003dc F H_Memcard_UpdateChkAreaSeq source=phase2-menu_ui verified=yes ev=20_menu_ui.md#7
+001923b0 000000cc F H_FileSetup_UpdateHonpenItemTblDataReadTask source=tge-pr4 verified=yes ev=20_menu_ui.md#6
+00192b50 00000260 F H_FileSetup_UpdateChoiceDataFileSetupTask source=tge-pr4 verified=yes ev=20_menu_ui.md#7
+00193020 00000300 F H_FileSetup_UpdateHikitugiDataProcTask source=tge-pr4 verified=yes ev=20_menu_ui.md#7
+00421330 0000012c F Y_Misc_UpdateMcWNDProcTask source=tge-pr4 verified=yes ev=20_menu_ui.md#7
+004214e0 000000c8 F Y_Misc_CreateMCWNDProcTasks source=tge-pr4 verified=yes ev=20_menu_ui.md#7
+# --- kwlnTask.c, misc ---
+00194b20 00000060 F kwlnTaskCreate source=tge-pr4 verified=yes ev=20_menu_ui.md#2.1
+00195290 000000ac F kwlnTaskGetState source=tge-pr4 verified=yes ev=20_menu_ui.md#2.1
+00195520 0000000c F kwlnTaskGetTimer source=tge-pr4 verified=yes ev=20_menu_ui.md#2.1
+00195530 0000000c F kwlnTaskSetWorkData source=tge-pr4 verified=yes ev=20_menu_ui.md#2.1
+00195540 0000000c F kwlnTaskGetWorkData source=tge-pr4 verified=yes ev=20_menu_ui.md#2.1
+0026a230 0000004c F opMenuSetWork source=tge-pr4 verified=yes ev=20_menu_ui.md#1
+0027de40 000000dc F btlTableLoadAll source=phase2-menu_ui verified=yes ev=20_menu_ui.md#6
+00238980 000000c8 F bpIfontDrawNumber source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.1
+00238fd0 0000016c F bpIfontSetDigitQuad source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.1
+003951d0 00000024 F MT_Misc_BitChk source=tge-pr4 verified=yes ev=20_menu_ui.md#3.4
+00692d40 00000038 D tbl_btlTableFiles source=phase2-menu_ui verified=yes ev=20_menu_ui.md#6
+007e094e 00000002 D gPadFlags source=tge-pr4 verified=yes ev=20_menu_ui.md#4.1
+# --- itfPanel.c / itfMesManager.c: the dialogue window (section 4.3) ---
+003a4990 000000d4 F itfMesMngChangeWindowType source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+003a7e90 000001ec F itfMesManagerDrawMsg source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+003a8170 000000ec F itfMesManagerDrawSprite source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+003a8710 000000bc F itfMesManagerDrawSpriteEx source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+003a8d60 00000060 F itfPnlRelease source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+003a8dc0 000000dc F itfPnlSetPosition source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+003a8fb0 000000cc F itfPnlSetColor source=tge-pr4 verified=yes ev=20_menu_ui.md#4.3
+006a1c10 00000004 D tbl_itfPnlSetPositionByType source=phase2-menu_ui verified=yes ev=20_menu_ui.md#4.3
+006a1c50 00000004 D tbl_itfPnlSetColorByType source=phase2-menu_ui verified=yes ev=20_menu_ui.md#4.3
+# --- frFont.c / frFontEx.c / frFontRaster.c / fmGslCont.c: the font renderer (sections 5.2, 5.3) ---
+003af770 00000028 F frLoadFontData_Ptr source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003af7a0 0000029c F frInitFontTable source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003afad0 0000015c F frAddFontStyle source=tge-pr4 verified=yes ev=20_menu_ui.md#5.3
+003afc70 000001bc F frLoadFontData source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003afe30 00000120 F frFreeFontStyles source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003aff50 0000007c F frFontPrintClutData source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003b01d0 000001cc F frFontSetGlyphMetrics source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b03a0 00000088 F frFontRegisterGlyphRaster source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b0430 00000184 F frFontCacheGlyph source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b05c0 00000058 F frFontInitLineNode source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b0620 00000220 F frFontCreateGlyphNode source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b0840 00000124 F frFontKerningAdjust source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b0970 0000023c F frFontBuildGlyphList source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b1360 000003b0 F frFontDraw source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003b19a0 0000002c F frSetMessageFontStyle source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b1a10 00000024 F frFontGetStyleGlyphWidth source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b1a40 00000024 F frFontGetStyleGlyphHeight source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b35e0 00000158 F frFontRasterCreate source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003b3770 00000178 F frFontRasterAgeSlots source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b38f0 00000464 F frFontRasterDrawGlyph source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003b3d60 00000070 F frFontRasterFindOrAlloc source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b3dd0 0000002c F frFontRasterFind source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b3e60 00000128 F frFontRasterAllocSlot source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b3f90 00000210 F frFontRasterCreate2 source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+003b4520 00000058 F fmGslAllocEntry source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b4580 00000070 F fmGslReleaseEntry source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b46b0 00000034 F rbAlloc source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b46f0 00000048 F rbFree source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.2
+003b4770 00000034 F fmGslGetGlyphBlocks source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.3
+003b47b0 00000168 F fmGslDecodeGlyph source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.3
+003b4ee0 000000e0 F frFontSystemStart source=tge-pr4 verified=yes ev=20_menu_ui.md#5.2
+0095acf0 00000020 D sFrFontStyles source=phase2-menu_ui verified=yes ev=20_menu_ui.md#5.3
+# --- RenderWare entry points the 2D layer calls through (section 0; named from their argument patterns) ---
+00960088 00000004 D g_rwIm2DNearScreenZ source=phase2-menu_ui verified=yes ev=20_menu_ui.md#0
+00960090 00000004 D pfn_RwRenderStateSet source=phase2-menu_ui verified=yes ev=20_menu_ui.md#0
+00960094 00000004 D pfn_RwRenderStateGet source=phase2-menu_ui verified=yes ev=20_menu_ui.md#0
+009600a0 00000004 D pfn_RwIm2DRenderPrimitive source=phase2-menu_ui verified=yes ev=20_menu_ui.md#0
+# comments
+# comment 0011a050 camp menu root update (21 states, jpt 0x7B5420): loads the camp PAKs, opens H_CampRootDraw, then one sub-screen per selection (0 Skill 0x1617D0, 1 Item 0x14EE80, 2 Persona 0x1336B0, 3 Equip 0x130F20, 4 Status 0x123570, 5 S.Link 0x136750, 6 System 0x1548A0), waiting for kwlnTaskGetState == 3; returns -1 when closed
+# comment 0011b420 camp main list (11 states): state 6 reads the pad (0x20 cancel -> selection -2, 0x40 confirm -> selection = cursor; up/down 0x4000/0x1000 with wrap, index 5 skipped in The Answer); highlight y = 59 + 19 * cursor at gp-0x4DA4 + 0x320
+# comment 0011abd0 H_Camp_MoveListCursor(count, page, &scroll, &cursor): list navigation shared by the sub-screens; up/down/page with wrap-around, one SFX per move, writes the two out-params only when moved
+# comment 0016ef20 the s16 game date at 0x83679C: days since April 5 (0 = 4/5, a Sunday)
+# comment 0016f190 datGetFlag(id): bit id % 32 of u32 word id / 32 at 0x83A21C (gGlobalWork + 0x401C, 176 words = 5632 flags), C truncating division
+# comment 0017d830 month of a day count: rem = (s16)(days + 4); month = 4; while (rem >= len[month-1]) { rem -= len; month = month == 12 ? 1 : month + 1 } (len = s16[12] at 0x5E3B60)
+# comment 0017d8b0 days since April 5 of (month, day): sum of len[4-1].. up to month (month counted down to 4, 0 wraps to 12) + day - 5; May 1 = 26, Jan 1 = 271
+# comment 0017dae0 weekday = (days + 7) % 7 through div/mfhi; 0 = Sunday
+# comment 00181b50 moon phase byte of day n from the 368-byte table at 0x5E38D0; 0x0E = full moon (first on day 4 = 4/9)
+# comment 00183410 H_DayPartsDraw update (9 states, jpt 0x7B6600): loads camp/i_moon_00.spr, draws the date/weekday/day-part HUD via sub_1842C0 every frame, runs the day/time change animations (H_DayChgDraw / H_TimeChgDraw children) when the date or part changes
+# comment 001842c0 draws the date HUD: panel 0x3A, time band 0x39 (green tint when part == 8), month/day digits, weekday glyph, day-part name with fade, and "Next N" = days to the next 0x0E in the moon table (sprites 0x4C, 0x23 + digit) unless flag 0x1420
+# comment 001005b0 H_Cursor_CreateTask(parent, {x,y} in a1, rect[4] in a2, rgba in a3, z in f12): 0x150-byte work, task "H CURSOR Draw" prio 0x18BF; the update rebuilds four Im2D vertices from pos/rect(w,h as ints)/z/colour and draws a tri-strip
+# comment 00112110 .SPR loader states: 0 H_Cdvd_Request, 1 32-byte header -> +0x198 (+0x1AC textures, +0x1AE sprites), 2 per texture {u32, u32 offset} -> uttmxCreateRaster -> +0x104[i], 4 per sprite {u32, u32 offset} -> 0x80-byte records at +0x184, 5 ready
+# comment 003afad0 frAddFontStyle(style, fnt, cdvd): style record 32 B at 0x95ACF0 + 32*style = {owner, fnt, size1, size2, widths, block2, glyph block, Huffman block}; FNT: +0xA CLUT blocks*64, +0xE glyph count, +0x10/+0x12 w/h, +0x14 bytes/glyph, +0x16 tables flag; widths = s8[count][2] {left, right}
+# comment 003b0620 glyph index: c < 0x80 ? (c == 0x20 ? 0x1F7 : c - 0x20) : (((c - 0x8080) & 0xFF00) >> 1) + ((c - 0x8080) & 0x7F); >= count -> 0x147; creates a 0x2C-byte glyph node from ring buffer 1
+# comment 003b47b0 fmGslDecodeGlyph(dst, glyph, hdr, regions): Huffman decode of bits offsets[glyph]..offsets[glyph+1] from the u16 stream (LSB first, 17-bit shift register) through 6-byte nodes {u16, child0, child1} (leaf when child0 == 0, symbol at +4); one byte per leaf, 512 for a 32x32 4-bpp glyph
+# comment 003b4770 fmGslGetGlyphBlocks(hdr, out[3]): dictionary = hdr + hdr[0], offsets = dictionary + hdr[1], stream = offsets + hdr[6]
+# comment 003a8170 message window frame: sprites 0x12 (x 225) and 0x13 (x 561) of facility/i_mes_win01.spr at a y from the line count, through itfMesManagerDrawSpriteEx
+# comment 00192b50 The Journey / The Answer choice: up/down toggles +4, confirm (gPadFlags & 0x40) creates HonpenFileSetup (datSetScenarioMode 0) or GojitudanFileSetup (1); drawn with H_Dbprt_FmtAt
+# comment 00193020 carry-over ("hikitsugi") flow of a new game: four buffers (0x50, 0x3400, 0x2C0, 0x2C), Y_Misc_CreateMcTasks, applies the loaded data with sub_192E70
+# comment 00188690 boot-time memory card check: mcWNDProc tasks, message ids 0xF / 0x10 / 0x15, H_Memcard_UpdateChkAreaSeq result 0x64 = done
+# comment 0027de40 loads the eight battle .TBL records of 0x692D40 (SKILL, UNIT, MSG, PERSONA, ENCOUNT, EFFECT, MODEL, AICALC; _F variants) through sub_27DCD0; a0 != 0 loads all synchronously, else one per call
+# comment 0016c2f0 slices event/itemtbl.bin at 0x83BB30 into 14 section pointers (gp-0x4D0C..-0x4D38) from the count words and a 35-entry 32-byte table at 0x83AAA0

@@ -1,0 +1,65 @@
+# Phase 5 hand-decompile queue - topic 18 (BF script VM / BMD messages). Format: addr name one-line purpose. Evidence: docs/ANALYSIS/18_script_vm.md
+# Leaf-first. Names are the IDA master's (symbols/p3fes.sym; the script_vm.sym delta was merged into the master 2026-10-20, so the names it proposed are now the exported ones).
+# --- done in this wave (game/src/script/script_vm.cpp) ---
+0035cf00 CodeFunc_Proc                     PROC: pc += 1
+0035d1d0 CodeFunc_Jmp                      JUMP: pc = proc_labels[s16 operand].insn
+0035d310 CodeFunc_Goto                     GOTO: pc = jump_labels[s16 operand].insn
+0035ac90 ApplyRelocTable                   BMD pointer relocation decoder (bmd+0x20, add, table, len)
+# --- leaves: no calls except K_Assert/K_Abort on bad input ---
+0035f060 scrSetIntReturnVal                current task: slot-27 tag = 0, value = a0 (333 callers)
+0035f080 scrSetFloatReturnVal              current task: slot-27 tag = 1, value = f12
+0035f120 scrSetPC                          current task pc = a0
+0035f130 scrGetCmdTimer                    current task +0xD4
+0035f140 scrGetMessageID                   current task +0xCC
+0035f150 scrGetCurrent                     g_scrCurrentTask
+0035f160 scrGetUserData                    current task +0xF0 (206 callers)
+0035c3b0 CodeFunc_PushS                    PUSHIS: push s16 operand, tag 0 (assert sp < 27)
+0035c300 CodeFunc_PushI                    PUSHI: push next word, tag 0
+0035c450 CodeFunc_PushF                    PUSHF: push next word as float, tag 1
+0035c500 CodeFunc_PushIX                   push g_scrGlobals->ints[operand]
+0035c5b0 CodeFunc_PushIF                   push g_scrGlobals->floats[operand]
+0035c660 CodeFunc_PushLIX                  push local_ints[operand]
+0035c710 CodeFunc_PushLFX                  push local_floats[operand]
+0035c7c0 CodeFunc_PushSTR                  push strings + operand, tag 5
+0035c870 CodeFunc_PushREG                  push the COMM return register (slot 27)
+0035d210 CodeFunc_Call                     push pc with tag 4; pc = proc_labels[operand].insn
+0035f0a0 scrGetLabelAddr                   jump_labels[i].insn with bounds assert against section 1 count
+003a50e0 itfMesMngGetMessageEntry          bmd + 0x20 + 8*index
+003a5100 itfMesMngGetSpeakerBlock          bmd + 0x20 + 8*message_count
+003a5090 itfMesMngCheckBmdMagic            +8 == 'MSG0' || 'MSG1'
+003b49a0 sub_3B49A0                        doubly linked list pop (manager slots)
+# --- pop/arith handlers: pop by tag, K_Abort on bad tags ---
+0035c900 CodeFunc_PopIX                    pop as int -> ints[operand]
+0035ca70 CodeFunc_PopFX                    pop as float -> floats[operand]
+0035cc00 CodeFunc_PopLIX                   pop as int -> local_ints[operand]
+0035cd70 CodeFunc_PopLFX                   pop as float -> local_floats[operand]
+0035d040 CodeFunc_End                      END: empty call stack -> 0, else pop tag-4 slot -> pc = value + 1
+0035e0e0 CodeFunc_Minus                    negate top slot in place
+0035e250 CodeFunc_Not                      pop, push == 0
+0035e850 CodeFunc_IF                       pop; zero -> pc = jump_labels[operand].insn, else pc + 1
+0035d350 scrOperation                      binary op 0..11 over two popped slots (int or float by tag; two 12-case switches)
+0035dfe0 CodeFunc_Add                      scrOperation(task, 0) -- and the 11 sibling wrappers 0x35E020..0x35E810
+0035ed20 scrGetIntPara                     COMM argument i as int (497 callers)
+0035ee60 scrGetFloatPara                   address of COMM argument i's float
+0035efa0 scrGetStrPara                     COMM argument i, tag 5 required
+# --- the step loop and task life cycle (call into dds3/H_Malloc/itfMesMng) ---
+0035cf20 CodeFunc_Comm                     COMM dispatch through sScrCommandTable 0x7B92B0 (502 x {fn, argc})
+0035ebf0 scrTraceCode                      step loop over sScrOpcodeTbl 0x69D3E0
+0035c270 scrScriptProcess                  dds3 per-frame body
+0035c090 scrFindPrcdIdxByName              strcmp over section 0 names
+0035b930 scrStartScript2                   FLW0 check + section resolution by type
+0035b570 scrStartScript                    ScrTask allocation (252 B), locals, message handle, list link
+0035be30 scrReleaseScript                  frees locals/handle/copy, unlinks
+0035bb40 scrCreateTaskFromHeader           scrStartScript2 + dds3InitProcess
+0035bc00 scrCreateTaskFromScriptMemory     copy + scrStartScript2 + dds3InitProcess
+0035bd50 scrCreateTask                     script-spawned script (SCR_RUN)
+001b7b10 K_Data_LoadFldMainScript          loads field/script/field.bf into an RwHeapCalloc copy at init
+# --- BMD side ---
+003a5030 itfMesMngRelocateBmdOnce          relocate once (flag byte bmd+0x1C)
+003a42c0 itfMesMngBindBmd                  handle+4 = bmd; relocate; speaker block word
+003a2ef0 itfMesMngCreateHandle             488-byte handle allocation and sub-state init
+003a2d80 itfMesMngInitialize               manager slot + handle, returns the handle id
+003a30c0 itfMesMngRequestMessage           open a dialogue message on a handle
+003a2150 scrCommand_MSG                    COMM 0: request message arg0, block until closed
+003b2a30 frFontProcessTagEx                token walker (control codes via sFrTagTable 0x6A2370, 2-byte glyphs)
+003b2430 sub_3B2430                        glyph-list builder over the same token rules (frFont.c)

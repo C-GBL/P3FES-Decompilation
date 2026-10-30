@@ -1,0 +1,56 @@
+{"records": [
+  {"name": "NewlibReent", "anchors": [{"how": "param", "fn": "0x520410", "index": 0}, {"how": "param", "fn": "0x521578", "index": 0}, {"how": "param", "fn": "0x521C08", "index": 0}],
+   "fields": [
+    {"off": 8, "width": 4, "type": "ptr", "name": "stdout_"},
+    {"off": 56, "width": 4, "type": "s32", "name": "sdidinit"},
+    {"off": 72, "width": 4, "type": "ptr", "name": "p5s"},
+    {"off": 472, "width": 4, "type": "ptr", "name": "glue_next"},
+    {"off": 476, "width": 4, "type": "s32", "name": "glue_count"},
+    {"off": 480, "width": 4, "type": "ptr", "name": "glue_files"}
+   ]},
+  {"name": "NewlibFile", "anchors": [{"how": "param", "fn": "0x523580", "index": 0}, {"how": "param", "fn": "0x5289D0", "index": 0}, {"how": "param", "fn": "0x525EC8", "index": 0}, {"how": "param", "fn": "0x525FB0", "index": 1}],
+   "fields": [
+    {"off": 48, "width": 4, "type": "ptr", "name": "ub_base"},
+    {"off": 52, "width": 4, "type": "s32", "name": "ub_size"},
+    {"off": 56, "width": 4, "type": "ptr", "name": "up"},
+    {"off": 60, "width": 4, "type": "s32", "name": "ur"},
+    {"off": 76, "width": 4, "type": "s32", "name": "blksize"},
+    {"off": 80, "width": 4, "type": "s32", "name": "offset"}
+   ]},
+  {"name": "MpsHandle", "anchors": [{"how": "param", "fn": "0x575AA0", "index": 0}, {"how": "param", "fn": "0x5777F8", "index": 0}],
+   "fields": [
+    {"off": 16, "width": 4, "type": "s32", "name": "mode"},
+    {"off": 212, "width": 4, "type": "fnptr", "name": "parser"},
+    {"off": 228, "width": 4, "type": "fnptr", "name": "cb_a"},
+    {"off": 232, "width": 4, "type": "u32", "name": "cb_a_arg"},
+    {"off": 236, "width": 4, "type": "fnptr", "name": "cb_b"},
+    {"off": 240, "width": 4, "type": "u32", "name": "cb_b_arg"},
+    {"off": 244, "width": 4, "type": "fnptr", "name": "pes_cb"},
+    {"off": 248, "width": 4, "type": "u32", "name": "pes_cb_arg"}
+   ]},
+  {"name": "MpvHandle", "anchors": [{"how": "param", "fn": "0x57B5C8", "index": 0}, {"how": "param", "fn": "0x57B4E8", "index": 0}],
+   "fields": [
+    {"off": 400, "width": 4, "type": "fnptr", "name": "callback0"},
+    {"off": 944, "width": 4, "type": "ptr", "name": "m2v_handle"},
+    {"off": 948, "width": 4, "type": "s32", "name": "hdr_state"}
+   ]},
+  {"name": "M2vHandle", "size": 1696, "anchors": [{"how": "param", "fn": "0x5751C8", "index": 0}, {"how": "param", "fn": "0x575288", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "state"},
+    {"off": 24, "width": 4, "type": "fnptr", "name": "callback0"}
+   ]},
+  {"name": "MwsfdPlayerHdrRing", "anchors": [{"how": "param", "fn": "0x57E070", "index": 0}, {"how": "param", "fn": "0x57E698", "index": 0}],
+   "fields": [
+    {"off": 84, "width": 4, "type": "s32", "name": "frm_sync"},
+    {"off": 132, "width": 4, "type": "s32", "name": "skipped_frames"},
+    {"off": 376, "width": 4, "type": "ptr", "name": "usrdat_rec"},
+    {"off": 492, "width": 4, "type": "s32", "name": "work_use"},
+    {"off": 496, "width": 4, "type": "s32", "name": "work_size"},
+    {"off": 500, "width": 4, "type": "ptr", "name": "work_cur"},
+    {"off": 504, "width": 4, "type": "s32", "name": "work_used"},
+    {"off": 508, "width": 4, "type": "s32", "name": "alloc_count"},
+    {"off": 512, "width": 4, "type": "ptr", "name": "alloc0"},
+    {"off": 676, "width": 4, "type": "ptr", "name": "key_table"},
+    {"off": 680, "width": 4, "type": "s32", "name": "frame_api"}
+   ]}
+]}

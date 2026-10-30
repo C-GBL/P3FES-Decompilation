@@ -1,0 +1,18 @@
+# libs20.sym  Phase 5 slice delta (game/include/p3fes/game/libs20.h, game/src/cri/libs20.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own texts: each name below is
+#   the one the function passes in its own error, trace or "not implemented" string (htCiOpen: "E0092708:fname is
+#   null.(htCiOpen)" at 0x7C51C8; htCiLoadDirInfo: "E0111501:can't read filelist.(htCiLoadDirInfo)" at 0x7C54D0;
+#   mfCiOpen: "E01100301:fname is null.(mfCiOpen)" at 0x7C5A60; DTR_Init: "DTR_Init: in (%d)" at 0x7C4A98; PS2RNA_*:
+#   "<name>: not implemented" at 0x7C6610..0x7C6798). Checked by tests/game/test_libs20.cpp. A proposal only: the code
+#   keeps the symbols/ name. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs20 verified=yes ev=<anchor>
+00559200 00000068 F DTR_Init source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+0055bdc8 00000178 F htCiOpen source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+0055cf58 00000158 F htCiLoadDirInfo source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+0055e498 0000009c F mfCiOpen source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+00560de8 00000048 F PS2RNA_ClearBuf source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+00560e30 00000048 F PS2RNA_SetPcmType source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+005613e0 00000044 F PS2RNA_GetStartSmpl source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+00561518 00000044 F PS2RNA_IsOverflow source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+00561560 00000048 F PS2RNA_ClearOverflow source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20
+005615f8 00000048 F PS2RNA_SetTotalNumSmpl source=phase5-libs20 verified=yes ev=INTEGRATION_LOG.md#libs20

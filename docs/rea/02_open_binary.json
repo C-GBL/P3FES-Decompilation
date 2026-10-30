@@ -1,0 +1,1 @@
+{"tool":"mcp__rea__open_binary","args":{"path":"extracted/disc/SLUS_216.21"},"observed":"2026-10-18","result":{"path":"C:\Users\Ash\Downloads\rea\p3fes-port\extracted\disc\SLUS_216.21","format":"elf","kind":"executable","sha256":"d1b163eb20cb72d8764d2b94a8751abfc9e82fce7ae9e692dfaf97d64e3957bc","architecture":"mips"}}

@@ -1,0 +1,13 @@
+# render_bridges.sym  Phase 5 slice delta (game/include/p3fes/game/bridges.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-21 by hand from the instructions (no IDA database opened). Rows: <addr8> <size8> F <name> <tags>
+#   source=phase5-render_bridges verified=yes  our own name: the MatFX effect each bridge serves is the bridge table
+#   0x6B4EE4 index (sub_46EA80 indexes it with the material's effect word, extension +128), and the fields each body
+#   reads match that effect's data (bump frame / texture / coefficient, environment frame / texture, dual texture,
+#   UV matrices). ev=<doc>#<section>. Not imported by the agent (one master owner at a time).
+0046c5b0 000007dc F matfxBridgeBumpMap source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges
+0046cd90 0000095c F matfxBridgeEnvMap source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges
+0046d6f0 00000a78 F matfxBridgeBumpEnvMap source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges
+0046e170 00000908 F matfxBridgeDual source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges
+00472270 00000700 F matfxBridgeUvTransform source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges
+00472970 000009cc F matfxBridgeDualUvTransform source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges
+004718a0 00000888 F skinSplitObjectSetupCB source=phase5-render_bridges verified=yes ev=INTEGRATION_LOG.md#render_bridges

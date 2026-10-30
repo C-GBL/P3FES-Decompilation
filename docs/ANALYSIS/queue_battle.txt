@@ -1,0 +1,117 @@
+# Phase 5 hand-decompile queue - topic 21 (battle). Format: addr name one-line purpose. Evidence: docs/ANALYSIS/21_battle.md
+# Leaf-first (callees from recomp/generated: "leaf" = no call but K_Assert sub_19D3F0, which is `jr $ra`; indirect jalr calls count as calls).
+# Names are the IDA master's (symbols/p3fes.sym): this band is almost entirely sub_* there; the verified name follows in brackets and is
+# proposed in symbols/deltas/battle.sym. The delta was merged into the master 2026-10-20: the 16 rows done in this wave quote the
+# exported names (game/ carries them); the other rows still give the pre-import sub_* name (the master now exports the bracketed name).
+# --- done in this wave (game/src/battle/battle_unit.cpp, battle_skill.cpp) ---
+002ffd70 datCalcGetHp                                  u16 at unit +8
+002ffd80 datCalcGetSp                                  u16 at unit +0xA
+002ffd90 datCalcSetHp                                  store, capped at 999 unless unit flag bit 2 (enemy)
+002ffdc0 datCalcSetSp                                  same for SP
+00300550 datCalcGetBadStatus                           u32 at unit +0xC
+00300530 datCalcGetBadStatusNoDown                     its low 20 bits
+003004f0 datCalcSetBadStatus                           replace the low 20 bits when given, or in the high 12
+00300560 datCalcClearBadStatus                         word &= ~bits
+00300580 datCalcChkBadStatus                           (word & bits) != 0
+0030b5a0 datCalcIsDead                                 bit 19 or hp + delta <= 0
+00300f60 datCalcGetEffectLevel                         signed nibble of buff slot 0..16 (K_Assert slot < 21)
+00301750 datCalcGetEffectState                         nibble for slots < 17, flag bit of +0x14 for 17..20
+00300af0 datCalcIsSkillUsableOnField                   id < 464 && !(flags0 & 2) && (flags1 & 1)
+003088b0 datCalcIsPhysicalSkill                        SkillRecord flags0 bit 1 (K_Assert id < 464)
+003080c0 datCalcGetElementBit                          1 << (e + 1) (K_Assert e < 19)
+00308120 datCalcGetElementForStatus                    skill element 8 wins, else the 13-entry status-bit -> element map (calls datCalcGetSkillElement)
+# --- leaves: no calls (or K_Assert only) ---
+002ff320 sub_2FF320 [datUnitIsGenusReady]              genus ready byte
+002ff2d0 sub_2FF2D0                                    24 B, datUnit.c band (not read)
+002ff2f0 sub_2FF2F0                                    24 B, datUnit.c band (not read)
+002ff310 sub_2FF310                                    12 B, datUnit.c band (not read)
+002ff330 sub_2FF330                                    12 B, datUnit.c band (not read)
+002ff660 datUnitEcRemoveEnemy                          clear one of the 6 enemy slots of a genus
+00301870 sub_301870                                    unit +0x18 = 0 (10 AI call sites)
+00301030 sub_301030 [datCalcSetEffectLevel]            write the signed nibble of a slot (K_Assert -8 < level < 8)
+00301150 sub_301150                                    the 4-bit turn counter of a slot (+0x29)
+00301230 sub_301230 [datCalcAddEffectLevel]            nibble +-1 clamped per step, sets the +0x14 bit
+00301540 sub_301540 [datCalcClearEffect]               clear nibble, counter and flag bit of one slot (K_Assert slot < 21)
+003086c0 sub_3086C0                                    SkillRecord +3
+00308a50 sub_308A50                                    0x110 <= id < 0x131
+00308ba0 sub_308BA0 [datCalcGetSkillSlotCount]         returns 8
+0030bb40 sub_30BB40 [datGetSkillName]                  MSG.TBL section 1 + 19 * id (K_Assert id < 0x270)
+0030bbb0 sub_30BBB0 [datGetArcanaName]                 MSG.TBL section 0 + 21 * id (K_Assert id < 0x20)
+0030c220 sub_30C220                                    SKILL.TBL section 2 reader (not read)
+0030c3a0 sub_30C3A0                                    156 B, K_Assert only (not read)
+00311180 sub_311180                                    12 B, datScript.c (not read)
+00311190 sub_311190 [datScriptSetResult]               0x957198 = v; 0x9571A4 |= 1
+003111f0 datScriptIsNotEnemy                           unit flag bit 2 test (hint name; body not read)
+00311250 sub_311250                                    physical-skill test of gDatScriptSkill (flags0 bit 1)
+003112c0 datScript003112c0                             20 B (not read)
+0027d880 btlGetTask                                    the "battle" root task
+0027d8b0 btl0027d8b0                                   24 B (not read)
+0027dbe0 btlUpdateSetFlagsPacket                       packet body: gBtl flag word update (hint name; inf)
+0027dc50 sub_27DC50                                    36 B (not read)
+0027e310 sub_27E310                                    packet list walk (not read)
+0027e390 btlPacketFindFirstByActionUID                 packet list walk by action uid
+00299e30 sub_299E30                                    btlAction field accessor (20 B, inf)
+00299e50 sub_299E50                                    btlAction field accessor (20 B, inf)
+00299e70 btlActionSetUnit                              stores the unit pointer in the action (hint name; inf)
+0029a1d0 btlActionFindByUnit                           list walk from gBtl+0x14C
+0029a210 btlActionFindById                             list walk by uid
+0029a250 btlOrderRemoveAction                          remove from the 12-slot order list gBtl+0x254
+0029a2c0 btlOrderAddAction                             append to the order list
+0029a380 sub_29A380                                    order-list helper (not read)
+0029a3e0 sub_29A3E0                                    order-list helper (not read)
+0029a470 sub_29A470                                    order-list helper (not read)
+0029a4f0 sub_29A4F0                                    order-list helper (not read)
+0029a690 sub_29A690                                    order-list helper (not read)
+# --- second layer: one or two leaf / replaced callees ---
+002ff790 sub_2FF790 [datUnitIsGenusDead]               every unit datCalcIsDead (replaced leaf)
+00300410 sub_300410 [datCalcAddHp]                     clamp(hp + delta, 0, datCalcGetMaxHp)
+00300480 sub_300480 [datCalcAddSp]                     clamp(sp + delta, 0, datCalcGetMaxSp)
+0030b5e0 datCalcIsLowHp                                100 * hp / maxhp < 26
+0030b4b0 sub_30B4B0 [datCalcGetAffinityChecked]        -1 -> 0, neutral rows -> 100, else sub_306E80
+00301690 sub_301690 [datCalcClearAllEffects]           all 21 slots (sub_301030 / sub_301150)
+00300d80 datCalcGetPassiveSkillFlags                   bits for skills 547..552, 607, 608 (datCalcHasSkill)
+00300b60 sub_300B60                                    enemy EnemyRecord +8 + stat / persona stat (sub_173510)
+00300c90 sub_300C90 [datCalcGetStat]                   clamp 1..99 of sub_300B60 / sub_1738D0
+0029a320 sub_29A320                                    calls btlOrderRemoveAction
+0029a570 sub_29A570 [btlOrderSortByAgility]            bubble sort of gBtl+0x254 by datCalcGetStat(unit, 3)
+00308bb0 sub_308BB0 [datCalcGetSkillList]              enemy EnemyRecord +14 / datPersonaGetSkillsByPcId (sub_173380)
+002ffbc0 datCalcRand                                   effMiscRand with the +-3 re-roll for n == 100
+002ffcc0 datCalcGetLevel                               unit +6 / persona +4
+003082f0 sub_3082F0 [datCalcGetSkillElement]           weapon element for physical skills, else SKILL section 0
+00308930 sub_308930                                    attack skill id of the held weapon type
+00308ed0 sub_308ED0                                    held weapon item id (K_Assert < 0xFF)
+003093a0 sub_3093A0                                    held weapon item id (0xC0..0xDF)
+00309080 sub_309080 [datCalcGetWeaponParam]            power / accuracy: enemy +0x3A/+0x38, PC item
+00309250 sub_309250 [datCalcGetArmorParam]             enemy 10, PC armour defense / evasion
+00300750 sub_300750                                    equipment slots 0..2 with an effect
+003009a0 datCalcCountEquipmentWithEffect               count of the above
+003005e0 datCalcHasSkill                               8 slots + accessory skill
+0030c440 sub_30C440 [datCalcRestorePartyAll]           pc 1..10 full HP/SP, statuses cleared (calls sub_30C490)
+# --- datScript.c formula functions (each: datScriptGetValue + datScriptSetResult + float chain; section 4) ---
+0030d460 sub_30D460                                    52 B, datScriptSetResult only: a constant result (inf; fn table 1)
+0030d4a0 sub_30D4A0                                    52 B, a constant result (inf)
+0030e6e0 sub_30E6E0                                    52 B (table 2)
+0030e720 sub_30E720                                    52 B
+0030f940 sub_30F940                                    52 B (table 3)
+0030f980 sub_30F980                                    52 B
+0030cec0 sub_30CEC0                                    64 B (and 0x30E140, 0x30F3A0 in tables 2/3)
+0030cb90 sub_30CB90                                    176 B (and 0x30F070)
+0030d000 sub_30D000                                    212 B, one of 10 same-shape status formulas (0x30D0E0..0x30D380, 0x30E280..0x30E600, 0x30F4E0..0x30F860)
+0030c930 sub_30C930                                    fn 2 recovery: Ma, Luck table GV(25)
+0030c520 sub_30C520                                    fn 1 attack damage: 10 * sqrt(...) * affinity * leveldiff
+# --- large bodies (last; float chains and many callees) ---
+002ff890 datUnitInit                                   60-byte unit from UNIT.TBL / the party record
+002ffdf0 datCalcGetMaxHp                               growth table 0x5DC1B4, skill and equipment bonuses, cap 999
+00300100 sub_300100 [datCalcGetMaxSp]                  same with 0x5DC1B6
+00301880 sub_301880 [datCalcGetEffectMultiplier]       buff multipliers of the damage formula
+0030fc40 sub_30FC40 [datScriptCalc]                    formula dispatcher (3 tables by flags 0x1311 / 0x1319)
+0030fdf0 datScriptGetValue                             35-case value getter (jpt 0x7B90A0)
+00306e80 sub_306E80 [datCalcGetAffinity]               affinity word, passive skills, element walls
+00309490 sub_309490 [datCalcCheckHit]                  result codes 1/4/256/512/1024, clamp(rate, 50, 99)
+00303130 sub_303130 [datCalcDamage]                    17 formula kinds, boosts, critical, clamp to 31000, +-5 %
+0027d380 sub_27D380 [btlMainCheckBattleEnd]            outcome win / lose / escape from the action list
+0027dcd0 sub_27DCD0 [btlTableLoad]                     .TBL section walker (H_Cdvd_Request)
+0029de20 btlMainSetState                               row of 0x693760, init call
+0029de80 btlMainUpdateState                            pending state, update call, frame counter
+00299d60 btlActionSetState                             row of sBtlActionTbl 0x693410, init call (indirect)
+00299fb0 btlActionUpdateAll                            action list update (indirect)

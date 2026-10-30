@@ -1,0 +1,38 @@
+{"records": [
+  {"name": "MwsfdPlayerHdrRing", "size": 684,
+   "anchors": [{"how": "param", "fn": "0x580588", "index": 0}, {"how": "param", "fn": "0x584190", "index": 0}, {"how": "param", "fn": "0x584830", "index": 0}, {"how": "param", "fn": "0x582118", "index": 0}],
+   "fields": [
+    {"off": 60, "width": 4, "type": "ptr", "name": "sfd"},
+    {"off": 432, "width": 4, "type": "s32", "name": "file_arg0"},
+    {"off": 436, "width": 4, "type": "s32", "name": "file_arg1"},
+    {"off": 440, "width": 4, "type": "s32", "name": "file_arg2"},
+    {"off": 464, "width": 4, "type": "s32", "name": "sj_stat"},
+    {"off": 468, "width": 4, "type": "s32", "name": "sj_w0"},
+    {"off": 472, "width": 4, "type": "s32", "name": "sj_w1"},
+    {"off": 476, "width": 4, "type": "s32", "name": "sj_w2"}
+   ]},
+  {"name": "SfdHandle",
+   "anchors": [{"how": "param", "fn": "0x58C3A0", "index": 0}, {"how": "param", "fn": "0x58EA60", "index": 0}, {"how": "param", "fn": "0x589510", "index": 0}],
+   "fields": [
+    {"off": 4880, "width": 4, "type": "s32", "name": "stm0_type"},
+    {"off": 4900, "width": 4, "type": "ptr", "name": "stm0_sj"},
+    {"off": 8060, "width": 4, "type": "ptr", "name": "demux_work"},
+    {"off": 8068, "width": 4, "type": "s32", "name": "demux_in"},
+    {"off": 8072, "width": 4, "type": "s32", "name": "demux_out0"},
+    {"off": 8076, "width": 4, "type": "s32", "name": "demux_out1"},
+    {"off": 8080, "width": 4, "type": "s32", "name": "demux_out2"},
+    {"off": 8128, "width": 4, "type": "ptr", "name": "video_work"},
+    {"off": 8136, "width": 4, "type": "s32", "name": "video_in"},
+    {"off": 8140, "width": 4, "type": "s32", "name": "video_out"}
+   ]},
+  {"name": "SfdStream", "size": 116,
+   "anchors": [{"how": "param", "fn": "0x588CE8", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "type"},
+    {"off": 4, "width": 4, "type": "s32", "name": "flag"},
+    {"off": 8, "width": 4, "type": "s32", "name": "in_end"},
+    {"off": 12, "width": 4, "type": "s32", "name": "out_end"},
+    {"off": 76, "width": 4, "type": "s32", "name": "w19"},
+    {"off": 80, "width": 4, "type": "s32", "name": "w20"}
+   ]}
+]}

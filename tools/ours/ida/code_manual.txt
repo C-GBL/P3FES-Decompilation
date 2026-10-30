@@ -1,0 +1,30 @@
+# Words IDA marks as data (or leaves unexplored) inside a function chunk that are code, to be converted on the
+# master database by fix_code_items.py. Format: <hex addr> owner=<hex function start> words=<n> [extend=yes] <short reason>
+# Every word of [addr, addr + 4*n) becomes one instruction inside the owner's chunk; with extend=yes the range may
+# continue one of the owner's chunks past its end (an unreferenced function inside the range is absorbed). Evidence: recomp/README.md
+# "Data words, unreached words, and the headless word" (the emitter's reachability walk falls into these words).
+# Both owners were created by create_funcs.py with a bounded add_func (funcs_manual.txt), which keeps existing
+# data items; the data items came from a constant elsewhere that IDA took for an offset (dr_O xref) to the word.
+0x242000 owner=0x241910 words=2 jalr $v0 + its nop delay slot, reached by fall-through after lw $v0,0($s0); same call idiom repeats at 0x242020
+0x4509BC owner=0x4501B0 words=1 subu $v0,$v0,$v1 between sll $v0,$v1,3 and sll $v1,$v0,6 (index * 7 * 64), reached by fall-through
+# Milestone-1 integration (docs/INTEGRATION_LOG.md, 2026-10-19): the four callbacks created by create_funcs.py with a
+# bounded `code=yes` range kept IDA's data items (31 runs, e.g. 0x4A6F8C `move s8,v0` after a jal, 0x4A71A0 lbu/sb
+# copies, 0x4ED2D8 `move s1,v0`); every word of each function is an instruction (objdump of the ELF). Whole functions
+# are listed: words already decoded are skipped.
+0x4A6EB0 owner=0x4A6EB0 words=476 sub_4A6EB0 (callback via lui/addiu @0x4A917C), 23 data runs inside
+0x4ED260 owner=0x4ED260 words=196 addCopyVU1PrimTriList (table word @0x77F1BC), 2 data words at 0x4ED2D8
+0x4EE180 owner=0x4EE180 words=204 addCopyVU1IndPrimTriList (table word @0x77F1DC), 2 data words at 0x4EE200
+0x4EE4B0 owner=0x4EE4B0 words=216 addCopyVU1IndPrimTriStrip (table word @0x77F1E0), data at 0x4EE538, 0x4EE630, 0x4EE634 (364 B)
+# M3-FMV drive (docs/INTEGRATION_LOG.md M3-FMV #2, 2026-10-19): _doMC's second chunk (0x4FDA58, the libmpeg pminh/pmaxh
+# clamp + ppacb copy loop that _doMC tail-jumps to with `j 0x4FDA58` at 0x4FC0D8 and 0x4FC11C) ends at 0x4FDB00 in IDA, before an inline constant: the
+# four words 0x00FF00FF at 0x4FDB00 are the clamp vector the loop loads with `lq v1,0(t2)` @0x4FDA64 (t2 = 0x4FDB00),
+# and they sit in the instruction stream: after the loop's `bnez v0,0x4FDA68` + delay slot + `nop` @0x4FDAFC, execution
+# runs through them (each decodes as `dsra32 $zero,$ra,3`, which writes $zero: a no-op) into `jr ra; nop` @0x4FDB10
+# (IDA's nullsub_130). The emitter's chunk end at 0x4FDB00 falls into no function -> rt::unreachable(0x4FDB00), the
+# first stop of the movie (thread 8 adxm_mwidle_proc, ra _slice0+0x2DC). Fix on the master: these 4 words become code
+# and the chunk 0x4FDA58 extends to 0x4FDB18, absorbing nullsub_130 (or to 0x4FDB10, falling into nullsub_130 as a tail
+# call - what the private run used: symbols/function_chunks.txt `4fda58-4fdb10`). The data xref from the lq must stay.
+# Applied 2026-10-19 as the first form: 6 words (the 4 constant words + jr ra + its nop slot) join the chunk, which ends
+# at 0x4FDB18 (the next function, dmaRefImage, starts there); nullsub_130 (0x4FDB10-0x4FDB18, no xrefs: IDA created it
+# because the data item hid the fall-through) is absorbed. The 16-byte constant is also read by lq from 0x4FD968's body.
+0x4FDB00 owner=0x4FBF48 words=6 extend=yes inline 0x00FF00FF clamp constant executed as dsra32 $zero,$ra,3 between _doMC chunk 0x4FDA58's loop and jr ra @0x4FDB10 + slot (absorbs nullsub_130)

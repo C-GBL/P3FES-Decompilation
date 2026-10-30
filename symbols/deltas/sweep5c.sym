@@ -1,0 +1,14 @@
+# sweep5c.sym  Phase 5 slice delta (game/include/p3fes/game/sweep5c.h); SLUS_216.21
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the pair tests' checks; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-sweep5c verified=yes: names from what each body does. ev=<doc>#<section>. Not imported by the agent.
+# sub_3C77A0: logs "[fclMisc.c:344]" then "fclDestroyMessage\n" at entry and destroys the field message handle
+003c77a0 000000a8 F fclDestroyMessage source=phase5-sweep5c verified=yes ev=INTEGRATION_LOG.md#sweep5c
+# sub_3C9D00: ORs a1 into the psStatus work flags and logs "psStatusSetStateON %d\n" (fclMisc.c:1715)
+003c9d00 00000078 F fclMisc_PsStatusSetStateOn source=phase5-sweep5c verified=yes ev=INTEGRATION_LOG.md#sweep5c
+# sub_55A758: dvCi interface entry (data ref, next to dvCiOpen / dvCiSeek / dvCiReqRd) returning the 2048-byte sector size
+0055a758 00000008 F dvCiGetSctLen source=phase5-sweep5c verified=yes ev=INTEGRATION_LOG.md#sweep5c
+# sub_55A760: dvCi interface entry returning an open handle's size in bytes (sectors << 11; "handl is null" on null)
+0055a760 0000004c F dvCiGetFileSize source=phase5-sweep5c verified=yes ev=INTEGRATION_LOG.md#sweep5c
+# sub_55A198: returns a free entry (first byte 0) of the 40 x 72-byte dvCi handle table; dvCiOpen's only handle source
+0055a198 00000034 F dvci_alloc_handle source=phase5-sweep5c verified=yes ev=INTEGRATION_LOG.md#sweep5c

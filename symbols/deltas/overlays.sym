@@ -1,0 +1,110 @@
+# overlays.sym -- Phase 2 topic 13 (overlays / dynamically loaded / self-modifying EE code). Evidence: docs/ANALYSIS/13_overlays.md
+# Format: <addr8> <size8> <F|D|L> <name> source=phase2-overlays ev=<anchor> [verified=yes]
+# --- verified libkernel kernel-patch installers (FLIRT/hint names confirmed by reading the instructions; see 13_overlays.md section 5)
+0050d780 000000ac F InitExecPS2 source=phase2-overlays verified=yes ev=13_overlays.md#5
+0050d718 00000068 F PatchIsNeeded source=phase2-overlays verified=yes ev=13_overlays.md#5
+0050cc78 000000c4 F InitTLBFunctions source=phase2-overlays verified=yes ev=13_overlays.md#5
+0050db38 000000d4 F InitAlarm source=phase2-overlays verified=yes ev=13_overlays.md#5
+0050d548 000000fc F InitSystemCallTableAddress source=phase2-overlays verified=yes ev=13_overlays.md#5
+0050d880 00000118 F SetArg source=phase2-overlays verified=yes ev=13_overlays.md#5
+0050d6d0 00000038 F kCopy_1 source=phase2-overlays verified=yes ev=13_overlays.md#5
+# --- tge-pr4 hint promotions (behaviour read from the instructions; 13_overlays.md section 1)
+0055ad18 00000188 F load_flist source=tge-pr4 verified=yes ev=13_overlays.md#1
+00558138 000001e8 F srd_exec_dvd source=tge-pr4 verified=yes ev=13_overlays.md#1
+# --- kernel-patch payloads and SetSyscall tables in the data band (D rows; sizes from the Copy length / table walk in the installers)
+0077f568 00000330 D kpatch_tlb_payload source=phase2-overlays ev=13_overlays.md#5
+0077f8e0 00000004 D g_kernel_syscall_table_base source=phase2-overlays ev=13_overlays.md#5
+0077f8e8 00000040 D tbl_kpatch_tlb_syscalls source=phase2-overlays ev=13_overlays.md#5
+0077fbb8 00000004 D g_kernel_found_address source=phase2-overlays ev=13_overlays.md#5
+0077fbc0 00000018 D tbl_kpatch_sctable_syscalls source=phase2-overlays ev=13_overlays.md#5
+0077fbd8 000007a8 D kpatch_execps2_payload source=phase2-overlays ev=13_overlays.md#5
+00780380 00000018 D tbl_kpatch_execps2_syscalls source=phase2-overlays ev=13_overlays.md#5
+00780398 00000008 D tbl_kpatch_setarg_syscall source=phase2-overlays ev=13_overlays.md#5
+007803a0 00000740 D kpatch_alarm_payload source=phase2-overlays ev=13_overlays.md#5
+00780ae0 00000028 D kpatch_alarm_lowmem_payload source=phase2-overlays ev=13_overlays.md#5
+00780b08 00000040 D tbl_kpatch_alarm_syscalls source=phase2-overlays ev=13_overlays.md#5
+# --- 70 reached callbacks that were not in the master function list (13_overlays.md#missed-callbacks). Auto names on purpose:
+#     import with --create-funcs; the importer never applies sub_ names, so these only create the functions with the sizes IDA derived.
+0027fd90 000000d4 F sub_27FD90 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00284450 00000018 F sub_284450 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002845e0 00000018 F sub_2845E0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00284980 00000018 F sub_284980 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00284b50 00000018 F sub_284B50 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00285860 00000018 F sub_285860 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00285d10 00000018 F sub_285D10 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00285e30 00000018 F sub_285E30 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00285f00 00000018 F sub_285F00 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002b8970 00000018 F sub_2B8970 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002b8b50 00000018 F sub_2B8B50 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002bd060 00000018 F sub_2BD060 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002bd210 00000018 F sub_2BD210 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002bd2c0 00000018 F sub_2BD2C0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002bd8b0 00000028 F sub_2BD8B0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002d7970 00000030 F sub_2D7970 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002d7ef0 0000001c F sub_2D7EF0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002d7f10 00000080 F sub_2D7F10 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002d7f90 0000001c F sub_2D7F90 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002d8310 0000001c F sub_2D8310 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002dd8b0 00000030 F sub_2DD8B0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002dd930 00000030 F sub_2DD930 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002ed350 00000010 F sub_2ED350 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+002f6bc0 00000030 F sub_2F6BC0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00314060 00000038 F sub_314060 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0034d0d0 00000060 F sub_34D0D0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0035a850 00000020 F sub_35A850 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0035aa10 00000188 F sub_35AA10 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003a9230 0000006c F sub_3A9230 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003a93a0 00000058 F sub_3A93A0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003a9400 00000068 F sub_3A9400 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003a9470 0000006c F sub_3A9470 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003a9580 0000006c F sub_3A9580 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003c60c0 00000024 F sub_3C60C0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003f3280 0000014c F sub_3F3280 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+003f9cb0 00000178 F sub_3F9CB0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00405db0 0000004c F sub_405DB0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0040a5b0 00000084 F sub_40A5B0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0040a640 00000084 F sub_40A640 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0045f490 00000028 F sub_45F490 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0045f4c0 00000014 F sub_45F4C0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0045f530 00000008 F sub_45F530 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00466130 00000078 F sub_466130 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004676a0 00000014 F sub_4676A0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004684e0 00000014 F sub_4684E0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00468500 00000030 F sub_468500 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004685d0 0000001c F sub_4685D0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004685f0 00000014 F sub_4685F0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00468610 00000014 F sub_468610 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00468630 00000030 F sub_468630 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00468700 0000001c F sub_468700 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00469dd0 00000014 F sub_469DD0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00469df0 00000014 F sub_469DF0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00469e10 0000001c F sub_469E10 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0046a0f0 00000140 F sub_46A0F0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0046a3c0 00000038 F sub_46A3C0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0048dd30 00000014 F sub_48DD30 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0048dd50 00000014 F sub_48DD50 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+0048ea90 00000014 F sub_48EA90 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004906d0 00000008 F j_RpClumpDestroy source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00490ca0 0000001c F sub_490CA0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+00490cd0 0000001c F sub_490CD0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004a6eb0 0000076c F sub_4A6EB0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004bcb20 00000010 F sub_4BCB20 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004bf9e0 0000002c F sub_4BF9E0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004c0830 00000034 F sub_4C0830 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004c0880 00000014 F sub_4C0880 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004c0a70 00000010 F sub_4C0A70 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004c0f60 0000000c F sub_4C0F60 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+004c0fc0 00000008 F sub_4C0FC0 source=phase2-overlays ev=13_overlays.md#missed-callbacks
+# comments
+# (function comments; the current import_symbols.py has no parser for this block -- the lead applies them with ida_funcs.set_func_cmt or extends the importer)
+# comment 0050d780 libkernel InitExecPS2: if PatchIsNeeded() then SetSyscall(0x5A,kCopy_1); Copy(0x80074000 <- 0x77FBD8, 0x7A8); FlushCache(0); FlushCache(2); SetSyscall(0x5B,0x80074000); SetSyscall(tbl[0x780390], GetEntryAddress(...)). Kernel-mode payload; the EE user image is never modified. ev=13_overlays.md#5
+# comment 0050cc78 libkernel InitTLBFunctions: SetSyscall(0x5A,0x50CC20); Copy(0x80075000 <- 0x77F568, 0x330); FlushCache(0); FlushCache(2); SetSyscall(0x5B,0x80075000),(0x54,0x50D180), loop 0x55..0x59 via GetEntryAddress from tbl 0x77F8E8; stores GetEntryAddress(3) at 0x77F8E0. ev=13_overlays.md#5
+# comment 0050db38 libkernel InitAlarm: if INTC_MASK(0x10001810) bit 8 clear: SetSyscall(0x5A,0x50DAF0); Copy(0x80076000 <- 0x7803A0, 0x740); Copy(0x82000 <- 0x780AE0, 0x28); FlushCache(0); FlushCache(2); SetSyscall(0x5B,0x80076000); loop 0xFC/0xFE/0xFD.. from tbl 0x780B18. ev=13_overlays.md#5
+# comment 0050d548 libkernel InitSystemCallTableAddress: SetSyscall(0x83,0x50D4C0),(0x5A,0x50D488); scans 0x80000000..0x80080000 with _sceFindAddress for kFindAddress / kCopy_0 patterns; stores result at 0x77FBB8. ev=13_overlays.md#5
+# comment 0050d880 libkernel SetArg: SetSyscall(0x5A,0x50D840) then _sceCopy_2 of argv words into the kernel arg area at *0x77F8E0+0x40. ev=13_overlays.md#5
+# comment 0050d718 libkernel PatchIsNeeded: gates InitExecPS2's kernel patch install. ev=13_overlays.md#5
+# comment 0077f568 libkernel kernel-patch payload copied to 0x80075000 by InitTLBFunctions (0x330 B, kseg0-linked code; not EE user code -- do not recompile). ev=13_overlays.md#5
+# comment 0077fbd8 libkernel kernel-patch payload copied to 0x80074000 by InitExecPS2 (0x7A8 B; not EE user code -- do not recompile). ev=13_overlays.md#5
+# comment 007803a0 libkernel alarm kernel-patch payload copied to 0x80076000 by InitAlarm (0x740 B; references 0x80076710; not EE user code -- do not recompile). ev=13_overlays.md#5
+# comment 00780ae0 libkernel alarm low-memory stub copied to 0x82000 by InitAlarm (0x28 B). ev=13_overlays.md#5
+# comment 0055ad18 CRI DVCI load_flist: one of only two sceCdRead call sites (0x55AE28); reads 2 sectors into the caller's buffer ($a1). ev=13_overlays.md#1

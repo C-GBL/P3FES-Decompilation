@@ -1,0 +1,37 @@
+{
+ "note": "slice big_draws: fields named from the instructions of opTitle_Draw sub_267430, opMenuUpdate sub_26A2C0, opWait_Draw sub_26EED0 (game/src/ui/big_draws.cpp)",
+ "records": [
+  {
+   "name": "OpTitleWork",
+   "anchors": [{"how": "gslot", "addr": "0x7CE3AC"}, {"how": "param", "fn": "0x2673A0", "index": 0}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "s32", "name": "fade_timer"},
+    {"off": 8, "width": 4, "type": "s32", "name": "page"},
+    {"off": 4148, "width": 4, "type": "s32", "name": "emitter0_period"},
+    {"off": 4152, "width": 4, "type": "s32", "name": "emitter0_timer"}
+   ]
+  },
+  {
+   "name": "OpMenuWork",
+   "anchors": [{"how": "gslot", "addr": "0x7CE3B4"}, {"how": "param", "fn": "0x26A230", "index": 0}],
+   "fields": [
+    {"off": 2320, "width": 4, "type": "s32", "name": "band_counter"},
+    {"off": 2324, "width": 4, "type": "s32", "name": "band_alpha_counter"},
+    {"off": 2328, "width": 4, "type": "s32", "name": "glow_counter"},
+    {"off": 2332, "width": 4, "type": "s32", "name": "menu_timer"},
+    {"off": 2804, "width": 4, "type": "s32", "name": "opening_counter"}
+   ]
+  },
+  {
+   "name": "OpWaitWork",
+   "anchors": [{"how": "gslot", "addr": "0x7CE3B8"}, {"how": "param", "fn": "0x26DD10", "index": 0}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "s32", "name": "page"},
+    {"off": 8, "width": 4, "type": "s32", "name": "page_timer"},
+    {"off": 4464, "width": 4, "type": "ptr", "name": "fade_grid0"},
+    {"off": 4468, "width": 4, "type": "ptr", "name": "fade_grid1"},
+    {"off": 4472, "width": 4, "type": "f32", "name": "fade"}
+   ]
+  }
+ ]
+}

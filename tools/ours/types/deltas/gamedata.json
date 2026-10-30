@@ -1,0 +1,55 @@
+{"records": [
+  {"name": "gGlobalWork", "anchors": [{"how": "gobj", "addr": "0x836200"}],
+   "fields": [
+    {"off": 104, "width": 4, "type": "s32", "name": "hero exp", "note": "gamedata: sub_16C7E0 returns it for pc 1, sub_16D230 / sub_16D560 store / add it (the hero record head's +0x48)"},
+    {"off": 108, "width": 2, "type": "u16", "name": "hero condition", "note": "gamedata: sub_16C920 / sub_16D6B0 for pc 1 (a member's record +0x4C)"},
+    {"off": 110, "width": 2, "type": "u16", "name": "hero condition word 4E", "note": "gamedata: sub_16C9F0 / sub_16D930 for pc 1 (record +0x4E)"},
+    {"off": 112, "width": 2, "type": "u16", "name": "hero condition word 50", "note": "gamedata: sub_16CA40 / sub_16D980 for pc 1 (record +0x50; copied to +0x4E when condition 3 ends, sub_16D6B0)"},
+    {"off": 116, "width": 2, "type": "s16", "name": "comu block head", "note": "gamedata: sub_16DD40 / sub_16E920; sub_16DB70 clears the 1,288 bytes from here"},
+    {"off": 118, "width": 30, "type": "s8[30]", "name": "comu rank", "note": "gamedata: sub_16DBA0 / sub_16E100 / sub_16E410 (0..10, 0 = not started)"},
+    {"off": 148, "width": 120, "type": "s32[30]", "name": "comu points", "note": "gamedata: sub_16E2B0 adds and clamps to the rank threshold, sub_16E410 sets"},
+    {"off": 268, "width": 30, "type": "s8[30]", "name": "comu b (0..9)", "note": "gamedata: sub_16DD20 / sub_16E5F0 / sub_16E670"},
+    {"off": 298, "width": 60, "type": "s16[30]", "name": "comu day stamp (0..360)", "note": "gamedata: sub_16E7A0 / sub_16E850"},
+    {"off": 358, "width": 60, "type": "s16[30]", "name": "comu c", "note": "gamedata: sub_171AC0 / sub_171B50 (from sub_3BDDD0) / sub_171960 (counted down)"},
+    {"off": 418, "width": 60, "type": "s16[30]", "name": "comu day2 stamp", "note": "gamedata: sub_171F50 stores today, sub_1720C0 reads"},
+    {"off": 478, "width": 60, "type": "s16[30]", "name": "comu e (<= 32)", "note": "gamedata: sub_1718B0 / sub_171E90 / sub_171C40"},
+    {"off": 538, "width": 60, "type": "u16[30]", "name": "comu f", "note": "gamedata: sub_1720C0 returns it"},
+    {"off": 600, "width": 56, "type": "u8[56]", "name": "day-event record A", "note": "gamedata: sub_1728D0 copies 56 bytes in, sub_172890 clears, flag 0x980 = set; +8 u8 (sub_172A10), +0x10 s32 (sub_172A20 / sub_172A30), +0x24 u8 (sub_1729D0, 0xFF none)"},
+    {"off": 664, "width": 36, "type": "u8[36]", "name": "date reset array", "note": "gamedata: sub_172E10 clears it (datSetDaysSinceApr5), sub_172E40 returns it"},
+    {"off": 700, "width": 56, "type": "u8[56]", "name": "day-event record B", "note": "gamedata: sub_172AE0 clears, flag 0x983 = set, sub_172C50 returns it and its first byte (a comu id: sub_171960 compares it)"},
+    {"off": 1332, "width": 30, "type": "u8[30]", "name": "comu month", "note": "gamedata: sub_172CC0 stores clndGetCurrentMonth, sub_172D70 compares"},
+    {"off": 1362, "width": 30, "type": "u8[30]", "name": "comu day of month", "note": "gamedata: sub_172CC0 stores clndGetCurrentDay, sub_172D70 compares"},
+    {"off": 1395, "width": 8, "type": "u8[8]", "name": "counter8 (<= 200)", "note": "gamedata: sub_16DDD0 increments (capped 200), sub_16DE50 reads; K_Assert unless i < 8"},
+    {"off": 1428, "width": 4, "type": "ptr", "name": "hero equipment stock (EquipEntry[300])", "note": "gamedata: sub_16F490 counts 300 entries, sub_16F720 .. sub_170530 owner 1; climb_ref_17000 0x10C15F0"},
+    {"off": 1432, "width": 4, "type": "ptr", "name": "hero item counts (u16, biased by item 4000)", "note": "gamedata: sub_170760 / sub_170860 / sub_170C00 owner 1 read / write *(u16 *)(ptr + 2 id - 8000)"},
+    {"off": 3100, "width": 13312, "type": "u8[13312]", "name": "persona by id (256 x 52)", "note": "gamedata: sub_175C70 clears 13,312 bytes"}
+   ]},
+  {"name": "PartyMemberRecord", "size": 868, "anchors": [{"how": "gobj", "addr": "0x834010"}],
+   "fields": [
+    {"off": 72, "width": 4, "type": "s32", "name": "exp (hero head only)", "note": "gamedata: the hero's at gGlobalWork +0x68 = +0x20 + 0x48; members keep exp in their persona (sub_16C7E0)"},
+    {"off": 76, "width": 2, "type": "u16", "name": "condition", "note": "gamedata: sub_16C920 / sub_16D6B0 (0..5; the battle code reads it)"},
+    {"off": 78, "width": 2, "type": "u16", "name": "condition word 4E", "note": "gamedata: sub_16C9F0 / sub_16D930"},
+    {"off": 80, "width": 2, "type": "u16", "name": "condition word 50", "note": "gamedata: sub_16CA40 / sub_16D980"},
+    {"off": 92, "width": 80, "type": "PartyEquipEntry[4]", "name": "equipment (owner pc)", "note": "gamedata: sub_16F490 counts 4 at record +0x5C, sub_16FDB0 returns their addresses"},
+    {"off": 172, "width": 48, "type": "u8[48]", "name": "pairs {u16, s16}", "note": "gamedata: sub_170670 / sub_1706C0 / sub_170710 at +0xAC / +0xAE + 4 i"},
+    {"off": 384, "width": 80, "type": "PartyEquipEntry[4]", "name": "equipment2 (owner pc + 256)", "note": "gamedata: the owner >= 256 paths of sub_16F490 / sub_16F720 .. / sub_16FDB0"},
+    {"off": 784, "width": 80, "type": "u8[80]", "name": "pouch {u16 id, s16 count}[20]", "note": "gamedata: sub_170A40 .. sub_170B90; the owner >= 256 paths of sub_170760 / sub_170860"}
+   ]},
+  {"name": "PartyEquipEntry", "size": 20, "anchors": [{"how": "gobj", "addr": "0x833E80"}, {"how": "ret", "fn": "0x16FDB0"}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "s32", "name": "unk04", "note": "gamedata: sub_16F720 / sub_16FF90"},
+    {"off": 8, "width": 1, "type": "u8", "name": "unk08", "note": "gamedata: sub_16F810 / sub_170080"},
+    {"off": 10, "width": 2, "type": "u16", "name": "power", "note": "gamedata: sub_16F9F0 / sub_170260; datCalcGetWeaponParam(unit, 0)"},
+    {"off": 12, "width": 2, "type": "u16", "name": "accuracy", "note": "gamedata: sub_16FAE0 / sub_170350; datCalcGetWeaponParam(unit, 1)"},
+    {"off": 14, "width": 2, "type": "u16", "name": "evasion", "note": "gamedata: sub_16FBD0 / sub_170440; datCalcGetArmorParam"},
+    {"off": 16, "width": 2, "type": "u16", "name": "defense", "note": "gamedata: sub_16FCC0 / sub_170530; datCalcGetArmorParam"}
+   ]},
+  {"name": "Persona", "anchors": [{"how": "param", "fn": "0x173330", "index": 0}, {"how": "param", "fn": "0x1761B0", "index": 0},
+                                  {"how": "param", "fn": "0x176100", "index": 0}, {"how": "param", "fn": "0x175CA0", "index": 0},
+                                  {"how": "param", "fn": "0x173B00", "index": 0}, {"how": "param", "fn": "0x173C00", "index": 0}],
+   "fields": [
+    {"off": 8, "width": 4, "type": "s32", "name": "exp", "note": "gamedata: sub_173330 returns it; sub_1761B0 compares it with sub_176210(persona, level + 1)"},
+    {"off": 33, "width": 5, "type": "s8[5]", "name": "stat bonus a", "note": "gamedata: sub_173B00 / sub_173B60 / sub_173BB0 (K_Assert unless stat < 5)"},
+    {"off": 38, "width": 5, "type": "s8[5]", "name": "stat bonus b", "note": "gamedata: sub_173C00; a stat = base + a + b (+ equipment), capped 99 (sub_173580 / sub_173660)"}
+   ]}
+]}

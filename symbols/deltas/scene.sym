@@ -1,0 +1,140 @@
+# scene.sym  Phase 5 slice delta (game/include/p3fes/game/scene.h, game/src/scene/scene_*.cpp); SLUS_216.21
+# generated 2026-10-23 from the instructions (the p3fes_handgen bodies, the K_Assert file strings resrcManager.c
+#   0x6A2AB0 / mt_scene.c 0x6A2BE8 / mt_sceneFunc.c 0x6A2DD8 / comuFunction.c 0x6A3280 / comuTimerSequence.c 0x6A3290 /
+#   nmlist.c 0x6A3DE8, the task names "SceneManager Task" / "SceneManager Draw" / "IconEplDestroyDell", the printf
+#   strings) and checked by tests/game/test_scene.cpp (three replay snapshots, comuTable.bin from the pak, host models).
+#   Rows: <addr8> <size8> F <name> source=phase5-scene verified=yes ev=<doc>#<section>. Not imported by the agent.
+# sub_3B4FC0: Creates a resource manager: an 88-byte RwMalloc block (hint 0x40000), zeroed -- the 22 list heads, one per resource type (MT_Scene_Load stores it at s...
+003b4fc0 00000054 F resrcMngCreate source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5020: (mgr) Deletes every resource of every type (sub_3B5360 on each list head until the list is empty) and frees the manager; a NULL manager does nothing.
+003b5020 000000a4 F resrcMngDestroy source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B50D0: (mgr, id) Allocates and links a resource record: type = (id & 0xFC00) >> 10 (>= 22: "warning!! not known resrc!!" and 0), the record size from the typ...
+003b50d0 00000284 F resrcMngAddRes source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5360: (mgr, res) Unlinks `res` from its type list (the head when it has no prev), frees its owned block (+84) and the record (RwFree); a record not on the l...
+003b5360 000000cc F resrcMngDeleteRes source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5430: (mgr, type) The head of the type list (type < 22; else 0).
+003b5430 00000030 F resrcMngGetListHead source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B54C0: (mgr, id) The record with this id on its type list (0 for type 0, type >= 22 or none).
+003b54c0 00000084 F resrcMngFindRes source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5550: (mgr, type) How many records the type list holds (0 for type >= 22).
+003b5550 00000054 F resrcMngCountRes source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5620: (major, minor) 1 when "field/model/fMMM_NNN.rws" exists (H_Cdvd_FileExists), else 0 (the Tartarus-floor test after it changes nothing: both branches r...
+003b5620 00000134 F MT_Scene_FieldModelExists source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B58C0: (set) Sets the scene's NPC placement set (+20). Scene loaded (flags bit 0): the same set marks every type-3 resource visible (flag bit 1); another set...
+003b58c0 000000b4 F MT_Scene_SetNpcSet source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5980: (sub) Sets the scene's ENV sub-id (+22). Scene loaded and the id changes: flags bit 2 (reload the ENV) and, unless an NPC reload is pending (bit 1), t...
+003b5980 0000008c F MT_Scene_SetEnvSub source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5D50: (type) The head of the scene manager's type list (0 without a manager).
+003b5d50 00000044 F MT_Scene_GetResListHead source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5E90: (n) Registers position resource 0x2000 | (n & 0x3FF) (type 8); the id only when it is type 8 ("this resId not postion" otherwise, unreachable) and the...
+003b5e90 000000d8 F MT_Scene_CreateResPos source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B5F70: (n) Registers type-7 resource 0x1C00 | n with +256 = 35.0; the id or 0.
+003b5f70 00000088 F MT_Scene_CreateRes7 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6180: (n, model) Registers type-2 resource 0x800 | n for an existing model (+280) and places the model at the origin (sub_318A30 with a zero vector from the...
+003b6180 000000e4 F MT_Scene_CreateResModel source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B63C0: (n) Registers type-4 resource 0x1000 | n (MT_Scene_Load: the character light); the id or 0.
+003b63c0 00000078 F MT_Scene_CreateResLightChar source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6440: (n) Registers type-5 resource 0x1400 | n (the NPC light); the id or 0.
+003b6440 00000078 F MT_Scene_CreateResLightNpc source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B66B0: (n, epl) Registers type-11 resource 0x2C00 | n for an EPL handle (+260), shown (flag 8); 0 for a NULL handle.
+003b66b0 000000dc F MT_Scene_CreateResFieldEpl source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6790: (n, data) Registers type-12 resource 0x3000 | n (a Tartarus block: 0x3000 + 16 z + x) with its block data (+352), shown; 0 for NULL data.
+003b6790 000000dc F MT_Scene_CreateResBlock source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6870: (n, pos, rgba, $f12 width, $f13 depth, $f14 turn) Registers type-13 field hit 0x3400 | n: the colour bytes (+256), the position (+260), width / depth ...
+003b6870 0000012c F MT_Scene_CreateResHit source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B69A0: (n, pos, rgba, $f12 width, $f13 depth, $f14 turn) As sub_3B6870 for the type-21 hit 0x5400 | n.
+003b69a0 0000012c F MT_Scene_CreateResHit21 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6AD0: (n, point, $f12) Registers marker 0x3800 | n (type 14): point (+256), angle (+268), shown.
+003b6ad0 000000c0 F MT_Scene_CreateResPoint14 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6B90: (n, point, $f12) Marker 0x3C00 | n (type 15: enemies), as sub_3B6AD0.
+003b6b90 000000c0 F MT_Scene_CreateResPoint15 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6C50: (n, point, $f12) Marker 0x4000 | n (type 16), as sub_3B6AD0.
+003b6c50 000000c0 F MT_Scene_CreateResPoint16 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6D10: (n, point, $f12) Marker 0x4400 | n (type 17), as sub_3B6AD0.
+003b6d10 000000c0 F MT_Scene_CreateResPoint17 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6DD0: (n, point, $f12) Marker 0x4800 | n (type 18), as sub_3B6AD0.
+003b6dd0 000000c0 F MT_Scene_CreateResPoint18 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6E90: (n, point, $f12) Marker 0x4C00 | n (type 19), as sub_3B6AD0.
+003b6e90 000000c0 F MT_Scene_CreateResPoint19 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B6F50: (n, kind, matrix, eye, $f12, $f14) Registers camera 0x5000 | n (type 20): kind (+256), $f12 (+260), a new RW matrix (sub_4C38C0) filled with the calle...
+003b6f50 0000013c F MT_Scene_CreateResCamera source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B7090: (id) Deletes a scene resource with what it owns, by type: 1 the controller task tree (+480), the three icon EPLs, the shadow model (+488, through its ...
+003b7090 000003cc F MT_Scene_DeleteRes source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B7460: (res, pos, rot, scale) Copies the non-NULL vectors into the record and applies the transform to its object: models (types 1 / 3 +296, 2 +280, 10 +260)...
+003b7460 0000044c F MT_Scene_ApplyTransform source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B78B0: (id, pos, rot) Finds the scene resource and applies a position and rotation (sub_3B7460, scale kept).
+003b78b0 0000007c F MT_Scene_SetResPosRot source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B7930: (id, scale) Finds the scene resource and applies a scale (sub_3B7460).
+003b7930 00000070 F MT_Scene_SetResScale source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B79A0: (out, pos, rot) A 64-byte RW matrix: the identity rotated about y by rot.y, x by rot.x, z by rot.z (degrees; the axes 0x6A2A70 / 0x6A2A60 / 0x6A2A80, ...
+003b79a0 00000118 F MT_Scene_RotMatrix source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B7AC0: (matrix, out_angles, out_pos) Splits a matrix into its position (out_pos) and three angles in degrees: the rotation about z from the right vector agai...
+003b7ac0 00000750 F MT_Scene_MatrixToEuler source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B82C0: (res, on) Sets (on == 1) or clears flag bit 3 (shown / drawn); 1, or 0 for a NULL record.
+003b82c0 00000050 F MT_SceneFunc_SetShown source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B83A0: (res) Flag bit 3 of a non-NULL record (0 / 1).
+003b83a0 00000028 F MT_SceneFunc_IsShown source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B86C0: (res, to, $f12 speed) Starts a move: flag bit 0 on, bit 6 off, from = the current position, to, speed, state 0; 1, or 0 for NULL.
+003b86c0 00000070 F MT_SceneFunc_RequestMove source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B8A60: (res, to, frames, mode) Starts a rotation: the current and target angles normalised to [0, 360) (sub_3BBA70 / sub_3BB9B0), flag bit 2, from / to, stat...
+003b8a60 000000cc F MT_SceneFunc_RequestRotate source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B8CE0: (res, alpha, frames, hold) Starts an alpha fade of an effect (type 6: the start alpha from the EPL, sub_350040) or an object (type 3: from its model's...
+003b8ce0 0000012c F MT_SceneFunc_RequestFade source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B8FF0: (res, group, minor, blend, loop, wait) Switches the object's motion (types 1 / 3 +296, 2 +280, 10 +260) unless it already plays it (sub_3186E0): sub_3...
+003b8ff0 000001c8 F MT_SceneFunc_ChangeMotion source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B9260: (res, a1..a5, $f12) Queues a motion request (types 1 / 3 at +272, 2 at +256: five words and a float) and sets flag 0x2000; 1, or 0 for other types.
+003b9260 000000b4 F MT_SceneFunc_QueueMotion source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3B9500: (res, on) Sets (on == 1) or clears flag bit 1 (the bit the field draw tasks test); 1, or 0 for NULL.
+003b9500 00000050 F MT_SceneFunc_SetVisible source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BAA70: (pos) The value of the field hit under a point: the default from 0x67EF00[major][minor] (minor - 49 on random floors 20..28 with minor >= 50; 0 when t...
+003baa70 000001d0 F MT_SceneFunc_GetHitValue source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BAC40: (res, icon) The icon EPL over a character (type 1) or object (type 3): icon 10 (the "10ban" icon) is created once in +264 ("10ban icon create") and a ...
+003bac40 000003c8 F MT_SceneFunc_SetIcon source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BB0C0: (res, on) Sets the controller of a character (+484) or object (+496) to mode 3 (on == 1) or 0 (sub_19C310); 1, or 0 without one.
+003bb0c0 000000c0 F MT_SceneFunc_SetCtlMode source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BB340: Clears +264 of every type-7 resource; returns the list head.
+003bb340 0000004c F MT_SceneFunc_ResetRes7 source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BB450: (pos, out, $f12 dist) out = pos - dist * d, d = the direction 0x6A2EF8 rotated by the matrix of the three axes 0x6A2EE8.. (sub_4C31B0 / sub_4C6C60); A...
+003bb450 000001cc F MT_SceneFunc_OffsetAlongDir source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BB9B0: (angles) Wraps each of the three angles into [0, 360) by repeated -360 / +360.
+003bb9b0 000000bc F MT_SceneFunc_NormAngles source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BBAA0: (from, to, out) The per-axis turn from `from` to `to`: (to - from) wrapped to [0, 360), then values above 180 become negative (the shorter way).
+003bbaa0 000000e4 F MT_SceneFunc_AngleDelta source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BBC90: (xs, ys, zs, out_x, out_y, out_z, $f12 t) A cubic Bezier point: each coordinate = (1-t)^3 c0 + 3t(1-t)^2 c1 + 3t^2(1-t) c2 + t^3 c3 (the four control ...
+003bbc90 000000b0 F MT_SceneFunc_Bezier source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BBD40: (path, out, $f12 t) The point of a bezier path: t < 1 picks segment (int)(t / (1 / count)) and evaluates it at (t minus whole steps of 1 / count while...
+003bbd40 00000190 F MT_SceneFunc_PathPoint source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BC0E0: (path) The path length: per segment 20 chords (sub_3BBFD0); the total stays in $f21 for the caller.
+003bc0e0 00000134 F MT_SceneFunc_PathLength source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BC730: (path, n) The length of the first n segments (20 chords each), in $f20.
+003bc730 000001b4 F MT_SceneFunc_PathLengthTo source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BC8F0: (path) The path's segment count - 1.
+003bc8f0 00000010 F MT_SceneFunc_PathLastSeg source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BD0B0: Creates "SceneManager Task" (priority 110; update sub_3BCCB0, destroy sub_3BCD80) and its child "SceneManager Draw" (2109; sub_3BD010); returns the pa...
+003bd0b0 0000007c F MT_SceneFunc_CreateManagerTasks source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BD130: Requests and reads the 25 icon EPL files of 0x6A3130 ("icon/ICON1.EPL" ..) into the H_Cdvd cache, keeping each request at 0x95B000 + 4 i (kwlnInitMain...
+003bd130 00000088 F MT_SceneFunc_LoadIcons source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BD1C0: (icon) The cached data of icon file `icon` (< 26 and named; H_Cdvd_CacheFindFile), else 0.
+003bd1c0 00000064 F MT_SceneFunc_GetIconFile source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BD280: Loads "event/comuPack.pak" (request kept at 0x7CE668, read synchronously), finds "event/comuTable.bin" and "event/SiteibiEvent.bf" in it; version 1 (u...
+003bd280 000005e8 F comuLoadTableBin source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BD870: The loaded table block (0x95B070).
+003bd870 00000010 F comuGetTables source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BDDE0: For the 30 links: an active link (sub_16E100) that is not reversed / broken (sub_1717C0, sub_172160) and below rank 10 is marked available (sub_171960...
+003bdde0 000000e4 F comuRefreshAvailability source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BDED0: (link) 5 at rank 10 (max), 4 broken (sub_172160), 3 reversed (sub_1717C0), else when available (sub_172660) 2 if a partner flag of the next rank is pe...
+003bded0 000000ec F comuGetLinkState source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BE2A0: (mode, choice, link, kind, req) Fills the 56-byte event request for a link of rank > 0 (asserts on invalid links): +0 link, +2 kind, by kind: 0 the ra...
+003be2a0 00000638 F comuMakeEventRequest source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BEAB0: (a, b, out) The index of the first of the 64 link records with bytes {a, b} at +0 / +1 into *out: 1, else 0.
+003beab0 00000060 F comuFindLink source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BEB10: (i) The 32-byte link record i (asserts comuFunction.c 1046 for i >= 64).
+003beb10 0000005c F comuGetLinkRecord source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BECA0: (out) Lists today's links of section 128 ({month, day, link, min rank, max rank} == the calendar date, the rank in range, rank 9 only while available,...
+003beca0 000001d8 F comuListDateLinks source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BF270: (month, day, m0, d0, m1, d1) 1 when (month, day) lies in the range (m0, d0) .. (m1, d1), the range wrapping over the year end when it ends before it s...
+003bf270 00000100 F comuDateInRange source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3BFFA0: (out_event, out_flag, out_minor) Today's call: an exact-date row of the first / second dated table (3-byte {month, day, minor}; month 255 = weekday) g...
+003bffa0 00000448 F comuPickDatedCall source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene
+# sub_3C4650: (?, owner, size) A list node of size + 24 bytes (RwMalloc, asserts nmlist.c 96), zeroed: +0 the owner (or itself), +8 the size, +20 -> the payload at ...
+003c4650 000000c0 F nmListAllocNode source=phase5-scene verified=yes ev=INTEGRATION_LOG.md#scene

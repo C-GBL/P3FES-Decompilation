@@ -1,0 +1,46 @@
+# font.sym  Phase 5 font-renderer delta (docs/ANALYSIS/20_menu_ui.md sections 5.2-5.4); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# written 2026-10-20 from the recompiled bodies and the hand-decompiled game/src/ui/font.cpp (the master was not opened).
+# Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=phase5-font verified=yes   our own name (evidence in the doc section given by ev=; every row is pair-tested in tests/game/test_font.cpp)
+#   ev=<doc> points into docs/ANALYSIS/20_menu_ui.md
+# Not imported by the agent: the lead merges this with tools/ours/ida/import_symbols.py and re-exports symbols/. game/ keeps the
+# sub_* names of the replaced functions until that happens (game/README.md rule).
+# IDA master update #4: frFontProcessTag 0x3B2BF0 was tagged source=phase5-font but the name is the tge-pr4 hint at that address
+# (the master carries it as a withheld hint), so the row is a promotion (ADR-0009: behaviour verified by test_font.cpp).
+# --- frFont.c: line nodes ---
+003b0bb0 00000070 F frFontLineSetAlpha source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0c20 00000050 F frFontNodeSetCode source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0c70 0000006c F frFontLineResetAlpha source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0ce0 00000088 F frFontLineSetStyle source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0d70 00000060 F frFontLineSetPos source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0dd0 00000044 F frFontLineSetColourSet source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0e20 00000044 F frFontLineSetRgba source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0e70 00000020 F frFontSetDefaultGlyphFlags source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0e90 00000028 F frFontClearDefaultGlyphFlags source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b0ec0 0000008c F frFontLineFadeStep source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+# --- frFont.c: measuring and placing chains ---
+003b1920 00000074 F frFontLineChainJoin source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b19d0 00000034 F frFontLineGetWidth source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1a70 00000010 F frFontResetLineSpacing source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1a80 0000000c F frFontSetLineSpacing source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1a90 0000006c F frFontChainCountLines source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1b00 000000b4 F frFontChainGetRowWidth source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1bc0 00000080 F frFontChainGetRowPos source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1c40 00000050 F frFontChainMoveTo source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b1c90 000000f8 F frFontChainCentreAt source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+# --- frFontEx.c: layout and tags ---
+003b2400 00000028 F frFontLayoutNewRow source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b2a00 00000010 F frFontTestTagFlags source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b2a10 0000001c F frFontSetTagSlot source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003b2bf0 0000006c F frFontProcessTag source=tge-pr4 verified=yes ev=20_menu_ui.md#5.4
+003af360 00000010 F frFontTagGetParam0 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af370 00000010 F frFontTagGetParam1 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af380 00000010 F frFontTagGetParam2 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af390 00000010 F frFontTagGetParam3 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af3a0 000000b4 F frFontTagSetParams01 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af460 000000b4 F frFontTagSetParams23 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af5a0 000000b4 F frFontTagWait source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+003af660 00000104 F frFontTagWaitIfFlag389 source=phase5-font verified=yes ev=20_menu_ui.md#5.4
+# --- frFontRaster.c ---
+003b35c0 0000001c F frFontGetStyleSize source=phase5-font verified=yes ev=20_menu_ui.md#5.2
+003b3e00 0000005c F frFontRasterLookup source=phase5-font verified=yes ev=20_menu_ui.md#5.4

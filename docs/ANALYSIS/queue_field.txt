@@ -1,0 +1,764 @@
+# Phase 5 rewrite queue -- the field (exploration) layer (docs/ANALYSIS/26_field.md). Band 0x199440-0x1E8000: the k_*.c
+# source files of docs/ANALYSIS/03 (k_spipe ... k_support) plus the footstep / virtual-pad tasks up to the battle-result band.
+# Leaf-first: depth = longest chain of calls into the band (K_Assert/K_Abort 0x19D3F0/0x19D400 and out-of-band callees count 0).
+# Columns: addr  name  size  status  depth  flags  ext  role.  status: a = no side-effect callee (guest RAM, in-band calls,
+# RW math only through flags below), b = has the flags listed, field = replaced by this slice (game/src/field/field.cpp),
+# done = already in game/replaced.txt, render = owned by the rendering queue (docs/ANALYSIS/queue_rendering.txt; do not take).
+# flags: heap (RwHeapCalloc/RwFree/H_Malloc/H_Free), io (H_Cdvd_*), print (printf/sprintf), task (kwln create/destroy),
+# rw/libc (calls into RenderWare 0x460000-0x4FB100 or libc 0x521000-0x540000), jalrN (N indirect calls), hw (hardware window /
+# syscall / COP0), vu0 (VU0 macro / lqc2-sqc2), sdk (calls into the SCE libraries 0x4FB100-0x521000). ext = out-of-band callees.
+# Names: functions.json (all sub_* in this band except the four exported ones); a bracketed name is verified in 26_field.md and
+# proposed in symbols/deltas/field.sym (not imported). Community hint names are not used. role: from 26_field.md where read.
+#
+# === open, leaf-first ===
+0019c2f0  sub_19C2F0       16  a       0                                0  
+0019c300  sub_19C300       16  a       0                                0  
+0019c310  sub_19C310       16  a       0                                0  
+0019c490  sub_19C490       32  a       0                                0  
+0019fd40  sub_19FD40       40  a       0                                1  
+0019fd70  sub_19FD70       40  a       0                                1  
+0019fda0  sub_19FDA0       40  a       0                                1  
+001a0150  sub_1A0150      100  a       0                                1  
+001a02c0  sub_1A02C0       80  a       0                                0  scene major 51..58 or 71..78 (s3.2)
+001a0310  sub_1A0310      252  a       0                                0  scene ids with special rules (8/3, 32/2, 26/51-53, 37/1, 35/1, majors 4/5) (s3.2)
+001a0410  sub_1A0410       16  a       0                                0  
+001a0420  sub_1A0420       16  a       0                                0  
+001a0430  sub_1A0430      352  a       0                                1  
+001a0590  sub_1A0590      364  a       0                                1  
+001a0700  sub_1A0700      232  a       0                                1  
+001a07f0  sub_1A07F0      232  a       0                                1  
+001a08e0  sub_1A08E0      232  a       0                                1  
+001a09d0  sub_1A09D0       60  a       0                                1  
+001a0a10  sub_1A0A10       60  a       0                                1  
+001a0a50  sub_1A0A50       60  a       0                                1  
+001a0d00  sub_1A0D00       60  a       0                                1  
+001a0d40  sub_1A0D40       60  a       0                                1  
+001a0d80  sub_1A0D80       60  a       0                                1  
+001a0dc0  sub_1A0DC0      132  a       0                                1  
+001a0e50  sub_1A0E50      140  a       0                                1  
+001a1150  sub_1A1150       56  a       0                                1  
+001a1190  sub_1A1190       52  a       0                                1  
+001a11d0  sub_1A11D0       64  a       0                                1  
+001a1540  sub_1A1540       12  a       0                                0  
+001a2390  sub_1A2390       56  a       0                                0  
+001a23d0  sub_1A23D0       16  a       0                                0  
+001a3be0  sub_1A3BE0       16  a       0                                0  
+001a4330  sub_1A4330       68  a       0                                0  
+001a4510  sub_1A4510      100  a       0                                0  
+001a4660  sub_1A4660       84  a       0                                1  
+001a4770  sub_1A4770       16  a       0                                0  
+001a4780  sub_1A4780       36  a       0                                0  
+001a47b0  sub_1A47B0       44  a       0                                0  
+001a47e0  sub_1A47E0       72  a       0                                1  
+001a48e0  sub_1A48E0       16  a       0                                0  
+001a48f0  sub_1A48F0       36  a       0                                0  
+001a4920  sub_1A4920       16  a       0                                0  
+001a4930  sub_1A4930       16  a       0                                0  
+001a4dc0  sub_1A4DC0       44  a       0                                0  
+001a4df0  sub_1A4DF0       88  a       0                                0  
+001a4e50  sub_1A4E50       12  a       0                                0  
+001a56b0  sub_1A56B0       16  a       0                                0  
+001a56c0  sub_1A56C0       16  a       0                                0  
+001a56d0  sub_1A56D0       40  a       0                                0  
+001a5c50  sub_1A5C50      124  a       0                                1  
+001a5cd0  sub_1A5CD0      268  a       0                                3  
+001a5de0  sub_1A5DE0      136  a       0                                2  
+001a7020  sub_1A7020       12  a       0                                0  
+001a7030  sub_1A7030       44  a       0                                1  
+001a74b0  sub_1A74B0       36  a       0                                0  
+001a7660  sub_1A7660      116  a       0                                0  
+001a76e0  sub_1A76E0       36  a       0                                0  
+001a8910  sub_1A8910       12  a       0                                0  
+001a8920  sub_1A8920      160  a       0                                0  
+001a9180  sub_1A9180       44  a       0                                0  
+001a91b0  sub_1A91B0      288  a       0                                3  
+001a92d0  sub_1A92D0       92  a       0                                1  
+001a9330  sub_1A9330       92  a       0                                1  
+001a9390  sub_1A9390       64  a       0                                0  
+001a93d0  sub_1A93D0       44  a       0                                0  
+001a9400  sub_1A9400      112  a       0                                1  
+001a9470  sub_1A9470      144  a       0                                1  
+001a9760  sub_1A9760      228  a       0                                0  
+001aa1b0  sub_1AA1B0     1844  a       0                                5  
+001aaac0  sub_1AAAC0       16  a       0                                0  
+001ac950  sub_1AC950      240  a       0                                0  
+001aca40  sub_1ACA40      216  a       0                                0  
+001ad870  sub_1AD870       24  a       0                                0  
+001ad890  sub_1AD890       28  a       0                                0  
+001ad8b0  K_FldFrame_CtlGetSphereCollisRadius       16  a       0                                0  [K_FldFrame_CtlGetSphereCollisRadius] work +32 (s4.2)
+001ad910  K_FldFrame_CtlGetXGrid       16  a       0                                0  [K_FldFrame_CtlGetXGrid] work +44 = (x + 400) / 800 (s4.2)
+001ad920  K_FldFrame_CtlGetZGrid       16  a       0                                0  [K_FldFrame_CtlGetZGrid] work +48 = (z + 400) / 800 (s4.2)
+001ad930  sub_1AD930       16  a       0                                0  
+001ad940  sub_1AD940      152  a       0                                1  
+001add40  sub_1ADD40      164  a       0                                1  
+001adff0  sub_1ADFF0      212  a       0                                3  
+001ae470  sub_1AE470       16  a       0                                0  
+001aff70  sub_1AFF70      164  a       0                                0  
+001b0020  sub_1B0020      160  a       0                                0  
+001b01b0  sub_1B01B0       32  a       0                                0  
+001b01d0  sub_1B01D0       72  a       0                                0  
+001b0220  sub_1B0220       16  a       0                                0  
+001b0230  sub_1B0230       16  a       0                                0  
+001b0240  sub_1B0240       16  a       0                                0  
+001b0250  sub_1B0250       16  a       0                                0  
+001b0260  sub_1B0260       96  a       0                                0  
+001b08d0  sub_1B08D0       60  a       0                                1  
+001b0910  sub_1B0910       12  a       0                                0  
+001b09b0  sub_1B09B0       60  a       0                                1  
+001b2b30  sub_1B2B30       88  a       0                                1  
+001b75e0  sub_1B75E0      208  a       0                                3  
+001b7ac0  sub_1B7AC0       68  a       0                                1  
+001b7d60  sub_1B7D60       84  a       0                                1  
+001b7e30  sub_1B7E30       40  a       0                                1  
+001b8d60  sub_1B8D60       80  a       0                                0  
+001b8db0  sub_1B8DB0      536  a       0                                5  
+001b8fd0  sub_1B8FD0      276  a       0                                2  
+001bab40  sub_1BAB40       16  a       0                                0  
+001bab50  sub_1BAB50       16  a       0                                0  
+001bab60  sub_1BAB60     1328  a       0                                0  
+001bff00  K_FldDungeon_RequestShutdown       32  a       0                                0  [K_FldDungeon_RequestShutdown] work +12 = 1 (s6)
+001bffe0  K_FldDungeon_GetScrMemory       40  a       0                                0  [K_FldDungeon_GetScrMemory] work +52 (s6)
+001c0010  K_FldDungeon_GetScrSize       40  a       0                                0  [K_FldDungeon_GetScrSize] work +56 (s6)
+001c0070  sub_1C0070       88  a       0                                0  2.0 for floor kinds 1 / 3, else 1.0 (s6)
+001c03b0  sub_1C03B0       56  a       0                                1  
+001c0880  sub_1C0880      152  a       0                                0  
+001c0960  sub_1C0960      964  a       0                                2  
+001c2000  sub_1C2000       16  a       0                                0  
+001c2160  sub_1C2160      216  a       0                                6  
+001c2240  sub_1C2240      256  a       0                                7  
+001c23b0  sub_1C23B0      200  a       0                                4  
+001c2550  sub_1C2550       36  a       0                                1  
+001c25b0  sub_1C25B0       84  a       0                                3  
+001c2610  sub_1C2610      124  a       0                                4  
+001c2690  sub_1C2690       36  a       0                                1  
+001c26c0  sub_1C26C0       48  a       0                                2  
+001c26f0  sub_1C26F0       48  a       0                                2  
+001c2720  sub_1C2720       48  a       0                                2  
+001c2750  sub_1C2750       48  a       0                                2  
+001c2780  sub_1C2780      176  a       0                                3  
+001c2830  sub_1C2830      152  a       0                                2  
+001c28d0  sub_1C28D0       36  a       0                                1  
+001c2900  sub_1C2900      628  a       0                                5  
+001c2b80  sub_1C2B80      252  a       0                                2  
+001c2c80  sub_1C2C80      324  a       0                                4  
+001c2ed0  sub_1C2ED0       68  a       0                                3  
+001c2f20  sub_1C2F20      124  a       0                                4  
+001c2fa0  sub_1C2FA0       68  a       0                                3  
+001c2ff0  sub_1C2FF0       88  a       0                                2  
+001c3050  sub_1C3050       68  a       0                                3  
+001c30a0  sub_1C30A0       68  a       0                                3  
+001c30f0  sub_1C30F0       88  a       0                                2  
+001c3150  sub_1C3150       68  a       0                                3  
+001c31a0  sub_1C31A0      204  a       0                                5  
+001c3270  sub_1C3270      252  a       0                                8  
+001c3370  sub_1C3370       68  a       0                                3  
+001c33c0  sub_1C33C0       68  a       0                                3  
+001c3410  sub_1C3410       68  a       0                                3  
+001c3460  sub_1C3460       68  a       0                                3  
+001c34b0  sub_1C34B0      132  a       0                                4  
+001c3540  sub_1C3540       68  a       0                                3  
+001c3590  sub_1C3590      100  a       0                                3  
+001c3600  sub_1C3600      132  a       0                                2  
+001c3690  sub_1C3690      124  a       0                                4  
+001c3710  sub_1C3710      120  a       0                                2  
+001c3880  sub_1C3880       44  a       0                                1  
+001c38b0  sub_1C38B0      156  a       0                                1  
+001c3950  sub_1C3950       56  a       0                                1  
+001c3990  sub_1C3990       68  a       0                                1  
+001c39e0  sub_1C39E0       48  a       0                                1  
+001c3a10  sub_1C3A10       84  a       0                                1  
+001c3a70  sub_1C3A70       48  a       0                                1  
+001c3aa0  sub_1C3AA0       48  a       0                                1  
+001c3b00  sub_1C3B00      320  a       0                                5  
+001c3c40  sub_1C3C40       64  a       0                                3  
+001c3c80  sub_1C3C80       80  a       0                                2  
+001c3cd0  sub_1C3CD0      132  a       0                                5  
+001c3d60  sub_1C3D60       84  a       0                                2  
+001c3dc0  sub_1C3DC0       44  a       0                                2  
+001c3eb0  sub_1C3EB0       96  a       0                                4  
+001c3f10  sub_1C3F10       80  a       0                                3  
+001c3f60  sub_1C3F60       48  a       0                                2  
+001c3f90  sub_1C3F90       80  a       0                                3  
+001c3fe0  sub_1C3FE0      148  a       0                                3  
+001c4080  sub_1C4080      160  a       0                                2  
+001c4990  sub_1C4990      100  a       0                                2  
+001c4a00  sub_1C4A00       96  a       0                                3  
+001c4d10  sub_1C4D10      116  a       0                                3  
+001c4d90  sub_1C4D90       92  a       0                                3  
+001c4df0  sub_1C4DF0       92  a       0                                3  
+001c4e50  sub_1C4E50      288  a       0                                6  
+001c4f70  sub_1C4F70      196  a       0                                4  
+001c5040  sub_1C5040      316  a       0                                7  
+001c5180  sub_1C5180      448  a       0                                7  
+001c5340  sub_1C5340      192  a       0                                2  
+001c5400  sub_1C5400       96  a       0                                2  
+001c5460  sub_1C5460       52  a       0                                2  
+001c54a0  sub_1C54A0      104  a       0                                3  
+001c5510  sub_1C5510       56  a       0                                2  
+001c5550  sub_1C5550       88  a       0                                2  
+001c55b0  sub_1C55B0       68  a       0                                2  
+001c5600  sub_1C5600      100  a       0                                3  
+001c56a0  sub_1C56A0       88  a       0                                2  
+001c5700  sub_1C5700      168  a       0                                3  
+001c57b0  sub_1C57B0      184  a       0                                3  
+001c5870  sub_1C5870       88  a       0                                2  
+001c58d0  sub_1C58D0       48  a       0                                2  
+001c5d30  sub_1C5D30       80  a       0                                2  
+001c5d80  sub_1C5D80      216  a       0                                5  
+001c5e60  sub_1C5E60       76  a       0                                2  
+001c5eb0  sub_1C5EB0       36  a       0                                1  
+001c6080  sub_1C6080      380  a       0                                0  scene ids where the 0x80 pad action is off (s5)
+001c65e0  sub_1C65E0      320  a       0                                1  
+001c7b10  K_FldEvent_IsUnitHero       24  a       0                                0  [K_FldEvent_IsUnitHero] unit == gFldUnitsPc 0x8717A0 (s5)
+001cd650  sub_1CD650       24  a       0                                0  
+001cd670  sub_1CD670       24  a       0                                0  
+001cd690  sub_1CD690       76  a       0                                1  
+001cd790  sub_1CD790       16  a       0                                0  
+001cd870  sub_1CD870      112  a       0                                1  
+001cd8e0  sub_1CD8E0       92  a       0                                0  
+001cd940  sub_1CD940       88  a       0                                0  
+001ce880  sub_1CE880      220  a       0                                1  
+001cfc50  K_FldUnit_CreateReaper      380  a       0                                3  [K_FldUnit_CreateReaper] encounter 506 field unit (s6, s7)
+001d0270  sub_1D0270      192  a       0                                1  
+001d0e40  sub_1D0E40       12  a       0                                0  
+001d11b0  sub_1D11B0      288  a       0                                1  
+001d12d0  sub_1D12D0      132  a       0                                1  
+001d1a90  sub_1D1A90      208  a       0                                1  
+001d1ce0  sub_1D1CE0      208  a       0                                1  
+001d3790  sub_1D3790       92  a       0                                0  
+001d37f0  sub_1D37F0       24  a       0                                0  
+001d3810  sub_1D3810       24  a       0                                0  
+001d38a0  sub_1D38A0       48  a       0                                0  
+001d4460  sub_1D4460      252  a       0                                0  
+001d50c0  sub_1D50C0      104  a       0                                0  
+001d5130  sub_1D5130       12  a       0                                0  
+001d5c00  sub_1D5C00       16  a       0                                0  
+001d5e10  sub_1D5E10       20  a       0                                0  
+001d5f30  sub_1D5F30       84  a       0                                1  
+001d8c60  sub_1D8C60       72  a       0                                0  sets work +8 of every live encounter task (pause) (s7)
+001d8d50  sub_1D8D50       16  a       0                                0  
+001d8d60  sub_1D8D60       24  a       0                                0  
+001d9fd0  sub_1D9FD0       40  a       0                                0  
+001da000  sub_1DA000       32  a       0                                0  
+001dd5e0  sub_1DD5E0       16  a       0                                0  
+001dd5f0  sub_1DD5F0       16  a       0                                0  
+001e13c0  sub_1E13C0       36  a       0                                0  
+001e1820  sub_1E1820       24  a       0                                0  
+001e1840  sub_1E1840       12  a       0                                0  
+001e2810  sub_1E2810       56  a       0                                0  
+001e29e0  sub_1E29E0       56  a       0                                0  
+001e74e0  sub_1E74E0       56  a       0                                1  
+001e7c20  sub_1E7C20      188  a       0                                1  
+001996c0  sub_1996C0       60  b       0  task                          1  
+00199700  sub_199700       60  b       0  task                          1  
+001997a0  sub_1997A0       60  b       0  task                          1  
+00199c60  sub_199C60      140  b       0  rw/libc                       4  
+00199cf0  sub_199CF0      160  b       0  rw/libc                       1  
+0019ab30  sub_19AB30       68  b       0  rw/libc                       1  
+0019c320  sub_19C320      368  b       0  rw/libc                       4  
+0019d270  sub_19D270       44  b       0  jalr1                         0  
+0019d2a0  sub_19D2A0      128  b       0  task+jalr1                    1  
+0019d320  kwlnVsyncFieldGate     64  b       0  hw                            0  
+0019d360  kwlnInstallVsyncFieldGate    144  b       0  sdk                           3  
+0019e1f0  sub_19E1F0      316  b       0  rw/libc                       4  
+0019ee40  sub_19EE40      316  b       0  rw/libc                       4  
+0019ff10  sub_19FF10      292  b       0  rw/libc                       2  
+001a0a90  sub_1A0A90      612  b       0  rw/libc                       2  
+001a0ee0  sub_1A0EE0      612  b       0  rw/libc                       2  
+001a1210  sub_1A1210      404  b       0  rw/libc                       3  
+001a13b0  sub_1A13B0      268  b       0  print+rw/libc+jalr1           5  
+001a14c0  sub_1A14C0      124  b       0  rw/libc+jalr1                 3  
+001a2200  sub_1A2200      396  b       0  task+jalr2                    1  
+001a2720  sub_1A2720      856  b       0  rw/libc                       4  
+001a3b10  sub_1A3B10      208  b       0  task+jalr1                    1  
+001a44a0  sub_1A44A0      100  b       0  jalr1                         0  
+001a4580  sub_1A4580      128  b       0  rw/libc                       2  
+001a4600  sub_1A4600       84  b       0  rw/libc                       1  
+001a46c0  sub_1A46C0       44  b       0  jalr1                         0  
+001a46f0  sub_1A46F0      128  b       0  task+jalr1                    1  
+001a4830  sub_1A4830       44  b       0  jalr1                         0  
+001a4860  sub_1A4860      128  b       0  task+jalr1                    1  
+001a4b40  sub_1A4B40       44  b       0  jalr1                         0  
+001a4b70  sub_1A4B70      156  b       0  task+jalr1                    1  
+001a4ca0  sub_1A4CA0       44  b       0  jalr1                         0  
+001a4cd0  sub_1A4CD0      232  b       0  task+jalr1                    1  
+001a4e60  sub_1A4E60      100  b       0  rw/libc                       3  
+001a4ed0  sub_1A4ED0      108  b       0  rw/libc                       1  
+001a4f40  sub_1A4F40      192  b       0  rw/libc                       2  
+001a5280  sub_1A5280      148  b       0  rw/libc+jalr2                 3  
+001a5320  sub_1A5320      908  b       0  task+rw/libc+jalr2           15  
+001a5700  sub_1A5700      160  b       0  rw/libc                       2  
+001a57a0  sub_1A57A0      760  b       0  rw/libc                       4  
+001a5aa0  sub_1A5AA0      132  b       0  rw/libc                       2  
+001a5b30  sub_1A5B30      136  b       0  rw/libc                       2  
+001a5bc0  sub_1A5BC0      132  b       0  rw/libc                       2  
+001a5e70  sub_1A5E70       44  b       0  jalr1                         0  
+001a5ea0  sub_1A5EA0      144  b       0  task+jalr1                    1  
+001a5f30  sub_1A5F30      360  b       0  rw/libc                       2  
+001a60a0  sub_1A60A0       44  b       0  jalr1                         0  
+001a60d0  sub_1A60D0      400  b       0  task+jalr1                    2  
+001a6260  sub_1A6260       44  b       0  task                          1  
+001a6290  sub_1A6290       44  b       0  jalr1                         0  
+001a62c0  sub_1A62C0      144  b       0  task+jalr1                    1  
+001a6350  sub_1A6350      164  b       0  rw/libc                       4  
+001a6400  sub_1A6400      228  b       0  rw/libc                       6  
+001a64f0  sub_1A64F0      200  b       0  rw/libc                       4  
+001a65c0  sub_1A65C0      304  b       0  rw/libc                       4  
+001a66f0  sub_1A66F0       80  b       0  rw/libc                       2  
+001a6740  sub_1A6740      284  b       0  rw/libc                       4  
+001a6860  sub_1A6860      312  b       0  rw/libc                       8  
+001a69a0  sub_1A69A0      324  b       0  rw/libc                       9  
+001a6af0  sub_1A6AF0      272  b       0  rw/libc                       7  
+001a6c00  sub_1A6C00      276  b       0  rw/libc                       8  
+001a6d20  sub_1A6D20      356  b       0  rw/libc                       8  
+001a6e90  sub_1A6E90      392  b       0  rw/libc                      10  
+001a7060  sub_1A7060       64  b       0  task                          1  
+001a70a0  sub_1A70A0      204  b       0  rw/libc                       5  
+001a7170  sub_1A7170       44  b       0  rw/libc                       1  
+001a71a0  sub_1A71A0      464  b       0  jalr1                         0  
+001a7710  sub_1A7710      504  b       0  jalr10                        0  
+001a8820  sub_1A8820      192  b       0  rw/libc+jalr1                 3  
+001a88e0  sub_1A88E0       44  b       0  rw/libc                       1  
+001a89c0  sub_1A89C0      332  b       0  rw/libc                       3  
+001a8db0  sub_1A8DB0      552  b       0  io                            7  
+001a8fe0  sub_1A8FE0      152  b       0  jalr1                         1  
+001a9080  sub_1A9080      252  b       0  io+task+rw/libc+jalr1         3  
+001a9690  sub_1A9690       44  b       0  jalr1                         0  
+001a96c0  sub_1A96C0      148  b       0  task+jalr1                    1  
+001aa9f0  sub_1AA9F0       44  b       0  jalr1                         0  
+001aaa20  sub_1AAA20      156  b       0  task+jalr1                    1  
+001ab390  sub_1AB390      680  b       0  rw/libc                       3  world collision: RpCollisionWorldForAllIntersections with callback sub_1AAF30 (s4.3)
+001abcd0  sub_1ABCD0       68  b       0  rw/libc                       1  
+001acb20  sub_1ACB20       68  b       0  rw/libc                       1  
+001acb70  sub_1ACB70      192  b       0  rw/libc                       1  
+001acfc0  sub_1ACFC0      132  b       0  rw/libc                       3  
+001ad050  sub_1AD050      204  b       0  rw/libc                       2  
+001ad220  sub_1AD220      208  b       0  rw/libc                       4  
+001ad630  sub_1AD630       44  b       0  jalr1                         0  
+001ad8c0  K_FldFrame_CtlSetSphereCollisRadius       80  b       0  hw                            0  [K_FldFrame_CtlSetSphereCollisRadius] work +32, flag 0x10000000 when 0 (s4.2)
+001ad9e0  sub_1AD9E0      564  b       0  rw/libc                       5  
+001adc20  sub_1ADC20      284  b       0  rw/libc                       4  
+001adec0  sub_1ADEC0      296  b       0  rw/libc                       2  
+001ae3c0  sub_1AE3C0       44  b       0  jalr1                         0  
+001ae3f0  sub_1AE3F0      128  b       0  task+jalr1                    1  
+001ae480  sub_1AE480      244  b       0  task+rw/libc                  2  
+001af8e0  sub_1AF8E0       80  b       0  rw/libc+jalr1                 1  
+001af930  sub_1AF930      236  b       0  task+jalr1                    1  
+001b00c0  sub_1B00C0      240  b       0  task+rw/libc                  3  
+001b02c0  sub_1B02C0     1100  b       0  rw/libc                       2  
+001b0870  sub_1B0870       92  b       0  io+print+rw/libc              2  requests the field PAC of (major, minor) (s2)
+001b0920  sub_1B0920       48  b       0  io                            1  
+001b0950  sub_1B0950       92  b       0  io+print+rw/libc              2  
+001b09f0  sub_1B09F0       48  b       0  io                            1  
+001b2860  sub_1B2860      716  b       0  io+rw/libc+sdk+jalr3          3  
+001b2b90  sub_1B2B90      868  b       0  io+rw/libc+jalr2             12  
+001b4e00  sub_1B4E00     1024  b       0  rw/libc                      10  
+001b5200  sub_1B5200      380  b       0  rw/libc                       3  
+001b5880  sub_1B5880       44  b       0  jalr1                         0  
+001b58b0  sub_1B58B0      156  b       0  task+jalr1                    1  
+001b5df0  sub_1B5DF0       64  b       0  rw/libc                       1  
+001b5e30  sub_1B5E30       44  b       0  rw/libc                       1  
+001b5e60  sub_1B5E60       44  b       0  rw/libc                       1  
+001b6060  sub_1B6060       64  b       0  rw/libc                       1  
+001b60a0  sub_1B60A0       44  b       0  rw/libc                       1  
+001b60d0  sub_1B60D0       44  b       0  rw/libc                       1  
+001b76b0  sub_1B76B0       72  b       0  io+jalr1                      1  
+001b7700  sub_1B7700      172  b       0  io+task+jalr1                 2  
+001b7a90  K_Seq_ExitDungeon       48  b       0  task                          1  [K_Seq_ExitDungeon] sequence 5 exit (s1.1)
+001b7b10  K_Data_LoadFldMainScript    156  b       0  io+print+rw/libc+jalr1        5  
+001b7bb0  sub_1B7BB0      132  b       0  io+rw/libc+jalr1              4  
+001b7c40  sub_1B7C40      192  b       0  io+print+rw/libc              5  
+001b7d00  sub_1B7D00       92  b       0  jalr1                         1  
+001b7dc0  sub_1B7DC0      100  b       0  io                            3  
+001b8000  sub_1B8000       44  b       0  jalr1                         0  
+001b8030  sub_1B8030      144  b       0  task+jalr1                    1  
+001b80c0  sub_1B80C0      148  b       0  task+jalr1                    1  
+001b8b40  sub_1B8B40      244  b       0  io+print+rw/libc+jalr1        6  
+001b8c40  sub_1B8C40      176  b       0  io+print+rw/libc+jalr1        6  
+001b8cf0  sub_1B8CF0      104  b       0  jalr2                         0  
+001b90f0  K_Field_Init       48  b       0  rw/libc                       1  [K_Field_Init] memset sField 4,636 bytes (s2)
+001b9140  sub_1B9140      820  b       0  rw/libc                       4  
+001ba880  K_Field_SetShouldShutdown       68  b       0  print+rw/libc                 1  [K_Field_SetShouldShutdown] root work +8 (s2)
+001baa50  sub_1BAA50       68  b       0  print+rw/libc                 1  
+001c0190  sub_1C0190      128  b       0  io                            2  
+001c0210  sub_1C0210      196  b       0  io+rw/libc+jalr1              3  
+001c02e0  sub_1C02E0       80  b       0  jalr1                         0  
+001c0330  sub_1C0330      124  b       0  io+print+rw/libc              3  
+001c0920  sub_1C0920       56  b       0  jalr1                         0  
+001c0d30  sub_1C0D30       56  b       0  jalr1                         0  
+001c1e20  sub_1C1E20      264  b       0  task+jalr2                    3  
+001c45e0  sub_1C45E0      288  b       0  print+rw/libc                 6  
+001c6200  sub_1C6200      592  b       0  rw/libc                       2  
+001c6dd0  sub_1C6DD0      376  b       0  rw/libc                       3  
+001c71f0  sub_1C71F0      128  b       0  rw/libc                       1  
+001c7ce0  sub_1C7CE0      396  b       0  rw/libc                       1  
+001cd570  sub_1CD570       44  b       0  jalr1                         0  
+001cd6e0  sub_1CD6E0       44  b       0  jalr1                         0  
+001cd710  sub_1CD710      128  b       0  task+jalr1                    1  
+001cd7a0  sub_1CD7A0      208  b       0  rw/libc                       1  
+001cf940  sub_1CF940      772  b       0  print+rw/libc                 3  
+001d1640  sub_1D1640      312  b       0  task                          4  
+001d36c0  sub_1D36C0       44  b       0  jalr1                         0  
+001d36f0  sub_1D36F0      152  b       0  task+jalr1                    2  
+001d3a30  sub_1D3A30      468  b       0  rw/libc                       2  
+001d3c10  sub_1D3C10       44  b       0  jalr1                         0  
+001d3c40  sub_1D3C40      156  b       0  task+jalr1                    1  
+001d40b0  sub_1D40B0       44  b       0  jalr1                         0  
+001d40e0  sub_1D40E0      156  b       0  task+jalr1                    1  
+001d4290  sub_1D4290      200  b       0  io+print+rw/libc              7  
+001d4360  sub_1D4360      124  b       0  io+print+rw/libc              4  
+001d43e0  sub_1D43E0      120  b       0  io+rw/libc                    3  
+001d59e0  sub_1D59E0      172  b       0  rw/libc+jalr1                 4  
+001d6240  sub_1D6240       44  b       0  jalr1                         0  
+001d7260  sub_1D7260      148  b       0  io+print+rw/libc+jalr1        5  
+001d8b00  K_Battle_CreateBattleTask    348  b       0  task+jalr1                    1  encounter task create (exported name) (s7)
+001d8cb0  sub_1D8CB0       56  b       0  rw/libc                       2  
+001d8cf0  sub_1D8CF0       96  b       0  task                          1  
+001d9310  sub_1D9310      440  b       0  rw/libc                       4  
+001d94d0  sub_1D94D0      456  b       0  rw/libc                       4  
+001d96a0  sub_1D96A0      436  b       0  rw/libc                       3  
+001d9ee0  sub_1D9EE0       44  b       0  jalr1                         0  
+001dc8e0  sub_1DC8E0       44  b       0  jalr1                         0  
+001dca10  sub_1DCA10      332  b       0  io+rw/libc                    4  
+001dd430  sub_1DD430       44  b       0  jalr1                         0  
+001dd460  sub_1DD460      200  b       0  task+jalr1                    1  
+001dd530  sub_1DD530      168  b       0  rw/libc                       2  
+001dfa70  sub_1DFA70     2668  b       0  print+rw/libc                10  
+001e04e0  sub_1E04E0       44  b       0  jalr1                         0  
+001e0510  sub_1E0510      156  b       0  task+jalr1                    1  
+001e1200  sub_1E1200       44  b       0  jalr1                         0  
+001e14b0  sub_1E14B0       44  b       0  jalr1                         0  
+001e14e0  sub_1E14E0      172  b       0  task+jalr1                    1  
+001e2850  sub_1E2850       80  b       0  jalr1                         0  
+001e28a0  sub_1E28A0      136  b       0  jalr1                         1  
+001e2930  sub_1E2930      168  b       0  jalr1                         1  
+001e2a20  sub_1E2A20       80  b       0  jalr1                         0  
+001e2a70  sub_1E2A70      148  b       0  task+jalr1                    2  
+001e2b10  sub_1E2B10      180  b       0  task+jalr1                    2  
+001e4b10  sub_1E4B10       44  b       0  jalr1                         0  
+001e4b40  sub_1E4B40      128  b       0  task+jalr1                    1  
+001e5820  sub_1E5820       44  b       0  jalr1                         0  
+001e5850  sub_1E5850      128  b       0  task+jalr1                    1  
+001e6000  sub_1E6000       44  b       0  jalr1                         0  
+001e6030  sub_1E6030      128  b       0  task+jalr1                    1  
+001e6a40  sub_1E6A40       44  b       0  jalr1                         0  
+001e6a70  sub_1E6A70      128  b       0  task+jalr1                    1  
+001e6af0  sub_1E6AF0      436  b       0  rw/libc                       4  
+001e7470  sub_1E7470      100  b       0  io+print+rw/libc              3  
+001e7520  sub_1E7520       32  b       0  io                            1  
+001e7540  sub_1E7540      108  b       0  print+rw/libc                 3  
+001e75b0  sub_1E75B0      356  b       0  print+rw/libc                 4  
+001e7720  sub_1E7720      408  b       0  rw/libc                       2  
+001e78c0  sub_1E78C0      416  b       0  rw/libc                       7  
+001e7a60  sub_1E7A60       60  b       0  rw/libc                       2  
+001e7aa0  sub_1E7AA0      104  b       0  rw/libc                       1  
+001e7b10  sub_1E7B10      272  b       0  rw/libc                       3  
+001e7ce0  sub_1E7CE0      244  b       0  rw/libc+jalr1                 1  
+001e7de0  sub_1E7DE0       68  b       0  rw/libc+jalr1                 1  
+001e7e30  sub_1E7E30      344  b       0  rw/libc                       2  
+001a0040  sub_1A0040      272  a       1                                1  
+001a01c0  sub_1A01C0      136  a       1                                0  random floor, majors 51..58 / 71..78 (sub_1A02C0) or 30..38 (s3.2)
+001a3ae0  sub_1A3AE0       36  a       1                                0  
+001a3bf0  sub_1A3BF0       52  a       1                                0  
+001a4010  sub_1A4010       56  a       1                                0  
+001a4050  sub_1A4050       56  a       1                                0  
+001a41b0  sub_1A41B0       56  a       1                                0  
+001a42f0  sub_1A42F0       56  a       1                                0  
+001a7370  sub_1A7370      320  a       1                                0  
+001a9500  sub_1A9500      396  a       1                                1  
+001a9850  sub_1A9850     2396  a       1                                7  
+001ace90  sub_1ACE90      292  a       1                                0  
+001ad120  sub_1AD120      244  a       1                                0  
+001b0710  sub_1B0710      188  a       1                                0  
+001b07d0  sub_1B07D0      100  a       1                                0  
+001b0840  sub_1B0840       40  a       1                                0  
+001b32f0  sub_1B32F0      388  a       1                                0  
+001b5610  sub_1B5610      216  a       1                                2  
+001b56f0  sub_1B56F0      340  a       1                                2  
+001b5850  sub_1B5850       36  a       1                                0  
+001b5950  sub_1B5950       52  a       1                                0  
+001b5990  sub_1B5990       48  a       1                                0  
+001b59c0  sub_1B59C0       52  a       1                                0  
+001b5a00  sub_1B5A00       44  a       1                                0  
+001b78a0  K_Seq_CheckField       84  a       1                                1  [K_Seq_CheckField] sequence 2 check: root task gone (s1.1)
+001b79f0  sub_1B79F0       84  a       1                                1  
+001b83f0  sub_1B83F0      424  a       1                                5  
+001b85a0  sub_1B85A0       92  a       1                                0  
+001baaa0  sub_1BAAA0      128  a       1                                2  door / exit: next ids to root work +76.., fade out, state 17 (s5)
+001bb090  sub_1BB090      624  a       1                                0  marks a block's cells in the floor grid (k_dungeon.c 262/263/292) (s6)
+001bc630  sub_1BC630     1168  a       1                                0  
+001c00d0  sub_1C00D0       64  a       1                                0  
+001c0110  sub_1C0110      124  a       1                                0  
+001c0440  sub_1C0440      756  a       1                                2  
+001c2340  sub_1C2340      104  a       1                                3  
+001c2480  sub_1C2480      124  a       1                                5  
+001c2500  sub_1C2500       80  a       1                                1  
+001c2dd0  sub_1C2DD0      200  a       1                                3  
+001c2ea0  sub_1C2EA0       48  a       1                                1  
+001c3790  sub_1C3790       48  a       1                                1  
+001c3df0  sub_1C3DF0      180  a       1                                2  
+001c48f0  sub_1C48F0      148  a       1                                4  
+001c4a60  sub_1C4A60      208  a       1                                6  
+001c4b30  sub_1C4B30      288  a       1                                5  
+001c5670  sub_1C5670       48  a       1                                1  
+001c5ee0  K_FldEvent_FindFldHitAt      416  a       1                                1  [K_FldEvent_FindFldHitAt] field hit quad (scene resource type 13) under a point (s5)
+001c6d70  sub_1C6D70       84  a       1                                0  
+001c7160  sub_1C7160      132  a       1                                1  
+001c7b30  K_FldEvent_IsUnitNearFldHit      432  a       1                                2  [K_FldEvent_IsUnitNearFldHit] unit over a field hit quad, Tartarus only (s5)
+001d1780  sub_1D1780      100  a       1                                0  
+001d17f0  sub_1D17F0      108  a       1                                0  
+001d1860  sub_1D1860      164  a       1                                0  
+001d1910  sub_1D1910      188  a       1                                0  
+001d19d0  sub_1D19D0      180  a       1                                0  
+001d1b60  sub_1D1B60      180  a       1                                0  
+001d1c20  sub_1D1C20      180  a       1                                0  
+001d1db0  sub_1D1DB0      496  a       1                                8  
+001d3830  sub_1D3830      108  a       1                                0  
+001d38d0  sub_1D38D0      228  a       1                                0  
+001d39c0  sub_1D39C0      108  a       1                                1  
+001d3ce0  sub_1D3CE0      968  a       1                                8  
+001d5140  sub_1D5140      220  a       1                                0  
+001dd8e0  sub_1DD8E0      584  a       1                                5  
+001ddb30  sub_1DDB30      356  a       1                                1  
+001e13f0  sub_1E13F0      192  a       1                                0  
+001e1590  sub_1E1590      652  a       1                                0  
+001e6ea0  sub_1E6EA0      856  a       1                                9  
+00199440  sub_199440      224  b       1  task+jalr1                    1  
+0019f730  K_SceneDraw_CreateTasks      444  b       1  task                          2  [K_SceneDraw_CreateTasks] the nine field draw tasks under "scene draw ctl" (s1)
+001a2170  sub_1A2170      132  b       1  rw/libc+jalr2                 1  
+001a23e0  sub_1A23E0      824  b       1  rw/libc                       2  
+001a3a60  sub_1A3A60      116  b       1  rw/libc+jalr1                 1  
+001a74e0  sub_1A74E0      132  b       1  rw/libc                       2  
+001a7570  sub_1A7570      240  b       1  rw/libc+jalr1                 1  
+001aaf30  sub_1AAF30     1112  b       1  rw/libc                       1  RpCollisionWorldForAllIntersections triangle callback (sphere vs triangle, uses 1AAAD0/1AAE10) (s4.3)
+001ab640  sub_1AB640     1668  b       1  rw/libc                       5  block-clump atomic triangle test (frame-transformed, uses 1AAAD0/1AAE10) (s4.3)
+001acc30  sub_1ACC30      596  b       1  rw/libc                       3  
+001ad660  K_FldFrame_CreateCtlTask      524  b       1  task+jalr1                    2  [K_FldFrame_CreateCtlTask] 52-byte collision controller for a scene resource (s4.2)
+001b0a20  sub_1B0A20     1740  b       1  io+print+rw/libc              3  
+001b2780  sub_1B2780      216  b       1  print+rw/libc                 3  
+001b3480  sub_1B3480     1368  b       1  io+print+rw/libc              7  
+001b39e0  sub_1B39E0      684  b       1  io+rw/libc+jalr1             10  
+001b3c90  sub_1B3C90      448  b       1  rw/libc+jalr2                 5  
+001b5a30  sub_1B5A30      172  b       1  rw/libc                       3  
+001b5ae0  sub_1B5AE0      108  b       1  rw/libc                       1  
+001b5b50  sub_1B5B50      668  b       1  rw/libc                       3  
+001b5e90  sub_1B5E90      456  b       1  rw/libc                       4  
+001b6100  sub_1B6100      236  b       1  io+print+rw/libc              3  
+001b7850  K_Seq_ExitField       80  b       1  task                          1  [K_Seq_ExitField] sequence 2 exit (s1.1)
+001b79a0  K_Seq_ExitFieldEvent       80  b       1  task                          1  [K_Seq_ExitFieldEvent] sequence 3 exit (s1.1)
+001b7e60  sub_1B7E60      416  b       1  io+print+rw/libc              5  
+001b8160  sub_1B8160      132  b       1  io+print+rw/libc              3  
+001b81f0  sub_1B81F0      512  b       1  io+print+rw/libc+jalr2        5  
+001b8600  sub_1B8600      120  b       1  jalr1                         0  
+001b8680  sub_1B8680      132  b       1  io+print+rw/libc              3  
+001b8710  sub_1B8710      344  b       1  io+print+rw/libc+jalr2        5  
+001b8870  sub_1B8870       84  b       1  jalr1                         0  
+001b88d0  sub_1B88D0      132  b       1  io+print+rw/libc              3  
+001b8960  sub_1B8960      376  b       1  io+print+rw/libc+jalr2        5  
+001b8ae0  sub_1B8AE0       84  b       1  jalr1                         0  
+001bf220  sub_1BF220      276  b       1  rw/libc                       2  
+001bf340  sub_1BF340      560  b       1  rw/libc                       4  random floor kind 0..4 from the counters 54/55/59..62 (s6)
+001c03f0  sub_1C03F0       80  b       1  io                            1  
+001c0740  sub_1C0740      168  b       1  io                            1  
+001c07f0  sub_1C07F0      136  b       1  task                          1  
+001c1f30  sub_1C1F30      200  b       1  task+rw/libc+jalr1            3  
+001c2010  sub_1C2010      152  b       1  rw/libc                       4  
+001c20b0  sub_1C20B0      164  b       1  rw/libc                       4  
+001c4120  sub_1C4120     1212  b       1  rw/libc                      11  
+001c6f50  sub_1C6F50      476  b       1  rw/libc                       3  
+001c7270  sub_1C7270      588  b       1  rw/libc                       2  
+001c74c0  sub_1C74C0      876  b       1  rw/libc                       9  
+001c7830  sub_1C7830      724  b       1  rw/libc                       4  
+001c7e70  K_Fldrc_RequestFieldHitTableFile      176  b       1  io+print+rw/libc              3  [K_Fldrc_RequestFieldHitTableFile] field/table/h%03d_%03d.bin (exits, 44-byte records) (s5)
+001c80c0  sub_1C80C0       96  b       1  jalr1                         0  
+001c8120  sub_1C8120     1276  b       1  rw/libc                       1  
+001cd5a0  K_FldEvent_CreateTasks      164  b       1  task+jalr1                    1  [K_FldEvent_CreateTasks] field event task + draw-command task (s5)
+001cfdd0  sub_1CFDD0      732  b       1  rw/libc                      12  
+001d0880  sub_1D0880      824  b       1  rw/libc                       3  
+001d0bc0  sub_1D0BC0      628  b       1  rw/libc                       4  
+001d2300  sub_1D2300      780  b       1  rw/libc                       3  
+001d2610  sub_1D2610     1012  b       1  rw/libc                      11  
+001d2a10  sub_1D2A10     2188  b       1  rw/libc                       2  
+001d4180  sub_1D4180      260  b       1  task                          1  
+001d4560  sub_1D4560      172  b       1  io+rw/libc+jalr1              5  
+001d5a90  K_FldCamera_CreateFieldCameraControlerTask      356  b       1  task+rw/libc+jalr1            7  [K_FldCamera_CreateFieldCameraControlerTask] 208-byte camera work, frame under the main camera (s4.4)
+001d5c10  sub_1D5C10      508  b       1  task+rw/libc                  3  
+001d5e30  sub_1D5E30      244  b       1  rw/libc                       2  
+001d5f90  sub_1D5F90      688  b       1  rw/libc                       3  
+001d6270  sub_1D6270      960  b       1  task+rw/libc+jalr1            7  
+001d6630  sub_1D6630      680  b       1  task+rw/libc+jalr1            7  
+001d68e0  sub_1D68E0      252  b       1  rw/libc                       2  
+001d6b10  sub_1D6B10      164  b       1  io+print+rw/libc              3  
+001d7300  sub_1D7300      744  b       1  rw/libc                       1  
+001d78c0  K_Encount_PickEncounter    680  b       1  rw/libc                       1  weighted pick from ENCOUNT.TBL section 4 (treasure contents) (s6)
+001d89b0  K_FldCamera_DestroyBattleKosakaTask      328  b       1  rw/libc+jalr1                 6  [K_FldCamera_DestroyBattleKosakaTask] encounter task teardown (s7)
+001d8e60  sub_1D8E60     1196  b       1  rw/libc                       8  
+001dc910  sub_1DC910      256  b       1  task+jalr1                    1  
+001e1230  sub_1E1230      204  b       1  task+jalr1                    1  
+001e2300  sub_1E2300      100  b       1  rw/libc+jalr1                 1  
+001e2430  sub_1E2430      984  b       1  rw/libc                       6  
+001e2bd0  sub_1E2BD0      460  b       1  rw/libc+jalr2                 1  
+001e2da0  sub_1E2DA0      172  b       1  io+print+rw/libc              3  
+001e3940  sub_1E3940     1476  b       1  io+rw/libc+jalr2             14  
+001e6cb0  sub_1E6CB0      152  b       1  io+print+rw/libc              3  
+001e6d50  sub_1E6D50      328  b       1  io+print+rw/libc+jalr2        5  
+001e7200  sub_1E7200      136  b       1  io+print+rw/libc              3  
+001e7290  sub_1E7290      372  b       1  io+print+rw/libc+jalr2        5  
+001e7410  sub_1E7410       84  b       1  jalr1                         0  
+001e7f90  sub_1E7F90      928  b       1  rw/libc                       2  
+0019de40  sub_19DE40       56  a       2                                0  
+0019e1b0  sub_19E1B0       56  a       2                                0  
+0019f8f0  sub_19F8F0     1092  a       2                                3  
+0019fdd0  sub_19FDD0       68  a       2                                1  
+0019fe20  sub_19FE20       68  a       2                                1  
+0019fe70  sub_19FE70       68  a       2                                1  
+0019fec0  sub_19FEC0       68  a       2                                1  
+001a7910  sub_1A7910      572  a       2                                0  
+001afa20  sub_1AFA20      800  a       2                                0  
+001afd40  sub_1AFD40      560  a       2                                0  
+001b6eb0  sub_1B6EB0     1836  a       2                                5  
+001bd950  sub_1BD950     6340  a       2                                3  per-frame block visibility over the grid (s6)
+001c37c0  sub_1C37C0       84  a       2                                1  
+001c3820  sub_1C3820       84  a       2                                1  
+001c4c50  sub_1C4C50      184  a       2                                5  
+001c5900  sub_1C5900      120  a       2                                1  
+001c7130  sub_1C7130       40  a       2                                0  hero distance check (s5)
+001cd9a0  sub_1CD9A0     3800  a       2                               11  
+001d00b0  sub_1D00B0       96  a       2                                0  
+001d0720  sub_1D0720      352  a       2                                1  spawns n shadows (s6)
+001d2210  sub_1D2210      132  a       2                                0  
+001dc6f0  sub_1DC6F0      492  a       2                                4  
+001dd600  sub_1DD600      724  a       2                                1  
+001ddca0  sub_1DDCA0      144  a       2                                1  
+001ddd30  sub_1DDD30      200  a       2                                0  
+001dde00  sub_1DDE00     2084  a       2                                4  
+001de630  sub_1DE630     1804  a       2                                3  
+001ded40  sub_1DED40     1808  a       2                                3  
+001a3c30  sub_1A3C30      388  b       2  rw/libc                       1  
+001a5000  sub_1A5000      232  b       2  rw/libc                       3  
+001ae0d0  sub_1AE0D0      440  b       2  rw/libc                       4  
+001b2f00  sub_1B2F00     1004  b       2  io+rw/libc                    7  
+001b5380  sub_1B5380      656  b       2  rw/libc+jalr1                 3  
+001ba5f0  k_Field_CreateFieldRootTask      648  b       2  task+rw/libc+jalr1           10  [k_Field_CreateFieldRootTask] "field root" task + 104-byte work (s2)
+001bcac0  sub_1BCAC0     2444  b       2  rw/libc                       2  recursive floor layout step (s6)
+001bfaf0  sub_1BFAF0      200  b       2  jalr1                         1  
+001bfbc0  K_FldDungeon_CreateTask      248  b       2  task+jalr1                    2  [K_FldDungeon_CreateTask] "automatic dungeon" task, 64-byte work (s6)
+001bfcc0  sub_1BFCC0      568  b       2  print+task+rw/libc            3  
+001c0d70  sub_1C0D70     4264  b       2  task+rw/libc+jalr8            8  
+001c4700  sub_1C4700      496  b       2  rw/libc                      11  
+001c6450  sub_1C6450      396  b       2  rw/libc                       1  
+001c6720  sub_1C6720      764  b       2  rw/libc                       2  
+001c6a20  sub_1C6A20      836  b       2  rw/libc                       2  
+001c7f20  sub_1C7F20      416  b       2  io+print+rw/libc+jalr2        5  copies the exit table to sField +4424 (count +4420) (s5)
+001d0110  sub_1D0110      344  b       2  task+rw/libc+jalr1            4  
+001d1360  sub_1D1360      728  b       2  rw/libc                      10  
+001d1fa0  sub_1D1FA0      616  b       2  rw/libc                       3  places the floor's treasure boxes (s6)
+001d22a0  sub_1D22A0       88  b       2  rw/libc                       2  
+001d5220  K_FldCamera_UpdateFieldCameraControlerTask     1984  b       2  print+rw/libc                 8  [K_FldCamera_UpdateFieldCameraControlerTask] follow-cylinder camera (s4.4)
+001d69e0  sub_1D69E0      304  b       2  rw/libc                       2  
+001d6bc0  sub_1D6BC0     1248  b       2  io+print+rw/libc              6  
+001d70a0  sub_1D70A0      448  b       2  rw/libc                       4  
+001d9860  sub_1D9860     1664  b       2  rw/libc                       5  
+001d9f10  sub_1D9F10      188  b       2  task+jalr1                    1  
+001e2370  sub_1E2370      188  b       2  task+jalr1                    1  
+001e2e50  sub_1E2E50     2800  b       2  io+print+rw/libc+jalr4        8  
+0019d4a0  sub_19D4A0      132  a       3                                2  
+001a4110  sub_1A4110      148  a       3                                0  
+001a41f0  sub_1A41F0      112  a       3                                0  
+001a4260  sub_1A4260      144  a       3                                0  
+001aa8f0  sub_1AA8F0      244  a       3                                1  
+001b77b0  K_Seq_CallField      156  a       3                                0  [K_Seq_CallField] sequence 2 call: field root from a 28-byte {major, minor, entry, ..} packet (s1.1)
+001b7900  K_Seq_CallFieldEvent      160  a       3                                0  [K_Seq_CallFieldEvent] sequence 3 call: field root from an event (PM file) (s1.1)
+001b7a50  K_Seq_CallDungeon       52  a       3                                0  [K_Seq_CallDungeon] sequence 5 call: the automatic dungeon task (s1.1)
+001c2580  sub_1C2580       44  a       3                                0  
+001c3ad0  sub_1C3AD0       40  a       3                                0  
+001d0330  sub_1D0330       92  a       3                                0  
+001d0390  sub_1D0390       92  a       3                                0  
+001d32a0  K_Unit_UpdateEnemyPopSchedulerTask     1052  a       3                                2  [K_Unit_UpdateEnemyPopSchedulerTask] shadow count, respawn, Reaper timer (s6)
+001da020  sub_1DA020     9936  a       3                                6  
+001e1300  sub_1E1300       96  a       3                                1  
+001e1360  sub_1E1360       96  a       3                                1  
+001a3f20  sub_1A3F20      240  b       3  rw/libc+jalr1                 1  
+001a4090  sub_1A4090      120  b       3  rw/libc                       1  
+001a4380  sub_1A4380      288  b       3  jalr1                         0  
+001abd20  sub_1ABD20     2596  b       3  rw/libc                       8  block collision: clump atomics of the cell's block, callback sub_1ABCD0 (s4.3)
+001ae580  sub_1AE580     4952  b       3  rw/libc                      20  
+001b61f0  sub_1B61F0     3252  b       3  io+print+rw/libc             12  
+001ba8d0  sub_1BA8D0      376  b       3  print+rw/libc                 8  
+001bb300  sub_1BB300     4912  b       3  rw/libc                      13  creates the block models of the floor grid, writes cell +4 resource ids (s6)
+001bd450  sub_1BD450     1136  b       3  rw/libc                       2  floor layout entry (from sub_1B10F0) (s6)
+001bf570  K_FldDungeon_UpdateTask     1408  b       3  print+rw/libc                 6  [K_FldDungeon_UpdateTask] floor -> field root, block title, floor change (s6)
+001ce960  sub_1CE960     4060  b       3  io+rw/libc+jalr1             26  
+001d03f0  sub_1D03F0      816  b       3  io                           11  
+001d0e50  sub_1D0E50      852  b       3  rw/libc                      13  
+001d7d40  K_FldCamera_UpdateBattleKosakaTask   3172  b       3  rw/libc                      18  battle kosaka update (encounter task) (s7)
+001df450  sub_1DF450     1564  b       3  rw/libc                       6  
+001a3dc0  sub_1A3DC0      348  a       4                                0  
+001a4940  sub_1A4940      508  a       4                                0  
+001ac750  K_FldFrame_HandleCollis      500  a       4                                2  [K_FldFrame_HandleCollis] picks the collision mesh: grid cell block (Tartarus) or the field's (s4.3)
+001bd8c0  sub_1BD8C0      132  a       4                                0  
+001b9480  K_Field_UpdateFieldRootTask     3920  b       4  io                           38  [K_Field_UpdateFieldRootTask] the 19-state field root (s2)
+001ba3d0  K_Field_DestroyFieldRootTask      544  b       4  print+task+rw/libc+jalr1     15  [K_Field_DestroyFieldRootTask] field teardown, scene kept for sequences 2/3/5 (s2)
+001c5980  sub_1C5980      944  b       4  rw/libc                       6  
+001c8620  K_FldEvent_UpdateFldEventTask    20296  b       4  io+print+task+rw/libc        95  [K_FldEvent_UpdateFldEventTask] field event / encounter state machine (s5, s7)
+001e05b0  sub_1E05B0     3148  b       4  rw/libc                      14  virtual pad: pad -> hero move / rotate (s4.1)
+001e60b0  sub_1E60B0     2436  b       4  print+task+rw/libc            9  
+0019d410  K_SceneDraw_UpdateDrwOpcFldTask      140  a       5                                2  field opaque draw task -> K_FldSrc_DrawFieldOpaque per resource (rendering, s1)
+001ad2f0  K_FldFrame_UpdateCtlTask      824  b       5  hw                            3  [K_FldFrame_UpdateCtlTask] applies the pending move in three collision-checked thirds, ground snap, grid cell (s4.2)
+001b10f0  sub_1B10F0     5776  b       5  io+rw/libc+jalr1             16  field resource init after the scene load (MT_Scene_TryLoadFinish); calls the floor layout sub_1BD450 (s2, s6)
+001e1850  sub_1E1850     2732  b       5  print+task+rw/libc            6  
+001e3f10  sub_1E3F10     3072  b       5  task+rw/libc                 15  
+001e4bc0  sub_1E4BC0     3168  b       5  print+task+rw/libc           10  
+001e58d0  sub_1E58D0     1828  b       5  task+rw/libc                 10  
+# === not open (field = this slice, done = earlier slices, render = rendering queue, stub = K_Assert / K_Abort, jr $ra in retail) ===
+00199520  K_SPipe_Update3DDrwBeginTask      200  render  0  rw/libc+jalr2                 4  
+001995f0  K_SPipe_Update3DDrwEndTask      196  render  0  rw/libc+jalr4                 3  
+001997e0  drawGradientQuad     1144  render  0  jalr1                         0  
+00199d90  sub_199D90     1668  render  0  rw/libc                       4  
+0019a420  sub_19A420     1796  render  0  rw/libc                       5  
+0019bcf0  sub_19BCF0      444  render  0  rw/libc+jalr3                11  
+0019d3f0  sub_19D3F0        8  stub    0                                0  
+0019d400  sub_19D400        8  stub    0                                0  
+0019e330  sub_19E330     2828  render  0  rw/libc                      18  
+0019ef80  sub_19EF80     1256  render  0  rw/libc                      17  
+0019f470  sub_19F470      704  render  0  rw/libc                      11  
+001a0250  K_Scene_IsRandomFloor      104  field   0                                0  [K_Scene_IsRandomFloor] scene major 21..28 / 41..48 with minor 0 (s3.2)
+001a4c10  sub_1A4C10      140  render  0  rw/libc                       5  
+001a50f0  sub_1A50F0      400  render  0  rw/libc+jalr5                 8  
+001a7fc0  sub_1A7FC0      372  render  0  rw/libc+jalr5                 4  
+001aaad0  K_FldFrame_IsPointInTriangle      832  field   0                                0  [K_FldFrame_IsPointInTriangle] crossing-number test in the normal's dominant plane (s4.3)
+001aae10  K_FldFrame_ClosestPointOnSegment      284  field   0                                0  [K_FldFrame_ClosestPointOnSegment] collision helper of the triangle callbacks (s4.3)
+001addf0  K_FldFrame_CtlMoveInDir      196  field   0                                0  [K_FldFrame_CtlMoveInDir] velocity = dir * speed when idle (s4.2)
+001ae290  sub_1AE290      296  render  0  rw/libc                       5  
+001b9120  K_Field_Get       16  field   0                                0  [K_Field_Get] &sField 0x869F60 (s2)
+001b9130  K_Fld_GetPhase       12  field   0                                0  [K_Fld_GetPhase] load phase gp-0x4AA4 (s2)
+001bab20  K_Field_GetMajorId       16  field   0                                0  [K_Field_GetMajorId] root work +16 (s2)
+001bab30  K_Field_GetMinorId       16  field   0                                0  [K_Field_GetMinorId] root work +18 (s2)
+001bff20  K_FldDungeon_GetCurrentFloor       40  field   0                                0  [K_FldDungeon_GetCurrentFloor] work +4 (s6)
+001bff50  K_FldDungeon_IsCurrentFloorExplorable       80  field   0                                0  [K_FldDungeon_IsCurrentFloorExplorable] 2 <= floor < 400 (s6)
+001bffa0  K_FldDungeon_GetCurrentFloorData       52  field   0                                0  [K_FldDungeon_GetCurrentFloorData] &floors[floor] (s6)
+001c0040  K_FldDungeon_GetFloorKind       40  field   0                                0  [K_FldDungeon_GetFloorKind] work +40 (s6)
+001d4610  sub_1D4610     2724  render  0  rw/libc+jalr6                 1  
+001d75f0  sub_1D75F0      228  done    0                                0  floor initial shadow count (done: battle_data) (s6)
+001d76e0  sub_1D76E0      228  done    0                                0  floor respawn target (done: battle_data) (s6)
+001d77d0  sub_1D77D0      228  done    0                                0  floor treasure count (done: battle_data) (s6)
+001d7b70  K_Battle_GetNthDatUnit      240  field   0                                0  [K_Battle_GetNthDatUnit] n-th battle unit of an encounter task (s7)
+001d7c60  K_Battle_GetNthFieldUnit      220  field   0                                0  [K_Battle_GetNthFieldUnit] field unit of the n-th battle unit (s7)
+001d8d80  K_Battle_FindTaskOfUnit      212  field   0                                0  [K_Battle_FindTaskOfUnit] live encounter task holding a field unit (s7)
+00199740  kwlnRootUpdateShadowNodeCameraTask       92  render  1  rw/libc                       3  
+0019ab80  sub_19AB80     1832  render  1  rw/libc+jalr14               10  
+0019beb0  sub_19BEB0     1088  render  1  task+rw/libc+jalr3           15  
+0019db10  sub_19DB10      812  render  1  rw/libc+jalr3                13  
+0019de80  sub_19DE80      812  render  1  rw/libc+jalr3                13  
+001a8140  sub_1A8140     1752  render  1  rw/libc+jalr21                4  
+001dcb60  sub_1DCB60     2252  render  1  rw/libc+jalr15                6  
+0019b2b0  sub_19B2B0     2616  render  2  rw/libc+jalr9                33  
+0019c4b0  sub_19C4B0     3520  render  2  rw/libc+jalr14               21  
+001a1550  sub_1A1550     3096  render  2  rw/libc+jalr3                 6  
+001a2a80  sub_1A2A80     4052  render  2  rw/libc+jalr11                4  
+001b4720  K_FldSrc_DrawFieldTrans     1760  render  2  rw/libc+jalr2                13  
+0019d780  K_SceneDraw_UpdateDrwOpcFldObjTask      912  render  3  rw/libc                      15  
+001a7b50  sub_1A7B50     1136  render  3  rw/libc+jalr18                4  
+001a8b10  sub_1A8B10      672  render  3  rw/libc+jalr8                 4  
+0019d530  sub_19D530      584  render  4  rw/libc                      11  
+001b3e50  K_FldSrc_DrawFieldOpaque     2244  render  4  rw/libc+jalr10               15  field world draw (rendering queue, s1)

@@ -1,0 +1,209 @@
+# font2.sym  Phase 5 slice delta (game/include/p3fes/game/font2.h, game/src/ui/font2.cpp); SLUS_216.21
+# generated 2026-10-23 from the instructions (the p3fes_handgen bodies, the K_Assert file strings frFont.c 0x6A2730 /
+#   frFontRaster.c 0x6A2898 / fmGslCont.c 0x6A2A18 / frTagTable.c 0x6A2698 / uttmx.c / h_cutin.c, the task names
+#   "H_CutInPlayer" / "H_CutInDraw" / "H_PerEfect0Draw".."H_PerEfect2Draw" / "H_sMarkSprDraw" / "H_sMark2SprDraw" /
+#   "H_AfsSetProc" / "H_DrawMaestro", the printf strings) and checked by tests/game/test_font2.cpp (the dorm replay
+#   snapshot, the .FNT files decoded on the host, documented-rule checks). Rows: <addr8> <size8> F <name>
+#   source=phase5-font2 verified=yes ev=<doc>#<section>. Not imported by the agent.
+# nullsub_1: Empty in retail (a `jr $ra`): sub_1042E0 calls it right after the debug font raster is built.
+001007f0 00000008 F dbgPrintFontLoaded source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_103580: The per-frame pad update (kwlnUpdate, kwlnRootUpdateTask): for both ports H_Pad_UpdateWorkPad(pad work + 54 * port) and the derived button words (sub_...
+00103580 000000c4 F H_Pad_UpdateAll source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_103650: Derives one port's button words (54-byte pad record at 0x7E09BC + 54 * port): the stick word (+10) from the held word's d-pad nibble plus the left sti...
+00103650 00000280 F H_Pad_UpdateButtonWords source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1038D0: Auto-repeat of one button of a port: a fresh press arms the counter byte (pad record +0x16 + slot) with 7; while held it counts down and at 0 ORs the ...
+001038d0 000000c0 F H_Pad_RepeatButton source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_103990: Auto-repeat of one direction: as sub_1038D0 for the held word (repeat word +6), then the same rule again for the stick word (+0xC edges, +0xA held, re...
+00103990 00000174 F H_Pad_RepeatDirection source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_103B10: The vibration state machine (0x7CDE90 s16 state): state 2 pulses the two actuator words 0x7E09DE / 0x7E09E0 on and off (on value 0x7CDE94, phase flag ...
+00103b10 00000114 F H_Pad_UpdateVibration source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1040F0: Fills the four-entry hook table at 0x7E0A20 with sub_104140 / sub_104280 / sub_103F50 / sub_104040 (the memory checker's allocate / free / copy / clea...
+001040f0 00000050 F H_ChkMem_GetHooks source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1042E0: Loads the debug font "font/size12/f11_001.tmx" synchronously (H_Cdvd_Request + ReadSync), reads it into an RW image (sub_4CCAC0), creates a 4-bit rast...
+001042e0 000000c8 F dbgPrintInit source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1043B0: Per-frame reset of the debug print: the character screen to spaces, then frees every queued string node of the list (0x7CDEC8, linked by +0) through R...
+001043b0 00000068 F dbgPrintClear source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_104EB0: Queues a formatted debug string with a colour: RwCalloc(1, 280) a node, vsprintf the format and the variadic arguments into +16, x (+4) and the f32 y ...
+00104eb0 0000011c F dbgPrintColourF source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_104FD0: As sub_104EB0 with the colour white (0xFF in the four bytes +276..+279).
+00104fd0 00000110 F dbgPrintF source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_105210: Screen z for a debug quad: from the main camera's near / far planes (+0x84 / +0x80 of g_kwlnMainCamera) and the Im2D z range (0x960088 near, 0x96008C ...
+00105210 0000009c F dbgPrintScreenZ source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_105800: Clears the three 1,648-byte bust-up records at 0x7E2680 (state, the request and work words +0x550 / +0x554, the three raster words +20..+28).
+00105800 00000094 F H_ChrDsp_Init source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1058A0: Draw task body (kwlnRootUpdateDrawBustupProcTask): the Im2D render states (6,1) (7,2) (8,1) (11,6) (10,5) (9,1) (12,1) (2,4) through the RwRenderState...
+001058a0 00000110 F H_ChrDsp_DrawAll source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106730: Releases bust-up record `id`: prints "!!! RELEASE CHAR %d", drops its resource request (sub_133D30 when +0x548 is set, else H_Cdvd_Destroy of +0x528),...
+00106730 0000012c F H_ChrDsp_Release source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106860: Requests bust-up `id` (character, pose, expression): stores them, releases the old one, builds "i_bust_%02d_%x%1d[a|b].tmx" (the summer / winter suffi...
+00106860 0000062c F H_ChrDsp_Request source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106E90: Bust-up record `id`: alpha byte (+0x523) = $a1.
+00106e90 00000028 F H_ChrDsp_SetAlpha source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106EC0: Bust-up record `id`: the fade word (+0x550) = $a1; a non-zero value also starts the fade (+0x558 = 1, +0x560 = 0, +0x55C = 2).
+00106ec0 00000068 F H_ChrDsp_SetFade source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106F30: Bust-up record `id`: +0x554 = $a1.
+00106f30 00000028 F H_ChrDsp_SetFlip source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106F60: Bust-up record `id`: a loaded record (state 3) goes to state 4; the pose word (+2) = $a1.
+00106f60 0000004c F H_ChrDsp_SetPose source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106FB0: Bust-up record `id`: the 64-bit position word (+0xC: x, y) = $a1.
+00106fb0 00000040 F H_ChrDsp_SetPos source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_106FF0: Bust-up record `id` is loaded (state == 3).
+00106ff0 00000030 F H_ChrDsp_IsReady source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_107060: The fade draw (kwlnRootUpdateEtcDrawTask): the Im2D render states, then while a fade is active (0x7CDED4) the draw of its type (0x7CDF08, jump table 0...
+00107060 00000144 F H_Fade_DrawTask source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_108680: The fade colour bytes: r 0x7CDEF8, g 0x7CDEF4, b 0x7CDEF0 = $a0, $a1, $a2.
+00108680 00000014 F H_Fade_SetColour source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_108E50: The playing BGM: the s16 id 0x7E4438 while the BGM channel record 0x7E4430 is active, else -1.
+00108e50 0000002c F H_Snd_GetBgmId source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_109040: sub_1099D0(bgm, 1) (the BGM request with a fade); returns 1.
+00109040 00000028 F H_Snd_PlayBgmFade source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1099A0: Same body as sub_108E50: the s16 BGM id while channel 0 is active, else -1.
+001099a0 0000002c F H_Snd_GetBgmId2 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10A500: Is sound channel `ch` (77-word records from 0x7E4430) still playing: channels 0, 1 and 5 never; otherwise an active record whose ADX stream (+0x10) is...
+0010a500 0000009c F H_Snd_IsChannelBusy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10A6D0: Destroy callback of "H_AfsSetProc": drops the work's file request (+0x20, H_Cdvd_Destroy) and frees the work.
+0010a6d0 00000050 F H_Afs_DestroyTask source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10DD10: TMX PSMCT32 pixels into a locked RW image (+4 width, +8 height, +0x10 stride, +0x14 pixels): RGB copied, alpha < 0x7F scaled by 255 / 128, else 0xFF.
+0010dd10 000000ac F uttmxCopyPixels32 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10DDC0: TMX PSMCT24 pixels: RGB copied, alpha 0xFF.
+0010ddc0 00000080 F uttmxCopyPixels24 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10DE40: TMX PSMCT16 / 16S pixels: each 5-bit channel << 3, alpha 0xFF.
+0010de40 000000a0 F uttmxCopyPixels16 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10DEE0: TMX PSMT4 pixels: each byte split into two 4-bit indices, one byte each.
+0010dee0 00000080 F uttmxCopyPixels4 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10DF60: A TMX PSMCT32 palette into the image palette (+0x18, 1 << depth entries): RGB copied, alpha < 0x7F scaled by 255 / 128 (rounded toward zero), else 0xF...
+0010df60 000000a8 F uttmxCopyPalette32 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10E010: For an 8-bit image swaps entries 8..15 and 16..23 of every 32-entry block of the 256-entry palette (the PS2 CSM1 palette order).
+0010e010 000000b4 F uttmxUnswizzlePalette8 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10E0D0: Builds an RW image from a TMX file in memory (header checked: 2, 0, "TMX0"): depth from the pixel format (+0x16: 0x14 / 0x24 / 0x2C 4-bit, 0x13 / 0x1B...
+0010e0d0 00000424 F uttmxImageFromTmx source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10E500: RW image reader callback: opens the file (RwStreamOpen sub_4C58A0), reads the 64-byte header and the rest into a RwMalloc'd buffer, sub_10E0D0, frees ...
+0010e500 000000e8 F uttmxImageRead source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10E5F0: RW image header callback: opens the stream and returns $a0 (the stream is not closed).
+0010e5f0 0000003c F uttmxImageReadHeader source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10EC50: Immediate draw of a cut-in's draw work (sub_1115E0): camera and world set-up (RwCameraBeginUpdate-style calls sub_4AA390 / sub_4AA3D0 / sub_4A9F20 / s...
+0010ec50 00000a6c F H_CutInDraw_DrawDirect source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_10F6C0: Update of the "H_CutInDraw" task: the same camera / render-state set-up and keyframe walk as sub_10EC50, run every frame unless +0x4E8 (pause) is set;...
+0010f6c0 00000c14 F H_CutInDraw_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1102E0: Destroy callback of "H_CutInDraw": destroys the layer clumps (+0xA8.., sub_4AC390) and atomics (+0x148.., sub_4A5540) of the +0x4E0 layers (" destroy ...
+001102e0 00000100 F H_CutInDraw_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1103E0: Creates the "H_CutInDraw" task under `parent` (priority $a1): RwCalloc(1, 0x4EC) work, kwlnTaskCreate(update sub_10F6C0, destroy sub_1102E0); key data...
+001103e0 000000cc F H_CutInDraw_Create source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1104B0: The draw task's state >= 2.
+001104b0 00000018 F H_CutInDraw_IsLoaded source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1104D0: State 2 (ready) -> 3 (playing); returns 1, else 0.
+001104d0 00000034 F H_CutInDraw_Start source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_110510: While playing (state 3): per layer advances the key index (+0x1E8 + 4 * layer) past the -1 terminator (counting finished layers in +0x3E8); returns 0 ...
+00110510 000000b4 F H_CutInDraw_StepKeys source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1105D0: Raster slot `i` (< 40) of the draw work (+0x328) = $a2; a non-null raster gets its +0x50 low byte set to 2.
+001105d0 00000048 F H_CutInDraw_SetRaster source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_110620: Layer `i` colour offsets: s16 r +0x3F0, g +0x440, b +0x490 (two bytes per layer).
+00110620 00000028 F H_CutInDraw_SetLayerColour source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_110650: Maps layer b's screen rectangle onto layer a's raster: reads both frames' bounds (sub_4AC120), computes the four UVs from the raster size (448-line sc...
+00110650 00000180 F H_CutInDraw_MapUv source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1107D0: Update of "H_CutInPlayer" (jump table 0x7B5310): 0 request the .cpk (when +0x310), 1 wait, 2 per archive entry either a texture through the resource m...
+001107d0 0000069c F H_CutInPlayer_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_110E70: Destroy callback of "H_CutInPlayer": drops the pending texture (sub_133D30) or the .cpk request, destroys the 40 rasters, prints "*** CUTIN RELEASE %s...
+00110e70 00000104 F H_CutInPlayer_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_111150: Creates "H_CutInPlayer" (RwCalloc 0x314, kwlnTaskCreateWithAutoPriority 4207): the four s16 ids of the 64-bit $a1 to +0xA8..+0xAE, the path "battle/cu...
+00111150 00000108 F H_CutInPlayer_CreateFromFile source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_111260: As sub_111150 with the archive request $a2 (+0xC8) and +0x310 = 0 (the data is already loaded).
+00111260 00000114 F H_CutInPlayer_CreateFromArchive source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_111380: As sub_111260 under kwlnTaskCreate with priority $a1 (+0x30C, +0x308 = 1).
+00111380 00000130 F H_CutInPlayer_CreateWithPriority source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_111520: The player's end frame (s16 +0xD2) = $a1.
+00111520 00000010 F H_CutInPlayer_SetEndFrame source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_111570: The player's blend mode (+0x304) = $a1 (handed to the draw task's +0x4E4).
+00111570 00000010 F H_CutInPlayer_SetBlend source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1115B0: Pauses the player's draw task (+0x4E8 = 1) when it exists.
+001115b0 00000024 F H_CutInPlayer_Pause source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1115E0: Draws the player's draw task immediately (sub_10EC50) when it exists.
+001115e0 00000030 F H_CutInPlayer_DrawDirect source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_111D60: Destroy callback of "H_DrawMaestro": drops the file request (+4) and the clump (+0xC, sub_4B4410), frees the work.
+00111d60 00000068 F H_DrawMaestro_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_115CD0: One-shot sprite draw: sprCreateHandle(0, file, sprite), x / y / z from $f12 / $f13 / $f14, flags $a3, rgb $t0..$t2, sprDrawSprite(handle, 0) (sub_1127...
+00115cd0 00000104 F sprDrawSpriteBasic4 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_115F00: Update of "H_PerEfect0Draw" (jump table 0x7B5360): 0 request "battle/cutin/per_efc0_%02X_00.bin" (AGS variants), 1 register its three archives (H_Cdvd...
+00115f00 000006c0 F H_PerEfect0_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1165C0: Destroy callback of "H_PerEfect0Draw": removes the three archives, drops the request, frees the two effect models (sub_34FCF0) and the work.
+001165c0 000000dc F H_PerEfect0_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1166A0: Creates "H_PerEfect0Draw" (RwCalloc 0xAB4, auto priority 4207, sub_115F00 / sub_1165C0); persona +4 = $a1, +8 = $a2.
+001166a0 000000c0 F H_PerEfect0_Create source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116760: Effect 0 work state == 3.
+00116760 00000018 F H_PerEfect0_IsReady source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116780: Effect 0 work state = 4.
+00116780 00000014 F H_PerEfect0_Start source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1167A0: Effect 0 work +0x78 = 1 (end requested).
+001167a0 00000014 F H_PerEfect0_End source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1167C0: Frame value i of effect 0 (+0x68 + 4 * i); 51 for i == 0.
+001167c0 0000002c F H_PerEfect0_GetFrame source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1167F0: Update of "H_PerEfect1Draw" (jump tables 0x7B53E0 / 0x7B53B0 / 0x7B5380): 0 request "battle/cutin/per_efc1_%02d.bin" by persona, 1 register two archiv...
+001167f0 000004fc F H_PerEfect1_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116CF0: Destroy callback of "H_PerEfect1Draw": frees the sprite file (sub_1124B0), removes the archives, drops the requests, destroys the two rasters and free...
+00116cf0 00000124 F H_PerEfect1_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116E20: Creates "H_PerEfect1Draw" (RwCalloc 0x73C, auto priority 4207); persona +4 = $a1.
+00116e20 000000b0 F H_PerEfect1_Create source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116ED0: Effect 1 work state == 3.
+00116ed0 00000018 F H_PerEfect1_IsReady source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116EF0: Effect 1 work state = 4.
+00116ef0 00000014 F H_PerEfect1_Start source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116F10: Returns 63 (effect 1's length in frames).
+00116f10 0000000c F H_PerEfect1_GetLength source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116F20: Effect 1 frame counter (+0x64).
+00116f20 00000010 F H_PerEfect1_GetFrame source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116F30: Effect 1 frame counter >= 50.
+00116f30 00000018 F H_PerEfect1_IsPastHit source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116F50: Effect 1: +0x6C = 1 and ends its mark sprite (sub_117470).
+00116f50 00000030 F H_PerEfect1_End source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_116F80: Update of "H_sMarkSprDraw": a four-phase slide of the mark sprite on the eased path sub_18BC10 / sub_18B700 (phase 0 start from x 666, 1 slide in with...
+00116f80 000004b4 F H_sMarkSpr_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_117440: Destroy callback of "H_sMarkSprDraw": frees the work.
+00117440 0000002c F H_sMarkSpr_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_117470: Mark sprite work +0xC = 1 (end requested).
+00117470 00000014 F H_sMarkSpr_End source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_117490: Creates "H_sMarkSprDraw" (RwCalloc 0x58, priority 6325, sub_116F80 / sub_117440); sprite file +0x10 = $a1.
+00117490 000000b0 F H_sMarkSpr_Create source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_117540: Update of "H_PerEfect2Draw" (jump table 0x7B5400): 0 request the one to three persona textures "battle/cutin/c71_c80_L_L_1/[AGS_]a_%03X.tmx" and the p...
+00117540 00001c80 F H_PerEfect2_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1191C0: Destroy callback of "H_PerEfect2Draw": removes the archive, frees the sprite file, drops the nine requests, destroys the six rasters and frees the wor...
+001191c0 000000e8 F H_PerEfect2_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1192B0: Creates "H_PerEfect2Draw" (RwCalloc 0x834, priority 6335); the three persona ids from $a1[0..2] to +8..+0x10.
+001192b0 000000c4 F H_PerEfect2_Create source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_119380: Effect 2 work state == 3.
+00119380 00000018 F H_PerEfect2_IsReady source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1193A0: Effect 2 work state = 4.
+001193a0 00000014 F H_PerEfect2_Start source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1193C0: Returns 40.
+001193c0 0000000c F H_PerEfect2_GetLength source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_1193D0: Update of "H_sMark2SprDraw": the second mark sprite's zoom-in (12.4 scale 13516 -> 4096 on the eased path), a 3-frame and a 2-frame bounce, then the h...
+001193d0 00000554 F H_sMark2Spr_Update source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_119930: Destroy callback of "H_sMark2SprDraw": frees the work.
+00119930 0000002c F H_sMark2Spr_Destroy source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_119960: Creates "H_sMark2SprDraw" (RwCalloc 0x58, priority 6337); +4 = $a1, sprite file +0x54 = $a2.
+00119960 000000c0 F H_sMark2Spr_Create source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3AE000: Tag handler (code, layout): parameter p0; records it for today's weekday (sub_16E2B0 on the sub_16DD40 record) and, for p0 != 0, plays the sound sub_1...
+003ae000 00000140 F frTagPlayVoiceByWeekday source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3AE420: Tag handler: parameters (p0 < 8, p1 < 4; K_Assert frTagTable.c 721 / 722) -> sub_17C7F0(p0, p1). Returns 0.
+003ae420 00000138 F frTagSetCommuRank source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3AEE20: Tag handler (jump table 0x7BB1E0): tests condition p0 against value p1 -- 0..2 the three social stats (sub_16C6F0 / 0x16C740 / 0x16C790) < p1, 3..7 a ...
+003aee20 000002ec F frTagTestCondition source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3AF110: Tag handler, only while the layout runs (default glyph flags bit 7): parameters (kind, bank, index, value): 0 datSetFlag(bank base 0x6A2680[bank] + in...
+003af110 00000244 F frTagSetValue source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B0030: Releases a line chain: for every line (+0x24) every glyph node (+0x28) -- a glyph whose cache entry (+0x1C) drops to refcount 0 frees its raster slot ...
+003b0030 0000013c F frFontLineChainRelease source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B0F50: One glyph of the typewriter reveal (frFontDraw): the glyph becomes visible (its alpha +0x10 low byte raised by 32 * speed / (advance + spacing), clamp...
+003b0f50 000003a4 F frFontGlyphRevealStep source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B1710: Sums the glyph counts (+0x18) of a chain (+0x2C, +0x28) and checks the last line's wait tag: F247 / F215 wait for the voice (H_Snd channel 2) and tick...
+003b1710 000001a8 F frFontChainWaitDone source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B1D90: Lays out tag slot `n` (0x95AC70[n]) into the layout record $a1 character by character: a style change since the previous character starts a new line n...
+003b1d90 0000028c F frFontLayoutTagSlot source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B2020: As sub_3B1D90 for a string argument (the inserted-string tag handlers: names, dates, weekdays).
+003b2020 00000278 F frFontLayoutString source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B22A0: Applies a layout record's pending state: a new-line request (+0x1C, dropped when the current line is still empty) starts a new line node with the reco...
+003b22a0 00000160 F frFontLayoutFlushLine source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B2430: The text layout loop (sub_3B2990): skips a 4-byte header when the second byte is 8, clears the tag flags, marks the layout phase (default glyph flags ...
+003b2430 000004cc F frFontLayoutText source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B41A0: Initialises the GS-list container once (gp-0x46A4 flag): entry size w x h, w * h / 2 bytes, cols * rows entries (also the free count), RwMalloc(32 * n...
+003b41a0 000002f4 F fmGslInit source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2
+# sub_3B4D10: The name-plate frame of a panel (draw type 6): three slices of the rectangle $a0 (left cap of width $a3, the stretched middle, the right cap) through ...
+003b4d10 00000180 F itfPnlDrawFrame3 source=phase5-font2 verified=yes ev=INTEGRATION_LOG.md#font2

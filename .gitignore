@@ -1,0 +1,49 @@
+﻿# Disc-derived data is never committed (GOAL.md ground rules)
+input/
+extracted/
+build/
+/ida/
+*.cvm
+*.bin
+*.iso
+*.elf
+*.i64
+*.id0
+*.id1
+*.id2
+*.nam
+*.til
+*.idb
+# toolchain / editor noise
+.vs/
+out/
+CMakeUserPresets.json
+*.user
+__pycache__/
+# third-party tools are fetched by tools/fetch_tools.ps1, never vendored
+tools/third_party/
+tools/bin/
+tools/downloads/
+
+# logs are never deliverables
+*.log
+
+# Ghidra project (second-opinion decompiler); contains the binary
+/ghidra/
+
+# community symbol hints (ADR-0009): private, never committed; promoted names live in symbols/p3fes.sym
+/symbols/hints/
+/symbols/p3fes.hints.sym
+
+# recompiled C++ is derived from the user's ELF and is generated at build time; never committed
+/recomp/generated/
+
+# local machine setup: verified installers, audit records, out-of-tree tool builds
+/deps/
+
+# Claude Code agent worktrees (git worktrees checked out under the repo; never content of the project)
+.claude/
+
+# Hex-Rays pseudocode (tools/ours/ida/pseudo_export.py -> ida/pseudocode/, covered by /ida/; pseudo.py's per-slice
+# collections): derived from the game binary, a reading hint, never committed
+*.pseudo.c

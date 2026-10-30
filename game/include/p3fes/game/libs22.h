@@ -1,0 +1,132 @@
+// Phase 5 slice libs22 (game/src/cri/libs22.cpp): CRI middleware 0x5838C0-0x58ACF0 -- the MWSFD player's SFX
+// wrappers and setters, the play-list and file-name starts, the audio slave, the SVM server / lock thunks, the MWSFD
+// work hooks, the ADXSTM seek / start / stop slots, the ADX stream input control, the SFD PCM ring (lane) and the MPEG
+// audio bit-rate / frame-size helpers. Register-ABI bodies (arguments in $a0.., the result in $v0), written from
+// p3fes_handgen's faithful bodies; tests/game/test_libs22.cpp pairs every one against its recompiled body.
+#pragma once
+
+#include "p3fes/ee_context.h"
+
+namespace p3fes::game {
+
+namespace l22 {
+namespace ply {                    // the MWSFD player (684 bytes, 8 from 0x7B2FBC); libs12 / libs15 name more of it
+constexpr s32 kSfd = 60;           // the SFD handle (sub_584F30 / sub_584A08 attach SJs to it with sub_58C228)
+constexpr s32 kList = 72;          // the play-list object (= libs15's l15::mwply::kList)
+constexpr s32 kSfx = 168;          // the SFX handle (sub_582828 returns it)
+constexpr s32 kSlave = 640;        // the audio slave record: +0 used, +4 work, +8 size, +12 SJ, +16 target, +20 core
+constexpr s32 kSlaveSj = 652;      // the slave's SJ (SJRBF_Create in sub_584F30; read by sub_584AA0)
+constexpr s32 kSlaveTarget = 656;  // the object whose +192 the SJ is attached to (sub_584A08 moves it)
+constexpr s32 kSlaveCore = 660;    // the slave's core handle (sub_584BE0 in sub_584F30; read by sub_584AA8)
+}  // namespace ply
+namespace lane {                   // an SFD stream lane: SfdHandle + kBase + kSize x lane (libs12's SfdStream)
+constexpr s32 kBase = 4880;
+constexpr s32 kSize = 116;
+constexpr s32 kUsed = 4;           // nonzero once set up; 0 makes the ring calls raise 0xFF000401
+constexpr s32 kRing = 16;          // the PCM ring: +16 base, +20 size, +28 bits, +32 channels, +36 / +40 channel bases,
+                                   // +44 capacity (samples), +48 / +52 write / read index, +56 / +60 write / read total
+}  // namespace lane
+}  // namespace l22
+
+void sub_5838C0(EEContext& ctx);  // 0x5838C0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5838D8(EEContext& ctx);  // 0x5838D8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5838F0(EEContext& ctx);  // 0x5838F0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583940(EEContext& ctx);  // 0x583940 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5839B8(EEContext& ctx);  // 0x5839B8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583A08(EEContext& ctx);  // 0x583A08 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583A78(EEContext& ctx);  // 0x583A78 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583AC8(EEContext& ctx);  // 0x583AC8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583B18(EEContext& ctx);  // 0x583B18 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583BB8(EEContext& ctx);  // 0x583BB8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583C58(EEContext& ctx);  // 0x583C58 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583C70(EEContext& ctx);  // 0x583C70 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583C88(EEContext& ctx);  // 0x583C88 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583CA0(EEContext& ctx);  // 0x583CA0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583CB8(EEContext& ctx);  // 0x583CB8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583CD0(EEContext& ctx);  // 0x583CD0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583CE8(EEContext& ctx);  // 0x583CE8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583D58(EEContext& ctx);  // 0x583D58 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583DB8(EEContext& ctx);  // 0x583DB8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583DE8(EEContext& ctx);  // 0x583DE8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583E58(EEContext& ctx);  // 0x583E58 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583EB8(EEContext& ctx);  // 0x583EB8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583ED0(EEContext& ctx);  // 0x583ED0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583FB8(EEContext& ctx);  // 0x583FB8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583FD0(EEContext& ctx);  // 0x583FD0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_583FE8(EEContext& ctx);  // 0x583FE8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584000(EEContext& ctx);  // 0x584000 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584018(EEContext& ctx);  // 0x584018 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584030(EEContext& ctx);  // 0x584030 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584070(EEContext& ctx);  // 0x584070 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5844C8(EEContext& ctx);  // 0x5844C8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5845E0(EEContext& ctx);  // 0x5845E0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584680(EEContext& ctx);  // 0x584680 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584730(EEContext& ctx);  // 0x584730 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584778(EEContext& ctx);  // 0x584778 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584790(EEContext& ctx);  // 0x584790 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584800(EEContext& ctx);  // 0x584800 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5848D8(EEContext& ctx);  // 0x5848D8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584928(EEContext& ctx);  // 0x584928 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584950(EEContext& ctx);  // 0x584950 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584978(EEContext& ctx);  // 0x584978 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584A08(EEContext& ctx);  // 0x584A08 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584AA0(EEContext& ctx);  // 0x584AA0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584AA8(EEContext& ctx);  // 0x584AA8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584D98(EEContext& ctx);  // 0x584D98 (register ABI: arguments in $a0.., the result in $v0)
+void sub_584F30(EEContext& ctx);  // 0x584F30 (register ABI: arguments in $a0.., the result in $v0)
+void WTLS_set_table_1(EEContext& ctx);  // 0x5851C0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585268(EEContext& ctx);  // 0x585268 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5852A0(EEContext& ctx);  // 0x5852A0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5852C0(EEContext& ctx);  // 0x5852C0 (register ABI: arguments in $a0.., the result in $v0)
+void coshl_11(EEContext& ctx);  // 0x585498 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5854B8(EEContext& ctx);  // 0x5854B8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5854D0(EEContext& ctx);  // 0x5854D0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5854F0(EEContext& ctx);  // 0x5854F0 (register ABI: arguments in $a0.., the result in $v0)
+void hypotl_11(EEContext& ctx);  // 0x585508 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585528(EEContext& ctx);  // 0x585528 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585540(EEContext& ctx);  // 0x585540 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585560(EEContext& ctx);  // 0x585560 (register ABI: arguments in $a0.., the result in $v0)
+void powl_11(EEContext& ctx);  // 0x585640 (register ABI: arguments in $a0.., the result in $v0)
+void sinhl_11(EEContext& ctx);  // 0x585670 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585D38(EEContext& ctx);  // 0x585D38 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585D50(EEContext& ctx);  // 0x585D50 (register ABI: arguments in $a0.., the result in $v0)
+void sub_585E08(EEContext& ctx);  // 0x585E08 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5860B0(EEContext& ctx);  // 0x5860B0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5860D0(EEContext& ctx);  // 0x5860D0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586148(EEContext& ctx);  // 0x586148 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586150(EEContext& ctx);  // 0x586150 (register ABI: arguments in $a0.., the result in $v0)
+void rdbuf__CQ24_STLt9basic_ios2ZcZQ24_STLt11char_traits1Zc_0(EEContext& ctx);  // 0x5861F8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586220(EEContext& ctx);  // 0x586220 (register ABI: arguments in $a0.., the result in $v0)
+void ctime(EEContext& ctx);  // 0x586298 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5862B8(EEContext& ctx);  // 0x5862B8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5862E8(EEContext& ctx);  // 0x5862E8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5862F8(EEContext& ctx);  // 0x5862F8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586338(EEContext& ctx);  // 0x586338 (register ABI: arguments in $a0.., the result in $v0)
+void r_lock_def_free_4(EEContext& ctx);  // 0x5863D8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586420(EEContext& ctx);  // 0x586420 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5864D8(EEContext& ctx);  // 0x5864D8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5865E8(EEContext& ctx);  // 0x5865E8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586688(EEContext& ctx);  // 0x586688 (register ABI: arguments in $a0.., the result in $v0)
+void sub_586898(EEContext& ctx);  // 0x586898 (register ABI: arguments in $a0.., the result in $v0)
+void R_LOCK_DEF_ctx_new_5(EEContext& ctx);  // 0x587DC0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_587E10(EEContext& ctx);  // 0x587E10 (register ABI: arguments in $a0.., the result in $v0)
+void sub_588028(EEContext& ctx);  // 0x588028 (register ABI: arguments in $a0.., the result in $v0)
+void sub_588048(EEContext& ctx);  // 0x588048 (register ABI: arguments in $a0.., the result in $v0)
+void sub_588068(EEContext& ctx);  // 0x588068 (register ABI: arguments in $a0.., the result in $v0)
+void sub_588088(EEContext& ctx);  // 0x588088 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5880A8(EEContext& ctx);  // 0x5880A8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_5883C0(EEContext& ctx);  // 0x5883C0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_588C10(EEContext& ctx);  // 0x588C10 (register ABI: arguments in $a0.., the result in $v0)
+void sub_588FD8(EEContext& ctx);  // 0x588FD8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589688(EEContext& ctx);  // 0x589688 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589830(EEContext& ctx);  // 0x589830 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589928(EEContext& ctx);  // 0x589928 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589AD8(EEContext& ctx);  // 0x589AD8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589BC8(EEContext& ctx);  // 0x589BC8 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589BD0(EEContext& ctx);  // 0x589BD0 (register ABI: arguments in $a0.., the result in $v0)
+void sub_589D58(EEContext& ctx);  // 0x589D58 (register ABI: arguments in $a0.., the result in $v0)
+void sub_58A290(EEContext& ctx);  // 0x58A290 (register ABI: arguments in $a0.., the result in $v0)
+void sub_58AC78(EEContext& ctx);  // 0x58AC78 (register ABI: arguments in $a0.., the result in $v0)
+void sub_58ACF0(EEContext& ctx);  // 0x58ACF0 (register ABI: arguments in $a0.., the result in $v0)
+
+}  // namespace p3fes::game

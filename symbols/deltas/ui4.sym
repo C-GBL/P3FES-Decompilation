@@ -1,0 +1,111 @@
+# ui4.sym  Phase 5 slice delta (game/include/p3fes/game/ui4.h, game/src/ui/ui4.cpp); SLUS_216.21
+# generated 2026-10-22 from the instructions (the p3fes_handgen bodies, the K_Assert file strings itfMesManager.c 0x6A1A70 /
+#   itfPanel.c 0x6A1BF8 / frTagTable.c 0x6A2698 / frFont.c 0x6A2730 / frFontEx.c 0x6A2888, the task names CalcMsgMng /
+#   DrawMsgMng / fontMan, the tables sFrTagTable 0x6A2370 and itfMesManagerDrawTypeTbl 0x6A1C90) and checked by
+#   tests/game/test_ui4.cpp (the dorm replay snapshot, documented-rule checks). Tag handlers keep their sub_* names
+#   (their role is the tag code: ui4.h). Rows: <addr8> <size8> F <name> source=phase5-ui4 verified=yes ev=<doc>#<section>.
+#   Not imported by the agent.
+# sub_1120C0: Runs sprFileHandleUpdate on every .SPR file handle of the list (gp-0x4DB0), from the
+001120c0 00000048 F sprUpdateFiles source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A2660: Script COMM handler of a selection: with no message slot returns 1. Otherwise (K_Assert
+003a2660 000000f0 F scrCommand_MSG_SEL source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A2900: COMM handler: switches the script's message window to type 4 (arg 0) and sets state
+003a2900 00000068 F scrCommand_MSG_WINDOW source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A2970: COMM handler: with no slot returns 1. Otherwise (K_Assert line 1227) while the window
+003a2970 000000bc F scrCommand_MSG_CLOSE source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A2B30: COMM handler SET_MSG_VAR(index, value, type): prints the call (debug printf), then
+003a2b30 000000e0 F scrCommand_SET_MSG_VAR source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A3470: Releases the handle's text lines and resets the text sub-record (itfMesMngInitTextRecord,
+003a3470 000000b8 F itfMesMngClearText source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A4220: sub_3A5CA0(handle of slot, i, text, 0): message argument i of the slot
+003a4220 00000048 F itfMesMngSetMessageArgStringBySlot source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A4CE0: The message manager's start (frFontSystemStart): counters and flags cleared, the 64-slot
+003a4ce0 000000ec F itfMesMngSystemInit source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A5210: On the slot's text line chain: alpha, line code, style, colour set
+003a5210 000000b0 F itfMesMngSetTextStyleBySlot source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A52C0: Pushes the message arguments of the slot in $t2 to the font, lays out a dialogue line
+003a52c0 000000ec F itfMesMngLayoutLineBySlot source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A5540: sub_3A53B0 with the arguments from the sixth on moved one register up and 0 as the
+003a5540 00000030 F itfMesMngLayoutLine source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A6060: Replaces the handle's speaker name line by a layout of `text` at the speaker
+003a6060 000000a0 F itfMesMngSetSpeakerText source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A6B00: Releases the three panels of the handle (+168, +172, +176) and clears state bits 8-11.
+003a6b00 00000088 F itfMesMngReleasePanels source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A6B90: For the 32 message-argument words at `table`: a non-zero word has its heap block
+003a6b90 00000074 F itfMesMngFreeArgStrings source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A7940: Moves a handle's window down by `dy`: text y and every text line's y, panels 1 and 0
+003a7940 00000100 F itfMesMngMoveWindowY source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A7CB0: Moves the selection cursor of a selection sub-record one option by the sign of $a1
+003a7cb0 000000b0 F itfMesMngMoveSelection source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A7D60: Returns the value of the first {pad bit, value} pair (from +40, count at +38) whose bit
+003a7d60 00000064 F itfMesMngKeyToValue source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A7DD0: One frame of the window pop-in: while the window sub-record (+468) is active and in
+003a7dd0 000000b4 F itfMesMngWindowPopStep source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8080: Draws a handle's window panels unless state bit 19 is set: with a window phase >= 1
+003a8080 000000ec F itfMesManagerDrawPanels source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8260: Debug "drawCursolVist": for a handle with a cursor row, finds the widest row of the
+003a8260 000000e4 F itfMesMngMeasureCursor source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8350: Draws sprite 0x10 of i_mes_win01.spr at the window position (+480, +482 - 5 + the pop-in
+003a8350 000000ec F itfMesMngDrawPrompt source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8440: The "CalcMsgMng" update: per slot in use, on its current handle sub_3A6E30, sub_3A7120,
+003a8440 0000007c F itfMesManagerCalcProc source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A84C0: The "DrawMsgMng" update: itfMesManagerDrawMsg on every slot's handle, then the
+003a84c0 00000068 F itfMesManagerUpdateDrawTask source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8530: Destroy callback of both manager tasks: sub_3A4DD0 on every slot id in use (the next
+003a8530 00000058 F itfMesManagerDestroyProc source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8590: Copies the four corners {x0,y0} {x1,y0} {x1,y1} {x0,y1} of a panel into a 32-byte local
+003a8590 0000006c F itfPnlCursorCorners source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8600: sub_3AB2A0(panel 1 of the slot's handle, value).
+003a8600 00000048 F itfMesMngSetPanelValueBySlot source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A8650: itfPnlSetPosition(panel 1 of the slot's handle, x0, y0, x1, y1, z) from
+003a8650 000000bc F itfMesMngSetPanelRectBySlot source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A9080: Draws a panel: sub_3AC590 (an empty hook) and sub_3A90C0(panel, 0).
+003a9080 00000040 F itfPnlDraw source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A90C0: K_Assert line 726 on a null panel, then the panel's draw routine from
+003a90c0 00000074 F itfPnlDrawByType source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3A9E20: Draw type 0: the panel alpha into the work buffer's colour table, then three gouraud
+003a9e20 000000a8 F itfMesManagerDrawType0 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AA280: Draw type 4: the alpha into the colour table, one gouraud quad (index lists 0x7CD4D0,
+003aa280 00000048 F itfMesManagerDrawType4 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AA2D0: Draw type 5: the alpha into the colour table; the rest calls the empty hooks
+003aa2d0 000000a0 F itfMesManagerDrawType5 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AB2A0: K_Assert a non-null type-12 panel (lines 2059 / 2060), then work +4 = value.
+003ab2a0 00000078 F itfPnlSetType12Value source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AC230: Draw type 14: nothing.
+003ac230 00000008 F itfMesManagerDrawType14 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AC500: Draw type 9: the colour alpha at 0x6A212C = 103 * panel alpha / 128 (toward zero), the
+003ac500 00000084 F itfMesManagerDrawType9 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AC590: An empty hook (sub_3A9080 calls it before every panel).
+003ac590 00000008 F itfPnlDrawHook source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AFA40: Destroy callback of the task "fontMan": frees the font styles, releases both deferred line
+003afa40 00000090 F frFontSystemEnd source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AFC30: RwFree of the first word of font style `style` (sFrFontStyles 0x95ACF0, 32 bytes a
+003afc30 00000040 F frFreeFontStyleBlock source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3AFFD0: A copy of sub_3B0170 (sub_3A7490 calls this one).
+003affd0 00000058 F frFontLineReleaseFaded2 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B0170: Steps a line chain's fade (frFontLineFadeStep); once nothing changed any more the
+003b0170 00000058 F frFontLineReleaseFaded source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B1300: sub_3B1330(line, 0) (itfMesManagerDrawMsg).
+003b1300 00000024 F itfMesManagerFontDraw source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B1330: frFontDraw(line, skip, the word at 0x7CE630).
+003b1330 00000024 F itfMesManagerFontDraw2 source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B18C0: The task "fontMan"'s update: releases deferred line list sub_35AEA0() (0x95AE60 + 4i;
+003b18c0 00000058 F frFontManUpdate source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B2900: sub_3B2990(x, y, 0, 0, 0, 0, 255, text, chain): a text layout with style 0, colour
+003b2900 0000003c F frFontLayoutTextSimple source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B2940: sub_3B2990(x, y, 0, style, colour set, mode, alpha, text, chain): the layout with colour
+003b2940 00000050 F frFontLayoutTextAt source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B2990: Builds the 48-byte FrTextLayout record on its frame -- x, y, 16 * colour, style, colour
+003b2990 00000068 F frFontLayoutText source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B2C60: K_Assert(line) ("frFontEx.c" line 19), then the line's z (+0x14) = $f12. 18 callers.
+003b2c60 00000050 F frFontLineSetZ source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B3740: RwFree of the raster-slot manager (gp-0x46AC), which is then cleared.
+003b3740 00000030 F frFontRasterSlotsFree source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B44A0: When the GS list exists (0x95AEBC), RwFrees its two blocks (0x95AEA0, 0x95AEA4), clears it and returns
+003b44a0 00000078 F fmGslFree source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B45F0: A ring buffer of `count` records of `size` bytes: RwMalloc((size + 8) * (count + 1) + 4,
+003b45f0 000000b8 F rbInitRingBuf source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B4740: RwFree of the block in front of a ring buffer (its word -4). Returns 1.
+003b4740 00000030 F rbDestroy source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4
+# sub_3B4A90: For `n` 16-byte entries of a 16.16 shade table: dst = {min(r * t.r, 0xFF0000) >> 16,
+003b4a90 000000a4 F itfPnlShadeColours source=phase5-ui4 verified=yes ev=INTEGRATION_LOG.md#ui4

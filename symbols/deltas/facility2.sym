@@ -1,0 +1,248 @@
+# facility2.sym  Phase 5 slice delta (game/include/p3fes/game/facility2.h); SLUS_216.21
+# generated 2026-10-23 from the slice's role comments (game/src/facility/facility2_*.cpp), each from what the body does
+#   (p3fes_handgen bodies, the IDA pseudocode reference as a reading hint; no IDA database opened); the files are
+#   fclCombine*.c (0x3D3170 .. 0x3DCFB0), fclShop.c (0x3E0940 .. 0x3EFC20) and fclShopMisc.c (0x3F1910 ..), the step
+#   names from the shop sequence's step descriptors 0x6A6FC0... Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-facility2 verified=yes: our own names. ev=<doc>#<section>. Not imported by the agent.
+# sub_3D3170: [fclCombineListCancel] The fusion list's cancel handler (called by the list step sub_3D2E00): a0 -> the list work (+0 the work: +8 the command list, +16 the element set). When the command list reports
+003d3170 00000104 F fclCombineListCancel source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3D3760: [fclCombineListPanelAnim] Starts the fusion list panel's element animation: a0 -> the list work (+20 the element set), a1 = the part (only part 0 does anything), a2 = 0 the opening / 1 the closing ani
+003d3760 0000014c F fclCombineListPanelAnim source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3D9820: [fclListPanelPartAnim] The list window part animator the fusion and shop list windows share (driven by sub_40C520 .. sub_40D330): a0 -> the panel work (panel::: +8 the window element set, +12 the comm
+003d9820 00000464 F fclListPanelPartAnim source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3DCA10: [fclCombineDrawStockSlots] Draws the twelve stock-slot markers of a fusion list row (called by the row drawer sub_3DD260): a0 = x of slot 0 (slots are 22 pixels apart), a1 = y, a2 = alpha, a3 -> the c
+003dca10 0000027c F fclCombineDrawStockSlots source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3DCFB0: [fclCombineDrawRowIcons] Draws a fusion list row's icon strip (called by sub_3DD260): a1 -> the row's element (its x / y / alpha), a2 -> the draw context {+0 x, +4 y, +8 s16 alpha, +10 s16 flags, +12 
+003dcfb0 000002b0 F fclCombineDrawRowIcons source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3E0940: [fclShopGetSequence] Returns the shop's nm sequence (gp - 18024 = 0x7CE688, shops.h kShopSeqGlobal; 0 when no shop is open).
+003e0940 0000000c F fclShopGetSequence source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3E6E20: [fclShopTestFlags] Returns 1 when a shop is open and its work record's flags (+8, shops.h kShopFlags) share a bit with a0, else 0.
+003e6e20 00000058 F fclShopTestFlags source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EAEB0: [fclShopArmsCombineInit] ARMSCOMBINE's init (step descriptor 0x6A70E0): builds the weapon-fusion base-item list for the shop type (sub_3FE3E0(work +0)) into the payload's +12, clears +16 (the persona 
+003eaeb0 00000074 F fclShopArmsCombineInit source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EAF30: [fclShopArmsCombineFini] ARMSCOMBINE's fini: destroys the base-item list (+12) and, when built, the persona list (+16). Returns 0.
+003eaf30 00000054 F fclShopArmsCombineFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EB940: [fclShopArmsCombineDraw] ARMSCOMBINE's draw: unless hidden (flag 2), draws the base-item list and the persona list when there is one. Returns 0.
+003eb940 00000070 F fclShopArmsCombineDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EBB90: [fclShopTradeInit] TRADE's init (0x6A7110): builds the trade list for the shop type -- the root state (shops.h kShopState) 69 lists the trades (sub_3FEF30(type, 0)), 71 the trade-ins (sub_3FEF30(type,
+003ebb90 000000d4 F fclShopTradeInit source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EBC70: [fclShopTradeFini] TRADE's fini: destroys the trade list (+12). Returns 0.
+003ebc70 00000034 F fclShopTradeFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EBFE0: [fclShopTradeDraw] TRADE's draw: the trade list unless hidden (flag 2). Returns 0.
+003ebfe0 00000050 F fclShopTradeDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EC280: [fclShopQuestFini] QUEST's fini (0x6A7140): destroys the request list and its element set (sub_405D60). Returns 0.
+003ec280 00000034 F fclShopQuestFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EC6A0: [fclShopQuestDraw] QUEST's draw: the request list unless hidden. Returns 0.
+003ec6a0 00000050 F fclShopQuestDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EC8E0: [fclShopQuestCancelFini] QUESTCANCEL's fini (0x6A7170): destroys the accepted-request list and its element set (sub_405D60). Returns 0.
+003ec8e0 00000034 F fclShopQuestCancelFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3ECCE0: [fclShopQuestCancelDraw] QUESTCANCEL's draw: the list unless hidden. Returns 0.
+003ecce0 00000050 F fclShopQuestCancelDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3ECF80: [fclShopBookFini] BOOK's fini (0x6A71A0, the compendium): destroys the task the compendium list owns (its user area +12) with its children, then the list and its two element sets (sub_40A200). Returns
+003ecf80 00000058 F fclShopBookFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3ED310: [fclShopBookDraw] BOOK's draw: unless hidden, the compendium list (+16) and sub_40C150 on it. Returns 0.
+003ed310 00000068 F fclShopBookDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3ED5A0: [fclShopBookRegistFini] BOOKREGIST's fini (0x6A71D0): destroys the register list and its element sets (sub_40A200). Returns 0.
+003ed5a0 00000034 F fclShopBookRegistFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EDD80: [fclShopBookRegistDraw] BOOKREGIST's draw: the register list unless hidden. Returns 0.
+003edd80 00000050 F fclShopBookRegistDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EE4E0: [fclShopTalkFini] TALK's fini (0x6A7230): fetches the payload and does nothing with it. Returns 0.
+003ee4e0 00000028 F fclShopTalkFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EE640: [fclShopMoneyFini] MONEY's fini (0x6A7260): fetches the payload and does nothing with it. Returns 0.
+003ee640 00000028 F fclShopMoneyFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EEE50: [fclShopSubtitleFini] SUBTITLE's fini: fetches the payload and does nothing with it. Returns 0.
+003eee50 00000028 F fclShopSubtitleFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3EFC20: [fclShopBgFini] BG's fini (0x6A75CC): destroys the background manager (payload +8, sub_400E30). Returns 0.
+003efc20 00000034 F fclShopBgFini source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F1910: [fclShopCountOwned] How many of item a0 the party holds: the item kind (sub_170ED0's out word) 4 -> the stack count sub_170760(1, item); kinds 0..3 (equipment) -> the inventory slots 0..299 holding it
+003f1910 000000fc F fclShopCountOwned source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F1BA0: [fclShopMakeItemEntry] Builds the 28-byte shop item entry a0 (item::) for item a1: cleared, the id, count 0; a key item (sub_171360) gets the category of flag word 0x100000; otherwise per kind of sub_
+003f1ba0 00000220 F fclShopMakeItemEntry source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F2320: [fclShopApplySale] The sale-day prices of a buy list: a0 -> the list, a1 -> the lineup (lineup::). Marks the list (user flag 2); for every lineup entry on sale (flag 1) whose item has a row, the row g
+003f2320 000001ec F fclShopApplySale source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F25E0: [fclShopFillLineup] Adds the lineup a1's items to the buy list a0 (filters in a2): for each entry with an item -- 0x400 only kind 0, 0x800 only kinds 1..3; an item of kind <= 0 needs its category's ga
+003f25e0 0000035c F fclShopFillLineup source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F3E60: [fclShopRemoveListed] For every row of list a0, removes the row with the same item from list a1 (sub_3C49E0); returns 1 as soon as one is missing from a1, else 0.
+003f3e60 00000094 F fclShopRemoveListed source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F4A90: [fclShopDrawListHeader] Draws a list's column header strip at (a0 + h +0, a1 + h +2), h = t1 (a 16-bit layout record), with alpha (int)(0.82 (0x7CAEF0) x a2 x h +12 / 255); the sprite set by a3: 0 / 1
+003f4a90 00000344 F fclShopDrawListHeader source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F5AB0: [fclShopDrawUserColumnsA] Draws a row's party columns (layout A): sprites 54 55 56 (56 with the category byte) 57 58 59 at (a0, a1), then for the four party members i: when the member mask of the item
+003f5ab0 00000258 F fclShopDrawUserColumnsA source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F5D10: [fclShopDrawUserColumnsB] sub_3F5AB0 with the sprites 52..56 (53 with the category byte), the member table 0x7CD918, the column table 0x6AEF40 and sprite 57 for a member who cannot use the item.
+003f5d10 00000238 F fclShopDrawUserColumnsB source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F5F50: [fclShopDrawUserColumnsC] sub_3F5AB0's layout C (the buy list's equipment rows; run on the shop route): sprite 56 at y +1, sprite 57 with the word of table 0x6AEF60 chosen by the category byte, 58 59 
+003f5f50 00000278 F fclShopDrawUserColumnsC source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F61D0: [fclShopDrawCompareA] Draws the equipment comparison of a row (layout A): the member m = (category & 0xF00) >> 8, sprites 54 55 56; whether m can use it (byte table 0x7CD928) picks 63 / 64 (dimmed to 
+003f61d0 00000610 F fclShopDrawCompareA source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F67E0: [fclShopDrawCompareB] sub_3F61D0's layout B (the sell / equip lists): a3 = 1 adds sprites 199 200, 0 sprite 177; sprites 201 181 and the category digit (sprite 5 at +112 / +8); 202 / 203 or 179 / 180 
+003f67e0 0000073c F fclShopDrawCompareB source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F6F20: [fclShopDrawCompareC] The accessory comparison of a row: sprites 117 118 at 0.82 x alpha (0x7CAEF0; the float to byte conversion with the 2^31 correction), 119 120, the category digit (sprite 5 at +13
+003f6f20 0000046c F fclShopDrawCompareC source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F7890: [fclShopDrawOwnedCount] Draws a row's owned-count box: a3 = 1 -> sprites (table 0x6AEFF0 words 3 / 5) and the count (row +14, "%2d" at 0x7CD954) at (+547, +162); a3 = 0 -> words 0 1 2 and the count at
+003f7890 000001e8 F fclShopDrawOwnedCount source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3F9510: [fclShopDrawListRow] The row drawer of the facility lists (nmCmdListSetRowDrawFunc in sub_3FE3E0 / sub_3FE850 / sub_3FEF30): a0 / a1 = x / y, a2 = alpha, a3 -> the list, t0 -> the row. The list mode (
+003f9510 000003d8 F fclShopDrawListRow source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FA210: [fclShopListWindowAnimA] The window animation of a facility list (the command list's update callback, set by the list builders): a0 -> the list, s0 = its user area (menu::), keyed on the list status (
+003fa210 0000030c F fclShopListWindowAnimA source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FA520: [fclShopListWindowAnimB] The window animation of a facility list (the command list's update callback, set by the list builders): a0 -> the list, s0 = its user area (menu::), keyed on the list status (
+003fa520 000002e0 F fclShopListWindowAnimB source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FA800: [fclShopListWindowAnimC] The window animation of a facility list (the command list's update callback, set by the list builders): a0 -> the list, s0 = its user area (menu::), keyed on the list status (
+003fa800 000002e0 F fclShopListWindowAnimC source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FAAE0: [fclShopListWindowAnimD] The window animation of a facility list (the command list's update callback, set by the list builders): a0 -> the list, s0 = its user area (menu::), keyed on the list status (
+003faae0 000002e0 F fclShopListWindowAnimD source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FADC0: [fclShopListWindowAnimE] The window animation of a facility list (the command list's update callback, set by the list builders): a0 -> the list, s0 = its user area (menu::), keyed on the list status (
+003fadc0 000002fc F fclShopListWindowAnimE source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FB0C0: [fclShopQtyOpen] Opens the quantity selector a0 (qsel::) at count 1 (a1 = 0 buying, else selling): flags |= 1 and the mode bit (2 buy / 4 sell). Buying: the maximum is 99, or yen / price (sub_16DD50, 
+003fb0c0 000001d0 F fclShopQtyOpen source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FB2F0: [fclShopQtyStepBuy] One frame of the buying quantity selector a0 (qsel::): the pad (0x7E0952 / 0x7E095A) gives the step +1 (0x1000 up), -1 (0x4000 down), +10 (0x2000 right) or -10 (0x8000 left); the n
+003fb2f0 00000234 F fclShopQtyStepBuy source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FB530: [fclShopQtyStepSell] One frame of the selling quantity selector a0 (qsel::): the same keys as sub_3FB2F0; the count is clamped to 1..owned (+22) with flag 8 at the owned count and 0x10 at 1. Returns 1
+003fb530 00000178 F fclShopQtyStepSell source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FBF10: [fclShopSetWord3] Stores 3 into the halfword at a0 (the BUY update sub_3E9AF0's request record).
+003fbf10 00000010 F fclShopSetWord3 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FCA00: [fclShopDrawFrameSprites] Draws the sprites 82 83 84 80 81 at (0, 0) with alpha a2.
+003fca00 000000c4 F fclShopDrawFrameSprites source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FCBE0: [fclShopDrawCategoryRowA] A category row drawer (a2 = alpha, 0 draws nothing; a3 -> the list, t0 -> the row): on the cursor row the highlight 95 and a -2 lift; sprites 89 90; the category icon 85 + c 
+003fcbe0 000001d4 F fclShopDrawCategoryRowA source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FD140: [fclShopDrawCategoryRowB] sub_3FCBE0 with the highlight 83, sprites 77 78, the icon 73 + c and 82 / 81 / 79 80 drawn with 1 - lift.
+003fd140 000001dc F fclShopDrawCategoryRowB source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FD7E0: [fclShopFreeCategoryRow] Row-removed callback of the category list: frees the row's element set (+8) and destroys its sub-list (+4). Returns 0.
+003fd7e0 00000040 F fclShopFreeCategoryRow source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FD8E0: [fclShopOpenCategories] Opens the cursor category's sub-list and starts the animations: the categories work a0 (+0 the category list, +8 the window element set): sub-list open (sub_3C6EE0), the window
+003fd8e0 000000a4 F fclShopOpenCategories source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FD990: [fclShopUpdateCategories] One frame of the category lists (the BUY update): steps the window elements, every category's sub-list (sub_3FE1F0) and elements; while the cursor sub-list takes input (statu
+003fd990 00000324 F fclShopUpdateCategories source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE1F0: [fclShopUpdateCategoryList] Steps the command list a0 (nmCmdListUpdate) and plays the cursor sounds: kind 0 when the cursor moved down or scrolled (nmCmdListMovedDownRow / nmCmdListScrolledRow), kind 
+003fe1f0 000000c0 F fclShopUpdateCategoryList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE3E0: [fclShopBuildFusionItemList] ARMSCOMBINE: builds the base-item list for shop type a0 -- a command list (88-byte user area, 7 rows, spacing 26) with the user's shop type and mode -4; for each of the ei
+003fe3e0 000001e4 F fclShopBuildFusionItemList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE5D0: [fclShopUpdateFusionItems] Steps the command list a0 (nmCmdListUpdate) and plays the cursor sounds: kind 0 when the cursor moved down or scrolled (nmCmdListMovedDownRow / nmCmdListScrolledRow), kind 5
+003fe5d0 000000c0 F fclShopUpdateFusionItems source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE690: [fclShopAddFusionPersonas] ARMSCOMBINE: adds a row per stock persona to list a0 for the base item entry a1: the row's item entry is a copy of a1, +20 the persona; when the persona makes an item from i
+003fe690 0000013c F fclShopAddFusionPersonas source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE7D0: [fclShopFusionPersonaFlags] A weapon-fusion persona row's flags: 0x10 when it makes nothing (+28 = 0), 0x40 when it is the current persona (its id == sub_1752B0()). Returns 0.
+003fe7d0 00000074 F fclShopFusionPersonaFlags source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE850: [fclShopBuildFusionPersonaList] ARMSCOMBINE: the persona list for shop type a0 and the base item entry a1 -- a command list (88 bytes, 6 rows, spacing 30) with mode -5, the rows of sub_3FE690, open, t
+003fe850 000000f4 F fclShopBuildFusionPersonaList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FE950: [fclShopUpdateFusionPersonas] Steps the command list a0 (nmCmdListUpdate) and plays the cursor sounds: kind 0 when the cursor moved down or scrolled (nmCmdListMovedDownRow / nmCmdListScrolledRow), kin
+003fe950 000000c0 F fclShopUpdateFusionPersonas source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FEA10: [fclShopAddTradeTable] TRADE: adds the entries of table a1 {entries, count} (14-byte tent::) to list a0: an entry whose flag is 0 or set, with an item and a first material count, gets a row (node word
+003fea10 00000120 F fclShopAddTradeTable source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FEB30: [fclShopTradeRowState] A TRADE row's owned count and availability: +14 = the owned count of its item (sub_3F1910's rule, inline); flag 0x10 when it is 99 or more, or when either material (+20 / +24, 0
+003feb30 00000310 F fclShopTradeRowState source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FEE40: [fclShopTradeRefresh] Recomputes every TRADE row of list a0 with sub_3F1910 (the same rule as sub_3FEB30). Returns 0.
+003fee40 000000f0 F fclShopTradeRefresh source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FEF30: [fclShopBuildTradeList] TRADE: the trade list for shop type a0 (a1 = 1 the trade-ins) -- a command list (88 bytes, 5 rows, spacing 26), mode -3 / -2, the base table off_6AD4A8 / off_6AD4A0 (sub_3FEA10
+003fef30 00000220 F fclShopBuildTradeList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FF150: [fclShopBuildOldTradeList] The trade list as it was at the last visit (for sub_3FF460): the progress mask of the 8 flags of table 0x6ACC60 is read (with flag 6 free on the 'AGS_' variant), the flags a
+003ff150 00000304 F fclShopBuildOldTradeList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FF460: [fclShopMarkNewTrades] Marks the rows of list a0 that are new (no row with the item in the old list a1) or whose materials changed (+20..+26) with 0x80; matched rows are removed from a1.
+003ff460 0000010c F fclShopMarkNewTrades source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_3FF570: [fclShopUpdateTradeList] Steps the command list a0 (nmCmdListUpdate) and plays the cursor sounds: kind 0 when the cursor moved down or scrolled (nmCmdListMovedDownRow / nmCmdListScrolledRow), kind 5 w
+003ff570 000000c0 F fclShopUpdateTradeList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4003A0: [fclShopFreeListPair] Destroys a {command list, object} pair a0 (null: nothing): frees the object at +4 when set (sub_3C45F0), then the list at +0.
+004003a0 0000004c F fclShopFreeListPair source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4006C0: [fclShopBgPartsPurge] A background part list's draw callback (data ref): walks the part list (the list a3's user +4) and removes every part whose event pair (+4 / +6) has happened (sub_3FFA20).
+004006c0 0000007c F fclShopBgPartsPurge source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4008F0: [fclShopBgPartsDraw] A background part list's draw: by the list's row count 6 / 5 / 4 the sprites 79 80 / 81 82 / 83 84 at (a0, a1) with alpha a2, then the purge of sub_4006C0.
+004008f0 00000198 F fclShopBgPartsDraw source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_400E30: [fclShopBgManagerDestroy] Destroys the background manager a0 (shops.h kBg*; null or without a list: nothing): its task with the children (kwlnTaskDestroyWithHierarchy, when there is one), then the ele
+00400e30 00000058 F fclShopBgManagerDestroy source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4016D0: [fclPersonaBestStats] The best-stat mask of persona a0: the stats St Ma En Ag Lu (sub_173A00(persona, 0..4)) as the bits 1 2 4 8 16 of the highest one. A tie is kept only between St and Ma (mask 3); f
+004016d0 00000128 F fclPersonaBestStats source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_401800: [fclFusionItemFlag] The game flag of a weapon-fusion item: the index i of item a0 in the 24 halfwords of 0x6AF3A0 (copied to the stack) -> flag 4736 + i; not listed -> 0.
+00401800 00000088 F fclFusionItemFlag source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_401A00: [fclFusionResult] The item persona a1 makes from base item a0 in weapon fusion; *a2 (a stack word when a2 is null) gets it. The fixed table (gp - 21512 = 0x7CD8E8 -> 0x6AD1D0, 16 {persona id, item} pa
+00401a00 0000028c F fclFusionResult source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_401C90: [fclFusionFindBand] The level band of persona a1 in the band table a0 {6-byte entries {u8 lo, u8 hi, s16, s16}, count}: the first with lo <= level <= hi, else 0.
+00401c90 00000060 F fclFusionFindBand source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_401CF0: [fclFusionFindArcanaBand] The 46-byte level band of persona a0 in table 0x7CD8D8 -> 0x6ACFC0 (10 entries {u8 lo, u8 hi, u16 per arcana ...}): the first containing its level, else 0. A null persona is 
+00401cf0 00000098 F fclFusionFindArcanaBand source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_401D90: [fclFusionFindFoolEntry] The 6-byte entry {u16 persona id, u8, u8, u8} of persona a0 in table 0x7CD8E0 -> 0x6AD190 (9 entries; the Fool personas' values), else 0.
+00401d90 0000004c F fclFusionFindFoolEntry source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_401DE0: [fclFusionMakeOrder] Builds the weapon-fusion order a0 (order::, cleared) for base item a1 and persona a2. A fixed result (the table of sub_401A00) sets flag 2 and fills the order from that item (sub_
+00401de0 0000061c F fclFusionMakeOrder source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_402400: [fclFusionOrderItem] The shop item entry a1 of order a0: the item, count 1, the order's bytes +13 / +12 at +9 / +8, the category of its record word, +12 = 1 and the two values (+14 / +16 at +16 / +18)
+00402400 00000078 F fclFusionOrderItem source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_402510: [fclShopSlotHolds] Does inventory slot a3 hold item a0 under the options a2? (a1 = the member, -1: the item's own, sub_171250): the slot's item (sub_16F630(1, slot)) must be a0; unless option 8 the sl
+00402510 00000198 F fclShopSlotHolds source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4032F0: [fclQuestAccept] Accepts request a0: sets its game flag (sub_404470(id, 1)) and records it (sub_17C4E0).
+004032f0 00000044 F fclQuestAccept source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_403340: [fclQuestCancel] Cancels request a0: drops the record (sub_17C590) and clears its game flag (sub_404470(id, 0)).
+00403340 00000040 F fclQuestCancel source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_403410: [fclQuestDeadline] The deadline state of request a0 from its condition block (sub_4037E0): kind (+7 >> 4) 0 -> 3 (no deadline); kind 1 -> the date +6 (bits 6..11 month, 0..5 day); kind 2 -> the date +
+00403410 00000110 F fclQuestDeadline source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_403760: [fclQuestGet48] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): s16 +48.
+00403760 00000020 F fclQuestGet48 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_403780: [fclQuestGet50] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): s16 +50.
+00403780 00000020 F fclQuestGet50 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4037A0: [fclQuestGet54] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): s16 +54.
+004037a0 00000020 F fclQuestGet54 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4037C0: [fclQuestGet52] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): s16 +52.
+004037c0 00000020 F fclQuestGet52 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4037E0: [fclQuestGetCond] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): the address of the condition block +8.
+004037e0 00000020 F fclQuestGetCond source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_403860: [fclQuestGetBlock16] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): the address of +16.
+00403860 00000020 F fclQuestGetBlock16 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_4038E0: [fclQuestGet44] Quest record accessor (the 64-byte records at *(gp - 21504) = 0x7CD8F0 -> 0x6AD4C0, index a0): the word +44.
+004038e0 00000020 F fclQuestGet44 source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_404470: [fclQuestSetFlag] Sets (a1 = 1) or clears request a0's game flag (+20) unless it is 0xFFFF.
+00404470 00000044 F fclQuestSetFlag source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_404750: [fclQuestListAnim] The request list's element animations (the QUEST / QUESTCANCEL lists): a0 -> the list, a1 = the part 0..7 (jump table 0x7BBDE0), a2 = 0 in / 1 out. Each case copies the eighteen 28-
+00404750 00001218 F fclQuestListAnim source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_405A90: [fclQuestRowFree] Row-removed callback: frees the row's element set (row user +8) with sub_3DFF00.
+00405a90 0000002c F fclQuestRowFree source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_405D60: [fclQuestListDestroy] Destroys a request list a0: its window element set (user +8), then the list.
+00405d60 00000044 F fclQuestListDestroy source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_405DB0: [fclQuestCompare] The request list's sort comparator (nmCmdListSort): the order key (+58) of b's request minus a's (the row user +4 is the request id).
+00405db0 0000004c F fclQuestCompare source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_405E00: [fclQuestListSort] Sorts the request list a0 with sub_405DB0.
+00405e00 0000002c F fclQuestListSort source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_405E30: [fclQuestListUpdate] One frame of the request list a0: steps the window elements and every row's, the list (nmCmdListUpdate) with the cursor sounds 0 / 5, the part-1 out animation (sub_404750(list, 1,
+00405e30 00000140 F fclQuestListUpdate source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_406AA0: [fclShopDrawDatePanel] Draws the date panel at (a0, a1) with alpha a2: sprite 3, the time-of-day sprite 5 + (t - 1) (t = datGetTime, 8 counted as 9, the slots 2..5 drawn as 8 on a holiday / Sunday), t
+00406aa0 000001f8 F fclShopDrawDatePanel source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_407180: [fclQuestDrawWindow] The request list's window draw (data ref): draws the window element set (user +8) through sub_406CA0 with {x, y, alpha, list, 0}, then removes the filtered rows with the user flag
+00407180 0000008c F fclQuestDrawWindow source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_407210: [fclQuestDrawRow] The request list's row draw: draws the row's element set (row user +8) through sub_406CA0 with {x, y, alpha, flags (1 on the cursor row), list, row}.
+00407210 000000c0 F fclQuestDrawRow source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_409C80: [fclBookFillList] BOOK: fills the compendium list a0 with the registered personas 1..255 (sub_17C8C0(id), after sub_3F03E0(8)): a row (16-byte crow::) with the persona, the summon price 3 s^2 + 2000 (
+00409c80 0000020c F fclBookFillList source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_409E90: [fclBookStockRegistered] Returns 1 when a stock persona (sub_174A90 over the stock, sub_175410 slots) is registered in its current form (sub_17CA10 == 1), else 0.
+00409e90 00000088 F fclBookStockRegistered source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_409F20: [fclBookRowFree] Row-removed callback: frees the row's element set (row user +12) with sub_3DFF00.
+00409f20 0000002c F fclBookRowFree source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40A200: [fclBookListDestroy] Destroys a compendium list a0: its element sets (user +28, and +32 when set), then the list.
+0040a200 00000060 F fclBookListDestroy source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40A260: [fclBookRegisterAll] BOOKREGIST: registers every row's persona (sub_17C960(row user +4)).
+0040a260 0000004c F fclBookRegisterAll source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40A5B0: [fclBookCompareLevel] Compendium comparator: by level (b - a), then arcana (PERSONA.TBL +2, gp - 18640), then id.
+0040a5b0 00000084 F fclBookCompareLevel source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40A640: [fclBookCompareArcana] Compendium comparator: by arcana (a - b), then level (b - a), then id (a - b).
+0040a640 00000084 F fclBookCompareArcana source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40A6D0: [fclBookSort] Re-sorts the compendium list a0 by arcana (a1 = 1, sub_40A640) or by level (sub_40A5B0), keeping the cursor row on its screen line (nmCmdListSelect), and records the order in the user fl
+0040a6d0 000000e8 F fclBookSort source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40A7C0: [fclBookDrawMark] Draws sprite 120 at (a0, a1) with alpha a2.
+0040a7c0 00000028 F fclBookDrawMark source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40B630: [fclBookDrawWindow] The compendium's window draw: sprite 27, the element set +28 through sub_40A7F0 (user flag 4 while the filtered rows are removed, then again), and the element set +32 when set thro
+0040b630 0000014c F fclBookDrawWindow source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40B780: [fclBookDrawRow] The compendium's row draw: the row's element set (+12) through sub_40A7F0 with {x, y, alpha, flags (1 on the cursor row), list, row}.
+0040b780 000000c0 F fclBookDrawRow source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C150: [fclShopListFlagBit] Reads list a0's user flag bit 0 into $v1 (a leftover: nothing is returned in $v0).
+0040c150 00000018 F fclShopListFlagBit source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C1E0: [fclShopAddOptionRows] Adds the option entries of table a1 {16-byte entries, count} to the list of work a0 (+12): an entry whose two flags are 0 or set gets a row (12-byte user: +4 the entry, +8 an el
+0040c1e0 00000130 F fclShopAddOptionRows source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C460: [fclShopOptionRowFree] Row-removed callback: frees the row's element set (row user +8) with sub_3DFF00.
+0040c460 0000002c F fclShopOptionRowFree source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C520: [fclListPanelCloseSub] The panel a0's closing for a sub-window: parts 4, 0, 1, 5, 6 out (sub_3D9820).
+0040c520 00000084 F fclListPanelCloseSub source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C5B0: [fclListPanelClose] The panel a0's closing: parts 4, 0, 1, 2, 3, 7 out.
+0040c5b0 00000098 F fclListPanelClose source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C650: [fclListPanelDecide] The panel a0's decision: part 0 out with the cursor row highlighted, part 7 out.
+0040c650 00000048 F fclListPanelDecide source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40C6A0: [fclListPanelOpen] The panel a0's opening: parts 0 and 7 in.
+0040c6a0 00000048 F fclListPanelOpen source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40CA00: [fclListPanelUpdate] Steps the panel a0's list (nmCmdListUpdate); on a cancel (2) the closing of sub_40C5B0. Returns the update's result.
+0040ca00 000000c4 F fclListPanelUpdate source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2
+# sub_40D330: [fclListPanelStep] A list's per-frame callback: steps the window elements (user +8) and every row's, then part 1 out (sub_3D9820(user, 1, 1)).
+0040d330 00000080 F fclListPanelStep source=phase5-facility2 verified=yes ev=INTEGRATION_LOG.md#facility2

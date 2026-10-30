@@ -1,0 +1,22 @@
+# libs8.sym  Phase 5 slice delta (game/include/p3fes/game/libs8.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-28 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the pair tests on the replay snapshots' ADXM state; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-libs8 verified=yes: names from what each body does. ev=<doc>#<section>. Not imported by the agent.
+# sub_540048: sceReferThreadStatus, then sceWakeupThread only for status 4 (WAIT) / 12 (WAITSUSPEND)
+00540048 00000050 F adxm_WakeupThrd source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# sub_540098: a tail call to sceSleepThread (ADXM's threads and the main thread sleep through it)
+00540098 00000014 F adxm_SleepThrd source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# sub_5400B0: sceResumeThread only for status 8 (SUSPEND) / 12 (WAITSUSPEND), returns its result or 0
+005400b0 00000064 F adxm_ResumeThrd source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# sub_540118: sceSuspendThread unless the status is 8 / 12, returns its result or 0
+00540118 00000060 F adxm_SuspendThrd source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# __errno (map name): returns 0x788648, the flag under which ExecVint wakes the user vsync thread and sub_540ED8 the
+#   user idle thread (the ADXM_SetupThrdEx threads)
+00540550 0000000c F adxm_GetThrdMode source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# sub_540560: 1 when ADXM's setup count 0x788644 (ADXM_SetupThrd increments it) is non-zero
+00540560 00000010 F adxm_IsSetup source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# sub_543470: three 15-bit keys from a key string by chained table walks (0x7C11B8); the ADX encoder's frame writer
+#   sub_544720 XORs each scale with a state advanced as (state * mult + add) & 0x7FFF
+00543470 000001b4 F adxenc_CalcKey source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8
+# sub_54DE90: the same key walk for the AHX decoder (its own init counter 0x7973A0)
+0054de90 000001b4 F ahx_CalcKey source=phase5-libs8 verified=yes ev=INTEGRATION_LOG.md#libs8

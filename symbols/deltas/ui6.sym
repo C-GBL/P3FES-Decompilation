@@ -1,0 +1,295 @@
+# ui6.sym  Phase 5 slice delta (game/include/p3fes/game/ui6.h, game/src/ui/ui6_*.cpp); SLUS_216.21
+# generated 2026-10-23 from the instructions (the p3fes_handgen bodies, the task-name strings H_CampNewItem /
+#   H_CampSoubi1Draw / H_CampStatusPersonaDraw / H_CampComuDraw / H_CampSystemMenuDraw / H_ConfigMenuDraw /
+#   H_NewCampSkillDraw / H_CampPartyStatusDraw / H_CampTradeDraw / H_PcStatusParts00 ..., the file strings
+#   camp/*.pak / *.tmx / *.bmd, the jump tables, the callers) and checked by tests/game/test_ui6.cpp (the climb, battle
+#   and dorm replay snapshots driven frame by frame, documented-rule checks). Our own names (no community hint).
+#   Rows: <addr8> <size8> F <name> source=phase5-ui6 verified=yes ev=<doc>#<section>. Not imported by the agent.
+# sub_11BBB0: (root work): draws the camp main list from the tween records at gp-19876: rows 0..6 (sub_115AD0 of camp
+# sprite file 4, row 5 greyed in The Answer), the cursor bar (record 10), the selection caption (record 11, sprite 7 + ...
+0011bbb0 000009a0 F H_Camp_RootDrawList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_11C880: (root work, z in $f12): the main list's open animation frame: frames 16..21 fade the persona background
+# (sub_114450 on the CampPersonaTexControl texture, gp-19856) and the black curtain in, frames 12..21 slide the frame ...
+0011c880 00000400 F H_Camp_RootDrawOpen source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_11CFB0: (root work, z in $f12): the 22-frame confirm flash after a selection (state 0xA): the background fading
+# out over 10 frames, the frame sprite, the scrolling side strip (+32 moving by 1, wrapping at 767 by -448, file 7 ...
+0011cfb0 000003ec F H_Camp_RootDrawConfirm source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_11D6D0: (root work, z in $f12): the close animation (states 7 / 8): background alpha 255 - 255 * timer / 22, the
+# frame sprite, the side strip and the list.
+0011d6d0 000003a8 F H_Camp_RootDrawClose source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_11DDB0: (root work): the side strip (+32 scrolling, file 7 sprites 3 / 4, drawn twice near the wrap) and the
+# list -- the frame drawn when nothing animates.
+0011ddb0 00000228 F H_Camp_RootDrawIdle source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_11DFE0: (root work, z in $f12): the input state's frame: the persona background, the frame sprite, the cursor
+# bar easing to y 57 + 19 cursor (gp-19876 record 10 +60; +40 = 1 once it arrived), the side strip and the list.
+0011dfe0 00000390 F H_Camp_RootDrawInput source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1236A0: (xy, pc, gauge, alpha): the HP block of a party member: the name (sub_177790 -> sprintf -> sub_3B32D0),
+# the gauge (sub_113A30, `gauge` px), the frame (sprite 4 of camp file 8), the current HP (datGetPcHp) as up to three ...
+001236a0 000004d0 F H_Camp_StatusDrawHp source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_124370: (xy, pc, frame): a party member's status panel during its reveal: the frame sprite sliding in over 3
+# frames, then from frame 4 the level (datGetPcLevel, two digits of font 2), HP (sub_1236A0) and SP (sub_123B70) ...
+00124370 000007b4 F H_Camp_StatusDrawPcPanelIn source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_124B30: (xy, ?, pc, alpha): the same panel drawn at once: frame, level digits, HP / SP blocks with their gauges
+# (76 - 76 * cur / max), condition icon, sparkle ring.
+00124b30 000002c4 F H_Camp_StatusDrawPcPanel source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_125D70: Update of a status sub-task ("H_PcStatusParts00", created by sub_1269A0 state 3): state 0 -> 1; mode +4
+# = 0 waits, 1 fades the backdrop in over 8 frames (+6 counter), 2 fades it out; draws the persona background, the ...
+00125d70 0000096c F H_Camp_UpdateStatusPartsTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1269A0: Update of "H_CampStatusDraw" (the Status page; jump table 0x7B5B10): state 0 starts the texture build of
+# camp/status/i_camp_hum_blue.tmx (The Answer: AGS_i_camp_hum_blue_03.tmx) into +60; 1 polls it (+64 the texture); 2 ...
+001269a0 00000a04 F H_Camp_UpdateStatusDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1273B0: (pc, xy, alpha): the protagonist's social stats: Academics / Charm / Courage rank sprites
+# (datGetAcademicLevel / CharmLevel / CourageLevel of the points sub_16C6F0 / 16C740 / 16C790; camp file 9 sprites ...
+001273b0 0000068c F H_Camp_StatusDrawSocial source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_127C00: Update of "H_CampStatusPersonaDraw" (the Status screen's persona page; jump table 0x7B5B40): state 0
+# waits for flash 3 and creates the persona picture (sub_1339A0 of datGetPcPersonaId(1)); 1 waits for the flash, sets ...
+00127c00 000003bc F H_Camp_UpdateStatusPersonaDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_128720: (xy, bonus, persona, alpha): the five persona stats (St Ma En Ag Lu: datPersonaGetTotalStat(persona, i))
+# as two digits of sprite font 2, plus the bonus bytes +56..+60 of `bonus` when given.
+00128720 0000051c F H_Camp_StatusDrawPersonaStats source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_128C40: (xy, bonus, persona, alpha): as sub_128720 with sub_173580 (the stat without equipment bonus) -- the
+# facility screens' variant.
+00128c40 0000051c F H_Camp_StatusDrawPersonaBaseStats source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1293B0: (xy, next, persona, alpha): the persona's eight skill slots in 2 x 4 cells (sprite 18 of camp file 8,
+# the skill name through sprintf + sub_3B32D0, the element icon), the new skills of `next` (+62) marked; then the ...
+001293b0 00000778 F H_Camp_StatusDrawSkills source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_129B30: (xy, persona, frame): the persona status panel's 20-frame reveal: the frame sliding in from +300 over 5
+# frames, the nine stat labels (sub_1281E0) appearing one per frame, resistances (sub_128480), stats (sub_128720), the ...
+00129b30 00000a28 F H_Camp_StatusDrawPersonaPanelIn source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12A560: (xy, persona, frame): the same panel sliding out (+300 * frame / 5) and fading over 5 frames.
+0012a560 000006fc F H_Camp_StatusDrawPersonaPanelOut source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12AC60: (xy, persona, alpha): the persona status panel drawn at once: labels, frames, resistances, stats, the
+# five stat bars, skills and next exp.
+0012ac60 0000069c F H_Camp_StatusDrawPersonaPanel source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12B300: (xy, persona, alpha): sub_12AC60 without the camp file 1 / 12 frame sprites (the variant drawn over
+# another backdrop).
+0012b300 00000560 F H_Camp_StatusDrawPersonaPanelPlain source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12B860: (xy, bonus, persona, alpha): the persona table used by the persona screen and the facilities: labels,
+# resistances, stats with the bonus bytes (sub_128720), the five bars with the gain bars (sub_129160 per stat), ...
+0012b860 00000478 F H_Camp_StatusDrawPersonaTable source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12BFB0: (xy, bonus, persona, alpha): sub_12B860 on the base stats (sub_128C40 / sub_173580).
+0012bfb0 00000478 F H_Camp_StatusDrawPersonaBaseTable source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_133180: (xy, bonus, persona, fade): the facility screens' persona card: the table (sub_12B860) at alpha 255 -
+# fade, the frame (sprite 1 of camp file 8) and the arcana card (camp file 6, datPersonaGetArcana - 1) at +12 / +96, ...
+00133180 00000164 F H_Camp_DrawPersonaCard source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_133460: (xy, bonus, persona, fade): sub_133180 on the base-stat table (sub_12BFB0).
+00133460 00000164 F H_Camp_DrawPersonaBaseCard source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1345B0: (tween, ?, element, ids, cursor, previous): one tween element of the persona screen's detail (jump table
+# 0x7B5C80): 0 / 1 the persona table and panel of the selected (+cursor) or previous stock slot, the rest its frame ...
+001345b0 00000344 F H_Camp_PersonaDrawElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_134900: (tweens, ...): steps the 10 detail tween records (sub_18B700), draws each active one (sub_1345B0) and
+# returns 1 when all reached their last frame.
+00134900 00000104 F H_Camp_PersonaRunDetailTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_167930: Update of "H_CampFrStatusPersonaDraw" (the party-status screen's persona page; jump table 0x7B62C0):
+# state 0 requests flash 2 (sub_1685E0) and creates a "CampPersonaDispCtlDraw" picture of the member's persona (+14); ...
+00167930 00000584 F H_Camp_UpdateFrStatusPersonaDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12C430: Update of the equipment screen "H_CampSoubi1Draw" (jump table 0x7B5BC0, state at +4): 0 waits for flash
+# 15, allocates the three tween arrays (+696 / +700 / +704) and requests camp/camp_equip.pak (+0); 1 takes its two ...
+0012c430 000017ec F H_Camp_UpdateSoubi1DrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12DC20: (equip work): steps the 10 slot-panel tweens (+696), draws each active one (sub_12E3B0) and returns 1
+# when all finished.
+0012dc20 000000d0 F H_Camp_EquipRunSlotTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12DCF0: (equip work): the same for the 10 candidate-list tweens (+700, sub_12F6D0).
+0012dcf0 000000d0 F H_Camp_EquipRunListTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12E3B0: (equip work, element, tween): one panel of the slot menu (jump table 0x7B5C00): elements 0..3 the weapon
+# / armour / boots / accessory slots of the member (+18: the equipped entry's icon from its mask (sub_12DF50), name ...
+0012e3b0 00001320 F H_Camp_EquipDrawSlotPanel source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_12F6D0: (equip work, element, tween): one panel of the candidate list (jump table 0x7B5C20): the slot header,
+# the five visible candidates (+40 from +36) with icon, name and the stat of the slot's kind, the cursor row, the ...
+0012f6d0 00001764 F H_Camp_EquipDrawListPanel source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1311D0: Update of the persona screen "H_CampStatusPersonaDraw" (jump table 0x7B5C40): 0 waits for flash 4,
+# allocates the tweens (+100 x100, +104 x10), requests camp/camp_per.pak (+80) and lists the used stock slots (ids ...
+001311d0 00001fac F H_Camp_UpdateCampStatusPersonaDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_133E10: (tween, files, element, ids, cursor): one element of the persona list: 28 the header, 27 the frame,
+# 1..13 a row (the persona name from datGetPersonaName, highlighted on the cursor), 14..26 its level digits (font 1 / ...
+00133e10 00000698 F H_Camp_PersonaDrawRow source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1344B0: (tweens, files, ids, cursor): steps the 100 list tweens, draws each active one (sub_133E10), returns 1
+# when all finished.
+001344b0 000000f4 F H_Camp_PersonaRunListTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1355C0: Update of the social-link screen "H_CampComuDraw" (jump table 0x7B5D00): 0 waits for
+# camp/comu/datComuHelp.bmd (+336, message 11) and builds the list of shown arcana pages into 0x833A60 from flags ...
+001355c0 00000ff0 F H_Camp_UpdateComuDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_136A10: (xy, link, selected, alpha): one social-link row: the rank (datComuGetRank; "MAX" sprites at 10, else
+# the digit of font 1), the arcana icon (camp comu file 1, 2 * (0x5E3220[link] - 1) + 1), the partner's name ...
+00136a10 000008f0 F H_Camp_ComuDrawLinkRow source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_137580: (xy, links, cursor, scroll, z, frame): the link list's reveal (from frame 23 the five row frames, each
+# row easing in 3 frames after the previous), the ribbon (sub_1368A0), the rows (sub_136A10), the cards (sub_137300) ...
+00137580 00000b60 F H_Camp_ComuDrawListIn source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1380E0: (xy, links, cursor, scroll, z, alpha): the link list drawn at once: five row frames, the ribbon, rows,
+# cards, cursor.
+001380e0 000006cc F H_Camp_ComuDrawList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1387B0: (xy, links, cursor, scroll, z, alpha): the same list for the close fade (identical layout to
+# sub_1380E0).
+001387b0 000006c8 F H_Camp_ComuDrawListOut source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_139660: (xy, page, row, alpha): the arcana page of the card view: page 29 lists the shown arcana (0x833A60,
+# names sub_1775A0, the selected row highlighted), other pages the six text lines of 0x5DBB00 for that page.
+00139660 00000760 F H_Camp_ComuDrawArcanaPage source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_139FC0: (xy, links, cursor, scroll, ?, frame): the card view's reveal: the black corner (sub_139DC0), the
+# ribbon, the card and its pulse (sub_138EE0 / sub_1392D0) sliding in from frame 8 over 5 frames, the arcana picture ...
+00139fc0 0000100c F H_Camp_ComuDrawCardIn source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_13AFD0: (xy, links, cursor, scroll, ?, alpha): the card view drawn at once (the same parts as sub_139FC0 in
+# place).
+0013afd0 00000ce0 F H_Camp_ComuDrawCard source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_13C780: (list): builds the equipment trade list: the hero stock's held indices 0..299 sorted by item id (qsort /
+# sub_131000), then the 20-entry equipment table (owner -1) as 36-byte rows from +100: id, its lowest target bit ...
+0013c780 00000508 F H_Camp_BuildTradeList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_13D1A0: (xy, list, alpha): the equipment page's list: the scroll marks when the list has rows (+2905 words = the
+# count), the five visible rows from the scroll (+11628) with icon (camp file 0, by the kind table), name, the owner ...
+0013d1a0 00001568 F H_Camp_ItemDrawEquipList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_13E710: (xy, list, alpha): sub_13D1A0 at the trade layout (text 40 px higher, 14 px further right).
+0013e710 00001584 F H_Camp_ItemDrawEquipList2 source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_13FCA0: (xy, list, alpha): the selected equipment row's detail: its kind icon (jump table 0x7B5EB0 on the row's
+# kind: 0..5 -> sprite 0, 2, 4 ...), name and stat digits.
+0013fca0 00000a2c F H_Camp_ItemDrawEquipDetail source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1406D0: (xy, list, alpha): the item page's list: the scroll marks, the five visible rows (+2420 scroll) with the
+# item name (sub_17B100 -> sprintf -> sub_3B32D0) and the count as two digits of font 1, the cursor row (+2416) with ...
+001406d0 00000758 F H_Camp_ItemDrawItemList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_140E30: (xy, list, alpha): sub_1406D0 for the material page (cursor sprite 29).
+00140e30 00000758 F H_Camp_ItemDrawMaterialList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_141660: (item work): starts the item page's slide-in on the 80 tween records (+188): every panel from 50 px
+# right of its place over frames 6..13.
+00141660 00000948 F H_Camp_ItemOpenLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_141FB0: (item work): moves the item page's panels for the target choice (the list to x 110, the target panels
+# in).
+00141fb0 00000980 F H_Camp_ItemTargetOpenLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_142930: (item work): moves the panels back from the target choice to the item list.
+00142930 000009b8 F H_Camp_ItemTargetCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1432F0: (item work): the item page's slide-out (every panel in place, mode 2 / curve 2 over 5 frames).
+001432f0 00000708 F H_Camp_ItemCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_143A00: (item work, previous): moves the target highlight: the target rows (85 px apart from y 62) of the new
+# cursor (+84) and of `previous` restart their tweens.
+00143a00 000004d4 F H_Camp_ItemMoveTargetCursor source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_143EE0: (item work): the panels for the persona choice (an item used on a persona: incense).
+00143ee0 00000a28 F H_Camp_ItemPersonaOpenLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_144910: (item work): back from the persona choice.
+00144910 00000a40 F H_Camp_ItemPersonaCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_145520: (tween, element, item work): one tween element of the item page (jump table 0x7B5F10): the page frames
+# and tabs (camp file 0 sprites 43, 39, 33 ...), the item list (sub_1406D0), the selected item's description, the ...
+00145520 000011e8 F H_Camp_ItemDrawElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_146710: (item work): slides the item page out to the left (-100) for a page change.
+00146710 00000ddc F H_Camp_ItemPageLeftLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1474F0: (item work): slides the item page in from the left.
+001474f0 00000df4 F H_Camp_ItemPageFromLeftLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1482F0: (item work): the equipment page's slide-out (the 40 records +192).
+001482f0 00000590 F H_Camp_EquipPageCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_148880: (tween, element, item work): one element of the equipment page: 32 / 31 frames, 20 the list (sub_13E710
+# of +168), 21 the detail, the rest frame sprites of camp files 0..2 and 13.
+00148880 00000384 F H_Camp_ItemDrawEquipElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_148C10: (item work): slides the equipment page out to the left.
+00148c10 00000ad4 F H_Camp_EquipPageLeftLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1496F0: (item work): slides the item page in from the right (+100).
+001496f0 00000da0 F H_Camp_ItemPageRightLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_14A490: (item work): slides the item page out to the right.
+0014a490 00000d7c F H_Camp_ItemPageToRightLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_14B210: (item work): slides the equipment page in from the left.
+0014b210 00000acc F H_Camp_EquipPageFromLeftLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_14BCE0: (item work): the material page's slide-out (the 40 records +196).
+0014bce0 000005a8 F H_Camp_MaterialPageCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_14C290: (tween, element, item work): one element of the material page: 31 / 30 frames, 20 the list (sub_140E30
+# of +172), 21 the detail, the rest frame sprites.
+0014c290 0000032c F H_Camp_ItemDrawMaterialElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_14C5C0: Update of the item screen "H_CampNewItem" (jump table 0x7B6040, 31 states): 0 takes camp_item.pak's
+# three sprite files (+176.., copied to 0x833A50); 1 allocates the tweens (+188 x80, +192 / +196 x40) and the three ...
+0014c5c0 00002758 F H_Camp_UpdateNewItemTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_14F7D0: Update of "H_CampSystemMenuDraw" (jump table 0x7B60E0): 0 waits for flash 6, builds the status texture
+# (+28), allocates the tweens (+12 x10, +16 x100), requests camp/datMixraidHelp.bmd (+36), facility/msg_quest.bmd ...
+0014f7d0 00004f9c F H_Camp_UpdateSystemMenuDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_154970: (tween, files, element, ...): one element of the system menu (jump table 0x7B6170): 0 the scrolling
+# background (two sub_1140D0 strips, +52 moving by -1, wrapping at -1000), 1 the six row frames, 2 the title, 3 the ...
+00154970 000005fc F H_Camp_SystemDrawMenuElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_154F70: (tweens, files, texture, cursor): steps the menu's 10 tweens, draws each active one (sub_154970),
+# returns 1 when all finished.
+00154f70 000000f4 F H_Camp_SystemRunMenuTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_155070: (tween, files, element, table, count, scroll, cursor): one element of the help list: 99 the frame, 6 the
+# header, 5 the eight visible rows of the text table off_5DA500 (sub_3B32D0, the cursor row highlighted), the scroll ...
+00155070 0000069c F H_Camp_SystemDrawHelpElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_155710: (tweens, files, ...): steps the help list's tweens and draws them (sub_155070); 1 when all finished.
+00155710 00000114 F H_Camp_SystemRunHelpTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_155830: (tween, files, element, cursor, values): one element of the config page: 99 the frame with the page
+# title (sprite 15 + cursor), 6 the eight option rows (sprites 140..150; the cursor row lit), the option values (on / ...
+00155830 00000904 F H_Camp_SystemDrawConfigElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_156140: (tweens, files, cursor, values): steps the config page's tweens and draws them (sub_155830); 1 when all
+# finished.
+00156140 000000f4 F H_Camp_SystemRunConfigTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_156240: (tween, files, element, scroll, cursor): one element of the fusion-spell list: 99 the frame, 6 the eight
+# rows of skills 272 + scroll + i that flags 5072 + scroll + i unlocked (names from the skill table 0x7CE4EC, 19-byte ...
+00156240 00000c40 F H_Camp_SystemDrawSpellElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_156E80: (tweens, files, scroll, cursor): steps the fusion-spell list's tweens and draws them (sub_156240); 1
+# when all finished.
+00156e80 000000f4 F H_Camp_SystemRunSpellTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_156F80: (tween, files, element, ...): one element of the quest (request) list: 99 the frame, 13 the selected
+# request's detail (datBlock27Get, the request record sub_403880: the reward item's icon / name, the required items ...
+00156f80 00002978 F H_Camp_SystemDrawQuestElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_159900: (tweens, files, cursor): steps the quest list's tweens and draws them (sub_156F80); 1 when all finished.
+00159900 000000e4 F H_Camp_SystemRunQuestTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1599F0: (tween, files, element, month, day): one element of the calendar: 99 the frame, 20 the month grid
+# (tbl_clndMonthLengths, weekdays through clndGetWeekDay / clndGetDaysSinceStartFromDate, the moon phase icons for ...
+001599f0 00001938 F H_Camp_SystemDrawCalendarElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15B330: (tweens, files, month, day): steps the calendar's tweens and draws them (sub_1599F0); 1 when all
+# finished.
+0015b330 000000f4 F H_Camp_SystemRunCalendarTweens source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15B430: Update of "H_ConfigMenuDraw" (the title screen's config; jump table 0x7B61B0): every frame the backdrop
+# sub_113A30 at alpha 255 * +372 / 10; 0 waits for its camp sprite set-up task (gp-19880) and builds the status ...
+0015b430 0000102c F H_Camp_UpdateConfigMenuDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15C840: (list): builds the skill screen's list: every distinct skill of the used stock slots
+# (datPersonaIsSlotUsed / datPersonaGetHeroPersona, eight skills each; datPersonaSelectSlot is called per slot, the ...
+0015c840 00000608 F H_Camp_SkillBuildList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15CE50: (xy, list, alpha): the skill list: the scroll marks (+2012 count), five visible rows from +2020 with the
+# element icon (datSkillElementClass), the name (datGetSkillName -> sprintf -> sub_3B32D0) and the cost digits (font ...
+0015ce50 00000a84 F H_Camp_SkillDrawList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15DA70: (skill work): the skill page's slide-in on its 60 tweens (+56): the panels from 50 px right over frames
+# 6..13, the target rows (85 px apart).
+0015da70 000006e0 F H_Camp_SkillOpenLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15E150: (skill work): the skill page's slide-out.
+0015e150 00000590 F H_Camp_SkillCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15E6E0: (skill work): the panels for the target choice.
+0015e6e0 00000758 F H_Camp_SkillTargetOpenLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15EE40: (skill work, previous): moves the target highlight (rows 85 px apart from y 42) from `previous` to the
+# cursor (+24).
+0015ee40 000004dc F H_Camp_SkillMoveTargetCursor source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15F320: (skill work): back from the target choice.
+0015f320 00000768 F H_Camp_SkillTargetCloseLayout source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_15FA90: (tween, element, skill work): one tween element of the skill page: 52 / 51 / 50 frames, the list
+# (sub_15CE50), the ribbon (sub_15D8E0), the caster's and the targets' panels (name, HP / SP digits and gauges, ...
+0015fa90 00000d64 F H_Camp_SkillDrawElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_160800: Update of the skill screen "H_NewCampSkillDraw" (jump table 0x7B61E0): 0 / 1 fade the background in (8
+# frames) and close the main list (sub_11DA80); 2 takes camp_skil.pak's three sprite files (+28..); 3 waits for them, ...
+00160800 00000ec4 F H_Camp_UpdateNewCampSkillDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1618A0: Update of "H_CampFrStatusRoot" (the party-status root a script opens for one member; jump table):
+# creates the two side-portrait tasks ("h_camp_pc_kani_control" / "h_camp_persona_kani_control") and the status page ...
+001618a0 000004bc F H_Camp_UpdateFrStatusRootTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_161D90: (tween, element, party work): one tween element of "H_CampPartyStatusDraw" (jump table 0x7B6210): 0 the
+# character picture strips (sub_1140D0 of the texture +28, +52 scrolling to -1064), the frames, the four equipment ...
+00161d90 0000159c F H_Camp_PartyDrawElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_163330: (tween, element, party work): one element of the party-status equipment list (as sub_12F6D0 for the
+# member +8 and slot +16): slot header, candidates, cursor, comparison.
+00163330 000015ec F H_Camp_PartyDrawEquipListElement source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_164920: Update of "H_CampPartyStatusDraw" (jump table 0x7B6260): 0 waits for camp_fr%02d.pak (+24) and starts
+# the character picture build (camp/chara/i_camp_hum_blue_%02d.tmx; The Answer: AGS_ variants for members 1 / 3 / 9); ...
+00164920 00002084 F H_Camp_UpdatePartyStatusDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_166C70: Update of "H_CampPartyStatusRoot" (the party-status screen opened on the whole party; jump table
+# 0x7B62A0): 0 lists the members present (flags 322..330 -> ids 2..) into +36 (+56 count); 1 waits for the flash; 2 / ...
+00166c70 00000934 F H_Camp_UpdatePartyStatusRootTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_168810: Update of the equipment trade sub-task (jump table 0x7B6300): 0 takes the pak's two sprite files (+20 /
+# +24, also 0x833A50 / 0x833A54) and starts a camp sprite set-up (sub_119F10(task, 1)); then the trade list ...
+00168810 00000830 F H_Camp_UpdateTradeSubTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_169110: (?, xy, list, alpha): the trade list over a dimmed screen: sub_21EA00(41), a 640 x 448 rectangle
+# (sub_113A30), sub_21EA00(40), then the list (sub_13D1A0) at +40 / +50.
+00169110 000000e0 F H_Camp_TradeDrawList source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_1691F0: (?, xy, detail, list, alpha): sub_169110 with the detail (sub_13FCA0) above the list (+80).
+001691f0 00000140 F H_Camp_TradeDrawListDetail source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_169470: Update of "H_CampTradeDraw" (jump table 0x7B6320): 0 takes the pak's sprite files and its camp sprite
+# set-up; 1 builds the trade list (sub_13C780) and the stock-over background (brItem_CreateStockOverBgTask); then the ...
+00169470 00000670 F H_Camp_UpdateTradeDrawTask source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_169B90: (trade work, xy, list, alpha): the trade screen: the two lists (sub_16A700, sub_16AF90) and the frame
+# sprites (49 ...) of the trade file, with sub_21EA00 render-state switches between them.
+00169b90 00000494 F H_Camp_TradeDraw source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_16A030: COMM: the drop / trade screen for scrGetIntPara(0): member 1 merges every item 4000..4299 of the
+# member's pouch (owner id + 256) into the hero stock (capped at 99), else moves the member's equipment entries back; ...
+0016a030 00000668 F H_Camp_OpenTradeDraw source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_16A700: (trade work, xy, list, alpha): the stock column of the trade screen: frames 68..70, the six visible rows
+# with their owner marks, names (datGetItemName) and the cursor (+2906 words).
+0016a700 00000888 F H_Camp_TradeDrawStock source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6
+# sub_16AF90: (trade work, xy, list, alpha): the detail column: frames 72..78, the selected row's stats (sprintf +
+# sub_40EB50) and its help line (sub_3C7E20).
+0016af90 00000a6c F H_Camp_TradeDrawDetail source=phase5-ui6 verified=yes ev=INTEGRATION_LOG.md#ui6

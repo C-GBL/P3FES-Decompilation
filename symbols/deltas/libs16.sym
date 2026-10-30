@@ -1,0 +1,9 @@
+# libs16.sym  Phase 5 slice delta (game/include/p3fes/game/libs16.h, game/src/cri/libs16.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies): sub_58BD68 is the counterpart of libs12's
+#   SFD_Init (0x58BC30, the "CRI SFD/PS2EE Ver.1.958" banner and the SFD module inits): it destroys the eight handles
+#   of the open-handle table 0x7B4774 (sub_5971E8, the SFD handle destroy) and then runs the module finishes (SJRBF
+#   finish through cosl_12, SFH finish through sub_58C0D8, the time-source and lock finishes). Checked by
+#   tests/game/test_libs16.cpp (pairs on the replay snapshots' handle table). A proposal only: the code keeps the
+#   symbols/ name. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs16 verified=yes ev=<anchor>
+0058bd68 000000a4 F SFD_Finish source=phase5-libs16 verified=yes ev=INTEGRATION_LOG.md#libs16

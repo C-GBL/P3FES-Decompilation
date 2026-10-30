@@ -1,0 +1,18 @@
+# finalB.sym  Phase 5 slice delta (game/include/p3fes/game/finalB.h); SLUS_216.21
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the pair tests' checks; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-finalB verified=yes: names from what each body does. ev=<doc>#<section>. Not imported by the agent.
+# sub_1052B0: vsprintf's a 256-byte line and appends it to the 15-line debug ring at 0x7E0A30 (count byte 0x7CDEC4), dropping the oldest when full
+001052b0 00000138 F dbgLogPrintf source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB
+# sub_3CF160: logs "[fclBankManager.c:102]" and "%x:%d:%d:%d\n" of the packed id, then sub_3CF960(id, arg) != 0
+003cf160 000000d4 F fclBankManager_RequestLogged source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB
+# sub_18B700: the tween record stepper (frame to the limit, the kind's step at the last frame); test_ui6 calls it "tween step"
+0018b700 000000b0 F tweenStep source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB
+# sub_21BB60: asserts "bp_res.c" 89 on a null work, releases the rasters / RW blocks by the flags, clears 0x7CE304
+0021bb60 0000014c F bpRes_Release source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB
+# sub_476140: RpPTank scratchpad word fill (dst, bytes, word) through DMAC channel 8 (ptank.cpp's streamer comment)
+00476140 00000344 F ptankSprFillWord source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB
+# sub_476720: RpPTank scratchpad 16-byte pattern fill (dst, bytes, pattern) through channel 8
+00476720 00000258 F ptankSprFillQword source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB
+# sub_476C20: RpPTank scratchpad copy (dst, src, bytes) through channels 9 and 8, the tail by memcpy
+00476c20 00000430 F ptankSprCopy source=phase5-finalB verified=yes ev=INTEGRATION_LOG.md#finalB

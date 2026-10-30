@@ -1,0 +1,18 @@
+# libs24.sym  Phase 5 slice delta (game/include/p3fes/game/libs24.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the pair tests' register-store checks; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-libs24 verified=yes: names from what each body does. ev=<doc>#<section>. Not imported by the agent.
+# sub_50DC80: kernel-mode store of a0 to T2_COUNT (0xB0001000), eret to $ra (pair test: the bus write)
+0050dc80 00000078 F SetT2Count source=phase5-libs24 verified=yes ev=INTEGRATION_LOG.md#libs24
+# sub_50DC90: kernel-mode store of a0 to T2_MODE (0xB0001010), eret to $ra (pair test: the bus write)
+0050dc90 00000078 F SetT2Mode source=phase5-libs24 verified=yes ev=INTEGRATION_LOG.md#libs24
+# sub_50DCA0: kernel-mode store of a0 to T2_COMP (0xB0001020), eret to $ra (pair test: the bus write)
+0050dca0 00000078 F SetT2Comp source=phase5-libs24 verified=yes ev=INTEGRATION_LOG.md#libs24
+# sub_594038: DMAC suspended, a0 to D3_CHCR (fromIPU), DMAC resumed, interrupts off (pair test: the bus writes)
+00594038 00000064 F StartIpuFromDma source=phase5-libs24 verified=yes ev=INTEGRATION_LOG.md#libs24
+# sub_5940A0: DMAC suspended, a0 to D4_CHCR (toIPU), DMAC resumed, interrupts off (pair test: the bus writes)
+005940a0 00000064 F StartIpuToDma source=phase5-libs24 verified=yes ev=INTEGRATION_LOG.md#libs24
+# sub_10E630: copies a3 bytes from a2 to a1 through the scratchpad (ch9 toSPR then ch8 fromSPR, 16 KiB rounds)
+0010e630 00000250 F SprDmaCopy source=phase5-libs24 verified=no ev=INTEGRATION_LOG.md#libs24
+# sub_53B4F8: adxf_SetDefDev under the ADX environment lock (the public wrapper)
+0053b4f8 0000002c F ADXF_SetDefDev source=phase5-libs24 verified=no ev=INTEGRATION_LOG.md#libs24

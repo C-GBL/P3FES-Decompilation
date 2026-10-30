@@ -1,0 +1,49 @@
+# sweep2.sym  Phase 5 slice delta (game/include/p3fes/game/sweep2.h); SLUS_216.21
+# generated 2026-10-25 from the instructions (p3fes_handgen bodies, the strings, the effect kind rows 0x69C94C /
+#   0x69C2CC / 0x69CCD8 / 0x69CCF0 + 28 * kind, docs/ANALYSIS/30_debug_tools.md; no IDA database opened).
+#   Rows: <addr8> <size8> F <name> <tags>, source=phase5-sweep2, verified=yes: our own names, each from what the body
+#   does (its role block in game/src/sweep/sweep2_*.cpp). Not imported by the agent.
+# sub_3402C0: (inst) Class-10 kind 9 slot 0 (row 0x69C94C +0): locks the mesh of the kind object (inst +60 -> +4, its atomic's geometry; geometryLock 2), clears its
+003402c0 000000e8 F k10Band9Init source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3403B0: (obj, params) The texture coordinates of the class-10 kind 9 mesh (called by create, clone and the debug keys of update): with a count (+56), locks th
+003403b0 00000244 F k10Band9BuildUv source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_340600: (params, texture) -> kind object. Class-10 kind 9 slot 1: one RwMalloc block (0x960178, hint 0x40000) of 16 + 40 * count bytes (records right after th
+00340600 000000e8 F k10Band9Create source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3406F0: (inst) -> kind object. Class-10 kind 9 slot 3: a new 16 + 40 * count block (RwMalloc), a copy of the instance's mesh (sub_323640) at +4, the texture c
+003406f0 00000094 F k10Band9Clone source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_340790: (obj) Class-10 kind 9 slot 2: destroys the mesh (sub_3237C0 on +4) and frees the block (+8) through the RwFree slot 0x96017C (jalr).
+00340790 00000044 F k10Band9Destroy source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3407E0: (inst) Class-10 kind 9 slot 4, while the effect runs (frame < the parameters' end +52, or no end): the four track colours +172 / +184 / +176 / +180 co
+003407e0 000013b8 F k10Band9Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_341BA0: (inst) Class-10 kind 9 slot 5, while the effect runs: the mesh colour from the instance colour x the colour track on VU0 (sub_32A120, 1/255, ppacb; an
+00341ba0 00000370 F k10Band9Draw source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_350230: (source record or 0) -> instance. Effect class 23 slot 0: one 176-byte RwMalloc block, zeroed, +0 = -1; with a record: the frame count +4 from record 
+00350230 000001b0 F fx23Create source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_350450: (inst) -> instance. Effect class 23 slot 5: a bare instance (sub_350230(0)), the frame count +4 and the 152-byte body copied, a copy of the mesh (sub_
+00350450 000000a4 F fx23Clone source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3505D0: (inst) Effect class 23 slot 3, for frames 1 .. count - 1: the vertex colour from the instance colour x the colour track on VU0 (sub_32A120, 1/255; alp
+003505d0 00000c80 F fx23Draw source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_351250: (inst) Effect class 23 slot 1: frame +8 += 1, then the draw (sub_3505D0, a tail call).
+00351250 0000002c F fx23Step source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_351E70: (inst) Class-30 kind 1 slot 3, while the effect runs: every +76 frames (frame % +76 == 0) each of the parameters' +56 rows of the strip (8 bytes: u16 
+00351e70 00000224 F k30Strip1Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3520A0: (inst) Class-30 kind 1 slot 4, while the effect runs: the strip colour from the instance colour x the colour track on VU0 (sub_32A120), the camera mat
+003520a0 00000754 F k30Strip1Draw source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_352F70: (inst) Class-31 kind 1 slot 4 (row 0x69CD0C): within the duration (params +12; 0 = endless) the fade envelope of script4_fx.h on the parameters' head 
+00352f70 000009ec F k31Model1Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3556D0: (inst) Class-31 kind 5 slot 4 (row 0x69CD7C): the fade envelope on the parameters' head (+0 duration, +4 / +6 fade-in / fade-out, +8 colour) applied t
+003556d0 00000700 F k31ColorScale5Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3569E0: (inst) Class-31 kind 7 slot 4 (row 0x69CDB4): every battle unit of the four lists that the selector (params) picks and whose status record (+2604; ene
+003569e0 00000114 F k31UnitMotion7Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_356C70: (inst) Class-31 kind 8 slot 4 (row 0x69CDD0), within the duration (params +4): on the last frame with the reset flag (params +16) every live player un
+00356c70 0000035c F k31ModelScale8Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_3571C0: (inst) Class-31 kind 9 slot 4 (row 0x69CDEC), within the duration (params +44): at frame 0 the battle camera mode 1 (sub_2A38F0; with params +56 clear
+003571c0 0000028c F k31CameraModel9Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_357550: (inst) Class-31 kind 11 slot 4 (row 0x69CE24), at frame 0 only: the battle camera mode 1 and sub_2A3E80(0, 0, 0, 64), then a camera shot by params +0:
+00357550 000001b8 F k31NaviShot11Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_357710: (state) Class-31 kind 12 slot 2 (row 0x69CE40 +8): the screen fade reset (sub_103CB0, a tail call).
+00357710 00000020 F k31Fade12Destroy source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_357730: (inst) Class-31 kind 12 slot 4: at frame 0 (+40) the screen fade request (sub_103C30) with the parameters' four halves +0 / +4 / +8 / +12 (sign-extend
+00357730 00000040 F k31Fade12Update source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2
+# sub_4072D0: (list, group, dir) The compendium screen's element animator: the shop work (list +36 -> +68) gives the two element sets (+28 / +32); by the group ($a1
+004072d0 000029ac F fclShopBook_AnimElements source=phase5-sweep2 verified=yes ev=INTEGRATION_LOG.md#sweep2

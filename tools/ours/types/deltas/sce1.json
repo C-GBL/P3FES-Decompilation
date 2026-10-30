@@ -1,0 +1,49 @@
+{"records": [
+  {"name": "sceGsDrawEnv2", "anchors": [{"how": "param", "fn": "0x4FA558", "index": 0}],
+   "fields": [
+    {"off": 64, "width": 8, "type": "u64", "name": "prmodecont"},
+    {"off": 72, "width": 8, "type": "u64", "name": "prmodecontaddr"},
+    {"off": 80, "width": 8, "type": "u64", "name": "colclamp"},
+    {"off": 88, "width": 8, "type": "u64", "name": "colclampaddr"},
+    {"off": 96, "width": 8, "type": "u64", "name": "dthe"},
+    {"off": 104, "width": 8, "type": "u64", "name": "dtheaddr"},
+    {"off": 112, "width": 8, "type": "u64", "name": "test2"},
+    {"off": 120, "width": 8, "type": "u64", "name": "test2addr"}
+   ]},
+  {"name": "SceGsStoreImage", "size": 112, "anchors": [{"how": "param", "fn": "0x4F9CE8", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "vif_nop"},
+    {"off": 4, "width": 4, "type": "u32", "name": "vif_mskpath3"},
+    {"off": 8, "width": 4, "type": "u32", "name": "vif_flusha"},
+    {"off": 12, "width": 4, "type": "u32", "name": "vif_direct"},
+    {"off": 16, "width": 8, "type": "u64", "name": "giftag_lo"},
+    {"off": 24, "width": 8, "type": "u64", "name": "giftag_regs"},
+    {"off": 32, "width": 8, "type": "u64", "name": "bitbltbuf"},
+    {"off": 40, "width": 8, "type": "u64", "name": "bitbltbuf_addr"},
+    {"off": 48, "width": 8, "type": "u64", "name": "trxpos"},
+    {"off": 56, "width": 8, "type": "u64", "name": "trxpos_addr"},
+    {"off": 64, "width": 8, "type": "u64", "name": "trxreg"},
+    {"off": 72, "width": 8, "type": "u64", "name": "trxreg_addr"},
+    {"off": 80, "width": 8, "type": "u64", "name": "finish"},
+    {"off": 88, "width": 8, "type": "u64", "name": "finish_addr"},
+    {"off": 96, "width": 8, "type": "u64", "name": "trxdir"},
+    {"off": 104, "width": 8, "type": "u64", "name": "trxdir_addr"}
+   ]},
+  {"name": "SceTtyQueue", "anchors": [{"how": "param", "fn": "0x5046A0", "index": 0}, {"how": "param", "fn": "0x5046E0", "index": 0}, {"how": "gobj", "addr": "0x966540"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "capacity"},
+    {"off": 4, "width": 4, "type": "s32", "name": "count"},
+    {"off": 8, "width": 4, "type": "ptr", "name": "read_ptr"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "write_ptr"}
+   ]},
+  {"name": "KernelAlarm", "size": 64, "anchors": [{"how": "param", "fn": "0x50E190", "index": 0}, {"how": "param", "fn": "0x50E218", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "next"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "prev"},
+    {"off": 8, "width": 4, "type": "u32", "name": "id_tag"},
+    {"off": 12, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 16, "width": 8, "type": "u64", "name": "key_a"},
+    {"off": 24, "width": 8, "type": "u64", "name": "key_b"},
+    {"off": 32, "width": 8, "type": "u64", "name": "key_c"}
+   ]}
+]}

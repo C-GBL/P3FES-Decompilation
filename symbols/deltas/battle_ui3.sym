@@ -1,0 +1,279 @@
+# battle_ui3.sym  Phase 5 slice delta (game/include/p3fes/game/battle_ui3.h); SLUS_216.21
+# generated 2026-10-22 from the slice's role comments (game/src/battle/battle_ui3.cpp), each from what the body does
+#   (p3fes_handgen bodies, the IDA pseudocode reference as a reading hint; no IDA database opened); the file of each
+#   module is its K_Assert string. Rows: <addr8> <size8> F <name> <tags>, source=phase5-battle_ui3 verified=yes: our own
+#   names. Functions without a bracketed proposal are comments only. ev=<doc>#<section>. Not imported by the agent.
+# sub_209D00: [sflData_GetTableA] sfl_data.c: $v0 = the shuffle data table 0x68CDE0 when sub_17D800() (the scenario mode:
+00209d00 00000040 F sflData_GetTableA source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209DC0: [sflData_GetTableB] sfl_data.c: $v0 = the table 0x68D140.
+00209dc0 00000010 F sflData_GetTableB source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209DD0: [sflData_GetTableC] sfl_data.c: $v0 = 0x68D910 when sub_17D800() (The Answer), else 0x68D8F0.
+00209dd0 00000040 F sflData_GetTableC source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209E10: [sflData_GetTableD] sfl_data.c: $v0 = the table 0x68D930.
+00209e10 00000010 F sflData_GetTableD source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209E20: [sflData_GetTableE] sfl_data.c: $v0 = 0x68DE20 when sub_17D800() (The Answer), else 0x68DD20.
+00209e20 00000040 F sflData_GetTableE source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209E60: [sflData_GetTableF] sfl_data.c: $v0 = the table 0x68DF20.
+00209e60 00000010 F sflData_GetTableF source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209E70: [sflData_GetTableG] sfl_data.c: $v0 = the table 0x68DF30.
+00209e70 00000010 F sflData_GetTableG source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209EA0: [gcModel_InitHeader](model) gc_model.c: the common header of a card model -- flags, +16..+24, +32..+40, +56,
+00209ea0 00000058 F gcModel_InitHeader source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20C590: [gcModel_SetCardId](model, u16 id) gc_model.c: asserts kind == 0 (line 1161), +372 = id (u16).
+0020c590 00000054 F gcModel_SetCardId source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20C5F0: [gcModel_SetParams](model, a, b) gc_model.c: asserts kind == 1 (line 1170), +368 = a, +372 = b.
+0020c5f0 00000068 F gcModel_SetParams source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20C7B0: [gcModel_InitQuad](quad) gc_model.c: a white 4-vertex card quad: x +-3.0, y +-3.84 (0x7CB008 / 0x7CB00C), z 0,
+0020c7b0 00000120 F gcModel_InitQuad source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20CCC0: [gcModel_SetQuadColour](quad, rgba*) gc_model.c: copies the 4 RGBA bytes into each of the 4 vertices (+12, +48,
+0020ccc0 00000088 F gcModel_SetQuadColour source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20CDA0: [gcModel_BuildGrid](grid) gc_model.c: +0 = 0, +2464 / +2468 = 0.5f / 0.375f; then 9 rows of 36-byte vertices from
+0020cda0 00000180 F gcModel_BuildGrid source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20D7D0: [sflRes_Register](work) sfl_res.c: asserts the slot is empty (line 108), work +0 = +4 = 0, slot = work.
+0020d7d0 00000050 F sflRes_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20DFE0: [sflRes_IsBusy] sfl_res.c: asserts the work (line 101), $v0 = flags & 1.
+0020dfe0 00000044 F sflRes_IsBusy source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20E4C0: [sflRes_Flag4] sfl_res.c: asserts the work (line 101), $v0 = flags & 4.
+0020e4c0 00000044 F sflRes_Flag4 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20E510: [sflRes_GetGround](i) sfl_res.c: asserts the work and the ground files loaded (bit 1, line 439); $v0 = +20[i].
+0020e510 00000080 F sflRes_GetGround source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20E590: [sflRes_GetBase](i) sfl_res.c: asserts the work and the base files loaded (bit 0, line 446); $v0 = +8[i].
+0020e590 00000080 F sflRes_GetBase source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20E690: [sflRes_GetEffect](i) sfl_res.c: asserts the work and the effect files loaded (bit 2, line 460); $v0 = +64[i].
+0020e690 00000080 F sflRes_GetEffect source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20EC00: [sflRes_Flag10] sfl_res.c: asserts the work (line 101), $v0 = flags & 0x10.
+0020ec00 00000044 F sflRes_Flag10 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20F720: [bppMain_FindMember](u16 id) bpp_main.c: asserts the work (line 67); the first of the +23120 member records (5,776
+0020f720 000000a8 F bppMain_FindMember source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20FC40: [bppMain_SetFlag10] bpp_main.c: asserts the work (line 67), flags |= 0x10.
+0020fc40 00000048 F bppMain_SetFlag10 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20FC90: [bppMain_ClearFlag10] bpp_main.c: asserts the work (line 67), flags &= ~0x10.
+0020fc90 0000004c F bppMain_ClearFlag10 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20FD80: [bppMain_SetFlag40] bpp_main.c: asserts the work (line 67), flags |= 0x40.
+0020fd80 00000048 F bppMain_SetFlag40 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_215A50: [sflPsel_Register](work) sfl_psel.c: asserts the slot is empty (line 209), work +0 = +4 = 0, slot = work.
+00215a50 00000050 F sflPsel_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_219C90: [gcRes_Register](work) gc_res.c: asserts the slot is empty (line 149); clears the header words +0..+24, +68, +72,
+00219c90 000000fc F gcRes_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21A3A0: [gcRes_GetResA] gc_res.c: asserts the work (line 124) and +12 bit 0 (line 323); $v0 = +4.
+0021a3a0 0000006c F gcRes_GetResA source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21A410: [gcRes_GetResB] gc_res.c: asserts the work (line 124) and +12 bit 1 (line 331); $v0 = +8.
+0021a410 0000006c F gcRes_GetResB source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21A480: [gcRes_GetPairValue](a, b) gc_res.c: the pair entry with keys (a, b) (no live-flag test), asserts one was found
+0021a480 00000104 F gcRes_GetPairValue source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21A590: [gcRes_GetIdValue](u16 id) gc_res.c: the id entry with that id (no live-flag test), asserts found (line 362) and
+0021a590 000000e0 F gcRes_GetIdValue source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21AC90: [gcRes_HasPair](a, b) gc_res.c: $v0 = 1 when a live (bit 0) pair entry has keys (a, b).
+0021ac90 000000b0 F gcRes_HasPair source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21AE30: [gcRes_RefPair](a, b) gc_res.c: the live pair entry (a, b), asserted found (line 610); its refs (+92) += 1.
+0021ae30 000000f8 F gcRes_RefPair source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21AF30: [gcRes_FreePairSlot] gc_res.c: $v0 = the index of the first pair entry without bit 0; 16 when full (line 634).
+0021af30 000000a8 F gcRes_FreePairSlot source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21AFE0: [gcRes_HasId](u16 id) gc_res.c: $v0 = 1 when a live (bit 0) id entry has that id.
+0021afe0 00000094 F gcRes_HasId source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21B150: [gcRes_FreeIdSlot] gc_res.c: $v0 = the index of the first id entry without bit 0; 16 when full (line 687).
+0021b150 000000a0 F gcRes_FreeIdSlot source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21B1F0: [gcRes_RefId](u16 id) gc_res.c: the live id entry, asserted found (line 671); its refs (+408) += 1.
+0021b1f0 000000d4 F gcRes_RefId source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21B2D0: [gcRes_FreeSlot] gc_res.c: $v0 = the first 292-byte slot (+652) without bit 0; asserts one (line 720).
+0021b2d0 000000d0 F gcRes_FreeSlot source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21B3A0: [gcRes_GetTableC](i) gc_res.c: asserts the work and +12 bit 2 (line 747); $v0 = +32[i].
+0021b3a0 00000080 F gcRes_GetTableC source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21B420: [gcRes_GetTableD](i) gc_res.c: asserts the work and +12 bit 3 (line 755); $v0 = +60[i].
+0021b420 00000080 F gcRes_GetTableD source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21B670: [bseMain_Start](v) bse_main.c: asserts the work (line 30); +4 = v; sub_1FE510(v) (the panel's 0x200 mode with
+0021b670 00000078 F bseMain_Start source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21BAB0: [bpRes_IsLoaded] bp_res.c: asserts the work (line 89), $v0 = flags & 1.
+0021bab0 00000044 F bpRes_IsLoaded source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21BB00: [bpRes_SetValue108](v) bp_res.c: asserts the work (line 89), +108 = v.
+0021bb00 0000004c F bpRes_SetValue108 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21BB50: Returns 0 ($v0 = 0; called by sub_1FEC30).
+# sub_21C3F0: [bpRes_GetSet](i) bp_res.c: asserts the work (line 89); $v0 = the panel sprite set i (+16[i]). The drawers' most
+0021c3f0 00000054 F bpRes_GetSet source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21C450: [bpRes_GetSetById](u16 id) bp_res.c: id 1 -> the set +36 (loaded bit 0 asserted, line 403); any other id: its
+0021c450 000000fc F bpRes_GetSetById source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21C550: [bpRes_GetMore](i) bp_res.c: asserts the work and loaded bit 0 (line 425); $v0 = +96[i].
+0021c550 00000080 F bpRes_GetMore source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# nullsub_11: Empty (bpRoot_UpdateBattlePanelTask and sub_21BB60 call it).
+# sub_21C860: [bpRes_IsTutorialLoaded] bp_res.c: asserts the work (line 89), $v0 = flags & 4 (sub_21C7F0 sets it).
+0021c860 00000044 F bpRes_IsTutorialLoaded source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21C8B0: [bpRes_GetBlock](i) bp_res.c: asserts the work and loaded bit 8 (line 492); $v0 = +120[i].
+0021c8b0 00000080 F bpRes_GetBlock source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_21C930: [bpRes_FreeBlocks] bp_res.c: asserts the work and loaded bit 8 (line 502); the three blocks +120[0..2] go to RwFree
+0021c930 000000b8 F bpRes_FreeBlocks source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2226F0: [bcmPanel_MoveCursor1](cmd) bcm_panel.c: asserts the work (line 230); state = 1, prev = cur, cur = cmd, timer = 0;
+002226f0 000000c0 F bcmPanel_MoveCursor1 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2227B0: [bcmPanel_MoveCursor2](cmd) bcm_panel.c: as sub_2226F0 with state 2.
+002227b0 000000c0 F bcmPanel_MoveCursor2 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222870: [bcmPanel_ResetCursor] bcm_panel.c: as sub_2226F0 with state 8 and cur = 0.
+00222870 000000b4 F bcmPanel_ResetCursor source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222B90: [bcmPanel_SetRows2] bcm_panel.c: asserts list bit 1 (line 1549); for each of the +24688 rows (1,296 bytes from
+00222b90 000001c4 F bcmPanel_SetRows2 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222D60: [bcmPanel_SetRows1] bcm_panel.c: asserts list bit 0 (line 1596); rows of 1,040 bytes: page 40, a 2-digit number,
+00222d60 0000016c F bcmPanel_SetRows1 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222ED0: [bcmPanel_CloseList] bcm_panel.c: flags |= 2, state 3, sub-list 0 (previous kept), sub timer 0, the command quads
+00222ed0 000000c4 F bcmPanel_CloseList source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2230E0: [bcmPanel_SetRows4] bcm_panel.c: asserts list bit 2 (line 1689); rows of 1,056 bytes: kind 1 -> four quads (pages
+002230e0 000001b0 F bcmPanel_SetRows4 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_224860: [bcmPanel_SetRows8] bcm_panel.c: asserts list bit 3 (line 2190); a 2-digit number per row (784 bytes).
+00224860 000000d8 F bcmPanel_SetRows8 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_226320: [bcmPanel_SetFrame] bcm_panel.c: the frame quads from panel set 0: when +29200 is 0..2 the pages 30..33 and their
+00226320 000002ac F bcmPanel_SetFrame source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22B4E0: [bcmPanel_IsListOpen] bcm_panel.c: asserts the work (line 230), $v0 = flags & 2.
+0022b4e0 00000044 F bcmPanel_IsListOpen source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22B580: [bcmPanel_SetHeader] bcm_panel.c: pages 62, 63, 64 of set 0 into the quads +26096, +26352, +26608.
+0022b580 000000a8 F bcmPanel_SetHeader source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22C210: [bcmPanel_SetDetailFrame] bcm_panel.c: page 66 of set 0 into +27136 and (mode 1) +27392, page 67 into +27648.
+0022c210 000000bc F bcmPanel_SetDetailFrame source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22E850: [bppPanel_IconPage](kind) bpp_panel.c: 1 -> 13, 2 -> 12, 3 -> 14, 4 -> 15, 5 -> 16; else K_Assert (line 1069), 0.
+0022e850 000000b0 F bppPanel_IconPage source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2337E0: [bppPanel_Open](member) bpp_panel.c: asserts the member is not open (bit 4, line 2894); +2120 = 0, flags |= 0x40
+002337e0 00000064 F bppPanel_Open source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_233850: [bppPanel_Close](member) bpp_panel.c: asserts it is open (line 2904); flags &= ~0x40, +2120 = 0, |= 0x80, &= ~0x10.
+00233850 00000074 F bppPanel_Close source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_23D7A0: [sflPanel_Register](work) sfl_panel.c: +0 = 0, slot = work (no assert).
+0023d7a0 00000010 F sflPanel_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_23D7F0: [sflPanel_Start] sfl_panel.c: asserts the work (line 127); +4 = 3; asserts not started (bit 0, line 156); flags |= 1.
+0023d7f0 00000080 F sflPanel_Start source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_245E00: [bpcMain_SetFlag80] bpc_main.c: asserts the work (line 151), flags |= 0x80.
+00245e00 00000048 F bpcMain_SetFlag80 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_245E50: [bpcMain_ClearFlag80] bpc_main.c: asserts the work (line 151), flags &= ~0x80.
+00245e50 0000004c F bpcMain_ClearFlag80 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_249130: [bpmMain_IsActive] bpm_main.c: asserts the work (line 61), $v0 = flags & 1.
+00249130 00000044 F bpmMain_IsActive source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_249600: [bpeMain_IsActive] bpe_main.c: asserts the work (line 55), $v0 = flags & 1.
+00249600 00000044 F bpeMain_IsActive source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_249650: [bpList_IsLocked](u16 id): $v0 = (datGetFlag(id + 4800) == 0). Caller sub_208010.
+00249650 00000030 F bpList_IsLocked source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_249680: (obj) +1540 = 0 (the draw flag sub_24A180 tests). Caller sub_239170.
+# sub_24A180: (obj) when +1540 bit 0: four RwRenderStateSet calls through the slot 0x960090 (9 -> 2, 20 -> 2, 6 -> 0, 8 -> 0),
+# sub_24D110: [sflCamera_Register](work) sfl_camera.c: asserts the slot is empty (line 66), +0 = +4 = 0, slot = work.
+0024d110 00000050 F sflCamera_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_24DA00: [gcPose_Register](work): +0 = +4 = 0, slot 0x7CE340 = work (no assert).
+0024da00 00000014 F gcPose_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2519D0: [bpTut_IsActive] bp_tut.c: asserts the work (line 57), $v0 = flags & 1.
+002519d0 00000044 F bpTut_IsActive source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_251E10: [bpTuta_Start] bp_tuta.c: asserts the work (line 49); datSetFlag(4870, 1); sub_21C7F0 (bp_res.c: request
+00251e10 0000006c F bpTuta_Start source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_251E80: [bpTuta_IsActive] bp_tuta.c: asserts the work (line 49), $v0 = flags & 1.
+00251e80 00000044 F bpTuta_IsActive source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_253410: [bpdMain_Start] bpd_main.c: asserts the work (line 37); page 76 of panel set 1 into the ten quads +32 + 288i;
+00253410 000000c0 F bpdMain_Start source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_25CDB0: [frFontChain_MoveLastTo](chain, x $f12, y $f13): the last node of the chain (links +36) goes to (int)(16x), (int)(8y)
+0025cdb0 00000074 F frFontChain_MoveLastTo source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_25CE30: [frFontChain_CentreLastAt](chain, x $f12, y $f13): as sub_25CDB0 with frFontChainCentreAt.
+0025ce30 00000074 F frFontChain_CentreLastAt source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_25D760: [bpRush_SetFlag20] bp_rush.c: asserts the work (line 50), flags |= 0x20.
+0025d760 00000048 F bpRush_SetFlag20 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_25D7B0: [bpRush_ClearFlag20] bp_rush.c: asserts the work (line 50), flags &= ~0x20.
+0025d7b0 0000004c F bpRush_ClearFlag20 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_25D800: [bpRush_SetFlag40] bp_rush.c: asserts the work (line 50), flags |= 0x40.
+0025d800 00000048 F bpRush_SetFlag40 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_25D850: [bpRush_ClearFlag40] bp_rush.c: asserts the work (line 50), flags &= ~0x40.
+0025d850 0000004c F bpRush_ClearFlag40 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_260900: (obj, i): the 128-byte entry i of the table at obj+388: $v0 = entry+92 - entry+84 (a width).
+# sub_260920: (obj, i): $v0 = entry+96 - entry+88 (a height) of the same entries.
+# sub_260940: (obj, i): $v0 = obj+260[entry i's +20] (a word table indexed by the entry).
+# sub_260970: [FullQuad_Register](work): +0 = 0; the quad +784 gets the rect {0, 0, 640, 448}, depth 10 (sub_21EA00 /
+00260970 00000094 F FullQuad_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2626E0: [brHero_Register](work) br_hero.c: asserts the slot is empty (line 89), +0 = 0, slot = work.
+002626e0 0000004c F brHero_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_264CA0: [brHero_StatPage](stat) br_hero.c: page of result set 1 (sub_233D70(1)) for stat 0..5: 11, 13, 12, 16, 14, 15 (the
+00264ca0 000000d8 F brHero_StatPage source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_264D80: [brPersona_Register](work) br_persona.c: asserts the slot is empty (line 45), +0 = 0, slot = work.
+00264d80 0000004c F brPersona_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_272330: [brpSeq_Register](work) brp_seq.c: asserts the slot is empty (line 183), +0 = 0, slot = work.
+00272330 0000004c F brpSeq_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2737A0: [brpSeq_DrawBirth] brp_seq.c: asserts the work (line 176); flags & 0x40 -> sub_24B8A0 (brp_birth.c).
+002737a0 00000054 F brpSeq_DrawBirth source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_273980: [brpSeq_EndStep] brp_seq.c: asserts the work and flags bit 1 (line 936); +16 = 6; flags &= ~1.
+00273980 00000084 F brpSeq_EndStep source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_273E10: [brpSeq_RequestMessage] brp_seq.c: asserts the work and +116 == 9 (line 1038); msgWinRequestMessage(3); +24 = 2.
+00273e10 0000007c F brpSeq_RequestMessage source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_274D40: [brpSeq_HasEntry] brp_seq.c: $v0 = (index +432 < count +448).
+00274d40 00000048 F brpSeq_HasEntry source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_274D90: [brpSeq_EntryId] brp_seq.c: asserts index < count (line 1502); $v0 = the u16 id of entry index (+452 + 8i).
+00274d90 0000007c F brpSeq_EntryId source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_274E10: [brpSeq_EntryValue] brp_seq.c: asserts index < count (line 1510); $v0 = the word +456 + 8 * index.
+00274e10 0000007c F brpSeq_EntryValue source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_274E90: [brpSeq_EntriesAfter] brp_seq.c: $v0 = count - index - 1, at least 0.
+00274e90 00000064 F brpSeq_EntriesAfter source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_275A70: [brLvpnl_Register](work) br_lvpnl.c: +0 = 0, slot = work (no assert).
+00275a70 00000010 F brLvpnl_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2760F0: [brLvpnl_Layout] br_lvpnl.c: places the six quads (rects from the pages' sizes) and fades them: the two banner quads
+002760f0 000006e4 F brLvpnl_Layout source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_276870: [brLvpnl_SetFlag8] br_lvpnl.c: asserts the work (line 59), flags |= 8.
+00276870 00000048 F brLvpnl_SetFlag8 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_276910: [brpPersona_Register](work) brp_persona.c: +0 = 0, slot = work (no assert).
+00276910 00000010 F brpPersona_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_276CC0: [brpPersona_Flag8] brp_persona.c: asserts the work (line 37), $v0 = flags & 8.
+00276cc0 00000044 F brpPersona_Flag8 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_276D10: [brpParam_Register](work) brp_param.c: +0 = 0, +14128 / +14132 / +14136 = 0, slot = work (no assert).
+00276d10 0000001c F brpParam_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279450: [brpParam_SetNumber](n) brp_param.c: asserts the work (line 97); +14132 = n; n as 2 digits into +14160
+00279450 00000064 F brpParam_SetNumber source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2794C0: [brpParam_SetValue](v) brp_param.c: asserts the work (line 97), +14128 = v.
+002794c0 0000004c F brpParam_SetValue source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279510: [brpParam_SetMemberA](member, v) brp_param.c: asserts the work (line 97), +2192 + 1824 * member = v.
+00279510 00000070 F brpParam_SetMemberA source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279580: [brpParam_SetMemberB](member, v) brp_param.c: +2720 + 1824 * member = v.
+00279580 00000070 F brpParam_SetMemberB source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2795F0: [brpParam_SetMemberC](member, v) brp_param.c: +2724 + 1824 * member = v.
+002795f0 00000070 F brpParam_SetMemberC source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2796B0: [brpParam_StartA] brp_param.c: asserts the work (line 97); +14140 = 0; flags |= 4.
+002796b0 0000004c F brpParam_StartA source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279700: [brpParam_IsA] brp_param.c: asserts the work (line 97), $v0 = flags & 4.
+00279700 00000044 F brpParam_IsA source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279750: [brpParam_StartB] brp_param.c: asserts the work (line 97); +14148 = 0; flags |= 0x10.
+00279750 0000004c F brpParam_StartB source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2797A0: [brpParam_IsB] brp_param.c: asserts the work (line 97), $v0 = flags & 0x10.
+002797a0 00000044 F brpParam_IsB source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2797F0: [brpParam_SetFlag20] brp_param.c: asserts the work (line 97), flags |= 0x20.
+002797f0 00000048 F brpParam_SetFlag20 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279840: [brpParam_ClearFlag20] brp_param.c: asserts the work (line 97), flags &= ~0x20.
+00279840 0000004c F brpParam_ClearFlag20 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_279890: [brpParam_SetPair](a, b) brp_param.c: asserts the work (line 97); +15200 = a, +15204 = b.
+00279890 0000005c F brpParam_SetPair source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2798F0: [brpParam_SetFlag40] brp_param.c: asserts the work (line 97), flags |= 0x40.
+002798f0 00000048 F brpParam_SetFlag40 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_27B6C0: [bpSelect_Layout] bp_select.c: page 58 of panel set 2 at (+276, +280) with the page's size; alpha 255 * (1 - f / 20)
+0027b6c0 000001bc F bpSelect_Layout source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_27BB50: [sflPersona_Register](work) sfl_persona.c: asserts the slot is empty (line 48), +0 = 0, slot = work.
+0027bb50 0000004c F sflPersona_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_2C1CE0: [btlCommand_CheckUsable](cmd) (the command calc of battle_fx.h's lists): $v0 = 0 when the btlUnit at cmd+48's
+002c1ce0 00000098 F btlCommand_CheckUsable source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_1F5810: [sflRoot_IsIdle](task) sfl_root.c: asserts the root work (line 254); $v0 = 1 when the task work (+60)'s +4 has no
+001f5810 000000d4 F sflRoot_IsIdle source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_209C00: Panel set 1's page 46 (sub_21C3F0(1), sub_21CCA0) handed to sub_21CCE0; $v0 is its result (a tail call).
+# sub_209F00: [gcModel_Init0](model) gc_model.c: sub_209EA0, kind (+4) = 0, the quad at +224 (sub_20C7B0), +368 = 0, then the
+00209f00 000008f4 F gcModel_Init0 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20A800: [gcModel_Init1](model) gc_model.c: sub_209EA0, kind (+4) = 1, the quad at +224 (sub_20C7B0), +808 = 0, and its
+0020a800 00000330 F gcModel_Init1 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_20CD50: [gcModel_SetGrid](model, grid) gc_model.c: builds the grid (sub_20CDA0), +220 = grid, flags |= 8.
+0020cd50 0000004c F gcModel_SetGrid source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_215830: [bsaMain_GetKindPage](kind) bsa_main.c: the page record of panel sprite set 2 (sub_21C3F0(2)) for a skill / analyse
+00215830 000001f4 F bsaMain_GetKindPage source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222930: [bcmPanel_OpenList1] bcm_panel.c: flags |= 2, list = 1, state 3, sub-list 1 (previous kept), the command quads (pages
+00222930 00000130 F bcmPanel_OpenList1 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222A60: [bcmPanel_OpenList2] bcm_panel.c: as sub_222930 with list 2, sub-list 2 and the rows of sub_222B90.
+00222a60 00000130 F bcmPanel_OpenList2 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_222FA0: [bcmPanel_OpenList4] bcm_panel.c: as sub_222930 with list 4, sub-list 3, +17992 = -1, +18008 = 0, title page 36 and
+00222fa0 00000138 F bcmPanel_OpenList4 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_224660: [bcmPanel_OpenList8] bcm_panel.c: list 8, sub-list 4, the frame first, the command and title quads (page 36), page 19
+00224660 000001fc F bcmPanel_OpenList8 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22BF60: [bcmPanel_OpenDetail2] bcm_panel.c: the detail frame (sub_22C210), page 49 / 48 by +27912, a 3-digit number (+27916),
+0022bf60 00000134 F bcmPanel_OpenDetail2 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22C0E0: [bcmPanel_OpenDetail1] bcm_panel.c: the detail frame, page 40, a 2-digit number (+27908), page 26 of set 6;
+0022c0e0 000000e8 F bcmPanel_OpenDetail1 source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_22E780: [bppPanel_SetIcon](member, kind) bpp_panel.c: +1320 = kind; kind 0 clears flag 2; kinds 1..5 put the page of
+0022e780 000000c4 F bppPanel_SetIcon source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_239170: [sflGround_Register](work) sfl_ground.c: asserts the slot is empty (line 144); +0 = +12 = 0; the index list at +33728
+00239170 0000010c F sflGround_Register source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_24A7F0: [brpBirth_CreateWork] brp_birth.c: a 50,544-byte block from RwMalloc (the slot 0x960178, hint 0x40000); registers
+0024a7f0 00000078 F brpBirth_CreateWork source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_275A90: [brLvpnl_Show] br_lvpnl.c: asserts the work (line 59); pages 0, 2, 1, 3, 11 of result set 0 (sub_234630(0)) into the
+00275a90 00000128 F brLvpnl_Show source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_275BC0: [brLvpnl_Update] br_lvpnl.c: when shown (bit 0): while animating (bit 1) the frame counter runs to 36 (mode 0) or
+00275bc0 000000e4 F brLvpnl_Update source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3
+# sub_27B610: [bpSelect_Update] bp_select.c: asserts the work (line 39); when active (bit 0): closing (bit 1) counts the fade to 20
+0027b610 000000b0 F bpSelect_Update source=phase5-battle_ui3 verified=yes ev=INTEGRATION_LOG.md#battle_ui3

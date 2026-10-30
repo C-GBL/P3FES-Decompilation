@@ -1,0 +1,24 @@
+# finalA.sym  Phase 5 slice delta (game/include/p3fes/game/finalA.h); SLUS_216.21
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the pair tests' checks; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-finalA verified=yes: names from what each body does. ev=<doc>#<section>. Not imported by the agent.
+# sub_10A410: slot < 6 names its BGM channel record "BGM:<file>" (0x7E4430 + 308 * slot), marks it active and calls sub_109180(slot)
+0010a410 000000c4 F bgmChannelStart source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_195DE0: the whole save data of a new game: flags, party, personas, equipment, items, calendar, by scenario (sub_17D800)
+00195de0 00000990 F datInitNewGame source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_1A60D0: creates the task "rmd fade(kosaka)" (update sub_1A5F30 [K_MdlFade_Update]) with a 20-byte work {model, frames, target, colour}
+001a60d0 00000190 F K_MdlFade_Create source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_1A9400: releases one floor-effect slot (+36[i]) of the field camera task's work through sub_34FCF0, or clears +16 for i < 0
+001a9400 00000070 F K_FldCamera_StopFloorEffect source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_1AB390: the world half of K_FldFrame_HandleCollis: RpCollisionWorldForAllIntersections contacts push the step out of the geometry
+001ab390 000002a8 F K_FldFrame_CollideWorld source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_1ABD20: the clump half of K_FldFrame_HandleCollis: objects, doors, units, shadows, boxes and the chest push the step out
+001abd20 00000a24 F K_FldFrame_CollideClump source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_1CF940: fills the first free gFldUnitsEc slot for an encounter ("encount(0x%X)" k_unit.c:1072 on an unknown kind)
+001cf940 00000304 F K_FldUnit_CreateShadow source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_1D1640: keeps a live unit's placement, releases its resource, destroys its model (flag 1) and its five kwln tasks
+001d1640 00000138 F K_FldUnit_ReleaseModel source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_4D1260: the RwTexture module's read: the current dictionary's find callback (+24, a hit gains a reference), else the reader (+20) and the dictionary link; error 22
+004d1260 00000150 F RwTextureRead source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA
+# sub_3B2CB0: frFontEx.c string draw: builds the glyph list, aligns by the width / style size, colours every glyph, draws and releases
+003b2cb0 000002dc F frFontExDrawString source=phase5-finalA verified=yes ev=INTEGRATION_LOG.md#finalA

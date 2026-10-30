@@ -1,0 +1,136 @@
+# nm_message.sym  Phase 5 slice delta (game/include/p3fes/game/nm_message.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-21 by hand from the instructions (recomp/generated bodies; no IDA database opened). Rows: <addr8> <size8> F
+#   <name> <tags>, source=phase5-nm_message verified=yes: our own names, each from what the body does (the role after the
+#   name in the header) and the K_Assert file strings nmlist.c / nmSequence.c / nmCmdList.c (0x6A3DE8 / 0x6A3DF8 / 0x6A3E08).
+#   ev=<doc>#<section>. Not imported by the agent (one master owner at a time).
+# IDA master update #5: 63 rows imported. The row 003c58e0 nmCmdList was rejected: 0x3C58E0 is nullsub_58 (an 8-byte
+#   `jr $ra; nop` callback), which nm_message.h declares without a role; `[nmCmdList]` is the section label on the line after
+#   that declaration, so the name has no evidence. The master keeps nullsub_58 there (no EV comment).
+# sub_3C4710: after == 0 inserts at the head
+003c4710 00000104 F nmListInsertAfter source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4820: returns the node after (or before)
+003c4820 000000ec F nmListUnlink source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4910: node of `size` payload at the tail
+003c4910 000000c8 F nmListAppendNew source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4B50: (node +0)
+003c4b50 00000098 F nmListFindByKey source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4BF0: (node +4)
+003c4bf0 00000084 F nmListFindByWord4 source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4C80: stops at the tail (flag bit 1)
+003c4c80 0000009c F nmListCursorNext source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4D20: stops at the head
+003c4d20 0000009c F nmListCursorPrev source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4DC0: u64 sub_3C4DE0(EEContext& ctx, u64 obj, u64 list, u64 node);     // [nmListCursorSet]: returns 0
+003c4dc0 00000020 F nmListCursorClearEnd source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4DF0: index -1 = the tail
+003c4df0 00000058 F nmListCursorSeek source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4E50: u64 sub_3C4E60(EEContext& ctx, u64 obj, u64 list);               // [nmListCursorTail]
+003c4e50 00000010 F nmListCursorHead source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4E70: frees every node the filter picks
+003c4e70 000000bc F nmListRemoveFiltered source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C4F80: the signed byte sum of a C string
+003c4f80 00000038 F nmByteSum source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C50B0: relinks an array of nodes in order
+003c50b0 000000b8 F nmListRebuild source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5170: returns 0
+003c5170 0000000c F nmSeqNullStep source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5180: u64 sub_3C5210(EEContext& ctx);                                  // [nmSeqDefaultFunc]: returns 0
+003c5180 00000088 F nmSequenceCreate source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5220: tail of sub_3C45F0
+003c5220 00000020 F nmSequenceDestroy source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5240: u64 sub_3C53E0(EEContext& ctx, u64 list, u64 key, u64 node);     // [nmListInsertSorted] (by node +0, ascending)
+003c5240 00000194 F nmSequenceAddStep source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5460: u64 sub_3C5470(EEContext& ctx, u64 node);                        // [nmNodePayloadWord40]
+003c5460 00000010 F nmObjPayloadWord12 source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5480: u64 sub_3C5490(EEContext& ctx, u64 obj);                         // [nmSequenceUpdate]
+003c5480 00000010 F nmNodePayloadArea40 source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5760: u64 sub_3C57E0(EEContext& ctx, u64 obj, u64 node);               // [nmSeqStepOnInsert]: step owner +24
+003c5760 00000078 F nmSequenceCallAll36 source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5810: step owner +28
+003c5810 0000002c F nmSeqStepOnRemove source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5840: step owner +32, returns its result
+003c5840 00000028 F nmSeqStepRun source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5870: step owner +36
+003c5870 0000002c F nmSeqStepCall36 source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# nullsub_58: u64 sub_3C58F0(EEContext& ctx, u64 flags, u64 size, u64 rows, u64 spacing);  // [nmCmdListCreate]
+003c58e0 00000008 F nmCmdList source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5A20: tail of sub_3C45F0
+003c5a20 00000020 F nmCmdListDestroy source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5A40: u64 sub_3C5AF0(EEContext& ctx, u64 obj);                         // [nmCmdListCursorUp]: scrolls the first visible row
+003c5a40 000000a8 F nmCmdListAddRow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5BB0: u64 sub_3C5C50(EEContext& ctx, u64 obj);                         // [nmCmdListPageDown]
+003c5bb0 0000009c F nmCmdListCursorDown source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5D40: puts `node` on screen line `line`
+003c5d40 000000e0 F nmCmdListSelect source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5E20: (+52)
+003c5e20 00000054 F nmCmdListSetDrawFunc source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5E80: (+56)
+003c5e80 00000054 F nmCmdListSetUpdateFunc source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5EE0: (+48)
+003c5ee0 00000054 F nmCmdListSetRowDrawFunc source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5F40: (+64)
+003c5f40 00000054 F nmCmdListSetRowRemoveFunc source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C5FA0: renumbers the rows after it
+003c5fa0 00000114 F nmCmdListRemoveRow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C60C0: numbers the new row
+003c60c0 00000024 F nmCmdListOnInsert source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C60F0: payload +64
+003c60f0 0000002c F nmCmdListOnRemove source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6120: the row's position and colour
+003c6120 00000144 F nmCmdListDrawRow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6270: the per-frame update, returns the result
+003c6270 00000110 F nmCmdListUpdate source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6380: u64 sub_3C63F0(EEContext& ctx, u64 obj);                         // [nmCmdListInput]: the pad handling (0x7E094C..0x7E095A)
+003c6380 0000006c F nmCmdListDraw source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6900: u64 sub_3C69D0(EEContext& ctx, u64 obj);                         // [nmCmdListFadeStep]: the state machine (table 0x7BB4C0)
+003c6900 000000d0 F nmCmdListStartFade source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6B70: the two 16.16 ratios at +36 / +40
+003c6b70 000000e0 F nmCmdListScrollBar source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6C50: the cursor when bit 4
+003c6c50 0000002c F nmCmdListDecidedRow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6C80: bit 5
+003c6c80 00000014 F nmCmdListCancelled source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6CA0: bit 15
+003c6ca0 00000014 F nmCmdListPagedDown source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6CC0: bit 16
+003c6cc0 00000018 F nmCmdListMovedUp source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6CE0: the cursor when bit 13
+003c6ce0 0000002c F nmCmdListMovedDownRow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6D10: the cursor when bit 14
+003c6d10 0000002c F nmCmdListScrolledRow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6D40: u64 sub_3C6D60(EEContext& ctx, u64 obj, u64 flags);              // [nmCmdListSetFlags]: returns 0
+003c6d40 00000014 F nmCmdListSetPosition source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6D80: the packed status word
+003c6d80 00000088 F nmCmdListStatus source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6E10: the same, top 4 bits cleared
+003c6e10 00000090 F nmCmdListStatus28 source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6EA0: bit 10
+003c6ea0 00000018 F nmCmdListHold source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6EC0: u64 sub_3C6EE0(EEContext& ctx, u64 obj);                         // [nmCmdListOpen]: bit 20 unless active
+003c6ec0 0000001c F nmCmdListRelease source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6F10: bit 21 when active and not closing
+003c6f10 00000034 F nmCmdListClose source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6F50: bits 22 and 21
+003c6f50 00000028 F nmCmdListCloseNow source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6F80: min(rows, count)
+003c6f80 0000002c F nmCmdListVisibleRows source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C6FB0: the cursor's screen line
+003c6fb0 00000048 F nmCmdListCursorLine source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7000: qsort, renumber, scroll to the top
+003c7000 00000070 F nmCmdListSort source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7270: resets the record 0x95BE90
+003c7270 00000028 F msgWinReset source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C72A0: u64 sub_3C72D0(EEContext& ctx, u64 bmd);                         // [msgWinOpen]: binds a BMD unless a handle exists
+003c72a0 00000030 F msgWinRecordInit source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7390: u64 sub_3C73E0(EEContext& ctx, u64 flags);                       // [msgWinClearStateFlags]
+003c7390 0000004c F msgWinSetStateFlags source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7430: u64 sub_3C74E0(EEContext& ctx, u64 selection);                   // [msgWinRequestSelection]
+003c7430 000000ac F msgWinRequestMessage source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7560: (+12)
+003c7560 00000044 F msgWinSetType source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C75B0: -1 without a handle
+003c75b0 00000054 F msgWinGetSelection source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7610: (+13)
+003c7610 00000038 F msgWinLastSelection source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message
+# sub_3C7650: u64 sub_3C7700(EEContext& ctx);                                  // [msgWinCloseAll]
+003c7650 000000a8 F msgWinClose source=phase5-nm_message verified=yes ev=INTEGRATION_LOG.md#nm_message

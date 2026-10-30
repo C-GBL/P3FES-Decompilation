@@ -1,0 +1,17 @@
+# p3fes_handgen self-test functions (tests/game/handgen_selftest.cmake): one per shape the converter must get right.
+0x569848  # RFMAI_ToUpperStr: frame + spills, jal, a test-last loop with a back-edge check (the shop route's catch)
+0x3B0620  # frFontCreateGlyphNode: 128-bit sq spills, a K_Abort call, a shared block reached by six compares
+0x56BAC8  # rfdirStrcmpFileName: a branch whose delay slot overwrites its own operand (the test is saved first)
+0x56C320  # rfdir_nameBinarySearch: 1 KiB of stack buffers handed to callees, a saved test, a loop
+0x30FDF0  # datScriptGetValue: a 35-label jump table, FPU, the unsigned-to-float idiom
+0x4C2F30  # sub_4C2F30: VU0 macro code (a matrix product), leaf
+0x193EC0  # kwlnTaskUpdate: jalr callbacks inside a loop
+0x2BA0F0  # sub_2BA0F0: VU0 + FPU + a jump table
+0x46B510  # _rpSkinMatrixUpdating: delay slots that must stay after the link
+0x121DE0  # sub_121DE0: a leaf jump table
+0x35AC90  # ApplyRelocTable: a leaf loop with an early exit
+0x2BEF20  # btlCommand_UpdateBattleCommandCalcTask: jalr + a jump table
+0x1FA0D0  # sub_1FA0D0: a jump table inside a loop (switch breaks vs loop exits)
+0x589018  # sub_589018: a mid-body entry (0x589030) the start falls into: one function per entry point, the shared body static
+0x54E7D8  # sub_54E7D8: two mid-body entries, one of them a separate leaf the start jumps past
+0x5A0C00  # sub_5A0C00: two wrappers (the start and the entry 0x5A0CA0) that join in one worker (a common body)

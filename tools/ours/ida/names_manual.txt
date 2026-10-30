@@ -1,0 +1,9 @@
+# Analyst-assigned names applied by export_symbols.py (--apply-names) before export.
+# Format: <hex addr> <name>   (# comments allowed). Evidence lives in docs/ANALYSIS/01_functions_summary.md.
+0x193980 main
+0x1984C0 kwlnMain
+0x51F6A0 exit
+0x50D658 crt_init_runtime
+0x95C280 crt0_args
+0x7CDE80 bss_start
+0x7D2CF0 gp_base

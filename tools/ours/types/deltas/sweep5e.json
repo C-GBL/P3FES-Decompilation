@@ -1,0 +1,5 @@
+{"note": "slice sweep5e: fields named from the instructions of game/src/fx/sweep5e.cpp (the battle helpers sub_2E3AE0, sub_2E97E0, sub_2EFB40, sub_2F8790); the same offsets as the constexprs of game/include/p3fes/game/sweep5e.h (namespace sweep5e)",
+ "records": [
+  {"name": "gBtl", "anchors": [{"how": "gslot", "addr": "0x7CE3EC"}], "fields": [{"off": 344, "width": 4, "type": "ptr", "name": "unit_list"}, {"off": 2836, "width": 4, "type": "u32", "name": "file_node"}, {"off": 2904, "width": 4, "type": "s32", "name": "bad_status_flag"}, {"off": 2908, "width": 4, "type": "s32", "name": "bad_status_flag2"}]},
+  {"name": "btlUnit", "anchors": [{"how": "param", "fn": "0x2EFB40", "index": 0}], "fields": [{"off": 152, "width": 4, "type": "u32", "name": "flags152"}, {"off": 162, "width": 1, "type": "u8", "name": "byte162"}, {"off": 164, "width": 2, "type": "u16", "name": "id"}, {"off": 2604, "width": 4, "type": "ptr", "name": "unit_data"}, {"off": 2612, "width": 4, "type": "ptr", "name": "next"}]}
+]}

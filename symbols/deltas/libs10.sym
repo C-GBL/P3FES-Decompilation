@@ -1,0 +1,22 @@
+# libs10.sym  Phase 5 slice delta (game/include/p3fes/game/libs10.h); SLUS_216.21
+# generated 2026-10-28 from the instructions (p3fes_handgen bodies; CRI's error / message texts and the IDA labels of
+#   those texts as the name evidence; no IDA database opened).
+#   Rows: <addr8> <size8> F <name> <tags>, source=phase5-libs10, verified=yes: each name is the one CRI's own text uses
+#   for the function, or the AIXP_* family name of a body that matches it (role blocks in game/src/cri/libs10.cpp).
+#   Not imported by the agent.
+# sub_552930: AIXP pool create (4 x 620 bytes at 0x799978), its own "E2003050201" NULL text; the AIXP_* family of 0x553838.
+00552930 000002A0 F AIXP_Create source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_553838: the error text names it: "E2004051901 AIXP_GetByteRate: NULL pointer is specified."
+00553838 000000E4 F AIXP_GetByteRate source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_553FA8: runs the per-player step of each of the 4 live AIXP players (the server of the pool above).
+00553FA8 00000060 F AIXP_ExecServer source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_557AE0: frees the single SRD object; its message text's label is aSrdInvalidSrdD ("SRD: invalid SRD_Destroy").
+00557AE0 000000A0 F SRD_Destroy source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_557D80: the host-file wait (sceIoctl poll); its timeout text's label is aSrdSrdWaitHstT ("SRD: srd_wait_hst timeout").
+00557D80 000000CC F srd_wait_hst source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_557F80: sets the handle's break flag; its NULL text's label is aSrdSrdBreakHan ("SRD: SRD_Break handle is NULL").
+00557F80 00000068 F SRD_Break source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_559718: DTX create for an id; its failure text's label is aDtxCreateCanTC ("DTX_Create: can't create DTX of server").
+00559718 00000198 F DTX_Create source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10
+# sub_55C240: host CI stop transfer; its timeout text's label is aHtciHtcistoptr ("HTCI: htCiStopTr timeout").
+0055C240 000000F4 F htCiStopTr source=phase5-libs10 verified=yes ev=INTEGRATION_LOG.md#libs10

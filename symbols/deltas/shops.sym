@@ -1,0 +1,244 @@
+# shops.sym  Phase 5 slice delta (game/include/p3fes/game/shops.h, game/src/facility/shops.cpp); SLUS_216.21
+# generated 2026-10-21 from the instructions (the p3fes_handgen bodies, the K_Assert file strings fclShop.c 0x6A6AF8 /
+#   fclShopMisc.c 0x6AEDE8 / fclDrawSprite.c 0x6AF950 / fclShopBGManager.c 0x6AFBE0, the task names, the step
+#   descriptors 0x6A6FC0..0x6A75E0 with their names LOAD / ROOT / BUY / SELL / TALK / MONEY / SUBTITLE / BG) and
+#   checked by tests/game/test_shops.cpp (the shop route snapshots, host rules over the real tables).
+#   Rows: <addr8> <size8> F <name> source=phase5-shops verified=yes ev=<doc>#<section>. Not imported by the agent.
+# sub_3DF4A0: The per-node callback of an element set (sub_3DFEB0 hands it to the nm list;
+003df4a0 00000620 F fclElementAnimate source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFAC0: $a0 a holder whose +0 is an nm list: returns the first word of the record the list cursor's row points to (**(cursor->payload + 28));
+003dfac0 0000001c F fclListCursorRecordWord source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFAE0: The fusion list element drawer (only caller: fusion's sub_3DEDA0): $a0 the holder, $a1 the element.
+003dfae0 000003c8 F fclCombineElementDraw source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFEB0: Creates an element set: an nm list (sub_3C44D0) with 8-byte payloads and the node callback sub_3DF4A0;
+003dfeb0 00000050 F fclElementSetCreate source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFF00: Destroys the set's nm list (sub_3C45F0) when $a0 is not null.
+003dff00 0000002c F fclElementSetDestroy source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFF30: 1 when every element of the set has flag 4 (idle / done), else 0.
+003dff30 00000048 F fclElementSetAllDone source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFF80: The element whose id (+16) is $a1, or 0.
+003dff80 00000040 F fclElementSetFind source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3DFFC0: Finds the element with id $a1 or appends a new node (nmListAppendNew;
+003dffc0 000000bc F fclElementSetStart source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0080: Copies the 22-id template table 0x6A6040 (two 28-byte records per id: in / out) to the stack (154 doublewords), stamps the id and the s16 $a3 into eve
+003e0080 000001dc F fclElementTemplate22 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0260: Builds a descriptor from table 0x6A6040 (sub_3E0080) on the stack, finds or appends the element $a1 in set $a0 (the inline copy of sub_3DFFC0), starts
+003e0260 000000d0 F fclElementStartTemplate22 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0330: As sub_3E0260 with the 8-id table 0x6A6510 copied inline (56 doublewords): record [$a1][$a2], id / $a3 stamped, then find-or-append, start and sub_3DF
+003e0330 000001ac F fclElementStartTemplate8 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E04E0: As sub_3E0330 with the 4-id table 0x6A66D0 (28 doublewords).
+003e04e0 0000016c F fclElementStartTemplate4 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0650: One frame of a set: nmListRemoveFiltered over its list (the node callback sub_3DF4A0 animates each element).
+003e0650 00000028 F fclElementSetUpdate source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0680: Calls $a1(set, element, $a2) through jalr for every node of the set, in list order (the draw tasks pass their element drawers).
+003e0680 00000074 F fclElementSetForEach source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0700: $a0 the shop type: types 0, 1, 2 and 4 go through the sequence manager (adminiChangeSeq(7, &type, 4, 0): sequence 7 is the shop, the type its 4-byte p
+003e0700 00000078 F fclShopStart source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0830: The "fclShop" task: -1 (the task ends) once sub_3E0BC0 has torn the finished sequence down, else 0.
+003e0830 00000038 F fclShop_UpdateShopTask source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0920: sub_3E0BB0: 1 while the shop sequence exists.
+003e0920 00000020 F fclShopIsOpen source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0950: When no shop is open: nmSequenceCreate(root sub_3E6E80, 156-byte work), stores it in 0x7CE688, sets the work's type ($a0), its element set (sub_3DFEB0
+003e0950 000000bc F fclShopCreateSequence source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0BB0: 0x7CE688 != 0.
+003e0bb0 00000010 F fclShopExists source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E0BC0: When the sequence reports its end (sub_3C5490): the teardown sub_3E0A10 (still recompiled), nmSequenceDestroy, 0x7CE688 = 0, returns 1;
+003e0bc0 00000058 F fclShopPollEnd source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E6400: The shop's element drawer (passed to sub_3E0680 by both draw tasks): $a1 the element.
+003e6400 00000934 F fclShopDrawElement source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E6D40: nmSequenceCallAll36 on the shop sequence (every step's draw callback).
+003e6d40 00000028 F fclShopDrawSteps source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E6D70: 1 when the shop is open and its work flag 4 is set (the type sells something, state 6).
+003e6d70 0000004c F fclShopHasLineup source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E6DC0: The open shop's type, -1 without a shop (K_Assert fclShop.c:1186 first, `jr $ra` in retail).
+003e6dc0 0000005c F fclShopGetType source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E6E80: The root of the shop sequence, once per frame (nmSequence callback): $s2 = the work record.
+003e6e80 00001840 F fclShopRoot source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E86C0: Adds the LOAD step (id 16, descriptor 0x6A6FC0 copied to the stack: two quadwords + a word) to the sequence;
+003e86c0 00000080 F fclShopOpenLoad source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E8740: $a0 the work: when the LOAD step's node reports finished (flag 8 at its state +20), clears +76 and returns the step's result word;
+003e8740 00000074 F fclShopPollLoad source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E8E20: Opens the ROOT menu (K_Assert fclShop.c:2338 on a null work): element 4 out (sub_3E0C20(work, 4, 0));
+003e8e20 000001cc F fclShopOpenRoot source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E8FF0: When the ROOT step finished or decided (node flag 8 or payload flag 1): element 4 in, flag 1 cleared, returns the choice (payload +0);
+003e8ff0 000000b8 F fclShopPollRoot source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E9790: The ROOT step's payload;
+003e9790 00000054 F fclShopShowRoot source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E97F0: Adds the BUY step (id 2, descriptor 0x6A7070) into $a0 +20 and brings element 5 in.
+003e97f0 000000bc F fclShopOpenBuy source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3E98B0: When the BUY step finished or decided: clears +20, element 5 out, returns the result;
+003e98b0 000000b8 F fclShopPollBuy source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EA560: The BUY step's payload: $a0 == 1 returns bit 1 of the lineup list's view word (list +36 -> +68 -> +0;
+003ea560 0000009c F fclShopBuyQuery source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EA600: Adds the SELL step (id 3, descriptor 0x6A70B0) into $a0 +24 and brings element 6 in.
+003ea600 000000b0 F fclShopOpenSell source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EA6B0: When the SELL step finished or decided: element 6 out, clears +24, returns the result;
+003ea6b0 000000b8 F fclShopPollSell source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EACB0: The SELL step's payload;
+003eacb0 00000054 F fclShopShowSell source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EE310: Adds the TALK step (id 4, descriptor 0x6A7230) into $a0 +28;
+003ee310 000000c0 F fclShopOpenTalk source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EE3D0: When the TALK step finished: clears +28, the antique shop's element 17 out, returns the result;
+003ee3d0 000000b0 F fclShopPollTalk source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EE570: Adds the MONEY step (id 14, descriptor 0x6A7260) into $a0 +68.
+003ee570 00000080 F fclShopOpenMoney source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EEC60: Sets a display bit on the MONEY step's payload +4: $a0 0 -> 1, 1 -> 2, 2 -> 4, 3 -> 8.
+003eec60 000000b0 F fclShopMoneyFlag source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EED10: The MONEY step's payload +20 = $a0 (the amount shown beside the yen).
+003eed10 00000040 F fclShopMoneySetDelta source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EED90: Adds the SUBTITLE step (id 15, descriptor 0x6A72E0) into $a0 +72.
+003eed90 00000080 F fclShopOpenSubtitle source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFB40: Adds the BG step (id 13, descriptor 0x6A75E0) into $a0 +64.
+003efb40 00000080 F fclShopOpenBg source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFCE0: When the BG step exists: the manager's scene = off_6B1F30 + 16 * type (sub_401420).
+003efce0 0000008c F fclShopBgSetScene source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFD70: When the BG step exists: sub_4014E0 (the scene's load handlers done) != 0;
+003efd70 0000006c F fclShopBgLoaded source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFDE0: Except for type 8: the manager's mode = $a1 (sub_4015A0;
+003efde0 0000007c F fclShopBgSetMode source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFE60: When the BG step exists: the manager's flag 2 (sub_4015E0);
+003efe60 00000068 F fclShopBgBusy source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFED0: &descriptors[$a0] (0x6A9930, 16 bytes each).
+003efed0 00000018 F fclSpriteBankDesc source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFEF0: The memory-card UI's descriptor 0x6A99C0.
+003efef0 00000010 F fclSpriteBankDescMc source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFF00: For the field (caller sub_17D610): fills the 8-byte record $a1 for shop $a0: byte 0 = the number of 12-byte level entries of the type's record (sub_3F
+003eff00 000000e8 F fclShopSummary source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3EFFF0: &record[type] in 0x6AC9D0 (9 words each;
+003efff0 00000098 F fclShopRecord source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F0090: The s16 intro message of type $a0 (0x6ACC70 + 4 * type;
+003f0090 0000001c F fclShopIntroMessage source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F00D0: $a0 a lineup list {count, entries}: from index *$a2 (0 when $a2 is null) finds the first 20-byte entry whose minimum level (u16 +4, 0 = any) the prota
+003f00d0 000000f8 F fclLineupFind source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F01D0: Lineup list $a1 of record $a0 (+8 * $a1): sub_3F00D0 with conditions mode 1, then from index 0 with mode 0.
+003f01d0 00000064 F fclLineupFindAny source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F0240: Types 0..2 only: 1 when lineup list 1 of the record (+8) has an entry for mode 1 or 0;
+003f0240 00000110 F fclShopTypeHasLineup source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F0350: The next 12-byte level entry of record $a0 (count +24, entries +28) at index *$a1, which it advances;
+003f0350 00000088 F fclLevelEntryNext source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F03E0: The social link of the shop (type 8 -> link 2, 4 -> 3, 0 -> 15;
+003f03e0 0000010c F fclShopLinkRank source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F06E0: $a0 a message list {count, 24-byte entries}: the first entry that passes -- entries flagged 4 or 1 are skipped while the shop's link has a rank, the s
+003f06e0 0000014c F fclMessageSelect source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F0830: The greeting message of type $a0: the conditional list (record +32 -> +20, mode 1);
+003f0830 00000284 F fclShopGreeting source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F0D60: Tells the shop's social link about a purchase: type 8 / 4 pass $a1, type 0 a value from the item's record (sub_170ED0;
+003f0d60 00000154 F fclShopLinkPurchase source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F10B0: Types 0 / 4: the message for item $a1 in the link-rank table (rank row s16 +14 + 2 * sub_3F0EC0(item));
+003f10b0 000001e4 F fclShopRankItemMessage source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F1470: The shop's social link (8 -> 2, 4 -> 3, 0 -> 15): sub_172660(link) when active, else 0.
+003f1470 000000a8 F fclShopLinkCanAdvance source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F15D0: yen += $a0 * $a1, clamped to 0..9,999,999 (sub_16DD50 / sub_16E930);
+003f15d0 000000b4 F fclAddMoney source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F1720: Gives $a1 of item $a0: consumables (kind 4, sub_170ED0) through sub_170C00(1, item, n);
+003f1720 00000104 F fclGiveItem source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F1830: Takes $a1 of the row's item: consumables sub_170C00(1, item, -n), equipment sub_16FEA0(1, slot, 0).
+003f1830 000000d4 F fclTakeItem source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F1A10: The sort / category code of an item's flag word: base 0x4000 (0x1000 when any of the low 19 bits is set), 0x2000 and the high byte for flags in 0xFF00
+003f1a10 0000018c F fclItemCategory source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F2240: Fills the 28-byte row $a0 for item $a1 (memset first;
+003f2240 000000d8 F fclInventoryRow source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F2510: The 8 story flags of 0x6ACC60 as a bit mask (0xFFFF entries skipped);
+003f2510 000000c8 F fclShopFlagMask source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F2D60: sub_3F2DC0 for every row of list $a0.
+003f2d60 0000005c F fclBuyRowsRefresh source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F2DC0: Recounts a lineup row: owned count (+14;
+003f2dc0 000001ac F fclBuyRowRefresh source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F3280: The lineup sort comparator (nm list sort): by category byte, then by the key the category's nibble selects (4: 9,999,999 - price, 2: +26, 1: +24, 0: +
+003f3280 0000014c F fclBuyRowCompare source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F3970: sub_3F39A0($a0, 0, $a1).
+003f3970 00000028 F fclBuyListSort source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F3DC0: For every row: if its item is in list $a1 (nmListFindByWord4) that entry is removed, else the row gets flag 0x80 (new).
+003f3dc0 00000098 F fclBuyRowsMarkNew source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F3F00: One frame of the lineup's input (sub_3FA1E0: 1 when decided), with the cursor sounds: moved / scrolled -> sound 0, paged / moved up -> sound 5 (sub_10
+003f3f00 000000bc F fclBuyListInput source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F7730: Draws a row's three frame sprites (table 0x6AEFD0 by the list mode) and its owned count ("%d" at +139, +12).
+003f7730 0000015c F fclRowDrawCount source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F98F0: 0 when item $a0 is in one of the 16 unsellable ranges of 0x6ACCA0 ({first, last};
+003f98f0 000000dc F fclItemSellable source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F99D0: Adds a row (32 bytes) to list $a0 for every inventory slot (300) of the kinds in mask $a1 that sub_3F1DC0 fills and sub_3F98F0 allows;
+003f99d0 00000150 F fclSellRowsAdd source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F9B20: Recounts a sell row (flag 0x4000: consumable count, else whether the slot still holds it) and removes the row when none is left.
+003f9b20 00000184 F fclSellRowRefresh source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3F9CB0: The sell list comparator: equipped rows (flag 0x40) first, then as sub_3F3280.
+003f9cb0 00000178 F fclSellRowCompare source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FA0D0: As sub_3F3F00 for the sell list.
+003fa0d0 000000bc F fclSellListInput source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FA190: Sets bit 0 of the list view word (list +36 -> +68 -> +0).
+003fa190 00000020 F fclListViewSet1 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FA1B0: Clears it.
+003fa1b0 00000024 F fclListViewClear1 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FA1E0: nmCmdListUpdate == 3.
+003fa1e0 00000028 F fclListDecided source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FB290: Copies the 28-byte row $a1 to the description panel $a0 +12 (K_Assert 4120 on null).
+003fb290 00000060 F fclDescSetRow source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FBF20: The description panel's fade: states 1 / 2 fade in over 10 frames (alpha +148 = 255 * n / 10), 3 / 4 fade out, 5 shown.
+003fbf20 0000013c F fclDescFade source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FC980: Weapons: sub_3FC060;
+003fc980 00000074 F fclBuyTypeInfo source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FFA20: Draws a fading menu row (sub_3FF630;
+003ffa20 00000188 F fclRootRowFade source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_3FFE00: sub_3FFBB0 for every row of the menu list $a0 ->+0 (nothing when null).
+003ffe00 00000060 F fclRootRowsRefresh source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_400690: nmCmdListDraw(menu ->+0).
+00400690 00000028 F fclRootDraw source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_400740: The ROOT menu frame (sprites 21..24 at 0 / 112 / 224 / 349) and its fading rows (sub_3FFA20), each removed from the fade list when done (sub_3C49E0).
+00400740 000001b0 F fclRootFrameDraw source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_400A90: A ROOT row sliding in: the cursor row is offset by 600 * frame / frames at full alpha;
+00400a90 000000f4 F fclRootRowSlide source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_400B90: The ROOT rows' draw callback by the list status (nmCmdListStatus28): 1 / 12 the plain row (dimmed when flag 1, highlighted when the cursor row), 20 th
+00400b90 000001c8 F fclRootRowDraw source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_401170: While the manager is active (flag 1): calls the draw handler (+4) of every active element whose scene entry is on layer 3 (+20) through jalr with the 
+00401170 000000a0 F fclBgDrawLayer3 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_401420: Manager $a0 gets scene $a1 (+16): one list node per scene entry (28 bytes at +8, +12 of them) with an entry-sized data area (entry +8, plus 16);
+00401420 000000c0 F fclBgSetScene source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_4014E0: Calls the load handler (+16) of every element not yet loaded (flag 4);
+004014e0 000000c0 F fclBgLoadPoll source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_4015A0: When the mode changes: flag 1 (plus 4 if a change was already pending) and +24 = mode.
+004015a0 0000003c F fclBgSetMode source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_4015E0: (flags & 2) != 0.
+004015e0 00000014 F fclBgFlag2 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_401600: Applies an animation event to handle $a1: 2 / 35 start (sub_111C50), 36 stop and start (sub_111D50, sub_111C50), 1 / 3 start and sub_111EE0.
+00401600 000000c8 F fclBgAnimEvent source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40D5E0: sub_40D610 with $t1 = 0 (its sixth argument).
+0040d5e0 00000024 F fclDrawNumberA source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40D610: sub_40D640 (still recompiled) with $t2 = 0 (its seventh argument).
+0040d610 00000024 F fclDrawNumberB source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E300: Frees the current bank (sub_40E580), creates one for descriptor $a0 (sub_40E450) into 0x7CE6A0 and keeps $a1 in 0x7CE69C.
+0040e300 00000058 F fclSpriteBankLoad source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E390: sub_40E4F0 on the current bank.
+0040e390 00000024 F fclSpriteBankReady source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E3C0: Draws sprite $a3 (frame + $t0) of the current bank at ($a0, $a1), alpha 255 - $a2 (sub_40E610).
+0040e3c0 00000024 F fclSpriteDraw source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E3F0: The scaled / rotated draw (sub_40E710) with the current bank.
+0040e3f0 00000030 F fclSpriteDrawEx source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E450: RwMalloc(20 + 4 * file count) (the RW slot 0x960178, flags 0x40000), zeroed: +4 descriptor, +8 handles (the block's +20), +12 / +16 from the descripto
+0040e450 00000094 F fclSpriteBankCreate source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E4F0: Turns every file of the descriptor into a sprite handle (H_Cdvd_CacheFindFile, sprCreateHandleFromData), counting +0;
+0040e4f0 0000008c F fclSpriteBankLoadAll source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E580: Frees each handle (sub_1124B0) and the block (the RW slot 0x96017C) when $a0 is not null.
+0040e580 00000084 F fclSpriteBankFree source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E610: $t1 the bank: sprite $a3 {s8 file, s16 frame, s16 dx, s16 dy}: sprCreateHandle(0, file, frame + $t0), position ($a0 + dx, $a1 + dy) as floats, depth $
+0040e610 000000f4 F fclBankSpriteDraw source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40E710: As sub_40E610 with scale ($f13 / $f15: position offsets scaled, the u16 scale words +40 / +42 = 4096 * scale), rotation $f12 (+32) and pivot $t2 / $t3
+0040e710 0000021c F fclBankSpriteDrawEx source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40EB50: Draws the digit string $t0 at ($a0, $a1), size class $a3 (widths 0x6AF960), alignment $t1: sub_40EC20 with the digit drawer sub_40EEF0 (color $a2 | ~0
+0040eb50 0000006c F fclDrawNumber source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40EC20: sub_40EC50 (the stack arguments passed through).
+0040ec20 00000024 F fclDrawDigits source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40EC50: Parses the digit string: spaces skip a cell, flag 8 inserts a separator every three digits (K_Asserts fclDrawSprite.c:277 / 278 on non-digits);
+0040ec50 00000294 F fclDrawDigitsImpl source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_40EEF0: One digit sprite: the font file of size class $a3 (0x6AF9A0, sprFontGetFile), frame $t0 (+11 for classes 3 / 4), position, depth, alpha and the RGB by
+0040eef0 00000134 F fclDrawDigit source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_410D30: A background element's load handler: creates its animation (sub_111DD0 with priority 6324 and the entry's file +24) once, and when it is ready sets it
+00410d30 00000140 F fclBgAnimLoad source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_410E70: A background element's handler: without an event, advances its fade-in (flag 1) or fade-out (flag 2, then stops: returns 2) counters (+6 against +8 / 
+00410e70 00000264 F fclBgAnimUpdate source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_4110F0: Background events 1 / 3 -> MONEY bit 0, 2 / 4 -> bit 1, 5 -> 2, 6 -> 3 (sub_3EEC60).
+004110f0 00000098 F fclBgEventMoney source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_411190: Events 5..22 -> subtitle line 0, 2, 4, 6, 8, 1, 3, 5, 7, 9, 10..17 (sub_3EF970).
+00411190 000001b0 F fclBgEventSubtitle source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_411340: Events 5..9 show the ROOT / BUY / SELL / ARMSCOMBINE / TRADE step (sub_3E9790, sub_3EA560, sub_3EACB0, sub_3EB9B0, sub_3EC030 with 0).
+00411340 000000ac F fclBgEventShowStep source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops
+# sub_412580: Draws the five sprites 81..85 of a background element at its five 12-byte positions (sub_40E3F0).
+00412580 00000090 F fclBgDraw5 source=phase5-shops verified=yes ev=INTEGRATION_LOG.md#shops

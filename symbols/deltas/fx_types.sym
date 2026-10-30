@@ -1,0 +1,247 @@
+# fx_types.sym  Phase 5 slice delta (game/include/p3fes/game/fx_types.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-21 by hand from the instructions (recomp/generated bodies, the class / kind tables 0x69BE20..0x69CC70;
+#   no IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-fx_types verified=yes: our own names,
+#   each from what the body does (the role after the name in the header). A proposed name several functions share (the
+#   per-class twins) is listed as a comment only. ev=<doc>#<section>. Not imported by the agent.
+# sub_3243D0: tail into the layer manager sub_321140
+003243d0 00000020 F fxLayerAttach source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3244C0: matrix from sub_323A30 onto the model (+12)
+003244c0 00000044 F fxSetModelMatrixB source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3245B0: the block at +16 (absolute when +24 is set, else record-relative)
+003245b0 0000003c F fxBlockA source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3245F0: the block at +32 (absolute when +40 is set, else record-relative)
+003245f0 0000003c F fxBlockB source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324630: empty class-row default
+# sub_324640: empty class-row default
+# sub_324650: class-row default, returns 0
+00324650 0000000c F fxDefaultZero source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324660: empty class-row default
+# sub_324670: empty class-row default
+# sub_324930: class slot 7 on the instance when present
+00324930 00000054 F fxClassSlot7 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324990: class slot 2 on the instance
+00324990 00000050 F fxClassSlot2 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3249E0: class slot 3 on the instance
+003249e0 00000050 F fxClassSlot3 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324A30: class slot 8 on the instance when present
+00324a30 00000054 F fxClassSlot8 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324A90: class slot 10 on the instance when present
+00324a90 00000054 F fxClassSlot10 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324AF0: class slot 12 on the instance when present
+00324af0 00000054 F fxClassSlot12 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_324B50: the 128-byte effect-node header and its defaults
+00324b50 00000078 F fxNodeReset source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_326160: *out = node +64
+00326160 00000010 F fxNodeGetPosition source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_326170: *out = node +80
+00326170 00000010 F fxNodeGetRotation source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_326180: node +100
+00326180 0000000c F fxNodeGetWord100 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_326190: memcpy(dst, src, 144)
+00326190 00000024 F fxNodeCopyHeader source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3261C0: the child with key (+144) among +140 / +172, else 0
+003261c0 00000038 F fxNodeFindChild source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_326200: the child at a position, else 0
+00326200 0000003c F fxNodeChildAt source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_326240: the position of a child, else 0
+00326240 0000003c F fxNodeChildIndex source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_327220: restart of the track at +76
+# sub_329350: the track's update, then sub_327250(obj, 1.0f)
+00329350 0000004c F fxObj1Update source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3293A0: sub_3275D0(obj, 1.0f)
+003293a0 00000028 F fxObj1Draw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3293D0: sub_329350 then sub_3293A0
+003293d0 00000060 F fxObj1UpdateDraw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_329430: track +76 value 0 = *src
+# sub_329460: track +76 value 1 = *src
+# sub_329490: +4 = value
+00329490 0000000c F fxObjSetWord4 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3294A0: +8 = $f12, the track's (+76) time setter
+# sub_329740: the scene camera's matrix row +32 as (x, y, z, 0)
+00329740 00000054 F fxCameraPos source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3297A0: the scene camera's matrix row +48 as (x, y, z, 0)
+003297a0 00000054 F fxCameraAt source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_32A540: keyframe curve value at a frame, in $f0
+0032a540 00000230 F fxCurveEval source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3321D0: RwFree(track +40)
+003321d0 0000002c F fxTrackFreeKeys source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_332200: frame (+16) = 0
+00332200 0000000c F fxTrackRestart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_332210: key slots reset on frame 0, the type's update (0x69C510), ++frame
+00332210 00000094 F fxTrackUpdate source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3322B0: *out = value quadword 0
+003322b0 00000014 F fxTrackGetValue source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3322D0: value quadword 0 = *src
+003322d0 00000014 F fxTrackSetValue source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3322F0: *out = value quadword 1
+003322f0 00000014 F fxTrackGetValue2 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_332310: value quadword 1 = *src
+00332310 00000014 F fxTrackSetValue2 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_332330: the type's second word (0x69C514)
+00332330 00000038 F fxTrackSetTime source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_332B30: restart of the track at +48
+# sub_333020: track +48 value 0 = *src
+# sub_333050: track +48 value 1 = *src
+# sub_333080: +4 = value, also on the child at +44
+00333080 00000030 F fxObjSetWord4Child source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3330B0: +8 = $f12, the track's (+48) time setter
+# sub_3338B0: sub_324310 on +16 and +20, RwFree(obj)
+003338b0 00000050 F fxObj2Destroy source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_333900: u16 mask[index] (+24) = 0
+00333900 0000001c F fxMaskClear source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_333920: u16 mask[index] = 0xFFFF
+00333920 00000020 F fxMaskSet source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_333940: mask[index] == 0xFFFF
+00333940 00000024 F fxMaskIsSet source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3342C0: sub_3243D0 on +16 and +20
+003342c0 0000004c F fxObj2AttachBoth source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_337E10: the tint bytes gp-18348.. into the material colour
+# sub_337F80: sub_3237C0(+0), RwFree(obj)
+# sub_338CE0: the tint bytes gp-18348.. into the material colour
+# sub_338E50: sub_3237C0(+0), RwFree(obj)
+# sub_3394F0: class 12 slot 0: sub_3393D0(u16 +12, fxBlockA)
+003394f0 0000003c F kobj12Create source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339530: kind destroy (+8) on the params (+60), RwFree(inst)
+00339530 00000064 F kobj12Destroy source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3395A0: sub_3393D0(kind +56, params +64)
+003395a0 0000002c F kobj12Clone source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3395D0: kind init (0x69C650), counter +52 = 0
+003395d0 00000050 F kobj12Init source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339620: kind update (+12), ++counter
+00339620 00000058 F kobj12Update source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339680: kind draw (+16) once counted
+00339680 0000004c F kobj12Draw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3396D0: update, ++counter, draw
+003396d0 0000008c F kobj12UpdateDraw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339760: +0 = *src
+00339760 00000010 F kobj12SetQuad0 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339770: +16 = *src
+00339770 00000010 F kobj12SetQuad16 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339780: +48 = value
+00339780 0000000c F kobj12SetWord48 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339790: +32..+40 = $f12
+00339790 00000014 F kobj12SetScale source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3397B0: +32..+40 = src[0..2]
+003397b0 00000020 F kobj12SetScale3 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_339950: sub_3237C0(block +4), RwFree(block +8)
+00339950 00000044 F fxKindRelease source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_341FD0: class 10 slot 0: instance, parameters, init
+00341fd0 000000ec F kobj10Create source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3420C0: kind destroy (+8) on the params (+60), RwFree(inst)
+003420c0 00000064 F kobj10Destroy source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342130: a new instance of the same kind and parameters
+00342130 00000144 F kobj10Clone source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342280: kind init (0x69C850), counter +52 = 0
+00342280 00000050 F kobj10Init source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3422D0: kind update (+16), ++counter
+003422d0 00000058 F kobj10Update source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342330: kind draw (+20) once counted
+00342330 0000004c F kobj10Draw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342380: update, ++counter, draw
+00342380 0000008c F kobj10UpdateDraw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342410: +0 = *src
+00342410 00000010 F kobj10SetQuad0 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342420: +16 = *src
+00342420 00000010 F kobj10SetQuad16 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342430: +48 = value
+00342430 0000000c F kobj10SetWord48 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342440: +32..+40 = $f12
+00342440 00000014 F kobj10SetScale source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342460: +32..+40 = src[0..2]
+00342460 00000020 F kobj10SetScale3 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_342A40: sub_324310(params +4), RwFree(params +8)
+00342a40 00000044 F fxKindReleaseAtomic source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_345DB0: class 16 slot 0: instance, parameters, init
+00345db0 000000ec F kobj16Create source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_345EA0: kind destroy (+8), RwFree(inst)
+00345ea0 00000060 F kobj16Destroy source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_345F00: a new instance of the same kind and parameters
+00345f00 000000a0 F kobj16Clone source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_345FA0: kind init (0x69C970), counter +52 = 0
+00345fa0 00000050 F kobj16Init source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_345FF0: kind update (+16), ++counter
+00345ff0 00000058 F kobj16Update source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346050: kind draw (+20) once counted
+00346050 0000004c F kobj16Draw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3460A0: update, ++counter, draw
+003460a0 0000008c F kobj16UpdateDraw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346130: +0 = *src
+00346130 00000010 F kobj16SetQuad0 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346140: +16 = *src
+00346140 00000010 F kobj16SetQuad16 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346150: +48 = value
+00346150 0000000c F kobj16SetWord48 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346160: +32..+40 = $f12
+00346160 00000014 F kobj16SetScale source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346180: +32..+40 = src[0..2]
+00346180 00000020 F kobj16SetScale3 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346500: counter +44 = 0
+00346500 0000000c F fxObj7Restart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_346510: ++counter +44
+00346510 00000014 F fxObj7Count source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347130: +0 = *src
+00347130 00000010 F fxObj7SetQuad0 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347140: +16 = *src
+00347140 00000010 F fxObj7SetQuad16 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347150: +36 = value
+00347150 0000000c F fxObj7SetWord36 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347160: +32 = $f12
+00347160 0000000c F fxObj7SetFloat32 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347300: sub_324310(+88), RwFree(obj)
+00347300 00000044 F fxObj9Destroy source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347380: counter +16 = 0
+00347380 0000000c F fxObj9Restart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347390: ++counter +16
+00347390 00000014 F fxObj9Count source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347CE0: +0 = *src
+00347ce0 00000010 F fxObj9SetQuad0 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347CF0: +20 = value
+00347cf0 0000000c F fxObj9SetWord20 source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347D00: clears the shake state, takes the camera
+00347d00 00000054 F fxShakeInit source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347D60: the per-frame camera shake
+00347d60 00000214 F fxShakeUpdate source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_347F80: camera back to 0x957A90
+00347f80 00000034 F fxShakeStop source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_348100: frame +0 = 0
+00348100 0000000c F fxObj21Restart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_348110: weight and amplitudes of a screen shake, active byte = 1
+00348110 000001a0 F fxShakeStart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3482B0: sub_348110(inst + 4, frame), ++frame
+003482b0 00000040 F fxObj21Update source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_3482F0: empty slot
+003482f0 00000008 F fxObj21Nop source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_348300: sub_348110(inst + 4, frame), ++frame
+00348300 00000040 F fxObj21UpdateDraw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B510: frame +28 = 0
+0034b510 0000000c F fxFilterRestart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B520: kind update (0x69CB98), ++frame
+0034b520 00000058 F fxFilterUpdate source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B580: kind slot 1 (0x69CB9C)
+0034b580 00000040 F fxFilterDraw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B5C0: sub_321180 after the first frame
+0034b5c0 00000034 F fxFilterNotify source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B680: +0 = *src (128 bits)
+0034b680 00000010 F fxFilterSetQuad source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B690: +16 = value
+0034b690 0000000c F fxFilterSetWord source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34B6A0: +20 = $f12
+0034b6a0 0000000c F fxFilterSetFloat source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BA20: frame +28 = 0
+0034ba20 0000000c F fxFilter2Restart source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BA30: kind update (0x69CC58), ++frame
+0034ba30 00000058 F fxFilter2Update source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BA90: kind slot 1 (0x69CC5C)
+0034ba90 00000040 F fxFilter2Draw source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BAD0: sub_3211D0 after the first frame
+0034bad0 00000034 F fxFilter2Notify source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BB90: +0 = *src (128 bits)
+0034bb90 00000010 F fxFilter2SetQuad source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BBA0: +16 = value
+0034bba0 0000000c F fxFilter2SetWord source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BBB0: +20 = $f12
+0034bbb0 0000000c F fxFilter2SetFloat source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BCF0: ++(+4), returns the object
+0034bcf0 00000018 F fxRefInc source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types
+# sub_34BD10: the raster and its size as floats at 0x957BA8..
+0034bd10 00000048 F fxScreenSizeInit source=phase5-fx_types verified=yes ev=INTEGRATION_LOG.md#fx_types

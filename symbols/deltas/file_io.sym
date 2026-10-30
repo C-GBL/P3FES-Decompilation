@@ -1,0 +1,707 @@
+# file_io.sym  Phase 2 topic 11 delta (docs/ANALYSIS/11_file_io.md); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-18 19:32:17 from ida/work_file_io.i64. Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=tge-pr4 verified=yes        community name whose behaviour was verified here (promotion, ADR-0009 S2b)
+#   source=phase2-file_io verified=yes  our own name (replaced FLIRT mis-names are listed in the doc)
+#   ev=<doc> points into docs/ANALYSIS/11_file_io.md
+# IDA master update #5: adxm_goto_svr_border 0x53F9B0, pfsCvfsGetSctLen 0x565820, pfsCvfsGetNumTr 0x565838,
+# PFSCVFS_GetPfsTbl 0x5658A8 and ROCI_Open 0x56C900 (source=phase2-file_io below) are also the tge-pr4 hint names the master
+# carried there (unverified), so the exporter withheld them as sub_<EA> since this delta's merge. Update #5 imported the five as
+# promotions (source=tge-pr4 verified=yes; ADR-0009, behaviour verified in 11_file_io.md): symbols/p3fes.sym exports them with
+# source=tge-pr4.
+00100800 000000ac F H_Cdvd_InitCd source=tge-pr4 verified=yes ev=11_file_io.md
+001008b0 000000c8 F H_Cdvd_FileExists source=tge-pr4 verified=yes ev=11_file_io.md
+00100980 000003f4 F H_Cdvd_Update source=tge-pr4 verified=yes ev=11_file_io.md
+00100d80 00000134 F H_Cdvd_Request source=tge-pr4 verified=yes ev=11_file_io.md
+00100ec0 00000148 F H_Cdvd_Destroy source=tge-pr4 verified=yes ev=11_file_io.md
+00101010 000000f0 F H_Cdvd_BuildPathUppercase source=tge-pr4 verified=yes ev=11_file_io.md
+00101100 00000134 F H_Cdvd_SplitPath source=tge-pr4 verified=yes ev=11_file_io.md
+00101240 000001a8 F H_Cdvd_BuildVolumePaths source=tge-pr4 verified=yes ev=11_file_io.md
+001013f0 00000128 F H_Cdvd_NormalizePath source=tge-pr4 verified=yes ev=11_file_io.md
+00101520 00000184 F H_Cdvd_SetRofsDir source=tge-pr4 verified=yes ev=11_file_io.md
+001016b0 00000014 F H_Cdvd_IsFileLoaded source=tge-pr4 verified=yes ev=11_file_io.md
+001016d0 00000124 F H_Cdvd_RtFsPak_FOpen source=tge-pr4 verified=yes ev=11_file_io.md
+00101810 00000090 F H_Cdvd_RtFsPak_FRead source=tge-pr4 verified=yes ev=11_file_io.md
+001019a0 00000038 F H_Cdvd_RtFsPak_Get source=tge-pr4 verified=yes ev=11_file_io.md
+00101ad0 000001a0 F H_Cdvd_InitRtFsPak source=tge-pr4 verified=yes ev=11_file_io.md
+00101c70 000001b8 F H_Cdvd_InitRtFS source=tge-pr4 verified=yes ev=11_file_io.md
+00101e30 000001fc F H_Cdvd_AddFile source=tge-pr4 verified=yes ev=11_file_io.md
+00102030 000000c4 F H_Cdvd_AddFileCacheEntry source=tge-pr4 verified=yes ev=11_file_io.md
+00102100 000000bc F H_Cdvd_ArchiveGetFile source=tge-pr4 verified=yes ev=11_file_io.md
+001021c0 00000114 F H_Cdvd_CacheFindFile source=tge-pr4 verified=yes ev=11_file_io.md
+001022e0 000000bc F H_Cdvd_GetArchiveFileBuffer source=tge-pr4 verified=yes ev=11_file_io.md
+001023a0 00000048 F H_Cdvd_ReadSync source=tge-pr4 verified=yes ev=11_file_io.md
+001023f0 000000ac F H_Cdvd_StartSfd source=tge-pr4 verified=yes ev=11_file_io.md
+001024a0 00000084 F H_Cdvd_LoadAfsFile source=tge-pr4 verified=yes ev=11_file_io.md
+00102530 00000090 F H_Cdvd_StartADXTFileRange source=tge-pr4 verified=yes ev=11_file_io.md
+001025c0 00000090 F H_Cdvd_StartADXTFile source=phase2-file_io verified=yes ev=11_file_io.md
+00102650 000000c4 F H_Cdvd_CacheAdd source=tge-pr4 verified=yes ev=11_file_io.md
+00102720 0000014c F H_Cdvd_CacheAddArchive source=tge-pr4 verified=yes ev=11_file_io.md
+00102870 00000060 F H_Cdvd_CacheRemove source=tge-pr4 verified=yes ev=11_file_io.md
+00102900 00000168 F H_Cdvd_RtFsHdd_Fopen source=tge-pr4 verified=yes ev=11_file_io.md
+00102ad0 00000090 F H_Cdvd_RtFsHdd_FRead source=tge-pr4 verified=yes ev=11_file_io.md
+00102e50 000001ac F H_Cdvd_InitRtFsHdd source=tge-pr4 verified=yes ev=11_file_io.md
+001934f0 000003bc F H_FileSetup_UpdateTstDvdChkDrawTask source=tge-pr4 verified=yes ev=11_file_io.md
+0053b220 0000002c F ADXF_SetupRofs source=tge-pr4 verified=yes ev=11_file_io.md
+0053b250 00000028 F adxf_SetupRofs source=tge-pr4 verified=yes ev=11_file_io.md
+0053b2c0 00000058 F ADXF_AddRofsVol source=tge-pr4 verified=yes ev=11_file_io.md
+0053b318 000000bc F adxf_AddRofsVol source=tge-pr4 verified=yes ev=11_file_io.md
+0053b528 00000070 F adxf_SetDefDev source=tge-pr4 verified=yes ev=11_file_io.md
+0053b868 00000068 F ADXF_LoadPartitionNw source=tge-pr4 verified=yes ev=11_file_io.md
+0053b8d0 000003b4 F adxf_LoadPartitionNw source=tge-pr4 verified=yes ev=11_file_io.md
+0053c860 000000b0 F adxf_SetFileInfoEx source=tge-pr4 verified=yes ev=11_file_io.md
+0053c910 00000048 F ADXF_Open source=tge-pr4 verified=yes ev=11_file_io.md
+0053c958 000000a0 F adxf_Open source=tge-pr4 verified=yes ev=11_file_io.md
+0053d1f0 0000018c F adxf_ReadNw32 source=tge-pr4 verified=yes ev=11_file_io.md
+0053d380 00000058 F ADXF_ReadNw source=tge-pr4 verified=yes ev=11_file_io.md
+0053d3d8 0000003c F adxf_ReadNw source=tge-pr4 verified=yes ev=11_file_io.md
+0053d640 000000c8 F adxf_ExecOne source=tge-pr4 verified=yes ev=11_file_io.md
+0053d708 00000024 F ADXF_ExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+0053d730 00000060 F adxf_ExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+0053d968 00000038 F ADXF_GetFsizeSct source=tge-pr4 verified=yes ev=11_file_io.md
+0053d9a0 00000040 F adxf_GetFsizeSct source=tge-pr4 verified=yes ev=11_file_io.md
+0053db90 00000038 F ADXF_GetStat source=tge-pr4 verified=yes ev=11_file_io.md
+0053dbc8 00000030 F adxf_GetStat source=tge-pr4 verified=yes ev=11_file_io.md
+0053df90 00000034 F adxf_SetReqRdSct source=tge-pr4 verified=yes ev=11_file_io.md
+0053e0b8 00000024 F ADXT_UpdateFsStat source=tge-pr4 verified=yes ev=11_file_io.md
+0053e0e0 000000ac F adxt_ExecFsSvr source=tge-pr4 verified=yes ev=11_file_io.md
+0053f9b0 000000e4 F adxm_goto_svr_border source=phase2-file_io verified=yes ev=11_file_io.md
+0053fcf8 000000f0 F adxm_fs_proc source=tge-pr4 verified=yes ev=11_file_io.md
+00540360 00000088 F adxm_SetupFsThrd source=tge-pr4 verified=yes ev=11_file_io.md
+00540588 00000190 F ADXM_SetupThrd source=tge-pr4 verified=yes ev=11_file_io.md
+00540ec0 00000014 F ADXM_ExecMain source=tge-pr4 verified=yes ev=11_file_io.md
+00546010 00000044 F adxstm_Create source=tge-pr4 verified=yes ev=11_file_io.md
+00546788 00000424 F adxstmf_ExecRead source=phase2-file_io verified=yes ev=11_file_io.md
+00546bb0 000001e0 F ADXSTMF_ExecHndl source=tge-pr4 verified=yes ev=11_file_io.md
+00546e60 00000014 F adxstmf_ExecServer source=phase2-file_io verified=yes ev=11_file_io.md
+00547668 00000100 F ADXPS2_SetupDvdFs source=tge-pr4 verified=yes ev=11_file_io.md
+00547768 0000005c F ADXPS2_LoadFcacheDvd source=tge-pr4 verified=yes ev=11_file_io.md
+00555940 000000c4 F cvFsInit source=tge-pr4 verified=yes ev=11_file_io.md
+00555b10 00000090 F cvFsAddDev source=tge-pr4 verified=yes ev=11_file_io.md
+00555ba0 000000d4 F cvfs_addDevice source=phase2-file_io verified=yes ev=11_file_io.md
+00555c78 00000098 F cvfs_getDevice source=phase2-file_io verified=yes ev=11_file_io.md
+00555fa0 000000a8 F cvfs_variousProc source=phase2-file_io verified=yes ev=11_file_io.md
+00556048 00000128 F cvFsOpen source=tge-pr4 verified=yes ev=11_file_io.md
+005561e8 00000144 F cvfs_getDevName source=phase2-file_io verified=yes ev=11_file_io.md
+00556330 00000064 F cvfs_getDefDev source=phase2-file_io verified=yes ev=11_file_io.md
+00556398 00000074 F cvFsClose source=tge-pr4 verified=yes ev=11_file_io.md
+00556410 00000068 F cvFsTell source=tge-pr4 verified=yes ev=11_file_io.md
+00556478 00000068 F cvFsSeek source=tge-pr4 verified=yes ev=11_file_io.md
+005564e0 00000068 F cvFsReqRd source=tge-pr4 verified=yes ev=11_file_io.md
+00556608 0000005c F cvFsExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+00556668 00000064 F cvFsGetStat source=tge-pr4 verified=yes ev=11_file_io.md
+005566d0 000000bc F cvFsGetFileSize source=tge-pr4 verified=yes ev=11_file_io.md
+00557290 000000bc F cvFsSetCurVolume source=tge-pr4 verified=yes ev=11_file_io.md
+00557358 00000108 F cvFsAddVolumeEx source=tge-pr4 verified=yes ev=11_file_io.md
+005575f0 000000c0 F cvFsSetDefVol source=tge-pr4 verified=yes ev=11_file_io.md
+005576b0 00000050 F cvfs_isNeedDevName source=phase2-file_io verified=yes ev=11_file_io.md
+00557700 00000098 F cvfs_addDevName source=phase2-file_io verified=yes ev=11_file_io.md
+00557a58 00000084 F SRD_Create source=tge-pr4 verified=yes ev=11_file_io.md
+00557b80 000000ec F SRD_ReqRdDvd source=tge-pr4 verified=yes ev=11_file_io.md
+00557d58 00000028 F srd_wait_dvd source=tge-pr4 verified=yes ev=11_file_io.md
+00557e50 0000010c F SRD_WaitComplete source=tge-pr4 verified=yes ev=11_file_io.md
+00557fe8 0000010c F srd_check_dvd_error source=tge-pr4 verified=yes ev=11_file_io.md
+00558138 000001e8 F srd_exec_dvd source=tge-pr4 verified=yes ev=11_file_io.md
+00558500 000000ec F SRD_ExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+00558768 0000003c F SRD_GetReadStatusDvd source=tge-pr4 verified=yes ev=11_file_io.md
+00558ae0 00000084 F SRD_SetDvdSeekPos source=tge-pr4 verified=yes ev=11_file_io.md
+00559d78 00000030 F dvCiGetInterface source=tge-pr4 verified=yes ev=11_file_io.md
+00559dd8 00000058 F dvCiCdSearchFile source=tge-pr4 verified=yes ev=11_file_io.md
+00559e80 000000c4 F dvCiExecHndl source=tge-pr4 verified=yes ev=11_file_io.md
+00559f48 00000078 F dvCiExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+0055a050 00000088 F dvCiIsExistFile source=tge-pr4 verified=yes ev=11_file_io.md
+0055a0d8 000000c0 F dvCiGetFileSize source=tge-pr4 verified=yes ev=11_file_io.md
+0055a1f0 00000178 F dvCiOpen source=tge-pr4 verified=yes ev=11_file_io.md
+0055a368 00000058 F dvCiClose source=tge-pr4 verified=yes ev=11_file_io.md
+0055a3c0 00000094 F dvCiSeek source=tge-pr4 verified=yes ev=11_file_io.md
+0055a490 000001a4 F dvCiReqRd source=tge-pr4 verified=yes ev=11_file_io.md
+0055a638 000000e4 F dvCiStopTr source=tge-pr4 verified=yes ev=11_file_io.md
+0055a720 00000038 F dvCiGetStat source=tge-pr4 verified=yes ev=11_file_io.md
+0055a9b0 000000a4 F dvci_conv_fname source=tge-pr4 verified=yes ev=11_file_io.md
+0055ab80 00000194 F dvci_analysis_flist source=phase2-file_io verified=yes ev=11_file_io.md
+0055ad18 00000188 F dvci_load_flist source=phase2-file_io verified=yes ev=11_file_io.md
+0055aea0 00000190 F dvci_search_fstate source=phase2-file_io verified=yes ev=11_file_io.md
+0055b030 000000c8 F dvci_get_fp_from_fname source=phase2-file_io verified=yes ev=11_file_io.md
+0055b120 0000003c F dvci_is_lsn_access_fname source=tge-pr4 verified=yes ev=11_file_io.md
+0055b160 000000c0 F dvci_get_adr_size source=tge-pr4 verified=yes ev=11_file_io.md
+0055b220 000000dc F dvci_get_fstate source=tge-pr4 verified=yes ev=11_file_io.md
+0055b300 0000017c F dvCiLoadFcache source=tge-pr4 verified=yes ev=11_file_io.md
+0055b610 000000c8 F dvCiSetRootDir source=tge-pr4 verified=yes ev=11_file_io.md
+00565420 00000018 F SVM_ExecSvrFs source=tge-pr4 verified=yes ev=11_file_io.md
+00565730 00000058 F pfsCvfsSeek source=tge-pr4 verified=yes ev=11_file_io.md
+005657a0 00000014 F pfsCvfsReqRd source=tge-pr4 verified=yes ev=11_file_io.md
+005657b8 00000014 F pfsCvfsStopTr source=tge-pr4 verified=yes ev=11_file_io.md
+005657d0 0000004c F pfsCvfsGetStat source=tge-pr4 verified=yes ev=11_file_io.md
+00565820 00000014 F pfsCvfsGetSctLen source=phase2-file_io verified=yes ev=11_file_io.md
+00565838 00000014 F pfsCvfsGetNumTr source=phase2-file_io verified=yes ev=11_file_io.md
+00565888 0000001c F pfsCvfsExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+005658a8 0000000c F PFSCVFS_GetPfsTbl source=phase2-file_io verified=yes ev=11_file_io.md
+005658b8 000000b4 F RFHN_WaitCompleteReq source=tge-pr4 verified=yes ev=11_file_io.md
+00565970 000000ac F rfhn_setHandle source=phase2-file_io verified=yes ev=11_file_io.md
+00565a20 00000058 F RFHN_CreateHnG source=tge-pr4 verified=yes ev=11_file_io.md
+00565a78 00000044 F RFHN_ReopenHn source=tge-pr4 verified=yes ev=11_file_io.md
+00565ac0 00000054 F RFHN_CreateDirhn source=tge-pr4 verified=yes ev=11_file_io.md
+00565b18 00000078 F RFHN_IsUseImgHn source=tge-pr4 verified=yes ev=11_file_io.md
+00565b90 00000030 F ROFS_ChangeDir source=tge-pr4 verified=yes ev=11_file_io.md
+00565c10 00000164 F ROFS_Seek source=tge-pr4 verified=yes ev=11_file_io.md
+00565d78 00000094 F ROFS_Tell source=tge-pr4 verified=yes ev=11_file_io.md
+00565e10 000001d8 F RFHN_ReqRdG source=tge-pr4 verified=yes ev=11_file_io.md
+00565fe8 00000064 F RFHN_GetStatG source=tge-pr4 verified=yes ev=11_file_io.md
+00566050 0000009c F ROFS_GetNumTr source=tge-pr4 verified=yes ev=11_file_io.md
+00566180 00000144 F RFHN_StopTrG source=tge-pr4 verified=yes ev=11_file_io.md
+005662f0 00000030 F RFIF_InitOvl source=tge-pr4 verified=yes ev=11_file_io.md
+00566320 00000048 F ROFS_Finish source=tge-pr4 verified=yes ev=11_file_io.md
+00566368 00000070 F ROFS_SetPfsFuncTbl source=tge-pr4 verified=yes ev=11_file_io.md
+005663d8 000000ac F ROFS_AddVolume source=tge-pr4 verified=yes ev=11_file_io.md
+00566488 00000070 F ROFS_DelVolume source=tge-pr4 verified=yes ev=11_file_io.md
+005665d0 00000080 F ROFS_Open source=tge-pr4 verified=yes ev=11_file_io.md
+00566650 0000008c F ROFS_OpenRange source=tge-pr4 verified=yes ev=11_file_io.md
+005666e0 00000028 F ROFS_Close source=tge-pr4 verified=yes ev=11_file_io.md
+00566708 00000048 F ROFS_ReqRd source=tge-pr4 verified=yes ev=11_file_io.md
+00566750 00000028 F ROFS_StopTr source=tge-pr4 verified=yes ev=11_file_io.md
+00566778 0000002c F ROFS_ExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+005667a8 00000028 F ROFS_GetStat source=tge-pr4 verified=yes ev=11_file_io.md
+005667d0 00000074 F ROFS_GetFileSiz source=tge-pr4 verified=yes ev=11_file_io.md
+005669d8 00000080 F ROFS_GetVolumeInf source=tge-pr4 verified=yes ev=11_file_io.md
+00566a58 000000ac F ROFS_LoadDir source=tge-pr4 verified=yes ev=11_file_io.md
+00566b08 00000080 F ROFS_SetDir source=tge-pr4 verified=yes ev=11_file_io.md
+00566f30 00000048 F rfmai_checkMedia source=phase2-file_io verified=yes ev=11_file_io.md
+00566f78 00000210 F rfmai_divideFname source=phase2-file_io verified=yes ev=11_file_io.md
+00567188 00000064 F rfmai_getDirBufAdr source=phase2-file_io verified=yes ev=11_file_io.md
+005671f0 000000d8 F rfmai_getVolume source=phase2-file_io verified=yes ev=11_file_io.md
+005672c8 00000168 F rfmai_addVolList source=phase2-file_io verified=yes ev=11_file_io.md
+00567430 00000044 F rfmai_delVolume source=phase2-file_io verified=yes ev=11_file_io.md
+00567478 00000048 F rfmai_isDvdRomAccess source=phase2-file_io verified=yes ev=11_file_io.md
+005674c0 00000108 F rfmai_getCvmfInfo source=phase2-file_io verified=yes ev=11_file_io.md
+005675c8 000000e4 F rfmai_setCvmfInfo source=phase2-file_io verified=yes ev=11_file_io.md
+005676b0 0000009c F rfmai_readPvd source=phase2-file_io verified=yes ev=11_file_io.md
+00567750 000000c0 F rfmai_readRootDirRec source=phase2-file_io verified=yes ev=11_file_io.md
+00567820 00000038 F ROFS_Init source=tge-pr4 verified=yes ev=11_file_io.md
+00567858 00000294 F RFMAI_InitG source=tge-pr4 verified=yes ev=11_file_io.md
+00567c58 0000043c F RFMAI_MountG source=tge-pr4 verified=yes ev=11_file_io.md
+005680d8 000001a4 F RFMAI_UnMountG source=tge-pr4 verified=yes ev=11_file_io.md
+00568280 000000e4 F RFMAI_SetDefVolumeG source=tge-pr4 verified=yes ev=11_file_io.md
+00568388 0000022c F RFMAI_OpenG source=tge-pr4 verified=yes ev=11_file_io.md
+005685b8 00000154 F RFMAI_OpenRangeG source=tge-pr4 verified=yes ev=11_file_io.md
+00568710 00000228 F rfmai_updateHnStat source=phase2-file_io verified=yes ev=11_file_io.md
+00568938 0000013c F RFMAI_ExecServerG source=tge-pr4 verified=yes ev=11_file_io.md
+00568c18 00000194 F rfmai_getEntryFromFname source=phase2-file_io verified=yes ev=11_file_io.md
+00568e38 0000021c F RFMAI_LoadDirG source=tge-pr4 verified=yes ev=11_file_io.md
+00569058 000001d8 F RFMAI_SetDirG source=tge-pr4 verified=yes ev=11_file_io.md
+00569230 000000ac F RFMAI_SetIsoDirG source=tge-pr4 verified=yes ev=11_file_io.md
+005692e0 000000b0 F RFMAI_IsExistFile source=tge-pr4 verified=yes ev=11_file_io.md
+00569538 000001c8 F RFMAI_ReadWG source=tge-pr4 verified=yes ev=11_file_io.md
+00569c00 00000028 F rfmai_decipherSectors source=phase2-file_io verified=yes ev=11_file_io.md
+00569c28 00000168 F RFMAI_GetScrambleInfG source=tge-pr4 verified=yes ev=11_file_io.md
+00569d90 0000012c F RFMAI_DescrambleG source=tge-pr4 verified=yes ev=11_file_io.md
+00569ec0 0000007c F ROFS_CheckDirrecFile source=tge-pr4 verified=yes ev=11_file_io.md
+0056a0a8 000002a0 F rfmai_copyStructCdVd source=phase2-file_io verified=yes ev=11_file_io.md
+0056a348 00000120 F RFMAI_CopyStructCdDr source=tge-pr4 verified=yes ev=11_file_io.md
+0056a468 00000090 F RFMAI_CopyStructCdPt source=tge-pr4 verified=yes ev=11_file_io.md
+0056a530 00000008 F dcfInit source=tge-pr4 verified=yes ev=11_file_io.md
+0056a540 00000060 F dcfSeek source=tge-pr4 verified=yes ev=11_file_io.md
+0056a5a0 00000060 F dcfTell source=tge-pr4 verified=yes ev=11_file_io.md
+0056a600 00000060 F dcfReqRd source=tge-pr4 verified=yes ev=11_file_io.md
+0056a660 00000034 F dcfStopTr source=tge-pr4 verified=yes ev=11_file_io.md
+0056a698 00000034 F dcfExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+0056a6d0 00000060 F dcfGetStat source=tge-pr4 verified=yes ev=11_file_io.md
+0056a730 00000060 F dcfGetSctLen source=tge-pr4 verified=yes ev=11_file_io.md
+0056a790 00000060 F dcfGetNumTr source=tge-pr4 verified=yes ev=11_file_io.md
+0056a860 0000017c F dcfReqRdBlk source=tge-pr4 verified=yes ev=11_file_io.md
+0056a9e0 000000b8 F dcfReadBlk source=tge-pr4 verified=yes ev=11_file_io.md
+0056aa98 00000028 F dcfReqRdCda source=tge-pr4 verified=yes ev=11_file_io.md
+0056aac0 000000b8 F dcfReadCda source=tge-pr4 verified=yes ev=11_file_io.md
+0056ab78 00000014 F RFPFS_PfsWait source=tge-pr4 verified=yes ev=11_file_io.md
+0056ab90 00000050 F RFPFS_PfsLock source=tge-pr4 verified=yes ev=11_file_io.md
+0056ac28 0000008c F rfpfs_waitRdComplete source=phase2-file_io verified=yes ev=11_file_io.md
+0056acb8 00000070 F rfpfs_parentSeek source=phase2-file_io verified=yes ev=11_file_io.md
+0056ad28 0000000c F RFPFS_SetPfsTbl source=tge-pr4 verified=yes ev=11_file_io.md
+0056ad48 0000006c F cvmh_GetSize source=tge-pr4 verified=yes ev=11_file_io.md
+0056ae20 00000208 F cvmh_AnalyMainHdrCvm source=tge-pr4 verified=yes ev=11_file_io.md
+0056b028 000000a4 F cvmh_AnalyCvmHdr source=tge-pr4 verified=yes ev=11_file_io.md
+0056b0d0 00000058 F cvmh_GetZoneDataLoc source=tge-pr4 verified=yes ev=11_file_io.md
+0056b128 00000118 F cvmh_AnalyZoneHdr source=tge-pr4 verified=yes ev=11_file_io.md
+0056b240 000000bc F CVMH_AnalyCvmHdr source=tge-pr4 verified=yes ev=11_file_io.md
+0056b300 000000bc F CVMH_AnalyZoneHdr source=tge-pr4 verified=yes ev=11_file_io.md
+0056b980 00000028 F rfdir_toUpper source=phase2-file_io verified=yes ev=11_file_io.md
+0056b9a8 000000a0 F rfdirStrncmpi source=tge-pr4 verified=yes ev=11_file_io.md
+0056ba48 0000007c F rfdirStrcmpDirName source=tge-pr4 verified=yes ev=11_file_io.md
+0056bac8 000000d4 F rfdirStrcmpFileName source=tge-pr4 verified=yes ev=11_file_io.md
+0056bba0 0000006c F rfdir_getTokenSize source=phase2-file_io verified=yes ev=11_file_io.md
+0056bc10 00000068 F rfdir_getSearchID source=phase2-file_io verified=yes ev=11_file_io.md
+0056bc78 00000038 F rfdir_toUpperFname source=phase2-file_io verified=yes ev=11_file_io.md
+0056bcb0 00000110 F rfdir_getOneDirEnt source=phase2-file_io verified=yes ev=11_file_io.md
+0056bdc0 00000334 F rfdir_getDirEnt source=phase2-file_io verified=yes ev=11_file_io.md
+0056c0f8 00000090 F RFDIR_GetDirEnt source=tge-pr4 verified=yes ev=11_file_io.md
+0056c188 00000154 F RFDIR_SetDirEnt source=tge-pr4 verified=yes ev=11_file_io.md
+0056c2e0 00000040 F rfdir_isContainPeriod source=phase2-file_io verified=yes ev=11_file_io.md
+0056c320 00000190 F rfdir_nameBinarySearch source=phase2-file_io verified=yes ev=11_file_io.md
+0056c4b0 00000100 F rfdir_nameSequentialSearch source=phase2-file_io verified=yes ev=11_file_io.md
+0056c5b0 0000003c F RFDIR_SearchName source=tge-pr4 verified=yes ev=11_file_io.md
+0056c5f0 000001f4 F rfdir_searchPath source=phase2-file_io verified=yes ev=11_file_io.md
+0056c7e8 00000090 F RFDIR_SearchPath source=tge-pr4 verified=yes ev=11_file_io.md
+0056c888 00000030 F ROCI_GetInterface source=tge-pr4 verified=yes ev=11_file_io.md
+0056c8c8 00000014 F ROCI_ExecServer source=tge-pr4 verified=yes ev=11_file_io.md
+0056c900 00000014 F ROCI_Open source=phase2-file_io verified=yes ev=11_file_io.md
+0056c988 00000014 F ROCI_ReqRd source=tge-pr4 verified=yes ev=11_file_io.md
+0056c9b8 0000004c F ROCI_GetStat source=tge-pr4 verified=yes ev=11_file_io.md
+0056cab0 000000a8 F roci_optAddVolume source=phase2-file_io verified=yes ev=11_file_io.md
+0056cbb8 00000238 F ROCI_OptFn1 source=tge-pr4 verified=yes ev=11_file_io.md
+0056d358 00000054 F rsu_GenerateFixedKeyByCvmhdr source=tge-pr4 verified=yes ev=11_file_io.md
+0056d6c0 00000014 F rsu_Decipher source=tge-pr4 verified=yes ev=11_file_io.md
+0056d6e8 00000054 F RSU_Init source=tge-pr4 verified=yes ev=11_file_io.md
+0056d780 000000a4 F RSU_GenerateFixedKey source=tge-pr4 verified=yes ev=11_file_io.md
+0056d900 00000064 F RSU_Decipher source=tge-pr4 verified=yes ev=11_file_io.md
+005cdd80 00000004 D g_tbl_rofsDirNames_BTL source=phase2-file_io verified=yes ev=11_file_io.md
+005cddf0 00000004 D g_tbl_rofsDirLst_BTL source=phase2-file_io verified=yes ev=11_file_io.md
+005ce590 00000004 D g_tbl_rofsDirNames_VOL source=phase2-file_io verified=yes ev=11_file_io.md
+005ce780 00000004 D g_tbl_rofsDirLst_VOL source=phase2-file_io verified=yes ev=11_file_io.md
+005e55c0 00000018 D tbl_DirLst_VOL_BUSTUP source=phase2-file_io verified=yes ev=11_file_io.md
+005ec450 00000018 D tbl_DirLst_VOL_CAMP source=phase2-file_io verified=yes ev=11_file_io.md
+005ecce0 00000018 D tbl_DirLst_VOL_CAMP_COMMU source=phase2-file_io verified=yes ev=11_file_io.md
+005ecdc0 00000018 D tbl_DirLst_VOL_CAMP_COMMU_TIM2_BUSTUP source=phase2-file_io verified=yes ev=11_file_io.md
+005eda40 00000018 D tbl_DirLst_VOL_CAMP_COMMU_TIM2_LAEGE source=phase2-file_io verified=yes ev=11_file_io.md
+005edf40 00000018 D tbl_DirLst_VOL_CAMP_COMU source=phase2-file_io verified=yes ev=11_file_io.md
+005edff0 00000018 D tbl_DirLst_VOL_CAMP_FONT source=phase2-file_io verified=yes ev=11_file_io.md
+005ee130 00000018 D tbl_DirLst_VOL_CAMP_PERSONA source=phase2-file_io verified=yes ev=11_file_io.md
+005f0520 00000018 D tbl_DirLst_VOL_CAMP_STATUS source=phase2-file_io verified=yes ev=11_file_io.md
+005f05d0 00000018 D tbl_DirLst_VOL_CARD source=phase2-file_io verified=yes ev=11_file_io.md
+005f0740 00000018 D tbl_DirLst_VOL_CARD_MISC source=phase2-file_io verified=yes ev=11_file_io.md
+005f0820 00000018 D tbl_DirLst_VOL_CARD_PERSONA source=phase2-file_io verified=yes ev=11_file_io.md
+005f2be0 00000018 D tbl_DirLst_VOL_CARD_SARCANA source=phase2-file_io verified=yes ev=11_file_io.md
+005f36e0 00000018 D tbl_DirLst_VOL_CUTIN source=phase2-file_io verified=yes ev=11_file_io.md
+005f3790 00000018 D tbl_DirLst_VOL_CUTIN_SHAPE source=phase2-file_io verified=yes ev=11_file_io.md
+005f7020 00000018 D tbl_DirLst_VOL_EFFECT source=phase2-file_io verified=yes ev=11_file_io.md
+005f7100 00000018 D tbl_DirLst_VOL_EVENT source=phase2-file_io verified=yes ev=11_file_io.md
+005f8050 00000018 D tbl_DirLst_VOL_EVENT_E010 source=phase2-file_io verified=yes ev=11_file_io.md
+005f8160 00000018 D tbl_DirLst_VOL_EVENT_E040 source=phase2-file_io verified=yes ev=11_file_io.md
+005f84e0 00000018 D tbl_DirLst_VOL_EVENT_E050 source=phase2-file_io verified=yes ev=11_file_io.md
+005f89e0 00000018 D tbl_DirLst_VOL_EVENT_E060 source=phase2-file_io verified=yes ev=11_file_io.md
+005f8be0 00000018 D tbl_DirLst_VOL_EVENT_E070 source=phase2-file_io verified=yes ev=11_file_io.md
+005f8d50 00000018 D tbl_DirLst_VOL_EVENT_E080 source=phase2-file_io verified=yes ev=11_file_io.md
+005f90a0 00000018 D tbl_DirLst_VOL_EVENT_E090 source=phase2-file_io verified=yes ev=11_file_io.md
+005f9240 00000018 D tbl_DirLst_VOL_EVENT_E100 source=phase2-file_io verified=yes ev=11_file_io.md
+005f9980 00000018 D tbl_DirLst_VOL_EVENT_E110 source=phase2-file_io verified=yes ev=11_file_io.md
+005fa150 00000018 D tbl_DirLst_VOL_EVENT_E120 source=phase2-file_io verified=yes ev=11_file_io.md
+005faa40 00000018 D tbl_DirLst_VOL_EVENT_E130 source=phase2-file_io verified=yes ev=11_file_io.md
+005fb330 00000018 D tbl_DirLst_VOL_EVENT_E140 source=phase2-file_io verified=yes ev=11_file_io.md
+005fbb90 00000018 D tbl_DirLst_VOL_EVENT_E150 source=phase2-file_io verified=yes ev=11_file_io.md
+005fc120 00000018 D tbl_DirLst_VOL_EVENT_E160 source=phase2-file_io verified=yes ev=11_file_io.md
+005fc620 00000018 D tbl_DirLst_VOL_EVENT_E170 source=phase2-file_io verified=yes ev=11_file_io.md
+005fcbb0 00000018 D tbl_DirLst_VOL_EVENT_E180 source=phase2-file_io verified=yes ev=11_file_io.md
+005fd2f0 00000018 D tbl_DirLst_VOL_EVENT_E190 source=phase2-file_io verified=yes ev=11_file_io.md
+005fd880 00000018 D tbl_DirLst_VOL_EVENT_E200 source=phase2-file_io verified=yes ev=11_file_io.md
+005fdfc0 00000018 D tbl_DirLst_VOL_EVENT_E210 source=phase2-file_io verified=yes ev=11_file_io.md
+005fe670 00000018 D tbl_DirLst_VOL_EVENT_E220 source=phase2-file_io verified=yes ev=11_file_io.md
+005fed20 00000018 D tbl_DirLst_VOL_EVENT_E230 source=phase2-file_io verified=yes ev=11_file_io.md
+005ff340 00000018 D tbl_DirLst_VOL_EVENT_E240 source=phase2-file_io verified=yes ev=11_file_io.md
+005ffba0 00000018 D tbl_DirLst_VOL_EVENT_E250 source=phase2-file_io verified=yes ev=11_file_io.md
+006002e0 00000018 D tbl_DirLst_VOL_EVENT_E260 source=phase2-file_io verified=yes ev=11_file_io.md
+00600990 00000018 D tbl_DirLst_VOL_EVENT_E270 source=phase2-file_io verified=yes ev=11_file_io.md
+006011f0 00000018 D tbl_DirLst_VOL_EVENT_E280 source=phase2-file_io verified=yes ev=11_file_io.md
+00601930 00000018 D tbl_DirLst_VOL_EVENT_E290 source=phase2-file_io verified=yes ev=11_file_io.md
+00602220 00000018 D tbl_DirLst_VOL_EVENT_E300 source=phase2-file_io verified=yes ev=11_file_io.md
+00602cc0 00000018 D tbl_DirLst_VOL_EVENT_E310 source=phase2-file_io verified=yes ev=11_file_io.md
+00603910 00000018 D tbl_DirLst_VOL_EVENT_E320 source=phase2-file_io verified=yes ev=11_file_io.md
+00603ea0 00000018 D tbl_DirLst_VOL_EVENT_E330 source=phase2-file_io verified=yes ev=11_file_io.md
+00604ca0 00000018 D tbl_DirLst_VOL_EVENT_E340 source=phase2-file_io verified=yes ev=11_file_io.md
+00604e40 00000018 D tbl_DirLst_VOL_EVENT_E400 source=phase2-file_io verified=yes ev=11_file_io.md
+00605310 00000018 D tbl_DirLst_VOL_EVENT_E410 source=phase2-file_io verified=yes ev=11_file_io.md
+00605ae0 00000018 D tbl_DirLst_VOL_EVENT_E420 source=phase2-file_io verified=yes ev=11_file_io.md
+00606100 00000018 D tbl_DirLst_VOL_EVENT_E430 source=phase2-file_io verified=yes ev=11_file_io.md
+00606720 00000018 D tbl_DirLst_VOL_EVENT_E440 source=phase2-file_io verified=yes ev=11_file_io.md
+00607130 00000018 D tbl_DirLst_VOL_EVENT_E460 source=phase2-file_io verified=yes ev=11_file_io.md
+006085f0 00000018 D tbl_DirLst_VOL_EVENT_E500 source=phase2-file_io verified=yes ev=11_file_io.md
+006096c0 00000018 D tbl_DirLst_VOL_EVENT_E510 source=phase2-file_io verified=yes ev=11_file_io.md
+0060a280 00000018 D tbl_DirLst_VOL_EVENT_E520 source=phase2-file_io verified=yes ev=11_file_io.md
+0060b740 00000018 D tbl_DirLst_VOL_EVENT_E530 source=phase2-file_io verified=yes ev=11_file_io.md
+0060ba00 00000018 D tbl_DirLst_VOL_EVENT_E540 source=phase2-file_io verified=yes ev=11_file_io.md
+0060c530 00000018 D tbl_DirLst_VOL_EVENT_E560 source=phase2-file_io verified=yes ev=11_file_io.md
+0060ceb0 00000018 D tbl_DirLst_VOL_EVENT_E570 source=phase2-file_io verified=yes ev=11_file_io.md
+0060d950 00000018 D tbl_DirLst_VOL_EVENT_E580 source=phase2-file_io verified=yes ev=11_file_io.md
+0060e2d0 00000018 D tbl_DirLst_VOL_EVENT_E590 source=phase2-file_io verified=yes ev=11_file_io.md
+0060ece0 00000018 D tbl_DirLst_VOL_EVENT_E600 source=phase2-file_io verified=yes ev=11_file_io.md
+0060fb70 00000018 D tbl_DirLst_VOL_EVENT_E610 source=phase2-file_io verified=yes ev=11_file_io.md
+00610b20 00000018 D tbl_DirLst_VOL_EVENT_E620 source=phase2-file_io verified=yes ev=11_file_io.md
+006119b0 00000018 D tbl_DirLst_VOL_EVENT_E630 source=phase2-file_io verified=yes ev=11_file_io.md
+00612210 00000018 D tbl_DirLst_VOL_EVENT_E640 source=phase2-file_io verified=yes ev=11_file_io.md
+00612a70 00000018 D tbl_DirLst_VOL_EVENT_E650 source=phase2-file_io verified=yes ev=11_file_io.md
+00612b80 00000018 D tbl_DirLst_VOL_EVENT_E660 source=phase2-file_io verified=yes ev=11_file_io.md
+00613740 00000018 D tbl_DirLst_VOL_EVENT_E670 source=phase2-file_io verified=yes ev=11_file_io.md
+006145d0 00000018 D tbl_DirLst_VOL_EVENT_E680 source=phase2-file_io verified=yes ev=11_file_io.md
+00614e30 00000018 D tbl_DirLst_VOL_EVENT_E690 source=phase2-file_io verified=yes ev=11_file_io.md
+00615690 00000018 D tbl_DirLst_VOL_EVENT_E700 source=phase2-file_io verified=yes ev=11_file_io.md
+006169a0 00000018 D tbl_DirLst_VOL_EVENT_E730 source=phase2-file_io verified=yes ev=11_file_io.md
+00617050 00000018 D tbl_DirLst_VOL_EVENT_E740 source=phase2-file_io verified=yes ev=11_file_io.md
+00617700 00000018 D tbl_DirLst_VOL_EVENT_E750 source=phase2-file_io verified=yes ev=11_file_io.md
+00617e40 00000018 D tbl_DirLst_VOL_EVENT_E760 source=phase2-file_io verified=yes ev=11_file_io.md
+006188e0 00000018 D tbl_DirLst_VOL_EVENT_E770 source=phase2-file_io verified=yes ev=11_file_io.md
+00618f90 00000018 D tbl_DirLst_VOL_EVENT_E800 source=phase2-file_io verified=yes ev=11_file_io.md
+006197f0 00000018 D tbl_DirLst_VOL_EVENT_E810 source=phase2-file_io verified=yes ev=11_file_io.md
+00619f30 00000018 D tbl_DirLst_VOL_EVENT_E820 source=phase2-file_io verified=yes ev=11_file_io.md
+0061ae50 00000018 D tbl_DirLst_VOL_EVENT_E830 source=phase2-file_io verified=yes ev=11_file_io.md
+0061b080 00000018 D tbl_DirLst_VOL_EVENT_E840 source=phase2-file_io verified=yes ev=11_file_io.md
+0061ca50 00000018 D tbl_DirLst_VOL_EVENT_E850 source=phase2-file_io verified=yes ev=11_file_io.md
+0061d100 00000018 D tbl_DirLst_VOL_EVENT_E860 source=phase2-file_io verified=yes ev=11_file_io.md
+0061d570 00000018 D tbl_DirLst_VOL_EVENT_E900 source=phase2-file_io verified=yes ev=11_file_io.md
+0061eb50 00000018 D tbl_DirLst_VOL_EVENT_E910 source=phase2-file_io verified=yes ev=11_file_io.md
+0061ee10 00000018 D tbl_DirLst_VOL_EVENT_E990 source=phase2-file_io verified=yes ev=11_file_io.md
+0061f310 00000018 D tbl_DirLst_VOL_EVENT_SYS source=phase2-file_io verified=yes ev=11_file_io.md
+0061fae0 00000018 D tbl_DirLst_VOL_FACILITY source=phase2-file_io verified=yes ev=11_file_io.md
+00620730 00000018 D tbl_DirLst_VOL_FIELD source=phase2-file_io verified=yes ev=11_file_io.md
+006209f0 00000018 D tbl_DirLst_VOL_FIELD_BTL_EFFECT source=phase2-file_io verified=yes ev=11_file_io.md
+00620b00 00000018 D tbl_DirLst_VOL_FIELD_EFFECT source=phase2-file_io verified=yes ev=11_file_io.md
+00620dc0 00000018 D tbl_DirLst_VOL_FIELD_GRMD source=phase2-file_io verified=yes ev=11_file_io.md
+00621110 00000018 D tbl_DirLst_VOL_FIELD_ICON source=phase2-file_io verified=yes ev=11_file_io.md
+006211c0 00000018 D tbl_DirLst_VOL_FIELD_MAP source=phase2-file_io verified=yes ev=11_file_io.md
+00621c60 00000018 D tbl_DirLst_VOL_FIELD_PACK source=phase2-file_io verified=yes ev=11_file_io.md
+0062b940 00000018 D tbl_DirLst_VOL_FIELD_RMD source=phase2-file_io verified=yes ev=11_file_io.md
+00635230 00000018 D tbl_DirLst_VOL_FIELD_SCRIPT source=phase2-file_io verified=yes ev=11_file_io.md
+00635970 00000018 D tbl_DirLst_VOL_FIELD_TABLE source=phase2-file_io verified=yes ev=11_file_io.md
+00635b40 00000018 D tbl_DirLst_VOL_FONT source=phase2-file_io verified=yes ev=11_file_io.md
+00635d40 00000018 D tbl_DirLst_VOL_FONT_SIZE12 source=phase2-file_io verified=yes ev=11_file_io.md
+00635df0 00000018 D tbl_DirLst_VOL_FTP_IRX source=phase2-file_io verified=yes ev=11_file_io.md
+00636050 00000018 D tbl_DirLst_VOL_HELP source=phase2-file_io verified=yes ev=11_file_io.md
+006361c0 00000018 D tbl_DirLst_VOL_ICON source=phase2-file_io verified=yes ev=11_file_io.md
+006366f0 00000018 D tbl_DirLst_VOL_IRX_NEW source=phase2-file_io verified=yes ev=11_file_io.md
+00636b60 00000018 D tbl_DirLst_VOL_LMAP source=phase2-file_io verified=yes ev=11_file_io.md
+00636c10 00000018 D tbl_DirLst_VOL_OPED source=phase2-file_io verified=yes ev=11_file_io.md
+00636d80 00000018 D tbl_DirLst_VOL_SCRIPT source=phase2-file_io verified=yes ev=11_file_io.md
+00636e30 00000018 D tbl_DirLst_VOL_SCRIPT_EVENT source=phase2-file_io verified=yes ev=11_file_io.md
+00636f40 00000018 D tbl_DirLst_VOL_SFD source=phase2-file_io verified=yes ev=11_file_io.md
+00637770 00000018 D tbl_DirLst_VOL_SMAP source=phase2-file_io verified=yes ev=11_file_io.md
+00638270 00000018 D tbl_DirLst_VOL_SMAP_SYMBOL source=phase2-file_io verified=yes ev=11_file_io.md
+00638320 00000018 D tbl_DirLst_VOL_SOUND source=phase2-file_io verified=yes ev=11_file_io.md
+0063c9f0 00000018 D tbl_DirLst_VOL_SOUND_SPU source=phase2-file_io verified=yes ev=11_file_io.md
+0063cc50 00000018 D tbl_DirLst_VOL_SOUND_VOICE source=phase2-file_io verified=yes ev=11_file_io.md
+0063d270 00000018 D tbl_DirLst_VOL_SOUND2 source=phase2-file_io verified=yes ev=11_file_io.md
+0063d350 00000018 D tbl_DirLst_VOL_SOUND2_BATTLE source=phase2-file_io verified=yes ev=11_file_io.md
+0063dd30 00000018 D tbl_DirLst_VOL_SOUND2_EVENT source=phase2-file_io verified=yes ev=11_file_io.md
+00641500 00000018 D tbl_DirLst_VOL_STRATUM source=phase2-file_io verified=yes ev=11_file_io.md
+00644470 00000018 D tbl_DirLst_BTL_BATTLE source=phase2-file_io verified=yes ev=11_file_io.md
+00644850 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN source=phase2-file_io verified=yes ev=11_file_io.md
+00647f90 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN_C71_C80_L_L_1 source=phase2-file_io verified=yes ev=11_file_io.md
+00648250 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN_C82_L_L_1 source=phase2-file_io verified=yes ev=11_file_io.md
+00648360 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN_C90_L_L_1 source=phase2-file_io verified=yes ev=11_file_io.md
+00648440 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN_C93_L_L_1 source=phase2-file_io verified=yes ev=11_file_io.md
+00648520 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN_EPL source=phase2-file_io verified=yes ev=11_file_io.md
+00648600 00000018 D tbl_DirLst_BTL_BATTLE_CUTIN_MIXRAID source=phase2-file_io verified=yes ev=11_file_io.md
+00648740 00000018 D tbl_DirLst_BTL_BATTLE_EFFECT source=phase2-file_io verified=yes ev=11_file_io.md
+00649510 00000018 D tbl_DirLst_BTL_BATTLE_PANEL source=phase2-file_io verified=yes ev=11_file_io.md
+00649650 00000018 D tbl_DirLst_BTL_BATTLE_RESULT source=phase2-file_io verified=yes ev=11_file_io.md
+006498b0 00000018 D tbl_DirLst_BTL_BATTLE_SHUFFLE source=phase2-file_io verified=yes ev=11_file_io.md
+00649a50 00000018 D tbl_DirLst_BTL_MODEL source=phase2-file_io verified=yes ev=11_file_io.md
+00649c20 00000018 D tbl_DirLst_BTL_MODEL_FACILITYP source=phase2-file_io verified=yes ev=11_file_io.md
+0064cca0 00000018 D tbl_DirLst_BTL_MODEL_FIELD source=phase2-file_io verified=yes ev=11_file_io.md
+0064d110 00000018 D tbl_DirLst_BTL_MODEL_NPC source=phase2-file_io verified=yes ev=11_file_io.md
+00659a90 00000018 D tbl_DirLst_BTL_MODEL_PACK source=phase2-file_io verified=yes ev=11_file_io.md
+0065fe70 00000018 D tbl_DirLst_BTL_MODEL_PERSONA source=phase2-file_io verified=yes ev=11_file_io.md
+00662ef0 00000018 D tbl_DirLst_BTL_MODEL_SYMBOL source=phase2-file_io verified=yes ev=11_file_io.md
+00663540 00000018 D tbl_DirLst_BTL_MODEL_WEAPON source=phase2-file_io verified=yes ev=11_file_io.md
+0066c5f0 00000018 D tbl_DirLst_BTL_SKILL source=phase2-file_io verified=yes ev=11_file_io.md
+00677d70 00000018 D tbl_DirLst_BTL_SND_BENC source=phase2-file_io verified=yes ev=11_file_io.md
+00677f10 00000018 D tbl_DirLst_BTL_SND_BENC_BOSS source=phase2-file_io verified=yes ev=11_file_io.md
+006783b0 00000018 D tbl_DirLst_BTL_SND_BENC_PANEL source=phase2-file_io verified=yes ev=11_file_io.md
+00780ba8 00000004 D sceCd_ncmd_semid source=tge-pr4 verified=yes ev=11_file_io.md
+00780bb4 00000004 D sceCd_c_cb_sem source=tge-pr4 verified=yes ev=11_file_io.md
+00780bb8 00000004 D sceCd_ee_read_mode source=tge-pr4 verified=yes ev=11_file_io.md
+00780be0 00000004 D sceCdCbfunc_num source=tge-pr4 verified=yes ev=11_file_io.md
+00780c80 00000004 D sceCd_ncmdsdata source=tge-pr4 verified=yes ev=11_file_io.md
+0078af70 00000800 D adxm_stack_fs source=tge-pr4 verified=yes ev=11_file_io.md
+007a08b0 00000001 D srd_obj source=tge-pr4 verified=yes ev=11_file_io.md
+007a1d88 00000004 D dvg_ci_vtbl source=tge-pr4 verified=yes ev=11_file_io.md
+007a2a70 00000001 D dvg_ci_cdrmode source=tge-pr4 verified=yes ev=11_file_io.md
+007a2a74 00000004 D dvg_ci_rdmode source=tge-pr4 verified=yes ev=11_file_io.md
+007a2a80 00000001 D dvg_ci_root_dir source=tge-pr4 verified=yes ev=11_file_io.md
+007b2700 00000004 D g_rofs_work source=phase2-file_io verified=yes ev=11_file_io.md
+007b2808 00000004 D g_rofs_pfs_tbl source=phase2-file_io verified=yes ev=11_file_io.md
+007b2810 00000004 D g_roci_vtbl source=tge-pr4 verified=yes ev=11_file_io.md
+007c6f50 00000004 D g_pfscvfs_tbl source=tge-pr4 verified=yes ev=11_file_io.md
+007c7230 0000000c D RFMAI_fs_lif_tbl source=tge-pr4 verified=yes ev=11_file_io.md
+007c75c8 00000004 D g_rofs_dcf_tbl source=phase2-file_io verified=yes ev=11_file_io.md
+007d6f80 00009400 D sCdvdCache source=tge-pr4 verified=yes ev=11_file_io.md
+007e0380 00000004 D sCdvdListHead source=tge-pr4 verified=yes ev=11_file_io.md
+007e0384 00000004 D sCdvdListFirst source=phase2-file_io verified=yes ev=11_file_io.md
+
+# comments  (repeatable function/data comments, one per line: '# comment <addr8> <text>')
+# comment 00100800 sceCdInit(0); sceCdMmode(2 = DVD); sceCdDiskReady(0); clears request list + 256-entry sCdvdCache
+# comment 001008b0 path -> uppercase/backslash -> SetRofsDir(dir) -> ADXF_Open/Close probe (table lookup only, no disc read)
+# comment 00100980 per-frame (kwlnUpdate) request pump, FIFO from sCdvdListFirst: state 0 ADXF_Open -> 1 RwHeapMalloc((sct<<11)+64|320) aligned to 64, ADXF_ReadNw whole file -> 2 poll ADXF_GetStat (3 done, 4 error -> retry) -> 3 H_Cdvd_AddFile -> 4 loaded. One request in flight.
+# comment 00100d80 H_Cdvd_Request(path, isArchive): dedups by uppercased path (refcount +858) else RwHeapCalloc(868) node appended after sCdvdListHead; BuildVolumePaths fills +344 VOL:/BTL: name and +600 dir
+# comment 00100ec0 drops refcount; at 0 and loaded: frees buffer (unless no_free), clears owned cache entries, closes ADXF handle, frees node; busy requests defer (+860)
+# comment 00101010 out = VOL:\ + path with / -> \ and a-z uppercased (255 max)
+# comment 00101100 splits uppercased path into dir (with trailing backslash) and VOL:+filename
+# comment 00101240 dir normalized; if dir is in g_tbl_rofsDirNames_BTL the file gets prefix BTL: else VOL: (route = top-level directory)
+# comment 001013f0 removes .\ and ..\ components
+# comment 00101520 dir string (after VOL:) strcmp'd against g_tbl_rofsDirNames_BTL then _VOL; ROFS_SetDir(BTL/VOL, matching #DirLst# table) with retry loop; prints SetDir Error / rofs err %d
+# comment 001016b0 state == 4
+# comment 001016d0 RenderWare rtFS pak: device: opens a file from sCdvdCache by normalized name (memory-backed)
+# comment 00101810 memcpy from cached PAK entry
+# comment 001019a0 rtFS get-handle slot
+# comment 00101ad0 registers rtFS pak: device vtable
+# comment 00101c70 RwFsInit; installs hst:, pak:, hdd: rtFS devices (5 x 2048-byte buffers each)
+# comment 00101e30 archive: walks name-first PAK (252-byte name + u32 LE size, data at +256, next at +256+align64(size), empty name ends) adding each entry to sCdvdCache as uppercased dir+name; else adds the whole file
+# comment 00102030 first free sCdvdCache slot: used=1, owner, data, size, name[128]
+# comment 00102100 walks loaded PAK to entry index; returns data ptr and *size
+# comment 001021c0 linear search of sCdvdCache by normalized name -> data ptr, *size
+# comment 001022e0 entry header pointer by index
+# comment 001023a0 spins H_Cdvd_Update() until the request is loaded (blocking load on the main thread)
+# comment 001023f0 Sofdec: SetRofsDir + mwPlyStartFname(Lp) with VOL:name (streams via ADXSTM/CVFS, bypasses H_Cdvd buffers)
+# comment 001024a0 ADXF_LoadPartitionNw of an AFS partition (sound) by VOL: name
+# comment 00102530 ADX stream start by name (SetRofsDir + ADXT_StartFname)
+# comment 001025c0 ADX stream start by name (hint spelling StartADXTFIle corrected)
+# comment 00102720 registers an in-memory PAK's entries in sCdvdCache
+# comment 00102900 rtFS hdd: device over sceOpen(pfs0:+name) (dev path)
+# comment 001934f0 NOT the file layer: disc-swap check task (sceCdGetDiskType2==20, sceDopen(cdrom0:\) looks for SLPM_664.45 / SLPM_666.89) for carry-over data
+# comment 0053b250 cvFsAddDev(ROFS, ROCI_GetInterface)
+# comment 0053b318 cvFsOpen(CDV:data.cvm) then cvFsAddVolumeEx(ROFS, VOL, hn)
+# comment 0053c860 ADXSTM_BindFile -> file length / sectors from ROFS
+# comment 0053d1f0 SJRBF ring over the caller buffer (nsct<<11); reads are chunked by ADXSTM (see adxstmf_ExecRead)
+# comment 0053d380 buffer must be 64-byte aligned (E0120401)
+# comment 0053d730 16 ADXF handles
+# comment 0053db90 1 idle, 2 reading, 3 complete, 4 error
+# comment 0053df90 max sectors per request (+44); ADXF_SetReqRdSct is never called by the game
+# comment 0053e0e0 SRD_ExecServer, ADXSTM_ExecFsSvr, adxstmf_ExecServer, ADXF_ExecServer (fs-thread server chain)
+# comment 0053f9b0 FLIRT mis-named logl_0
+# comment 0053fcf8 ADX file-system thread body: SVM_ExecSvrFs() then adxm_SleepThread()
+# comment 00540360 sceCreateThread(adxm_fs_proc, adxm_stack_fs 0x78AF70, 4096, prio main then 18)
+# comment 00540588 default priorities: safe 8, vsync 16, fs 18, main 24, mwidle 25
+# comment 00546788 ADXSTM CVFS reader: cvFsSeek(hn, base + pos) + cvFsReqRd(hn, min(ring free / 2048, remaining, max_req_sct)) per step
+# comment 00546bb0 opens a stream via cvFsOpen(VOL:name) -> ROCI/ROFS
+# comment 00546e60 cvFsExecServer
+# comment 00547668 cvFsAddDev(mfCi device) and cvFsAddDev(CDV, dvCiGetInterface); default device CDV; dvCiSetRdMode(0,0,0,0); root dir /
+# comment 00547768 no callers
+# comment 00555ba0 32 device slots, 16-char names
+# comment 00555fa0 device lookup with default-device fallback
+# comment 00556048 DEV:name -> device vtbl+16 Open
+# comment 00556478 vtbl+24
+# comment 005564e0 vtbl+32
+# comment 00556608 calls every device's ExecServer (vtbl+0)
+# comment 00556668 vtbl+44
+# comment 00557358 device OptFn(2)
+# comment 00557a58 single global srd_obj; returns 0 when busy (one DVD read in flight)
+# comment 00557b80 refuses while sceCdSync(1) == 1; queues lsn/nsct/buf/mode in srd_obj (stat 1)
+# comment 00557d58 sceCdSync(0)
+# comment 00557fe8 sceCdGetError; code 0x20 tolerated
+# comment 00558138 stat 1 -> sceCdRead(lsn, nsct, buf, &mode) -> 2; stat 2 -> sceCdSync(1) == 0 -> 3 ok / 9 error; break request -> sceCdBreak + sceCdSync(0)
+# comment 00558500 called from adxt_ExecFsSvr (ADX fs thread) and RFTGT_PfsExecServerSub
+# comment 00558ae0 only sceCdSeek caller
+# comment 00559dd8 sceCdLayerSearchFile(fp, name, layer)
+# comment 00559e80 SRD stat 3 -> hn.stat 1 (complete, pos += n); 9 -> 3 (error); destroys the SRD
+# comment 0055a1f0 \NAME;1 via the sceCdSearchFile RPC (file cache miss) -> hn: +32 start LSN, +36 size bytes, +8 size_sct, +12 pos_sct; DVD-ROM = whole disc
+# comment 0055a3c0 sector position, clamped to the file
+# comment 0055a490 InvalidDCache(buf); SRD_ReqRdDvd(srd, lsn = start_lsn + pos, nsct, buf, mode{trycount, spindlctrl, datapattern} = 0,0,0); rdmode 0 => async (stat 2)
+# comment 0055a638 SRD_Break + spin
+# comment 0055a9b0 root + backslash + name + ;1, uppercased, / -> backslash
+# comment 0055ad18 only other sceCdRead caller (file-list cache; unused: ADXPS2_LoadFcacheDvd has no callers)
+# comment 0055b120 XXXXXXXX.YYYYYYYY hex LSN.size names
+# comment 00565420 runs the registered fs servers (ADXT_UpdateFsStat chain)
+# comment 00565820 FLIRT mis-named atan2l_8; thunk to cvFsGetSctLen
+# comment 00565838 FLIRT mis-named cosl_8; thunk to cvFsGetNumTr
+# comment 00565888 cvFsExecServer + RFTGT_PfsExecServerSub (-> SRD_ExecServer)
+# comment 005658a8 FLIRT mis-named sceLibgcc32GetErxEntries_10; returns g_pfscvfs_tbl
+# comment 005658b8 pfs ExecServer + ROFS_ExecServer + 100us wait loop until stat 1/0/3 or timeout
+# comment 00565c10 sector units; +20 pos, +24 size_sct
+# comment 00565e10 ROFS_ReqRd(hn, nsct, buf): clamps nsct to the file end, then dcfReqRdCda(vol.lba_offset = 3, vol.img_hn, start_lba + pos, nsct, buf) at 0x565F70-0x565F88 -> stat = 2 busy
+# comment 00565fe8 0 idle, 1 complete, 2 busy, 3 error
+# comment 00566050 (rd_sct << 11) + rd_rem_bytes
+# comment 00566b08 -> RFMAI_SetDirG via RFMAI_fs_lif_tbl+64
+# comment 00566f30 PVD +1 == CD001
+# comment 00566f78 VOL:name -> volume (uppercased, <= 8 chars) + name; no colon -> default volume
+# comment 005671f0 RofsVolume by name (52-byte records)
+# comment 00567478 pfs Seek(img, 0, SEEK_END) == 0x7FFFFFFF means whole-disc image
+# comment 005674c0 reads CVM sector 0 (CVMH header, big-endian) -> vol.lba_offset = u32 at file offset 136 (= 3); key via RSU_GenerateFixedKey; reads the zone header sector (zone table at 256 -> sector 1)
+# comment 005675c8 defaults for whole-disc access (lba_offset 0)
+# comment 005676b0 ReadWG(vol, zone.data_loc - vol.lba_offset + 16 = 16, 1 sector) then decipher
+# comment 00567858 work area: handles at +4236 (60 B each), volumes at +40 (52 B each), 2048-byte 64-aligned scratch at +72
+# comment 00567c58 mount volume name over a CVFS file handle: addVolList, getCvmfInfo (CVM header + zone), readPvd, checkMedia; readRootDirRec skipped when ROFS_SetCond(0,0,1) (retail: directories come from the in-ELF #DirLst# tables)
+# comment 00568388 divideFname -> getVolume -> dirbuf (vol.dir, or caller's carrying #DirLst# or the volume name at +12) -> RFDIR_SearchName -> entry = dirbuf + 48*idx - 24 -> RFHN_CreateHnG(hn, idx, entry.lba, size64(hi, lo), vol)
+# comment 005685b8 open a raw sector range (lba, nsct) on a volume
+# comment 00568710 polls pfs GetStat(img): 1 -> GetNumTr must equal req<<11, pos += sct, stat = 1; 3 -> error -202
+# comment 00568938 iterates handles with req_state == 1 -> updateHnStat
+# comment 00569058 ROFS_SetDir: with cond0 == 1 stores the caller's #DirLst# pointer into vol.dir (no copy, no disc read); otherwise copies entries
+# comment 00569538 synchronous sector read through the system handle: ReopenHn(lba, nsct) + RFHN_ReqRdG + RFHN_WaitCompleteReq
+# comment 00569c00 RSU_Decipher(buf, nsct<<11, 2048, lba, vol.key, 8) - applied to metadata sectors only (identity for these discs: the PVD is plain on disc and checkMedia passes)
+# comment 0056a540 -> g_rofs_pfs_tbl+24 (pfsCvfsSeek)
+# comment 0056a600 -> pfsCvfsReqRd -> cvFsReqRd
+# comment 0056a860 parentSeek(img, lba*2048/sctlen) then dcfReqRd(img, nsct, buf); returns sectors
+# comment 0056aa98 dcfReqRdBlk(img, lba + cda_offset): the 3-sector CVM header offset is added here
+# comment 0056ae20 CVMH main header (big-endian): out+100 zone count (file offset 128), out+104 zone select (132), out+108 data lba offset (136) = 3
+# comment 0056b028 zone table at header+256 (BE u32 per zone) -> out+112..
+# comment 0056b128 ZONE header: +12 sector length (2048), +32 data location (3), ...
+# comment 0056b240 CVMH or CVMF magic
+# comment 0056ba48 case-insensitive exact compare
+# comment 0056bac8 case-insensitive compare that treats a trailing period in either name as optional
+# comment 0056bc10 #DirLst# entry byte +13: ((218 + sum(toUpperFname(c))) >> 2) & 0xFF; toUpperFname: a-z -> A-Z, period -> 0. Verified equal on all 12,016 entries of the 149 in-ELF tables.
+# comment 0056bcb0 ISO9660 dir record -> 48-byte RofsDirLstEnt: size (LE), lba (LE), flags, name (;1 = last 2 chars stripped for files; 0/1 -> . and ..), search_id
+# comment 0056bdc0 reads directory sectors (RFMAI_ReadWG + decipher) into a #DirLst# buffer; only used when ROFS cond0 != 1 (not in the retail path)
+# comment 0056c320 binary search over sorted #DirLst# entries: query uppercased; files compared with a period appended when the query has none (ISO form LMAP_DAT.), directories compared raw; returns 1-based index, 1 = '.', 2 = '..'
+# comment 0056c4b0 linear scan: entry.search_id == getSearchID(query) then rfdirStrcmpDirName / rfdirStrcmpFileName
+# comment 0056c5b0 vol.lba_offset != 0 ? binary : sequential (CVM volumes have offset 3 -> binary)
+# comment 0056c5f0 ISO9660 path-table walk (not used in the retail path)
+# comment 0056c900 FLIRT mis-named mem_free_0; CVFS ROFS device open -> ROFS_Open
+# comment 0056cab0 cvFsAddVolumeEx(ROFS, vol, cvfs_hn): registers the volume name as a CVFS device and calls ROFS_AddVolume
+# comment 005cdd80 directory-name strings matched by H_Cdvd_SetRofsDir; parallel to g_tbl_rofsDirLst_BTL
+# comment 005cddf0 pointers to the in-ELF #DirLst# tables handed to ROFS_SetDir(BTL, tbl)
+# comment 005ce590 directory-name strings matched by H_Cdvd_SetRofsDir; parallel to g_tbl_rofsDirLst_VOL
+# comment 005ce780 pointers to the in-ELF #DirLst# tables handed to ROFS_SetDir(VOL, tbl)
+# comment 005e55c0 CRI ROFS #DirLst# table for VOL:\BUSTUP\ (589 entries, dir lba 21); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005ec450 CRI ROFS #DirLst# table for VOL:\CAMP\ (45 entries, dir lba 35); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005ecce0 CRI ROFS #DirLst# table for VOL:\CAMP\COMMU\ (4 entries, dir lba 37); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005ecdc0 CRI ROFS #DirLst# table for VOL:\CAMP\COMMU\TIM2_BUSTUP\ (66 entries, dir lba 38); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005eda40 CRI ROFS #DirLst# table for VOL:\CAMP\COMMU\TIM2_LAEGE\ (26 entries, dir lba 40); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005edf40 CRI ROFS #DirLst# table for VOL:\CAMP\COMU\ (3 entries, dir lba 41); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005edff0 CRI ROFS #DirLst# table for VOL:\CAMP\FONT\ (6 entries, dir lba 42); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005ee130 CRI ROFS #DirLst# table for VOL:\CAMP\PERSONA\ (191 entries, dir lba 43); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f0520 CRI ROFS #DirLst# table for VOL:\CAMP\STATUS\ (3 entries, dir lba 48); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f05d0 CRI ROFS #DirLst# table for VOL:\CARD\ (7 entries, dir lba 49); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f0740 CRI ROFS #DirLst# table for VOL:\CARD\MISC\ (4 entries, dir lba 50); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f0820 CRI ROFS #DirLst# table for VOL:\CARD\PERSONA\ (190 entries, dir lba 51); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f2be0 CRI ROFS #DirLst# table for VOL:\CARD\SARCANA\ (58 entries, dir lba 56); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f36e0 CRI ROFS #DirLst# table for VOL:\CUTIN\ (3 entries, dir lba 58); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f3790 CRI ROFS #DirLst# table for VOL:\CUTIN\SHAPE\ (301 entries, dir lba 59); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f7020 CRI ROFS #DirLst# table for VOL:\EFFECT\ (4 entries, dir lba 67); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f7100 CRI ROFS #DirLst# table for VOL:\EVENT\ (81 entries, dir lba 68); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f8050 CRI ROFS #DirLst# table for VOL:\EVENT\E010\ (5 entries, dir lba 70); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f8160 CRI ROFS #DirLst# table for VOL:\EVENT\E040\ (18 entries, dir lba 71); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f84e0 CRI ROFS #DirLst# table for VOL:\EVENT\E050\ (26 entries, dir lba 72); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f89e0 CRI ROFS #DirLst# table for VOL:\EVENT\E060\ (10 entries, dir lba 73); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f8be0 CRI ROFS #DirLst# table for VOL:\EVENT\E070\ (7 entries, dir lba 74); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f8d50 CRI ROFS #DirLst# table for VOL:\EVENT\E080\ (17 entries, dir lba 75); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f90a0 CRI ROFS #DirLst# table for VOL:\EVENT\E090\ (8 entries, dir lba 76); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f9240 CRI ROFS #DirLst# table for VOL:\EVENT\E100\ (38 entries, dir lba 77); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005f9980 CRI ROFS #DirLst# table for VOL:\EVENT\E110\ (41 entries, dir lba 78); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fa150 CRI ROFS #DirLst# table for VOL:\EVENT\E120\ (47 entries, dir lba 79); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005faa40 CRI ROFS #DirLst# table for VOL:\EVENT\E130\ (47 entries, dir lba 81); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fb330 CRI ROFS #DirLst# table for VOL:\EVENT\E140\ (44 entries, dir lba 83); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fbb90 CRI ROFS #DirLst# table for VOL:\EVENT\E150\ (29 entries, dir lba 85); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fc120 CRI ROFS #DirLst# table for VOL:\EVENT\E160\ (26 entries, dir lba 86); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fc620 CRI ROFS #DirLst# table for VOL:\EVENT\E170\ (29 entries, dir lba 87); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fcbb0 CRI ROFS #DirLst# table for VOL:\EVENT\E180\ (38 entries, dir lba 88); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fd2f0 CRI ROFS #DirLst# table for VOL:\EVENT\E190\ (29 entries, dir lba 89); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fd880 CRI ROFS #DirLst# table for VOL:\EVENT\E200\ (38 entries, dir lba 90); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fdfc0 CRI ROFS #DirLst# table for VOL:\EVENT\E210\ (35 entries, dir lba 91); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fe670 CRI ROFS #DirLst# table for VOL:\EVENT\E220\ (35 entries, dir lba 92); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005fed20 CRI ROFS #DirLst# table for VOL:\EVENT\E230\ (32 entries, dir lba 93); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005ff340 CRI ROFS #DirLst# table for VOL:\EVENT\E240\ (44 entries, dir lba 94); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 005ffba0 CRI ROFS #DirLst# table for VOL:\EVENT\E250\ (38 entries, dir lba 96); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006002e0 CRI ROFS #DirLst# table for VOL:\EVENT\E260\ (35 entries, dir lba 97); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00600990 CRI ROFS #DirLst# table for VOL:\EVENT\E270\ (44 entries, dir lba 98); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006011f0 CRI ROFS #DirLst# table for VOL:\EVENT\E280\ (38 entries, dir lba 100); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00601930 CRI ROFS #DirLst# table for VOL:\EVENT\E290\ (47 entries, dir lba 101); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00602220 CRI ROFS #DirLst# table for VOL:\EVENT\E300\ (56 entries, dir lba 103); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00602cc0 CRI ROFS #DirLst# table for VOL:\EVENT\E310\ (65 entries, dir lba 105); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00603910 CRI ROFS #DirLst# table for VOL:\EVENT\E320\ (29 entries, dir lba 107); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00603ea0 CRI ROFS #DirLst# table for VOL:\EVENT\E330\ (74 entries, dir lba 108); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00604ca0 CRI ROFS #DirLst# table for VOL:\EVENT\E340\ (8 entries, dir lba 110); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00604e40 CRI ROFS #DirLst# table for VOL:\EVENT\E400\ (25 entries, dir lba 111); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00605310 CRI ROFS #DirLst# table for VOL:\EVENT\E410\ (41 entries, dir lba 112); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00605ae0 CRI ROFS #DirLst# table for VOL:\EVENT\E420\ (32 entries, dir lba 113); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00606100 CRI ROFS #DirLst# table for VOL:\EVENT\E430\ (32 entries, dir lba 114); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00606720 CRI ROFS #DirLst# table for VOL:\EVENT\E440\ (53 entries, dir lba 115); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00607130 CRI ROFS #DirLst# table for VOL:\EVENT\E460\ (110 entries, dir lba 117); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006085f0 CRI ROFS #DirLst# table for VOL:\EVENT\E500\ (89 entries, dir lba 120); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006096c0 CRI ROFS #DirLst# table for VOL:\EVENT\E510\ (62 entries, dir lba 123); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060a280 CRI ROFS #DirLst# table for VOL:\EVENT\E520\ (110 entries, dir lba 125); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060b740 CRI ROFS #DirLst# table for VOL:\EVENT\E530\ (14 entries, dir lba 128); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060ba00 CRI ROFS #DirLst# table for VOL:\EVENT\E540\ (59 entries, dir lba 129); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060c530 CRI ROFS #DirLst# table for VOL:\EVENT\E560\ (50 entries, dir lba 131); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060ceb0 CRI ROFS #DirLst# table for VOL:\EVENT\E570\ (56 entries, dir lba 133); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060d950 CRI ROFS #DirLst# table for VOL:\EVENT\E580\ (50 entries, dir lba 135); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060e2d0 CRI ROFS #DirLst# table for VOL:\EVENT\E590\ (53 entries, dir lba 137); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060ece0 CRI ROFS #DirLst# table for VOL:\EVENT\E600\ (77 entries, dir lba 139); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0060fb70 CRI ROFS #DirLst# table for VOL:\EVENT\E610\ (83 entries, dir lba 141); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00610b20 CRI ROFS #DirLst# table for VOL:\EVENT\E620\ (77 entries, dir lba 143); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006119b0 CRI ROFS #DirLst# table for VOL:\EVENT\E630\ (44 entries, dir lba 145); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00612210 CRI ROFS #DirLst# table for VOL:\EVENT\E640\ (44 entries, dir lba 147); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00612a70 CRI ROFS #DirLst# table for VOL:\EVENT\E650\ (5 entries, dir lba 149); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00612b80 CRI ROFS #DirLst# table for VOL:\EVENT\E660\ (62 entries, dir lba 150); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00613740 CRI ROFS #DirLst# table for VOL:\EVENT\E670\ (77 entries, dir lba 152); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006145d0 CRI ROFS #DirLst# table for VOL:\EVENT\E680\ (44 entries, dir lba 154); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00614e30 CRI ROFS #DirLst# table for VOL:\EVENT\E690\ (44 entries, dir lba 156); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00615690 CRI ROFS #DirLst# table for VOL:\EVENT\E700\ (101 entries, dir lba 158); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006169a0 CRI ROFS #DirLst# table for VOL:\EVENT\E730\ (35 entries, dir lba 161); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00617050 CRI ROFS #DirLst# table for VOL:\EVENT\E740\ (35 entries, dir lba 162); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00617700 CRI ROFS #DirLst# table for VOL:\EVENT\E750\ (38 entries, dir lba 163); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00617e40 CRI ROFS #DirLst# table for VOL:\EVENT\E760\ (56 entries, dir lba 164); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006188e0 CRI ROFS #DirLst# table for VOL:\EVENT\E770\ (35 entries, dir lba 166); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00618f90 CRI ROFS #DirLst# table for VOL:\EVENT\E800\ (44 entries, dir lba 167); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006197f0 CRI ROFS #DirLst# table for VOL:\EVENT\E810\ (38 entries, dir lba 169); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00619f30 CRI ROFS #DirLst# table for VOL:\EVENT\E820\ (80 entries, dir lba 170); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061ae50 CRI ROFS #DirLst# table for VOL:\EVENT\E830\ (11 entries, dir lba 172); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061b080 CRI ROFS #DirLst# table for VOL:\EVENT\E840\ (137 entries, dir lba 173); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061ca50 CRI ROFS #DirLst# table for VOL:\EVENT\E850\ (35 entries, dir lba 177); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061d100 CRI ROFS #DirLst# table for VOL:\EVENT\E860\ (23 entries, dir lba 178); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061d570 CRI ROFS #DirLst# table for VOL:\EVENT\E900\ (116 entries, dir lba 179); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061eb50 CRI ROFS #DirLst# table for VOL:\EVENT\E910\ (14 entries, dir lba 182); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061ee10 CRI ROFS #DirLst# table for VOL:\EVENT\E990\ (26 entries, dir lba 183); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061f310 CRI ROFS #DirLst# table for VOL:\EVENT\SYS\ (41 entries, dir lba 184); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0061fae0 CRI ROFS #DirLst# table for VOL:\FACILITY\ (65 entries, dir lba 185); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00620730 CRI ROFS #DirLst# table for VOL:\FIELD\ (14 entries, dir lba 187); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006209f0 CRI ROFS #DirLst# table for VOL:\FIELD\BTL_EFFECT\ (5 entries, dir lba 188); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00620b00 CRI ROFS #DirLst# table for VOL:\FIELD\EFFECT\ (14 entries, dir lba 189); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00620dc0 CRI ROFS #DirLst# table for VOL:\FIELD\GRMD\ (17 entries, dir lba 190); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00621110 CRI ROFS #DirLst# table for VOL:\FIELD\ICON\ (3 entries, dir lba 191); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006211c0 CRI ROFS #DirLst# table for VOL:\FIELD\MAP\ (56 entries, dir lba 192); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00621c60 CRI ROFS #DirLst# table for VOL:\FIELD\PACK\ (836 entries, dir lba 194); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0062b940 CRI ROFS #DirLst# table for VOL:\FIELD\RMD\ (815 entries, dir lba 214); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00635230 CRI ROFS #DirLst# table for VOL:\FIELD\SCRIPT\ (38 entries, dir lba 234); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00635970 CRI ROFS #DirLst# table for VOL:\FIELD\TABLE\ (9 entries, dir lba 235); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00635b40 CRI ROFS #DirLst# table for VOL:\FONT\ (10 entries, dir lba 236); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00635d40 CRI ROFS #DirLst# table for VOL:\FONT\SIZE12\ (3 entries, dir lba 237); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00635df0 CRI ROFS #DirLst# table for VOL:\FTP_IRX\ (12 entries, dir lba 238); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00636050 CRI ROFS #DirLst# table for VOL:\HELP\ (7 entries, dir lba 239); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006361c0 CRI ROFS #DirLst# table for VOL:\ICON\ (27 entries, dir lba 240); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 006366f0 CRI ROFS #DirLst# table for VOL:\IRX_NEW\ (23 entries, dir lba 241); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00636b60 CRI ROFS #DirLst# table for VOL:\LMAP\ (3 entries, dir lba 242); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00636c10 CRI ROFS #DirLst# table for VOL:\OPED\ (7 entries, dir lba 243); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00636d80 CRI ROFS #DirLst# table for VOL:\SCRIPT\ (3 entries, dir lba 244); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00636e30 CRI ROFS #DirLst# table for VOL:\SCRIPT\EVENT\ (5 entries, dir lba 245); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00636f40 CRI ROFS #DirLst# table for VOL:\SFD\ (43 entries, dir lba 246); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00637770 CRI ROFS #DirLst# table for VOL:\SMAP\ (58 entries, dir lba 247); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00638270 CRI ROFS #DirLst# table for VOL:\SMAP\SYMBOL\ (3 entries, dir lba 249); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00638320 CRI ROFS #DirLst# table for VOL:\SOUND\ (377 entries, dir lba 250); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0063c9f0 CRI ROFS #DirLst# table for VOL:\SOUND\SPU\ (12 entries, dir lba 259); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0063cc50 CRI ROFS #DirLst# table for VOL:\SOUND\VOICE\ (32 entries, dir lba 260); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0063d270 CRI ROFS #DirLst# table for VOL:\SOUND2\ (4 entries, dir lba 261); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0063d350 CRI ROFS #DirLst# table for VOL:\SOUND2\BATTLE\ (52 entries, dir lba 262); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 0063dd30 CRI ROFS #DirLst# table for VOL:\SOUND2\EVENT\ (297 entries, dir lba 264); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00641500 CRI ROFS #DirLst# table for VOL:\STRATUM\ (20 entries, dir lba 271); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_VOL
+# comment 00644470 CRI ROFS #DirLst# table for BTL:\BATTLE\ (20 entries, dir lba 21); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00644850 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\ (294 entries, dir lba 22); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00647f90 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\C71_C80_L_L_1\ (14 entries, dir lba 30); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00648250 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\C82_L_L_1\ (5 entries, dir lba 31); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00648360 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\C90_L_L_1\ (4 entries, dir lba 32); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00648440 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\C93_L_L_1\ (4 entries, dir lba 33); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00648520 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\EPL\ (4 entries, dir lba 34); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00648600 CRI ROFS #DirLst# table for BTL:\BATTLE\CUTIN\MIXRAID\ (6 entries, dir lba 35); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00648740 CRI ROFS #DirLst# table for BTL:\BATTLE\EFFECT\ (73 entries, dir lba 36); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00649510 CRI ROFS #DirLst# table for BTL:\BATTLE\PANEL\ (6 entries, dir lba 38); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00649650 CRI ROFS #DirLst# table for BTL:\BATTLE\RESULT\ (12 entries, dir lba 39); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 006498b0 CRI ROFS #DirLst# table for BTL:\BATTLE\SHUFFLE\ (8 entries, dir lba 40); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00649a50 CRI ROFS #DirLst# table for BTL:\MODEL\ (9 entries, dir lba 41); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00649c20 CRI ROFS #DirLst# table for BTL:\MODEL\FACILITYP\ (258 entries, dir lba 42); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 0064cca0 CRI ROFS #DirLst# table for BTL:\MODEL\FIELD\ (23 entries, dir lba 48); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 0064d110 CRI ROFS #DirLst# table for BTL:\MODEL\NPC\ (1074 entries, dir lba 49); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00659a90 CRI ROFS #DirLst# table for BTL:\MODEL\PACK\ (532 entries, dir lba 74); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 0065fe70 CRI ROFS #DirLst# table for BTL:\MODEL\PERSONA\ (258 entries, dir lba 86); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00662ef0 CRI ROFS #DirLst# table for BTL:\MODEL\SYMBOL\ (33 entries, dir lba 92); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00663540 CRI ROFS #DirLst# table for BTL:\MODEL\WEAPON\ (771 entries, dir lba 93); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 0066c5f0 CRI ROFS #DirLst# table for BTL:\SKILL\ (978 entries, dir lba 111); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00677d70 CRI ROFS #DirLst# table for BTL:\SND_BENC\ (8 entries, dir lba 132); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00677f10 CRI ROFS #DirLst# table for BTL:\SND_BENC\BOSS\ (24 entries, dir lba 133); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 006783b0 CRI ROFS #DirLst# table for BTL:\SND_BENC\PANEL\ (5 entries, dir lba 134); selected by H_Cdvd_SetRofsDir via g_tbl_rofsDirLst_BTL
+# comment 00780ba8 PollSema'd by _sceCd_ncmd_prechk, re-signalled by the RPC end callback
+# comment 00780bb4 1 while an N-command is in flight; cleared by _sceCd_cd_callback
+# comment 00780c80 sceCdRead RPC packet: lsn, nsct, buf, mode[3], intr_data ptr, cur_pos ptr
+# comment 0078af70 ADX fs thread stack (4096)
+# comment 007a08b0 the single SRD request: +2 stat, +8 lsn, +12 nsct, +16 buf, +20 sceCdRMode, +52 err
+# comment 007a1d88 CDV device vtable: +16 Open, +24 Seek, +32 ReqRd, +44 GetStat
+# comment 007a2a70 sceCdRMode.trycount default 0
+# comment 007a2a74 0 = asynchronous DVD reads
+# comment 007b2700 ROFS work-area pointer (RFMAI_InitG)
+# comment 007b2808 -> g_pfscvfs_tbl
+# comment 007c6f50 ROFS pfs table (cvfs backend)
+# comment 007c75c8 dcf* table: [12] = dcfReqRdCda used by RFHN_ReqRdG
+# comment 007d6f80 HCdvdCacheEnt[256] (148 B each): loaded files and PAK entries by uppercased path
+# comment 007e0380 request list sentinel (next at +4)
+# comment 007e0384 first HCdvdRequest node (== sCdvdListHead.next)

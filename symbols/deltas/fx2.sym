@@ -1,0 +1,313 @@
+# fx2.sym  Phase 5 slice delta (game/include/p3fes/game/fx2.h); SLUS_216.21
+# generated 2026-10-22 from the instructions (p3fes_handgen bodies, the class / kind tables 0x69BE20..0x69CC70, the
+#   type rows 0x69C510..; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-fx2
+#   verified=yes: our own names, each from what the body does (the role in the header). A proposed name several
+#   functions would share is listed as a comment only. ev=<doc>#<section>. Not imported by the agent.
+# sub_330100: type 8: live parameters = base x $f12
+00330100 0000008c F fxPsysScale8 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_330190: type 9: emit and move the particles (spray along random directions)
+00330190 00000a1c F fxPsysUpdate9 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_330BB0: type 9: live parameters = base x $f12
+00330bb0 0000008c F fxPsysScale9 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_330C40: type 10: emit and move the particles (rings / spirals around the emitter)
+00330c40 00000988 F fxPsysUpdate10 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3315D0: type 10: live parameters = base x $f12
+003315d0 00000080 F fxPsysScale10 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_331FD0: type 11: live parameters = base x $f12
+00331fd0 00000098 F fxPsysScale11 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332070: particle system of a type: header, particles, state, two parameter copies
+00332070 00000154 F fxPsysCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332370: class 2 slot 0: the instance of a ribbon effect
+00332370 000000f8 F fxRibbonCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332470: the class-1 child of a ribbon from block B, by its type
+00332470 0000015c F fxRibbonSetChild source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3325D0: class 15 slot 0: a ribbon effect with a child object
+003325d0 00000124 F fxRibbonCreate15 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332700: class 2 / 15 slot 4: child, meshes, particle system, instance
+00332700 00000074 F fxRibbonDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332780: class 2 slot 5: a copy of a ribbon instance
+00332780 000000fc F fxRibbonClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332880: class 15 slot 5: a copy of a ribbon instance and its child
+00332880 0000010c F fxRibbonClone15 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332990: copy a ribbon's child object (class 15 clone)
+00332990 00000094 F fxRibbonCopyChild source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332A30: head copy and ribbon meshes of a ribbon instance
+00332a30 00000088 F fxRibbonSetHead source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332AC0: the particle system of a ribbon instance
+00332ac0 00000068 F fxRibbonSetPsys source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332B60: class 2 / 15 slot 2: one frame of the particle system and the ribbons
+00332b60 000002b0 F fxRibbonStep source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332E10: class 2 / 15 slot 3: place and queue the ribbon meshes
+00332e10 00000100 F fxRibbonDraw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_332F10: class 2 / 15 slot 1: step (sub_332B60), then draw
+00332f10 00000108 F fxRibbonUpdate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3330E0: the two ribbon meshes for n ribbons
+003330e0 00000218 F fxStripsCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_333300: material colour of ribbon i in both meshes
+00333300 00000118 F fxStripsSetColour source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_333420: prelight colours of the ribbon meshes from two key colours
+00333420 00000490 F fxStripsSetGradient source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_333970: push a point into ribbon i and rebuild its band (VU0)
+00333970 00000848 F fxStripsPush source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3341C0: camera position, lock both ribbon geometries
+003341c0 0000005c F fxStripsLock source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_334220: unlock both ribbon geometries, re-instance when flagged
+00334220 0000009c F fxStripsUnlock source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337A60: a class-13 instance of a kind from its parameters
+00337a60 00000110 F kobj13Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337B70: class 13 slot 0: kobj13Create(kind +12, block A)
+00337b70 0000003c F kobj13New source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337BB0: class 13 slot 4: kind destroy on the object, free
+00337bb0 00000060 F kobj13Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337C10: class 13 slot 5: a new instance of the same kind and parameters
+00337c10 0000002c F kobj13Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337C40: class 13 slot 7: kind init again, frame = 0
+00337c40 00000050 F kobj13Restart source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337C90: class 13 slot 2: kind update, ++frame
+00337c90 00000058 F kobj13Step source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337CF0: class 13 slot 3: kind draw once a frame has run
+00337cf0 0000004c F kobj13Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337D40: class 13 slot 1: kind update, ++frame, kind draw
+00337d40 0000008c F kobj13Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337DD0: class 13 slot 8: position = *$a1 (128 bits)
+00337dd0 00000010 F kobj13SetPos source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337DE0: class 13 slot 9: rotation = *$a1 (128 bits)
+00337de0 00000010 F kobj13SetRot source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337DF0: class 13 slot 12: colour +36 = $a1
+00337df0 0000000c F kobj13SetColour source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337E00: class 13 slot 10: scale +32 = $f12
+00337e00 0000000c F kobj13SetScale source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337E90: class 12 kind 1 slot 1: the ring mesh
+00337e90 000000e4 F kobj12Ring1Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_337FD0: class 12 kind 1 slot 3: the ring's vertices for this frame
+00337fd0 00000384 F kobj12Ring1Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_338360: class 12 kind 1 slot 4: colour, place and queue the ring
+00338360 000001d0 F kobj12Ring1Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_338EA0: class 12 kind 3 slot 3: the cone's vertices for this frame
+00338ea0 00000360 F kobj12Ring3Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_339200: class 12 kind 3 slot 4: colour, place and queue (= sub_338360)
+00339200 000001d0 F kobj12Ring3Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3393D0: a class-12 instance of a kind from its parameters
+003393d0 00000118 F kobj12Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3397D0: kind 1 slot 0: clear the vertices, free every record
+003397d0 000000e8 F k10Streak1Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3398C0: kind 1 slot 1: records (24 bytes) and a 3 x 5 grid mesh
+003398c0 00000088 F k10Streak1Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3399A0: kind 1 slot 4: emit / age the streaks, rebuild the vertices
+003399a0 00000874 F k10Streak1Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33A220: kind 1 slot 5: colour, place and queue the mesh
+0033a220 000001c0 F k10Streak1Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33A3E0: kind 2 slot 0: clear the vertices, free every record
+0033a3e0 000000e8 F k10Streak2Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33A4D0: kind 2 slot 1: records (28 bytes) and a 12 x 13 grid mesh
+0033a4d0 00000088 F k10Streak2Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33A560: kind 2 slot 2: destroy the mesh, free the block
+0033a560 00000044 F k10Streak2Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33A5B0: kind 2 slot 4: emit / age the streaks, rebuild the vertices
+0033a5b0 00000958 F k10Streak2Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33AF10: kind 2 slot 5: colour, place and queue the mesh
+0033af10 000001c0 F k10Streak2Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33BDA0: kind 4 slot 0: clear the vertices, free every record
+0033bda0 000000e8 F k10Sprite4Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33BE90: kind 4: the two-frame texture coordinates of every quad
+0033be90 00000110 F k10Sprite4TexCoords source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33BFA0: kind 4 slot 1: records and a textured quad mesh
+0033bfa0 000000fc F k10Sprite4Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33C0A0: kind 4 slot 3: a copy of the kind object
+0033c0a0 000000a8 F k10Sprite4Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33C150: kind 4 slot 2: destroy the mesh, free the block
+0033c150 00000044 F k10Sprite4Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33C1A0: kind 4 slot 4: emit / age the sprites, rebuild the quads
+0033c1a0 000007b8 F k10Sprite4Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33C960: kind 4 slot 5: colour, place and queue the mesh
+0033c960 000001c0 F k10Sprite4Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33CB20: kind 5 slot 0: clear the vertices, free every record
+0033cb20 000000e8 F k10Sprite5Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33CC10: kind 5: the two-frame texture coordinates of every quad
+0033cc10 00000110 F k10Sprite5TexCoords source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33CD20: kind 5 slot 1: records and a textured quad mesh
+0033cd20 000000e8 F k10Sprite5Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33CE10: kind 5 slot 3: a copy of the kind object
+0033ce10 00000094 F k10Sprite5Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33CEB0: kind 5 slot 2: destroy the mesh, free the block
+0033ceb0 00000044 F k10Sprite5Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33CF00: kind 5 slot 4: emit / age the sprites, rebuild the quads
+0033cf00 000007d0 F k10Sprite5Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33D6D0: kind 5 slot 5: colour, place and queue the mesh
+0033d6d0 000001c0 F k10Sprite5Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33D890: kind 6 slot 0: clear the vertices, free every record
+0033d890 000000e8 F k10Sprite6Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33D980: kind 6: the two-frame texture coordinates of every quad
+0033d980 00000110 F k10Sprite6TexCoords source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33DA90: kind 6 slot 1: records and a textured quad mesh
+0033da90 000000e8 F k10Sprite6Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33DB80: kind 6 slot 3: a copy of the kind object
+0033db80 00000094 F k10Sprite6Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33DC20: kind 6 slot 2: destroy the mesh, free the block
+0033dc20 00000044 F k10Sprite6Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33DC70: kind 6 slot 4: emit / age the sprites (size and speed ramps), rebuild the quads
+0033dc70 000008d0 F k10Sprite6Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33E540: kind 6 slot 5: colour, place and queue the mesh
+0033e540 000001c0 F k10Sprite6Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33F4A0: kind 8 slot 0: clear the vertices, free every record
+0033f4a0 000000e8 F k10Sprite8Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33F590: kind 8: the two-frame texture coordinates of every quad
+0033f590 00000110 F k10Sprite8TexCoords source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33F6A0: kind 8 slot 1: records and a textured quad mesh
+0033f6a0 000000e0 F k10Sprite8Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33F780: kind 8 slot 3: a copy of the kind object
+0033f780 0000008c F k10Sprite8Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33F810: kind 8 slot 2: destroy the mesh, free the block
+0033f810 00000044 F k10Sprite8Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_33F860: kind 8 slot 4: emit / age the sprites, rebuild the quads
+0033f860 0000089c F k10Sprite8Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_340100: kind 8 slot 5: colour, place and queue the mesh
+00340100 000001c0 F k10Sprite8Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_341F10: a class-10 instance with a copy of its kind parameters
+00341f10 000000c0 F kobj10Alloc source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_342480: kind 1 slot 0: tint every strand, free every record
+00342480 000000d0 F k16Streamer1Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_342550: kind 1: strand colours (alpha ramp) and texture coordinates
+00342550 00000338 F k16Streamer1Geometry source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_342990: kind 1 slot 3: a copy of the kind object
+00342990 000000ac F k16Streamer1Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_342A90: kind 1 slot 4: emit / age the strands, trail their points
+00342a90 00000980 F k16Streamer1Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_343410: kind 1 slot 5: strand colours, matrix, queue
+00343410 00000374 F k16Streamer1Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_343790: kind 2 slot 0: tint every strand, free every record
+00343790 000000d0 F k16Streamer2Init source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_343860: kind 2: strand colours (alpha ramp) and texture coordinates
+00343860 000002fc F k16Streamer2Geometry source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_343C60: kind 2 slot 3: a copy of the kind object
+00343c60 000000ac F k16Streamer2Clone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_343D10: kind 2 slot 2: destroy the mesh, free the block
+00343d10 00000044 F k16Streamer2Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_343D60: kind 2 slot 4: emit / age the strands, trail their points
+00343d60 000009b4 F k16Streamer2Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_344720: kind 2 slot 5: strand colours, matrix, queue
+00344720 00000374 F k16Streamer2Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_345CF0: a class-16 instance with a copy of its kind parameters
+00345cf0 000000c0 F kobj16Alloc source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3461A0: class 7 slot 0: the sprite quad, its curves and its animation
+003461a0 000001b0 F fxSpriteCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_346350: class 7 slot 4: image sequence, sprite player, mesh, instance
+00346350 0000006c F fxSpriteDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3463C0: class 7 slot 5: a copy of a sprite instance
+003463c0 00000094 F fxSpriteClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_346460: class 7 slot 6: copy the sprite player / image sequence of another instance
+00346460 00000098 F fxSpriteCopyAnim source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_346530: class 7 slot 3: curves, animation frame, quad vertices, queue
+00346530 00000bd0 F fxSpriteDraw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_347100: class 7 slot 1: ++frame, then draw (sub_346530)
+00347100 0000002c F fxSpriteUpdate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_347170: a lens-flare instance from its definition
+00347170 00000154 F fxFlareCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3472D0: class 9 slot 0: sub_347170(block A)
+003472d0 0000002c F fxFlareNew source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_347350: class 9 slot 5: sub_347170(the source's definition +24)
+00347350 00000024 F fxFlareClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_3473B0: class 9 slot 3: project the light, place the 13 flare elements, queue
+003473b0 000008f4 F fxFlareDraw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_347CB0: class 9 slot 1: ++frame, then draw (sub_3473B0)
+00347cb0 0000002c F fxFlareUpdate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_347FC0: class 21 slot 0: frame 0 and a copy of the 16-byte shake record
+00347fc0 0000006c F fxShakeObjCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_348030: class 21 slot 4: camera frame back, shake off, free
+00348030 00000054 F fxShakeObjDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_348090: class 21 slot 5: frame 0 and a copy of the source's shake record
+00348090 00000064 F fxShakeObjClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_348340: Im2D quad of a filter rectangle, texture coordinates from the screen, rotated
+00348340 00000414 F fltQuadUvRotated source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_348760: Im2D quad of a filter rectangle with the whole texture
+00348760 000001f0 F fltQuadUvFull source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_348BD0: Im2D quad of a filter rectangle, no texture coordinates
+00348bd0 000001cc F fltQuadPlain source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_348F30: filter kind 3: a sparkle cell at a random place around the centre
+00348f30 00000158 F fltCellRespawn3 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_349260: filter kind 7: a cell at a random screen place
+00349260 000001f0 F fltCellRespawn7 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_349450: filter kind 7: count down, respawn, pulse every cell
+00349450 000001c8 F fltCellsUpdate7 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_349870: class 4 kind 1: full-screen tint colour and its two curves
+00349870 000001b8 F flt4Kind1Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_349AF0: class 4 kind 2: a tinted disc at the effect position or the screen centre
+00349af0 00000234 F flt4Kind2Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_349ED0: class 4 kind 3: the sparkle cells (52 bytes each)
+00349ed0 000000c4 F flt4Kind3Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_349FA0: class 4 kind 3: free the cells
+00349fa0 00000028 F flt4Kind3Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A1D0: class 4 kind 3: the visible sparkle cells as quads
+0034a1d0 000000ac F flt4Kind3Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A280: class 4 kind 4: the cells, staggered phases
+0034a280 000000c0 F flt4Kind4Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A340: class 4 kind 4: free the cells
+0034a340 00000028 F flt4Kind4Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A590: class 4 kind 4: the started cells as quads
+0034a590 000000b8 F flt4Kind4Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A8C0: class 4 kind 7: the cells (52 bytes each)
+0034a8c0 000000c4 F flt4Kind7Create source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A990: class 4 kind 7: free the cells
+0034a990 00000028 F flt4Kind7Destroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34A9C0: class 4 kind 7: colour, scale, angle, then the cells
+0034a9c0 000001fc F flt4Kind7Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34ABC0: class 4 kind 7: the active cells as quads
+0034abc0 000000ac F flt4Kind7Draw source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34AC70: class 5 kind 1: full-screen colour
+0034ac70 00000130 F flt5Kind1Update source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B1A0: class 4 slot 0: a screen-filter instance of the effect's kind
+0034b1a0 0000017c F fltCreate4 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B320: class 4 slot 4: kind destroy, texture reference, instance
+0034b320 00000080 F fltDestroy4 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B3A0: class 4 slot 5: a copy of a filter instance
+0034b3a0 00000164 F fltClone4 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B600: class 4 slot 1: kind update, ++frame, queue on the filter layer
+0034b600 00000074 F fltUpdate4 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B6B0: class 5 slot 0: a screen-filter instance (class 5 kinds)
+0034b6b0 0000017c F fltCreate5 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B830: class 5 slot 4: kind destroy, texture reference, instance
+0034b830 00000080 F fltDestroy5 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34B8B0: class 5 slot 5: a copy of a filter instance
+0034b8b0 00000164 F fltClone5 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BB10: class 5 slot 1: kind update, ++frame, queue (sub_3211D0)
+0034bb10 00000074 F fltUpdate5 source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BBC0: a texture reference {type, count 1, texture} from block B
+0034bbc0 000000c0 F fltTexRefCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BC80: release a texture reference (destroy the texture unless managed)
+0034bc80 00000068 F fltTexRefRelease source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BD60: animation 0 of a model at time 0, flag 2 cleared
+0034bd60 00000084 F eplModelReset source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BDF0: a model with a fresh id of group 6, reset
+0034bdf0 000000f4 F eplModelCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BEF0: sub_3174E0(model)
+0034bef0 00000020 F eplModelDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BF10: a model of the same file (+212 / +214), reset
+0034bf10 000000a4 F eplModelCopy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34BFC0: class 26 / EPL kind 1 slot 0: the model object
+0034bfc0 00000194 F eplModelObjCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34C160: class 26 / EPL kind 1 slot 4: model, object
+0034c160 0000004c F eplModelObjDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34C1B0: class 26 / EPL kind 1 slot 5: a copy with its own model
+0034c1b0 000000a0 F eplModelObjClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34C670: EPL kind 2 slot 0: a model whose frames carry effect nodes
+0034c670 0000021c F eplNodeModelCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34C890: EPL kind 2 slot 4: model, nodes, object
+0034c890 000000ac F eplNodeModelDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34C9B0: EPL kind 2 slot 6: model and nodes like another object's
+0034c9b0 000001b0 F eplNodeModelCopy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34D510: EPL kind 3 slot 0: particle system, records and clump
+0034d510 00000154 F eplClumpPsysCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34D670: EPL kind 3 slot 4: particle system, records, clump, object
+0034d670 0000007c F eplClumpPsysDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34D6F0: EPL kind 3 slot 5: a copy of the object
+0034d6f0 0000011c F eplClumpPsysClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34D8A0: EPL kind 3: a new particle system and its 24-byte records
+0034d8a0 000000f0 F eplClumpPsysSetSystem source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34E4C0: EPL kind 4 slot 0: particle system, records and texture
+0034e4c0 00000150 F eplTexPsysCreate source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34E610: EPL kind 4 slot 4: texture, particle system, records, object
+0034e610 0000007c F eplTexPsysDestroy source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34E690: EPL kind 4 slot 5: a copy of the object
+0034e690 00000124 F eplTexPsysClone source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2
+# sub_34E820: EPL kind 4: a new particle system and its 28-byte records
+0034e820 000000f0 F eplTexPsysSetSystem source=phase5-fx2 verified=yes ev=INTEGRATION_LOG.md#fx2

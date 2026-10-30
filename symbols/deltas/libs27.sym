@@ -1,0 +1,9 @@
+# libs27.sym  Phase 5 slice delta (game/include/p3fes/game/libs27.h, game/src/lib/libs27.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own error texts: each of these
+#   ROFS functions reports its failures through sub_569730 with a text naming the function ("RFMAI_GetNumFiles"
+#   0x7C74B0, "RFMAI_GetDirInfG" 0x7C74C8, "ROFS_SwitchImgHn" 0x7C7540). Checked by tests/game/test_libs27.cpp.
+#   Proposals only: the code keeps the symbols/ names. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-libs27 verified=yes ev=<anchor>
+00569390 0000008c F RFMAI_GetNumFiles source=phase5-libs27 verified=yes ev=INTEGRATION_LOG.md#libs27
+00569420 000000f8 F RFMAI_GetDirInfG source=phase5-libs27 verified=yes ev=INTEGRATION_LOG.md#libs27
+005698b0 0000009c F ROFS_SwitchImgHn source=phase5-libs27 verified=yes ev=INTEGRATION_LOG.md#libs27

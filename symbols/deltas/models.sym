@@ -1,0 +1,297 @@
+# models.sym  Phase 5 slice delta (game/include/p3fes/game/models.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-21 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the replay snapshots' model records; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-models verified=yes: our own names, each from what the body does (the role on the comment line, the
+#   full role above the function in game/src/model/models.cpp). ev=<doc>#<section>. Not imported by the agent.
+# sub_311310: (u16 count) -> MdlAnimSet*: one RwMalloc(16 + 80 * count, 0x40000), zeroed: the 16-byte head {entries = set ...
+00311310 0000016c F mdlAnimSetCreate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_311480: (binding, model): per frame, an animation's effect binding (called by the frame update sub_317730): +24 the ...
+00311480 00000120 F mdlAnimFxUpdate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3115A0: (frame, MdlHierarchy** out) -> frame or 0: the child-frame callback of the set-up (sub_316970 walks the ...
+003115a0 0000006c F mdlFindHierarchyFrameCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_311610: (atomic, hierarchy) -> atomic: the per-atomic callback of the set-up: attaches `hierarchy` to the atomic's ...
+00311610 00000030 F mdlAtomicSetHierarchyCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_311640: (out, a, b; $f12 weight) -> 1: the node blend of two interpolators into a third: for every node i of `out` ...
+00311640 000000f0 F mdlInterpBlendNodesCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_312C70: (node matrix, key) : the key-apply callback sub_312D40 installs on the slot's interpolator (+60) for one ...
+00312c70 000000c8 F mdlBoneScaleKeyCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_312D40: (hierarchy, slot) : one hierarchy update of an animation slot with the bone-scale hook: when the hierarchy ...
+00312d40 00000138 F mdlSlotUpdateHierarchy source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313090: (interp, slot) -> interp: the end-of-animation callback (installed with sub_4B7010(interp, sub_313090, ...
+00313090 000001a0 F mdlAnimEndCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313230: (slot) : an animation slot's defaults (sub_316690, four per model): zeroed (156 bytes), done = 1, anim -1, ...
+00313230 00000090 F mdlAnimSlotInit source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3132C0: (slot) : the destroy half of a slot (sub_3174E0, four per model): the per-animation effect lists (+48: count ...
+003132c0 000001c4 F mdlAnimSlotRelease source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313BE0: (set) : drops a reference of the slot-0 alternative animation set (model +860; {entries*, u16 count +4, u16 ...
+00313be0 000000b4 F mdlAltAnimSetRelease source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313CA0: (alt = model +860 {set, current}, slot) : plays slot 0 through the alternative (0x320xxx) animations: ...
+00313ca0 000001b8 F mdlAltAnimSlotUpdate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313E60: (set) : drops a reference of the material-animation set (model +892; +0 entries (8 bytes {animation, u8 ...
+00313e60 000000dc F mdlMatAnimSetRelease source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313F40: (material, list) -> material: the per-material callback that collects a model's materials once each: a ...
+00313f40 00000098 F mdlMaterialListAddUniqueCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_313FE0: (atomic, {callback, data}) -> atomic: forwards a per-material callback to the atomic's geometry (+24) with ...
+00313fe0 00000040 F mdlAtomicForAllMaterialsCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_314020: (node, key) : the "step_" material keyframe callback (installed at interpolator +64 by sub_3143C0 / ...
+00314020 00000038 F mdlStepKeyApply source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_314060: (node, key) : the second "step_" keyframe callback (interpolator +68): the same plain copy of +8..+28.
+00314060 00000038 F mdlStepKeyBlend source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3140C0: (interp, rec = model +868) -> interp: a material-animation end callback: with a real current entry (index +4 ...
+003140c0 000000b0 F mdlMatAnimFreezeCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_314170: (interp, rec = model +868 or 0) -> interp: the "step_" materials' end callback: without a record, or with a ...
+00314170 00000140 F mdlMatAnimEndCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3142B0: (material) -> char* or 0: the material's user-data string named "name" (gp-25320): the first string element ...
+003142b0 0000010c F mdlMaterialNameString source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3143C0: (rec = model +868, clump) : material-animation set-up after loading (sub_316970 / the clone path ...
+003143c0 00000150 F mdlMatAnimSetup source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_314510: (atomic) -> atomic: per-atomic skin set-up: an unskinned geometry goes to sub_468DC0(atomic); a skinned one ...
+00314510 00000140 F mdlAtomicSetSkinTypeCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_314650: (atomic) -> atomic: like mdlManagerSetClumpPipelines without the atomic pipeline: a skinned geometry with 65 ...
+00314650 000000d4 F mdlAtomicSetBigSkinMatPipesCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_314730: (rec = model +868; $f12 time) : the material animations' time: with a set and its material list, both times ...
+00314730 00000120 F mdlMatAnimSetTime source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_315010: (frame, {out, id}) -> frame or 0: child-frame callback: the frame whose node id (sub_466720) is data +4 is ...
+00315010 00000078 F mdlFindFrameByIdCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_315090: (out matrix, helper table, u16 id, clump) -> 1 / 0: the helper `id` of a table {u16 count, entries* +4; ...
+00315090 00000138 F mdlHelperMatrixFromTable source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_315ED0: (atomic) -> atomic: the last per-atomic pass of the set-up: every material of the geometry goes through ...
+00315ed0 0000007c F mdlAtomicMaterialsSetupCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_315F50: (atomic, {rgba*, u16 flags}) -> atomic: the model colour on one atomic (sub_316320): geometry flags |= 0x40 ...
+00315f50 000003cc F mdlAtomicApplyColourCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316320: (clump, rgba*, u16 flags) : the model colour on every atomic: {rgba*, flags} in the frame (sp+24) and ...
+00316320 00000034 F mdlClumpApplyColour source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316360: (atomic, int* out) -> atomic or 0: stops at the first material whose "per3modelMatColor" alpha byte is ...
+00316360 000000ac F mdlAtomicFindTranslucentMatCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316410: (atomic) -> atomic: every material whose MatFX effect type has bit 1 set gets sub_469510(material, 1).
+00316410 000000a4 F mdlAtomicMatFxFlagCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3164C0: (clump) : sub_4916D0(clump, sub_316410, 0). Caller: the draw sub_315C20.
+003164c0 0000002c F mdlClumpMatFxFlag source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3164F0: (model, header) : the bone scale of the four slots from the model file's header (sub_319970): for each of ...
+003164f0 000000ec F mdlSlotsBoneScaleFromHeader source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3165E0: (atomic) -> atomic: every morph target's bounding sphere (geometry +92, 28-byte targets, count +24) keeps ...
+003165e0 000000ac F mdlAtomicDoubleBoundsCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316690: (u16 type, u16 id) -> MdlModel*: a new model record: RwMalloc(1072, 0x40000), zeroed; flags 0x118, colour ...
+00316690 00000274 F mdlModelCreate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316910: (u16 type, u16 id, u16 flagMask) -> MdlModel* or 0: the first model of gMdlLists[type] with that id -- and, ...
+00316910 00000060 F mdlModelFind source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316970: (model) : the set-up of a freshly loaded clump (sub_316F70 once the load finished): every atomic's bounds ...
+00316970 000001c4 F mdlModelSetupClump source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316B40: (u16 type, u16 id, path, flags) -> MdlModel*: a model loaded from a file: create (sub_316690), flags bit 0 ...
+00316b40 00000088 F mdlModelCreateFromFile source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316BD0: (u16 type, u16 id, data, size, flags) -> MdlModel*: the same with the file already in memory ({data, size} ...
+00316bd0 0000009c F mdlModelCreateFromMemory source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_316C70: (u16 type, u16 id, node, flags) -> MdlModel*: from a loaded H_Cdvd node: the packed kinds (sub_31D4F0: type ...
+00316c70 00000190 F mdlModelCreateFromArchive source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_317450: (src) -> MdlModel*: a second instance of the same kind and id: a ready source is copied at once (sub_3170C0) ...
+00317450 00000084 F mdlModelClone source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3174E0: (model) : the destroy path (31 callers): the clump (sub_491EA0); the four slots (sub_3132C0); the ...
+003174e0 000001e0 F mdlModelDestroy source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3176C0: (model) : the placement on the clump: ltm = root offset x placement (sub_4C2F30 into the frame), the clump's ...
+003176c0 0000006c F mdlModelApplyPlacement source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3182D0: (model, u16 slot, s16 anim, a3, flags) -> 1: starts animation `anim` on a slot when the slot has it ...
+003182d0 00000270 F mdlModelSetAnim source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318540: (model, u16 slot) -> s16: the slot's current animation, -1 when the slot has no animations.
+00318540 0000006c F mdlModelGetAnim source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3185B0: (model, u16 slot) -> 1 / 0: the slot has an animation set (slot 0: or the alternative set at +860).
+003185b0 0000006c F mdlModelHasAnimSet source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318620: (model, u16 slot, s16 anim) -> 1 / 0: the slot's set has a (non-zero) entry `anim`; slot 0 also accepts an ...
+00318620 000000bc F mdlModelHasAnim source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3186E0: (model, u16 slot, s16 anim) -> 1 / 0: the entry is the placeholder animation gMdlDummyAnim (0x9571D0).
+003186e0 00000090 F mdlModelIsDummyAnim source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318770: (model, u16 slot; $f12 frame) : the slot's time = frame x 1/30: a real current animation's interpolator (the ...
+00318770 00000100 F mdlModelSetAnimFrame source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318870: (model, u16 slot) -> $f0: the duration of the animation the slot's interpolator plays (hierarchy +32 -> ...
+00318870 00000094 F mdlModelGetCurAnimLength source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318910: (model, u16 slot, s16 anim) -> $f0: the animation's duration (entry animation +12) in frames; 0 without a ...
+00318910 0000007c F mdlModelGetAnimLength source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318990: (model, u16 slot) -> $f0: the slot's own time field (+12) in frames; 0 with no current animation.
+00318990 00000058 F mdlModelGetSlotFrame source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3189F0: (model, u16 slot; $f12 speed) : the slot's speed; slot 0 also the material animations' speed.
+003189f0 00000034 F mdlModelSetAnimSpeed source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318A30: (matrix, translation, combine) : [RwMatrixTranslate] on a model's matrix (callers pass the placement, ...
+00318a30 00000020 F mdlMatrixTranslate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318A50: (matrix, axis, combine; $f12 angle) : the rotation sub_4C31B0 on a model's matrix.
+00318a50 00000020 F mdlMatrixRotate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318A70: (matrix, transform, combine) : [RwMatrixTransform] on a model's matrix.
+00318a70 00000020 F mdlMatrixTransform source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318A90: (model, vec3* scale, combine) : remembers the scale (+128..+136) and applies it to the placement ...
+00318a90 00000038 F mdlModelSetScale source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318AD0: (model, u8 rgba[4]) : the model colour (+208..+211).
+00318ad0 00000028 F mdlModelSetColour source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318B00: (model) -> u8*: the address of the model colour (model + 208).
+00318b00 0000000c F mdlModelGetColour source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318B10: (RwMatrix*) : right (1,0,0), up (0,1,0), at (0,0,1), pos 0, flags |= 0x20003.
+00318b10 00000050 F mdlMatrixSetIdentity source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318B60: (model) -> RwMatrix*: the placement matrix, which is the record itself (offset 0); 80 callers.
+00318b60 0000000c F mdlModelGetPlacement source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318B70: (model) -> RwFrame*: the clump's frame (clump +4).
+00318b70 00000010 F mdlModelGetFrame source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318B80: (model) -> RpClump*.
+00318b80 0000000c F mdlModelGetClump source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318B90: (model) -> 1 updated / 0: with a real current animation on slot 0: slot 0's hierarchy matrices (sub_466EF0), ...
+00318b90 00000174 F mdlModelUpdateHierarchy source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318D10: (model, u16 helper, RwMatrix* out) -> 1 / 0: a helper frame's world matrix. With a helper table (+1008): its ...
+00318d10 000001b8 F mdlModelGetHelperMatrix source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318ED0: (model, u16 helper, vec3* out) -> 1 / 0: the position row of the helper's world matrix (built in the frame: ...
+00318ed0 000000ec F mdlModelGetHelperPos source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_318FC0: (model) -> the number of helpers: the table's count (u16 +0) or the frames tagged "per3HelperId" (sub_1A6C00).
+00318fc0 00000044 F mdlModelGetHelperCount source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319010: (model) : flags |= 0x1 (callers sub_19B2B0, sub_287B20).
+00319010 00000014 F mdlModelSetFlag1 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319030: (model) : flags &= ~0x1.
+00319030 00000014 F mdlModelClearFlag1 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319050: (model) : flags |= 0x20.
+00319050 00000014 F mdlModelSetFlag20 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319070: (model) : flags &= ~0x20.
+00319070 00000014 F mdlModelClearFlag20 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319090: (model; $f12) : slot 0's look-at speed.
+00319090 0000000c F mdlModelSetLookSpeed source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3190A0: (model; $f12 yaw, $f13 pitch) : slot 0's look-at limits (degrees).
+003190a0 00000010 F mdlModelSetLookLimits source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3190B0: (model, vec3* point) : look-at mode 0x40 (0x20 / 0x80 and 0x100 cleared) at the point.
+003190b0 00000044 F mdlModelLookAtPoint source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319100: (model, vec3* point) : look-at mode 0x20 (0x40 / 0x80 and 0x100 cleared) at the point.
+00319100 00000044 F mdlModelLookAtPoint2 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319150: (model; $f12, $f13) : look-at mode 0x80 (0x20 / 0x40 and 0x100 cleared) with the two angles as the target.
+00319150 00000034 F mdlModelLookAngles source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319190: (model) : look-at flags |= 0x100.
+00319190 00000014 F mdlModelLookRelease source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3191B0: (model) : look-at flags |= 0x200.
+003191b0 00000014 F mdlModelLookFlag200 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3191D0: (model) -> 1 when a look-at mode (0x1E0) is set.
+003191d0 00000014 F mdlModelIsLooking source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3191F0: (model, u16 flags) : slot 0's look-at flags.
+003191f0 0000000c F mdlModelSetLookFlags source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319200: (model) -> u16 look-at flags.
+00319200 0000000c F mdlModelGetLookFlags source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319210: (model, vec3*) : slot 0's look scale (caller sub_317730).
+00319210 00000020 F mdlModelSetLookScale source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319230: (model, u16 layer) : the model's layer (+1048) and that of every used child.
+00319230 00000064 F mdlModelSetLayer source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3192A0: (parent, u16 index, type, id, path, flags) : a child loaded from a file (as sub_316B40) in attachment ...
+003192a0 000000e4 F mdlModelAttachFromFile source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319390: (parent, u16 index, type, id, data, size, flags) : the same from memory (as sub_316BD0). Caller: sub_39E880.
+00319390 000000f8 F mdlModelAttachFromMemory source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319490: (parent, u16 index, type, id, flags) : the same by kind / id (as sub_316E00: a loaded twin is cloned, else ...
+00319490 0000015c F mdlModelAttachById source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3195F0: (parent, u16 index, src) : a clone of `src` (as sub_317450) as attachment `index`. Caller: sub_2EAA40.
+003195f0 000000d8 F mdlModelAttachClone source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3196D0: (model, u16 index, s32 helper) : the attachment's helper id.
+003196d0 00000020 F mdlModelSetAttachHelper source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3196F0: (model, u16 index) : destroys the child (sub_3174E0), clears the slot and its used bit.
+003196f0 00000074 F mdlModelDetach source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319770: (model, u16 index) -> 1 when there is no child or the child is ready (sub_316F70 steps its load).
+00319770 0000004c F mdlModelAttachReady source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3197C0: (model, RwMatrix*) : copies the matrix (64 bytes) into every child's parent matrix (+144).
+003197c0 00000080 F mdlModelSetChildrenParentMatrix source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319840: (model) : the load request: RwMalloc(80, 0x40000) -> model +1064, zeroed.
+00319840 00000054 F mdlLoadCreate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3198A0: (model, {data, size}*) : the request's file data and size.
+003198a0 0000001c F mdlLoadSetMemory source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_3198C0: (model, path) : requests the file through H_Cdvd (node -> request +68) and clears the stream (+0).
+003198c0 0000003c F mdlLoadRequestFile source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319900: (model, s32) : the request's "archive" flag (+76).
+00319900 00000010 F mdlLoadSetPacked source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_319910: (model) : frees the request's extra buffer (+12, when set) and the request; model +1064 = 0.
+00319910 0000005c F mdlLoadDestroy source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31B220: (model) -> 1 done / 0 not yet: the load state machine on the request (state u8 +72, jump table 0x7B9150, 6 ...
+0031b220 00000248 F mdlModelLoadStep source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31B470: () : clears the list heads gMdlLists (0x9571F0). Caller: kwlnInitMain.
+0031b470 00000030 F mdlManagerInit source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31B4A0: (char* out, u16 npc) : an NPC model's file name. First a story substitution: four rows {flag, npc, ...
+0031b4a0 000001d8 F mdlNpcModelPath source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31B680: (type, id, s32* character, s32* variant) -> 1 / 0: NPC (type 5) numbers 60000..60399 stand for party ...
+0031b680 00000194 F mdlPartyNpcId source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31BE80: (model) -> 1 / 0: an NPC model's weapon: a party-member NPC (sub_31B680) with a character and variant gets ...
+0031be80 00000178 F mdlModelAttachNpcWeapon source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31C000: (char* out, u16 npc) : the NPC path with party members resolved: a party-member number (sub_31B680) maps its ...
+0031c000 000001d0 F mdlNpcModelPathResolve source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31C7E0: (model) -> 1: requests the model's sound bank (sub_31E4D0(model + 1016, type, id)).
+0031c7e0 00000034 F mdlModelLoadSoundBank source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D4F0: (s16 type) -> 1 for the kinds 1 and 2 (stored as archives: model + sound bank), 0 otherwise.
+0031d4f0 0000003c F mdlIsPackedKind source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D530: (type, id, char* out) -> 1 for packed kinds: the model's file name (sub_31C820); the packed kinds 1 / 2 use ...
+0031d530 00000178 F mdlModelPath source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D6B0: () -> an empty effect list (a 4-byte head from RwMalloc).
+0031d6b0 0000004c F mdlFxListCreate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D700: (list*) -> a new list with a node per node of `list`, sharing their definitions (sub_31D900).
+0031d700 00000084 F mdlFxListClone source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D790: (list) : clears the list (sub_31DE30) and frees its head.
+0031d790 00000040 F mdlFxListDestroy source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D7D0: (list) : head = 0.
+0031d7d0 0000000c F mdlFxListInit source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D7E0: (list, data, size, u16 helper, flags) -> node: a new definition (RwMalloc(size + 16): data copied after the ...
+0031d7e0 00000114 F mdlFxListAddDef source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D900: (list, src node, u16 helper) -> node: a node sharing src's definition (its refs + 1) at the head of the list.
+0031d900 000000c0 F mdlFxListAddShared source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31D9C0: (list, model) : every live node (with an instance) is placed at its helper: the helper's world matrix ...
+0031d9c0 000002bc F mdlFxListPlace source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DC80: (list, layer) : draws every live node (sub_34FD70).
+0031dc80 0000005c F mdlFxListDraw source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DCE0: (list) : restarts every live node whose definition has flag bit 0 (sub_34FD10) -- the looping-animation ...
+0031dce0 00000060 F mdlFxListRestart source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DD40: (list, rgba*) : every live node's colour (sub_34FF90).
+0031dd40 0000005c F mdlFxListSetColour source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DDA0: (list, arg) : the setter sub_34FF70 on every live node.
+0031dda0 00000084 F mdlFxListSet source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DE30: (list) : stops the instances (sub_31DF80), then frees every node and every definition whose refs drop to 0; ...
+0031de30 000000a0 F mdlFxListClear source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DED0: (list) : (re)creates every node's instance: an existing one is destroyed first (and forgotten by its ...
+0031ded0 000000a4 F mdlFxListInstantiate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DF80: (list) : destroys every node's instance (sub_34FCF0; the definition forgets it when it was its first).
+0031df80 0000006c F mdlFxListStop source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31DFF0: (data, size) -> handle: an after-effect handle (8 bytes {blob*, instance}) over a refcounted copy of the ...
+0031dff0 000000b8 F mdlAfxCreate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E0B0: (handle*) -> a new handle on the same blob (refs + 1).
+0031e0b0 00000074 F mdlAfxClone source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E130: (handle) : destroys the instance (sub_1EE1D0), drops the blob (freed at 0) and frees the handle.
+0031e130 0000007c F mdlAfxDestroy source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E1B0: (handle, model) : the instance's update (sub_1EDA90).
+0031e1b0 0000002c F mdlAfxUpdate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E1E0: (handle) : the instance's draw (sub_1EDED0).
+0031e1e0 0000002c F mdlAfxDraw source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E210: (handle) : nullsub_10 on the instance (the looping restart).
+0031e210 0000002c F mdlAfxRestart source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E240: (handle) : the instance's second pass (sub_1EE230).
+0031e240 0000002c F mdlAfxDraw2 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E270: (handle, model) : instance = sub_1EDA00(blob data, model).
+0031e270 0000004c F mdlAfxStart source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E2C0: (handle) : destroys the instance, instance = 0.
+0031e2c0 0000003c F mdlAfxStop source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E300: (handle) -> the blob's data (**handle).
+0031e300 00000010 F mdlAfxData source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E310: (u16 type, u16 id) -> 3..5: the sound-bank slot of a model: three LRU rows at 0x957220 {u32 stamp, u16 type, ...
+0031e310 00000108 F mdlSoundBankSlot source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31E420: (s16 type, u16 id) -> 0 / 1: kind 1 (player) models from id 2 on with a flag in the table 0x69BA18 ({0, 0, ...
+0031e420 000000ac F mdlPlayerOutfitFlag source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31EBE0: (sound record) -> 1 ready / 0 not yet: the sound bank's load: no bank, an already loaded one (flags bit 0) ...
+0031ebe0 000002a0 F mdlSoundUpdateLoad source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31EE80: (dst record, src record) : shares src's bank (refs + 1) when it has one.
+0031ee80 00000024 F mdlSoundShare source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31EEB0: (record) : no bank, the trigger fields +12 / +28 / +30 = -1, +6 |= 0x20.
+0031eeb0 00000028 F mdlSoundInit source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31EEE0: (record) : drops the bank (refs - 1; at 0 its data is freed when the bank owns it (+12 == 1), then the bank).
+0031eee0 00000098 F mdlSoundRelease source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31F5C0: (record) : per frame: steps the bank load (sub_31EBE0); with a loaded bank, the delayed triggers count down: ...
+0031f5c0 00000110 F mdlSoundUpdate source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31F6D0: (record, a, b, c) : with a loaded, registered bank: sub_10A4E0(bank id, a, b, c). Caller: sub_2DD7D0.
+0031f6d0 00000064 F mdlSoundPlay source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31F740: (curve; $f12 t) -> the key index: binary search over the curve {count +0, key size +8, keys* +12} for the ...
+0031f740 00000060 F mdlCurveFindKey source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31F7A0: (curve; $f12 t) -> &{t, value} (0x7CE530): linear interpolation between the bracketing 8-byte keys {time, ...
+0031f7a0 000000cc F mdlCurveEvalScalar source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31F870: (curve a, curve b; $f12 ta, $f13 tb, $f14 weight) -> &0x7CE538: both curves evaluated, then va + (vb - va) x ...
+0031f870 00000154 F mdlCurveEvalScalarBlend source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31F9D0: (curve, rgba*; $f12 t, $f13 weight) -> &{t, value}: the curve's value blended towards 1 - alpha / 255 by the ...
+0031f9d0 00000114 F mdlCurveEvalScalarFade source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31FAF0: (param, material) : the material's "per3modelMatColor" user colour with alpha = 255 x (1 - param +4) ...
+0031faf0 000000d8 F mdlMaterialSetAlphaCB source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31FBD0: (curve; $f12 t) -> &{t, x, y, z} (0x957240): the vec3 curve (16-byte keys {time, x, y, z}) interpolated.
+0031fbd0 0000012c F mdlCurveEvalVec3 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31FD00: (curve a, curve b; $f12, $f13, $f14 weight) -> &0x957250: both vec3 curves, blended component-wise.
+0031fd00 000000d8 F mdlCurveEvalVec3Blend source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31FDE0: (curve, rgb*; $f12 t, $f13 weight) -> &{t, x, y, z}: the vec3 curve blended towards the colour / 255.
+0031fde0 0000015c F mdlCurveEvalVec3Fade source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models
+# sub_31FF40: ({t, r, g, b}*, out) : out +4..+6 = 255 x r / g / b, through the unsigned float -> int path (values >= 2^31 ...
+0031ff40 00000120 F mdlColourFromVec3 source=phase5-models verified=yes ev=INTEGRATION_LOG.md#models

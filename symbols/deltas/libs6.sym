@@ -1,0 +1,33 @@
+# libs6.sym  Phase 5 slice delta (game/include/p3fes/game/libs6.h); SLUS_216.21
+# generated 2026-10-28 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint, the
+#   pair tests' host checks; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-libs6
+#   verified=yes: the SDK name each body is (public PS2 SDK / ps2sdk API names, ADR-0009 rule 4). Not imported by the agent.
+# sub_5063C8: disables DMAC channel 5 (SIF0), removes its handler, clears the command layer's initialised flag
+005063c8 00000034 F sceSifExitCmd source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# sceSifSendCmd (0x5064A8) in symbols/: zeroes a 12-byte handler slot (user table, or the system table for bit 31);
+#   sub_506430 beside it fills the same slots (function, argument, $gp): the add / remove pair
+005064a8 0000004c F sceSifRemoveCmdHandler source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# sub_506630: _sceSifSendCmd (0x5064F8) with mode 0; its six callers are the RPC senders (InitCmd, InitRpc, GetOtherData,
+#   BindRpc, CallRpc, ExecRequest)
+00506630 0000003c F sceSifSendCmd source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# sceSifWriteBackDCache (0x506670) in symbols/: _sceSifSendCmd with mode 1; its callers are the RPC interrupt handlers
+00506670 0000003c F isceSifSendCmd source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# sub_5067F8: cache 0x18 (hit write-back invalidate D) over every 64-byte line of [$a0, $a0 + $a1); 21 callers pass
+#   their send buffers before a transfer
+005067f8 000000ac F sceSifWriteBackDCache source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# sub_50DE08: removes the timer 2 interrupt handler (INTC 11) and disables it when the timer is set up and no counter is
+#   in use (0x780B58)
+0050de08 000000b8 F EndTimer source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# The thread-context timer counter API: each wraps its interrupt-context form (DIntr / EIntr around it). The inner
+#   bodies (sub_50E5D8, sub_50E690, sub_50E7A0, sub_50E850, sub_50E950, sub_50EB50, sub_50EBE8, sub_50ECA8) are the
+#   i-forms (iAllocTimerCounter, ...); libs1.sym proposed the unprefixed names for four of them.
+0050e648 00000048 F AllocTimerCounter source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050e750 0000004c F FreeTimerCounter source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050e7f0 0000005c F GetTimerUsedUnusedCounters source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050e900 0000004c F StartTimerCounter source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050ea30 0000004c F StopTimerCounter source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+# sub_50EA80: sets a counter's accumulated time, returns the old one (no inner form)
+0050ea80 000000cc F SetTimerCount source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050eb98 0000004c F GetTimerBaseTime source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050ec58 0000004c F GetTimerCount source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6
+0050edb8 0000007c F SetTimerHandler source=phase5-libs6 verified=yes ev=INTEGRATION_LOG.md#libs6

@@ -1,0 +1,49 @@
+# Function starts IDA auto-analysis missed, to be created on the master database by create_funcs.py.
+# Format: <hex addr> <short reason>   — evidence lives in the cited doc.
+# Source: docs/ANALYSIS/06_ghidra_crosscheck.md (Ghidra InspectBoundaries: called addresses with no IDA function)
+0x4501B0 jal target from sub_44BEB0 @0x44BF24; Ghidra body 2,432 B size=0x980
+0x241910 jal target from bpRoot_UpdateBattlePanelDrawTask @0x1FDB90; Ghidra body 2,380 B size=0x94C
+0x4FBF48 jal target from sub_4FC3A8 / sub_4FC168; Ghidra body 540 B
+0x46B8E0 jal target from sub_472130 / sub_472170 / sub_4721B0; Ghidra body 452 B
+0x5244C0 jal target from sub_53AE60 / sub_53AFD8 / sub_564BA0; Ghidra body 428 B
+0x5757B0 called address with no IDA function (06 §Phase-3 checks)
+0x4C5960 called address with no IDA function (06 §Phase-3 checks)
+0x54E888 called address with no IDA function (06 §Phase-3 checks)
+0x49EE70 called address with no IDA function (06 §Phase-3 checks)
+0x49E830 called address with no IDA function (06 §Phase-3 checks)
+0x4FDA58 called address with no IDA function (06 §Phase-3 checks)
+# (0x4FDA58 stays _doMC's second chunk, entered only by `j` at 0x4FC0D8/0x4FC11C, so create_funcs reports it inside
+# _doMC. code_manual.txt extends that chunk to 0x4FDB18 and absorbs nullsub_130 at 0x4FDB10 (2026-10-19): do not list
+# 0x4FDB10 here -- it is _doMC's `jr ra`, reached by falling through the inline 0x00FF00FF constant.)
+# Source: docs/ANALYSIS/13_overlays.md — a function start IDA merged into the preceding libmpeg function
+0x56F8F8 function start merged into m2v_SetErrFunc (topic 13 side-finding) split=yes
+# Source: docs/ANALYSIS/01_functions_summary.md (crt0 table): exit stub outside `start`
+0x100210 exit stub: move a0,v0 ; j 0x51F6A0 (exit_candidate) — reached from start after main returns
+# Source: docs/INTEGRATION_LOG.md (Milestone-1 integration, 2026-10-19) — function-pointer targets in code gaps no chunk
+# covers; the recompiled program stops in rt::lookup_miss on the first one (0x45F490 from sub_4C64B0 @0x4C64E0, under
+# RwEngineStart). Evidence: a `lui/addiu` pair building the address in code, or a vtable word whose neighbours are
+# function starts (data VA given).
+0x2BE610 vtable word @0x696EE0 (next: sub_2BE620, sub_2BE720)
+0x31F7A0 vtable word @0x69BB10 (next: sub_31F870, sub_31F9D0, sub_31FAF0)
+0x338CE0 vtable word @0x69C698 (prev sub_338AC0; next sub_338D60, sub_338E50)
+0x343790 vtable word @0x69C9A8 (prev sub_343410; next sub_343B60, sub_343D10)
+0x344AA0 vtable word @0x69C9C4 (prev sub_344720; next sub_344EB0, sub_345080)
+0x3A9C00 vtable word @0x6A1C50 (next: itfPnlSetColorType1, itfPnlSetColorType2, itfPnlSetColorType3)
+0x424470 table word @0x7B98A0 ({fn, n} pairs with sub_424370, sub_4243D0, sub_1C2ED0)
+0x424480 table word @0x7B98A8 ({fn, n} pairs, as 0x424470)
+0x45F490 lui/addiu @0x45F7D4 (callback; RwEngineStart -> sub_4C64B0 jalr @0x4C64E0 reaches it)
+0x45F530 lui/addiu @0x45F84C, @0x45F8B4 (callback; addu/sw/jr ra/move: 4 words, IDA split off 0x45F538) size=0x10
+0x46A0F0 lui/addiu @0x46A5CC (callback)
+0x48EA90 lui/addiu @0x48F064, @0x48F0C8, @0x48F13C, ... (callback)
+0x4A6EB0 lui/addiu @0x4A917C (callback; frame 320, epilogue jr ra @0x4A7614; IDA data items inside) size=0x770 code=yes
+0x4ED260 table word @0x77F1BC (prev addCopyVU1PrimLineList, addCopyVU1PrimPolyLine; next addCopyVU1PrimTriStrip, addCopyVU1PrimTriFan) size=0x310 code=yes
+0x4EE180 table word @0x77F1DC (prev addCopyVU1IndPrimLineList, addCopyVU1IndPrimPolyLine; next 0x4EE4B0, addCopyVU1IndPrimTriFan) size=0x330 code=yes
+0x4EE4B0 table word @0x77F1E0 (prev 0x4EE180; next addCopyVU1IndPrimTriFan) size=0x360 code=yes
+# Same pass: functions IDA ended two words early, before their `jr $ra` + delay slot (the emitter's chunk end falls into
+# no function -> rt::unreachable; the first hit is sub_4A4D50 from sub_4C64B0 under kwlnInitRenderer). Extended with size=.
+0x49B290 truncated before jr ra @0x49B2C0 (+ sw a1,16(a0)) size=0x38
+0x4A4D50 truncated before jr ra @0x4A4D58 (+ move v0,a0); same body as sub_45F530 size=0x10
+0x5471F0 truncated before jr ra @0x5471F4 (+ li v0,1) size=0xC
+0x589BD0 truncated before jr ra @0x589BD8 (+ move v0,zero) size=0x10
+0x59EAA8 truncated before jr ra @0x59EAC8 (+ sw a1,0(a0)) size=0x28
+0x59EAD0 truncated before jr ra @0x59EAF0 (+ sw a1,0(a0)) size=0x28

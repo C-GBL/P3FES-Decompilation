@@ -1,0 +1,10 @@
+# rofs_toupper.sym  Phase 5 file-system layer, one-row delta (docs/ANALYSIS/11_file_io.md section 1 step 4); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# written 2026-10-20 by hand from the master's export (symbols/p3fes.sym @ 7b80687: 00569848 00000068 F sub_569848). Rows: <addr8> <size8> <F|D> <name> <tags>
+#   source=tge-pr4 verified=yes  community name whose behaviour was verified from the instructions (promotion, ADR-0009 S2b);
+#   the master already carried it as an unverified tge-pr4 hint (exported as sub_569848), so the row is a promotion, not a new name.
+#   ev= points into docs/ANALYSIS/11_file_io.md
+# Evidence: rfdir_nameBinarySearch 0x56C320 calls 0x569848 with its 512-byte query buffer right after the strcpy of the
+# query name (11_file_io.md section 1 step 4: "query uppercased (RFMAI_ToUpperStr 0x569848)"); the body is strlen + an
+# in-place a-z -> A-Z loop over len+1 bytes, null pointer ignored. Hand-decompiled in game/src/cri/rofs_dir.cpp.
+00569848 00000068 F RFMAI_ToUpperStr source=tge-pr4 verified=yes ev=11_file_io.md#1
+# comment 00569848 RFMAI_ToUpperStr (docs/ANALYSIS/11_file_io.md section 1 step 4): uppercases an ASCII string in place (a-z only, len+1 bytes, null pointer ignored). Called from rfdir_nameBinarySearch 0x56C320 with the query buffer before the strcmp against the #DirLst# entries.

@@ -1,0 +1,32 @@
+{"records": [
+  {"name": "TweenRecord", "size": 68, "anchors": [{"how": "param", "fn": "0x18B700", "index": 0}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "s32", "name": "active"},
+    {"off": 8, "width": 4, "type": "s32", "name": "kind"},
+    {"off": 24, "width": 4, "type": "s32", "name": "frame"},
+    {"off": 28, "width": 4, "type": "s32", "name": "last_frame"},
+    {"off": 32, "width": 4, "type": "s32", "name": "frame_limit"}
+   ],
+   "evidence": "sub_18B700 (finalB): +4 tested for 0 (inactive), +24 stepped while < +32, compared with +28, +8 == 0 / 1 selects sub_18BB20 / sub_18BB80"},
+  {"name": "AnimSlot", "size": 80, "anchors": [{"how": "param", "fn": "0x313490", "index": 0}, {"how": "param", "fn": "0x313490", "index": 1}],
+   "fields": [
+    {"off": 0, "width": 2, "type": "u16", "name": "flags"},
+    {"off": 2, "width": 1, "type": "u8", "name": "kind"},
+    {"off": 4, "width": 2, "type": "s16", "name": "node"},
+    {"off": 8, "width": 4, "type": "f32", "name": "rate"},
+    {"off": 12, "width": 4, "type": "f32", "name": "time"},
+    {"off": 16, "width": 2, "type": "s16", "name": "prev_node"},
+    {"off": 24, "width": 2, "type": "u16", "name": "blend_steps"},
+    {"off": 28, "width": 4, "type": "f32", "name": "blend"},
+    {"off": 32, "width": 4, "type": "ptr", "name": "clump"},
+    {"off": 44, "width": 4, "type": "ptr", "name": "node_table"},
+    {"off": 76, "width": 2, "type": "u16", "name": "anim_flags"}
+   ],
+   "evidence": "sub_313490 (finalB): +4 s16 node index (< 0 idle), +2 == 1 hierarchy-only, speed = *0x7CADD4 * +8, +12 += speed once +28 >= 1.0, +28 += 1 / +24, +32 -> +32 the hierarchy, +44 the table (+4 count, 80-byte records with a pointer at +64), +76 & 0x1E0 / 0x4000"},
+  {"name": "FusionListWork", "size": 148, "anchors": [{"how": "param", "fn": "0x343B60", "index": 0}, {"how": "param", "fn": "0x343860", "index": 1}],
+   "fields": [
+    {"off": 56, "width": 2, "type": "u16", "name": "count"},
+    {"off": 140, "width": 2, "type": "u16", "name": "rows"}
+   ],
+   "evidence": "sub_343B60 (finalB): the block is 48 * +56 + 12 bytes; +140 raised to at least 3; both passed to sub_323FB0 as u16"}
+]}

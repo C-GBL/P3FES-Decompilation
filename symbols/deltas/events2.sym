@@ -1,0 +1,281 @@
+# events2.sym  Phase 5 slice delta (game/include/p3fes/game/events2.h, game/src/event/events2.cpp); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-22 by hand from the instructions (p3fes_handgen bodies and the Hex-Rays reference as a reading hint; no IDA
+#   database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-events2 verified=yes: our own names, each from what the
+#   body does (its role in events2.cpp; rules checked by tests/game/test_events2.cpp on built records and on the live event in
+#   extracted/_ours/events_dorm_2100 / 2300) and its callers. ev=<doc>#<section>. Not imported by the agent (one master owner at a time).
+# sub_361980: (work): deletes the key under the editor cursor (the (kEdKeyScroll + kEdKeyIndex)-th key of kEdUnit; asserted, line 1013): unit types 18 / 20 / 21 / 2 ...
+00361980 000001D8 F evtEdDeleteKey source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_362390: (work): the debug pad's timeline seek inside sub_36E690: L1 / R1 (0x7E0952 bits 2 / 1) jump to the previous / next message key (sub_362290 / sub_36231 ...
+00362390 00000244 F evtDebugSeek source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3625E0: (): when the debug camera is selected (sub_38A0B0 == 1), moves the free camera model 0x1E59 with the analog sticks (pad bytes 0x7E095E..0x7E0961; dead ...
+003625E0 0000030C F evtDebugCameraPad source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3628F0: (): the editor camera's pad control (sub_373700): the same stick motion as sub_3625E0 plus rotation and zoom of the selected camera model through the  ...
+003628F0 00000630 F evtEdCameraPad source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_366EA0: editor menu action 15 (result, previous menu, work) of the action table 0x69DE40: nothing; returns 0.
+00366EA0 0000000C F evtEdActNone source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_366EB0: editor menu action 16: writes the camera-key edit fields (work +364 and +408..+436) into the selected key (+20, +32..+42) and pops the menu (sub_36F64 ...
+00366EB0 000000D4 F evtEdActCameraKey source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_366F90: editor menu action 17: sets the editor unit's camera mode (unit +34: 0 none, 1 fixed, 2 key-driven, 3 follow) from the list choice (+264 + +272); for  ...
+00366F90 00000154 F evtEdActCameraMode source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3670F0: editor menu action 23: selected key +20 = work +364; pops the menu.
+003670F0 00000094 F evtEdActKeyValue20 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367190: editor menu action 24: selected key +20 = work +412 (word), +24 = work +416 (half); pops the menu.
+00367190 0000009C F evtEdActKeyValue20b source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367230: editor menu action 25: for a character / field-object unit (types 1 / 48; others assert, line 6819): with sub-choice 3 copies the key's colour bytes ( ...
+00367230 00000160 F evtEdActModelKey source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367390: editor menu action 14: copies the condition edit fields (work +1924..+1930) into the selected key's condition (+8 flag, +10 value, +12 type, +14 bank) ...
+00367390 000000AC F evtEdActCondition source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367440: editor menu action 11: looks up the selected key (result unused) and pops the menu.
+00367440 0000006C F evtEdActPop source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3674B0: editor menu action 26 (1,388 bytes): the position editor -- applies the edited position / rotation of the selected actor key, restores the field-tool  ...
+003674B0 0000056C F evtEdActPosition source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367A20: editor menu action 27: for a path-move key creates its path record when missing (sub_38D790), resets the path (sub_37CF50), opens the path or position ...
+00367A20 00000288 F evtEdActPathKey source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367CB0: editor menu action 28: copies the 304-byte path buffer 0x958700 into the selected key's path (+64) when it has one; pops the menu.
+00367CB0 000000B4 F evtEdActPathPaste source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367D70: editor menu action 29: key +21 = work +408, +20 = work +412 (bytes); pops the menu.
+00367D70 00000088 F evtEdActKeyBytes20 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367E00: editor menu action 30: key +28 / +30 (halves) = work +408 / +412, +32 = +416 (byte), +20..+26 = +420..+432, +34 = +436; pops the menu.
+00367E00 000000B8 F evtEdActKeyMove source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_367EC0: editor menu action 31: key +20 / +21 = work +408 / +412 (a non-zero mode clears +24..+32); for mode 0 (not sub-choice 2 with mode 0) opens the field t ...
+00367EC0 0000015C F evtEdActKeyDirect source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368020: editor menu action 32: key +16..+19 (bytes) and +24..+30 (halves) from work +408..+436; pops the menu.
+00368020 000000B8 F evtEdActKeyParams16 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3680E0: editor menu action 33: for a custom-event key (unit type 41) of kinds 0 / 3 / 4 / 5 opens the resource list (menu 10) on sub-choice 1; for kinds 0 / 5 ...
+003680E0 0000020C F evtEdActCustomPath source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3682F0: editor menu action 34: key +16..+26 (six halves) = work +408..+428; pops the menu.
+003682F0 000000A8 F evtEdActKeyHalves16 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3683A0: editor menu action 35: key +20..+22 (bytes) = work +408..+416, +24 (word) = +420; pops the menu.
+003683A0 00000098 F evtEdActKeyBytes20c source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368440: editor menu action 36: key +16 / +18 (halves) = work +408 / +412; pops the menu.
+00368440 00000088 F evtEdActKeyHalves16b source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3684D0: editor menu action 37: on sub-choice 6 opens the resource list (menu 10, 38, 13); else key +20 / +21 / +24..+27 (bytes) = work +408..+428; pops the me ...
+003684D0 000000E8 F evtEdActKeyAttach source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3685C0: editor menu action 38: key +16 / +20..+22 (bytes) and +24..+30 (halves) = work +408..+436; pops the menu.
+003685C0 000000B8 F evtEdActKeyParams16b source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368680: editor menu action 39: key +16 / +18 (halves) = work +408 / +412; pops the menu.
+00368680 00000088 F evtEdActKeyHalves16c source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368710: editor menu action 40: for a camera-model unit (type 33) key +48 = work +408 (byte); pops the menu.
+00368710 00000098 F evtEdActCameraModelKey source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3687B0: editor menu action 41: key +20 (half) = work +408; pops the menu.
+003687B0 00000080 F evtEdActKeyHalf20 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368830: editor menu action 42: key +20 / +21 (bytes), +22..+26 (halves) = work +408..+424; pops the menu.
+00368830 000000A0 F evtEdActKeyParams20 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3688D0: editor menu action 43: on sub-choice 4 opens the resource list (menu 10, 38, 13); else key +20..+26, +30, +32 (halves) and +36 (byte) = work +408..+43 ...
+003688D0 000000F0 F evtEdActKeyPresent source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3689C0: editor menu action 44: looks up the selected key (result unused) and pops the menu.
+003689C0 0000006C F evtEdActPop2 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368A30: editor menu action 45: on sub-choice 1 opens the resource list (menu 10, 13, 7); else key +20 / +24 (bytes) = work +408 / +416; pops the menu.
+00368A30 000000C8 F evtEdActKeyCard source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368B00: editor menu action 46: for a character / field-object unit (types 48 / 1) copies the colour edit fields (work +440..+452) into the key's colour bytes  ...
+00368B00 00000108 F evtEdActKeyColour source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368C10: editor menu action 47: key +16..+19 (bytes) = work +408..+420; pops the menu.
+00368C10 00000098 F evtEdActKeyBytes16 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368CB0: editor menu action 13: message key +16 (half) = work +364, +21 / +22 (bytes) = +408 / +412; a non-zero branch nibble (+16 >> 12) clears +18. Pops the  ...
+00368CB0 000000BC F evtEdActMessageKey source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368D70: editor menu action 9: event load / save. With the editor's event numbers (0x7CCA68 / 0x7CCA6C -> kMajor / kMinor, sub_386E20 / sub_386E40) writes the  ...
+00368D70 000001B0 F evtEdActLoadSave source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_368F20: editor menu action 10: the resource list's result -- the chosen model (counted along the stage's class lists, sub_3B5D00 / sub_3B5430; class = work +1 ...
+00368F20 000003F8 F evtEdActResource source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_369320: editor menu action 7 / 8: the numeric editor's result -- work +364 (int) / +388 (float) go into the key field selected by the column table 0x69E1A2 (f ...
+00369320 0000057C F evtEdActValue source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3698A0: editor menu action 6: column kind 15 -> key length (+2); kind 9 -> the per-type frame field (+16 or +18); kind 0 -> the key frame (+0 = work +364 - un ...
+003698A0 00000180 F evtEdActKeyFrame source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_369A20: editor menu action 5 (9,188 bytes): the key edit menu -- adds a key at the current frame (sub_361350), deletes ("DELETE FRAME.OK?"), and for the chose ...
+00369A20 000023E4 F evtEdActKeyMenu source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_36BE10: editor menu action 4: "enter objlist" -- opens the object list (menu 18, 11). Returns 0.
+0036BE10 00000044 F evtEdActObjList source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_36BE60: editor menu action 2 (3,532 bytes): the list choice's result (work +280) -- for menu 5 written into the selected key's mode byte by unit type, resetti ...
+0036BE60 00000DCC F evtEdActChoice source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_36CC30: editor menu action 1: the event settings menu -- 0..2 load / save (menu 9), 3 / 4 "FRAME SET.OK?", 5 / 6 the end / start frame (numeric editor), 7 the ...
+0036CC30 000003F4 F evtEdActSettings source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_36D5F0: (process step; the work from dds3GetProcessWorkData): the event editor. Draws the overlay (sub_385B20, sub_362FF0, sub_395910); with kFlagPmWait start ...
+0036D5F0 00000414 F evtStepEditor source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_36E2F0: (process step, kFlag10000): (re)loads the extra NPC models of the event, one by one (jump table 0x7BA650, state at work +2272): 0 stop the effect set  ...
+0036E2F0 00000398 F evtStepNpcReload source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_36F680: (scroll*, cursor*, count, visible, ..., up mask, down mask): the editor lists' cursor: moves the cursor (and the scroll window of `visible` rows) by t ...
+0036F680 00000278 F evtEdListCursor source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_385990: (work, x, y, w, h): shows the next of the editor's 7 H_Cursor frames (kCursorShown, asserted < 7, line 11255) at (x, y) with the rectangle (0, 0, w, h ...
+00385990 00000190 F evtEdShowCursor source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_385BD0: (work, parent): opens a debug list box ("ksk list box", sub_1A3AE0 / sub_1A3DC0 with the label table 0x6A0350, 5 values) on work +408..+424; clears wo ...
+00385BD0 000000F4 F evtEdOpenToolA source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_385CD0: (work, parent): a list box (table 0x6A03xx) with integer and float values from the edit fields (sub_1A41B0 / sub_1A42F0); returns the box.
+00385CD0 00000150 F evtEdOpenToolB source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_385E20: (work): the list box of the event's field position (settings item 7): four values from work +408..+420; returns the box.
+00385E20 000000D8 F evtEdOpenFieldPosTool source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_385F00: (work): the list box of settings item 9; returns the box.
+00385F00 00000088 F evtEdOpenFieldTool9 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_385F90: (work, parent): a list box of the key menu (values from the edit fields); returns the box.
+00385F90 000000C8 F evtEdOpenToolC source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386060: (work, parent): a list box of the key menu; returns the box.
+00386060 000000B0 F evtEdOpenToolD source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386130: (work, ...): a list box opened by the path and key menus; returns the box.
+00386130 000000D8 F evtEdOpenToolE source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386230: (work, pos*, rot*): the position list box of action 31 on the actor's position / rotation; returns the box.
+00386230 000000D8 F evtEdOpenPosTool source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386310: (work): a small list box of the key menu; returns the box.
+00386310 00000078 F evtEdOpenToolF source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3863C0: (): the selected row (0 / 1) of the list box in 0x7CE600 (sub_1A4510); -1 when neither.
+003863C0 0000006C F evtEdToolSelection source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386430: (work, resId, value): the model chooser box (work +364 = 10; the label table 0x6A0730): collects up to 30 model ids from the class-3 and class-1 model ...
+00386430 000001B8 F evtEdOpenModelTool source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3865F0: (work): settings item 10's list box (work +364 = 11); returns the box.
+003865F0 00000090 F evtEdOpenToolSettings10 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386680: (work, a, b, c, d): a four-value list box (work +364 = 13, table 0x6A07E0); returns the box.
+00386680 000000F8 F evtEdOpenTool4 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386780: (work, a, b, c): a three-value list box (work +364 = 14); returns the box.
+00386780 000000D8 F evtEdOpenTool3a source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386860: (work, a, b, c): a three-value list box (work +364 = 15); returns the box.
+00386860 000000D8 F evtEdOpenTool3b source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386940: (work, a, $f12): an int + float list box (work +364 = 16); returns the box.
+00386940 000000B8 F evtEdOpenToolIntFloat source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386A00: (work, on): settings item 13's yes / no list box (work +364 = 17); returns the box.
+00386A00 00000098 F evtEdOpenToolSettings13 source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386D50: (work): the metrics overlay's memory line: sums the 13 per-class counters (0x7CDE90.., sub_386C40 / sub_386CD0's table), "TOTAL(%3.2fM)", and keeps th ...
+00386D50 000000B8 F evtDrawMemoryTotal source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386E50: (): the polygon-movie debug draw of the stage's models (sub_3962C0): with a stage (sub_3B5D00) sets five RW render states and draws a bounding marker  ...
+00386E50 0000011C F evtDrawSceneModels source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_386F70: (pos*, size*, rgba*, $f12): draws a 2D quad through RwIm2D (eight render-state calls through pfn_RwRenderStateSet; sub_198590 for the camera); the car ...
+00386F70 00000848 F evtDrawQuadA source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3877C0: (...): a textured / rotated 2D quad of the card effect (sub_39FBD0).
+003877C0 00000838 F evtDrawQuadB source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_388000: (pos*, size*, uv*, ..., rgba*, ...): the textured 2D quad of the card effect, the game-over event and the polygon movie (sub_39D1C0 / sub_39FFC0 / sub ...
+00388000 00000A38 F evtDrawQuadC source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_388A40: (pos*, size*, rgba*, $f12): the polygon movie's debug frame quad (sub_395E20).
+00388A40 000003A8 F evtDrawFrameQuad source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_388DF0: (count, weights*): the random-jump unit's pick: count < 11 (asserted, line 1069); builds the ranges [sum, sum + w - 1] in 0x9589E0 (-1 for weight 0),  ...
+00388DF0 000001F4 F evtRandomJumpPick source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3890E0: (work): before an edited event plays (load state 16, not in play mode): frees the old backups (sub_388FF0), counts the models of classes 1 / 3 / 5 / 6 ...
+003890E0 0000070C F evtBackupResources source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3897F0: (work): writes the kResources backups back into the live models ("resrc data restore=%d", "resBackup npc ..." for characters, re-placing them with sub ...
+003897F0 00000360 F evtRestoreResources source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_389B50: (unit): "copy" in the key list: for a character / field-object unit (types 1 / 48) copies its keys (84 bytes each) into a fresh buffer 0x9589CC (count ...
+00389B50 0000022C F evtEdCopyUnitKeys source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_389D80: (work, unit): "paste": re-creates the copied keys on the unit (sub_361350), keeping each new key's links and a fresh path record (sub_38D790).
+00389D80 000001C0 F evtEdPasteUnitKeys source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38A260: (x, y, colour, format, ...): the editor's text line: vsprintf into a stack buffer and draw it with the debug font (sub_1050E0); called by every mt_evt ...
+0038A260 00000218 F evtEdPrintf source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38A7C0: (pos*, dir*): the editor camera's target offset (sub_198590, sub_4CB2F0 / sub_4C69F0 on two zeroed 12-byte vectors).
+0038A7C0 00000140 F evtEdCameraOffset source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38A920: (table, model*, i): stores model state into the 112-byte backup row i by the model kind (top 6 bits of its resource id): kind 3 -- position, rotation  ...
+0038A920 000001DC F evtEdBackupModel source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38AB00: (mode, work): backs up the models a key-menu tool may move (mode 1: classes 3 / 1 / 12, 2: classes 3 / 1, 3: one) into a fresh table (0x7CE610: count, ...
+0038AB00 0000046C F evtEdBackupModels source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38AF70: (row*): writes one backup row back into its model (sub_3B5D10).
+0038AF70 000001C8 F evtEdRestoreModel source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38B140: (table): restores every backup row (sub_38AF70) and the camera frames.
+0038B140 0000017C F evtEdRestoreModels source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38B2C0: (row*, pos*, rot*, matrix*, ...): applies a transformed position / rotation to a backed-up model (kind 3) through sub_38B600 and the RW frame helpers.
+0038B2C0 00000288 F evtEdApplyModelOffset source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38B550: (table, pos*, rot*, matrix*): sub_38B2C0 for every backup row.
+0038B550 000000A4 F evtEdApplyModelOffsets source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38B600: (out*, matrix*): transforms the eight 4-word rows of a backup by the matrix (sub_4C31B0, constants 0x6A2A60 / 0x6A2A70).
+0038B600 000000DC F evtEdTransformRow source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38B6E0: (work, delta, from): inserts (delta > 0) or removes frames at `from`: kEndFrame / kFrameCount move (a negative result becomes 10), kFrame is clamped,  ...
+0038B6E0 00000280 F evtEdShiftFrames source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38B960: (work, from, delta): moves the frame-valued key parameters (column kind 9 of table 0x69E1A0: jump targets, waits) at or after `from` by `delta`; a bad ...
+0038B960 0000030C F evtEdShiftFrameParams source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38BC70: (work, from, delta): the same for the jump units' target frames (types 34 / 38 / 40 / 42 .., jump table 0x7BAC50), clamped to [0, kFrameCount - 1].
+0038BC70 000007EC F evtEdShiftJumpTargets source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38C540: (?, unit, frame, matrix*, fov*, roll*): the camera of a camera unit at a frame: the current and the next key (sub_38C460); no key -> the default camer ...
+0038C540 000002F0 F evtCameraKeyAt source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38C830: (work, frame): after a seek: for each of the 10 branch slots, if no message key of the message unit (type 4) up to `frame` that fires (its condition k ...
+0038C830 000001D0 F evtApplyMessageCutFlags source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38DAD0: (...) (2,960 bytes; mt_evtLoadSave.c): writes the units and keys of the edited event in the PM key-row format through the RW stream (sub_4C0420), with ...
+0038DAD0 00000B90 F evtSaveUnits source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38E660: (...): writes the field-object records ("save obj->resid =%d pathIdx=%d") through the RW stream.
+0038E660 000001F8 F evtSaveFieldObjects source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_38E860: (mode, work): saves the edited event: the file name "persona3_data/event/e%03d/E%03d_%03d..." (sub_394E70), opens the RW stream (sub_4C0240), writes t ...
+0038E860 00000888 F evtSaveEvent source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3902C0: (scene, work): sub_3912F0's effect pass: creates the three effect-channel units (type 36, param 0..2) and adds each type-36 key row to the unit of its ...
+003902C0 00000328 F evtBuildEffectUnits source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3905F0: (scene, work): when the scene's effect set (kEffectSet +4) is not empty, one type-37 unit with every type-37 key row.
+003905F0 00000330 F evtBuildP3EffectUnit source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_390920: (scene, work): the custom-event unit (type 41) with every type-41 key row; kinds 0 / 5 get their path (sub_38D790, memcpy of the 304-byte path record) ...
+00390920 00000364 F evtBuildCustomEventUnit source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_390C90: (scene, work): the model-visibility unit (type 47) with every type-47 key row.
+00390C90 00000254 F evtBuildVisibilityUnit source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_390EF0: (scene, unit): loads the model of a field-object unit: the PACK model entry (sub_39EC10), RW clump (sub_316BD0), registration (sub_3B6270, sub_3B9550) ...
+00390EF0 00000188 F evtLoadFieldObjectModel source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_391080: (scene, work): the eight field-object units (type 48, param 0..7) with their key rows (param = key row +20 byte +32) set up by sub_38F440, and the att ...
+00391080 00000268 F evtBuildFieldObjectUnits source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3912F0: (scene, work) (11,064 bytes): load state 11 of sub_36DB20 -- turns the parsed PM scene into units and keys ("start SetGameData"). The sound bank (sub_ ...
+003912F0 00002B38 F evtSetGameData source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3942F0: (?, scene, data, ...) (mt_evtPolygonMovie.c): parses a PM file's type table into the scene record: data asserted (line 1097); +300 a 508-byte table (c ...
+003942F0 0000093C F pmSceneParse source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_395950: (scene): the polygon movie's per-frame draw (sub_3962C0): the movie's objects (+1776 ..) as RW sprites / meshes (sub_359B40, sub_359380, the material  ...
+00395950 000004C4 F evtDrawPolygonMovie source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_395E20: (scene): the polygon movie's debug overlay (sub_3963C0): the control points "CP1 / CP2 %.2f %.2f" and "SIKAKU REGIST" frames (sub_386F70 / sub_388A40, ...
+00395E20 00000428 F evtDrawPolygonMovieDebug source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_398530: custom event 0 "CustomEvent HiruSasoi" (the lunchtime invitation), kwln update (process; record at process +60, 156 bytes: +0 state, +72 work, +76 key ...
+00398530 000012F4 F ceHiruSasoiUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_399830: its destroy: the file node (H_Cdvd_Destroy), the message (sub_39EE80), the model state (sub_3B7090), frees the record (sub_386B70).
+00399830 00000074 F ceHiruSasoiDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_3998B0: custom event 1 "CustomEvent Basho2Sasoi" (where to go after an invitation; record 60 bytes: +0 state, +4 work, +8 key, +12 file node, +16 the message  ...
+003998B0 00000328 F ceBasho2SasoiUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_399BE0: its destroy: file node, message, record.
+00399BE0 0000005C F ceBasho2SasoiDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_399C40: custom event 2 "CustomEvent ParamUD" (record 92 bytes): loads "event/sys/paramud.pak", shows the academics / charm / courage change with the level nam ...
+00399C40 00000918 F ceParamUpUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39A560: its destroy.
+0039A560 0000005C F ceParamUpDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39A5C0: custom event 3 "CustomEvent HolyHogo" (record 56 bytes): loads "event/sys/yakuhog.pak" and shows the day-off promise message.
+0039A5C0 0000027C F ceHolyHogoUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39A840: its destroy.
+0039A840 0000005C F ceHolyHogoDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39A8A0: custom event 4 "HanDenwa" (the phone call; a 2,268-byte record from the RW allocator, +4 the key's u16): loads "event/sys/handen.pak", the caller list ...
+0039A8A0 00000F90 F ceHanDenwaUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39B830: its destroy: the comu message (sub_3C77A0, jalr through the record's callback), file node, message.
+0039B830 00000074 F ceHanDenwaDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39B8B0: (parent, arg): creates the "HanDenwa" task alone (COMM 0x360B00's phone call outside an event): a zeroed 2,268-byte record (RW alloc 0x960178) with th ...
+0039B8B0 00000098 F ceCreateHanDenwaTask source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39B950: custom event 5 "CustomEvent UwakiHakkaku" (two-timing found out; record 108 bytes): loads "event/sys/uwakiha.pak", the date of the other social link ( ...
+0039B950 00000738 F ceUwakiHakkakuUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39C090: its destroy.
+0039C090 0000005C F ceUwakiHakkakuDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39C0F0: custom event 6 "CustomEvent Morau Present" (receiving a present; record 68 bytes): loads "event/sys/moraupre.pak", picks the present (sub_17AFD0 / sub ...
+0039C0F0 000002F0 F ceMorauPresentUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39C3E0: its destroy.
+0039C3E0 0000005C F ceMorauPresentDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39C440: custom event 7 "CustomEvent Ageru Present" (giving a present; record 108 bytes): loads "event/sys/agerupre.pak", the item list, the choice, the reacti ...
+0039C440 00000918 F ceAgeruPresentUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39CD60: its destroy.
+0039CD60 0000005C F ceAgeruPresentDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39CDC0: custom event 8 "CustomEvent Hiduke Message" (the date message): the current month / day (clndGetCurrentMonth / Day) and the event number (sub_386E10 / ...
+0039CDC0 000001E8 F ceHidukeMessageUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39CFB0: its destroy.
+0039CFB0 0000005C F ceHidukeMessageDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39D010: custom event 9 "CustomEvent Card Effect": starts the arcana card effect task (sub_3A2090) for the social link (sub_16DD40 / sub_16DCE0; asserted) and  ...
+0039D010 00000178 F ceCardEffectUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39D190: its destroy: frees the record.
+0039D190 0000002C F ceCardEffectDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39D1C0: (record): the game-over event's two text / sprite boxes (sub_388000) while the fade value (+24) is above 0.
+0039D1C0 00000390 F ceGameOverDraw source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39D550: custom event 10 "CustomEvent GameOver": loads "event/sys/gameover.pak", the choice (continue / title), the sound / fade (sub_10C1A0 / sub_10C3A0) and  ...
+0039D550 00000328 F ceGameOverUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39D880: its destroy.
+0039D880 0000005C F ceGameOverDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39D8E0: custom event 11 "CustomEvent HavePeru" (record 56 bytes): loads "event/sys/haveperu.pak" and shows the persona-of-that-arcana message (sub_16DBC0, dat ...
+0039D8E0 00000220 F ceHavePersonaUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39DB00: its destroy.
+0039DB00 0000005C F ceHavePersonaDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39DB60: custom event 12 "LvupMes HavePeru" (record 52 bytes): loads "event/sys/lvup.pak" and shows the level-up message of the persona of the social link's ar ...
+0039DB60 000001C4 F ceLvupHavePersonaUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39DD30: its destroy.
+0039DD30 0000005C F ceLvupHavePersonaDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39DD90: custom event 13 "CustomEvent Perukoe" (a persona's voice): loads "event/sys/perukoe.pak", the skill list (sub_3BEE80), the comu message (sub_3C94E0 /  ...
+0039DD90 0000039C F cePersonaVoiceUpdate source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39E130: its destroy: the comu message (sub_3C77A0), file node, message, record.
+0039E130 00000074 F cePersonaVoiceDestroy source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39E1B0: (work, key): a type-41 key's custom event (sub_363030): destroys the previous one (kOverlayTask, kwlnTaskDestroyWithHierarchy) and creates the kwln ta ...
+0039E1B0 00000538 F evtStartCustomEvent source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39F850: (record): the card effect's texture loads: for each of the +112 entries not yet loaded, polls its file (sub_10C3A0) and keeps the result (+104 + 4i).
+0039F850 000000FC F ceCardEffectLoadTextures source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39F950: (record): counts the class-1 and class-3 models and saves their state (16 bytes each, RW alloc -> +232; sub_3B83A0, jalr per model).
+0039F950 000001C0 F ceCardEffectSaveModels source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39FB10: (): hides every class-1 and class-3 model (sub_3189F0, sub_3B8310).
+0039FB10 000000BC F ceCardEffectHideModels source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39FBD0: (record): the spinning arcana card (cos, the textured quad sub_3877C0).
+0039FBD0 000003F0 F ceCardEffectDrawCard source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2
+# sub_39FFC0: (record, pos*, alpha, ...): the card's pulsing glow (sin, sub_388000).
+0039FFC0 0000025C F ceCardEffectDrawGlow source=phase5-events2 verified=yes ev=INTEGRATION_LOG.md#events2

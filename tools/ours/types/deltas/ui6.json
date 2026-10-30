@@ -1,0 +1,454 @@
+{
+ "records": [
+  {
+   "name": "CampEquipWork",
+   "size": 708,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x12DC20",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "u32",
+     "name": "Pak",
+     "note": "ui6: u32: camp/camp_equip.pak"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "State",
+     "note": "ui6: u32: the state (this screen keeps it at +4)"
+    },
+    {
+     "off": 18,
+     "width": 2,
+     "type": "s16",
+     "name": "Pc",
+     "note": "ui6: s16: the party member"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "u32",
+     "name": "SlotsArrived",
+     "note": "ui6: u32: the slot panels' tweens all finished"
+    },
+    {
+     "off": 28,
+     "width": 2,
+     "type": "s16",
+     "name": "Slot",
+     "note": "ui6: s16: the slot 0..3 (weapon, armour, boots, accessory)"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "s32",
+     "name": "Cursor",
+     "note": "ui6: s32: the candidate cursor (row on the page)"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "s32",
+     "name": "Scroll",
+     "note": "ui6: s32: the candidate list's first row"
+    },
+    {
+     "off": 40,
+     "width": 2,
+     "type": "u16",
+     "name": "Candidates",
+     "note": "ui6: u16[300]: the stock indices the member may equip in the slot"
+    },
+    {
+     "off": 640,
+     "width": 4,
+     "type": "u32",
+     "name": "CandidateTail",
+     "note": "ui6: the second output of sub_131090"
+    },
+    {
+     "off": 684,
+     "width": 4,
+     "type": "s32",
+     "name": "CandidateCount",
+     "note": "ui6: s32"
+    },
+    {
+     "off": 688,
+     "width": 4,
+     "type": "u32",
+     "name": "File0",
+     "note": "ui6: u32: the two sprite files of the pak"
+    },
+    {
+     "off": 692,
+     "width": 4,
+     "type": "u32",
+     "name": "File1",
+     "note": "ui6: kFile1"
+    },
+    {
+     "off": 696,
+     "width": 4,
+     "type": "u32",
+     "name": "SlotTweens",
+     "note": "ui6: u32: 10 tween records (the slot menu)"
+    },
+    {
+     "off": 700,
+     "width": 4,
+     "type": "u32",
+     "name": "ListTweens",
+     "note": "ui6: u32: 10 tween records (the candidate list)"
+    },
+    {
+     "off": 704,
+     "width": 4,
+     "type": "u32",
+     "name": "Backdrop",
+     "note": "ui6: u32: 1 tween record (the scrolling backdrop)"
+    }
+   ]
+  },
+  {
+   "name": "CampItemWork",
+   "size": 200,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x141660",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "u32",
+     "name": "State",
+     "note": "ui6: kState"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "s32",
+     "name": "Timer",
+     "note": "ui6: s32: the fade-in frame (state 2)"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "u32",
+     "name": "Pak",
+     "note": "ui6: u32: camp/camp_item.pak"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "s32",
+     "name": "Targets",
+     "note": "ui6: s32[4]: the targets (1 = the protagonist, then the party)"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "s32",
+     "name": "TargetCount",
+     "note": "ui6: s32"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "s32",
+     "name": "Personas",
+     "note": "ui6: s32[12]: the used stock slots"
+    },
+    {
+     "off": 80,
+     "width": 4,
+     "type": "s32",
+     "name": "PersonaCount",
+     "note": "ui6: s32"
+    },
+    {
+     "off": 84,
+     "width": 4,
+     "type": "s32",
+     "name": "TargetCursor",
+     "note": "ui6: s32: -2 = everyone"
+    },
+    {
+     "off": 88,
+     "width": 4,
+     "type": "s32",
+     "name": "PersonaCursor",
+     "note": "ui6: s32"
+    },
+    {
+     "off": 92,
+     "width": 2,
+     "type": "u16",
+     "name": "TargetKind",
+     "note": "ui6: u16: the item's target kind (sub_17BB40; 3 = none)"
+    },
+    {
+     "off": 96,
+     "width": 4,
+     "type": "u32",
+     "name": "Ribbon",
+     "note": "ui6: a tween record inline (the ribbon): +100 active, +160 its alpha"
+    },
+    {
+     "off": 100,
+     "width": 4,
+     "type": "u32",
+     "name": "RibbonActive",
+     "note": "ui6: kRibbonActive"
+    },
+    {
+     "off": 160,
+     "width": 4,
+     "type": "u32",
+     "name": "RibbonAlpha",
+     "note": "ui6: kRibbonAlpha"
+    },
+    {
+     "off": 164,
+     "width": 4,
+     "type": "u32",
+     "name": "ItemList",
+     "note": "ui6: u32: the item list (2,424 bytes, ilist)"
+    },
+    {
+     "off": 168,
+     "width": 4,
+     "type": "u32",
+     "name": "EquipList",
+     "note": "ui6: u32: the equipment list (11,632 bytes, elist)"
+    },
+    {
+     "off": 172,
+     "width": 4,
+     "type": "u32",
+     "name": "MaterialList",
+     "note": "ui6: u32: the material list (2,424 bytes, ilist)"
+    },
+    {
+     "off": 176,
+     "width": 4,
+     "type": "u32",
+     "name": "Files",
+     "note": "ui6: u32[3]: the pak's sprite files (copied to 0x833A50)"
+    },
+    {
+     "off": 180,
+     "width": 4,
+     "type": "u32",
+     "name": "File1",
+     "note": "ui6: kFile1"
+    },
+    {
+     "off": 184,
+     "width": 4,
+     "type": "u32",
+     "name": "File2",
+     "note": "ui6: kFile2"
+    },
+    {
+     "off": 188,
+     "width": 4,
+     "type": "u32",
+     "name": "Tweens",
+     "note": "ui6: u32: 80 tween records (the item page)"
+    },
+    {
+     "off": 192,
+     "width": 4,
+     "type": "u32",
+     "name": "EquipTweens",
+     "note": "ui6: u32: 40 tween records (the equipment page)"
+    },
+    {
+     "off": 196,
+     "width": 4,
+     "type": "u32",
+     "name": "MaterialTweens",
+     "note": "ui6: u32: 40 tween records (the material page)"
+    }
+   ]
+  },
+  {
+   "name": "CampItemList",
+   "size": 2424,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x1406D0",
+     "index": 1
+    }
+   ],
+   "fields": [
+    {
+     "off": 12,
+     "width": 4,
+     "type": "u32",
+     "name": "Entries",
+     "note": "ui6: {s32 id, s32 count}[300]"
+    },
+    {
+     "off": 2412,
+     "width": 4,
+     "type": "s32",
+     "name": "Count",
+     "note": "ui6: s32"
+    },
+    {
+     "off": 2416,
+     "width": 4,
+     "type": "s32",
+     "name": "Cursor",
+     "note": "ui6: s32: the row on the page (5 rows)"
+    },
+    {
+     "off": 2420,
+     "width": 4,
+     "type": "s32",
+     "name": "Scroll",
+     "note": "ui6: s32: the first row"
+    }
+   ]
+  },
+  {
+   "name": "CampEquipList",
+   "size": 11632,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x13D1A0",
+     "index": 1
+    }
+   ],
+   "fields": [
+    {
+     "off": 100,
+     "width": 4,
+     "type": "u32",
+     "name": "Rows",
+     "note": "ui6: 36-byte rows [320]: +0 id, +4 stock index, +20 target bit, +24 / +25 / +26 bytes"
+    },
+    {
+     "off": 11620,
+     "width": 4,
+     "type": "s32",
+     "name": "Count",
+     "note": "ui6: s32"
+    },
+    {
+     "off": 11624,
+     "width": 4,
+     "type": "s32",
+     "name": "Cursor",
+     "note": "ui6: s32: the row on the page"
+    },
+    {
+     "off": 11628,
+     "width": 4,
+     "type": "s32",
+     "name": "Scroll",
+     "note": "ui6: s32: the first row"
+    }
+   ]
+  },
+  {
+   "name": "CampSkillWork",
+   "size": 80,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x15DA70",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "u32",
+     "name": "State",
+     "note": "ui6: kState"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "s32",
+     "name": "TargetCursor",
+     "note": "ui6: s32: -2 = everyone"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "u32",
+     "name": "Files",
+     "note": "ui6: u32[3]: camp_skil.pak's sprite files"
+    },
+    {
+     "off": 32,
+     "width": 4,
+     "type": "u32",
+     "name": "File1",
+     "note": "ui6: kFile1"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "u32",
+     "name": "File2",
+     "note": "ui6: kFile2"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "u32",
+     "name": "List",
+     "note": "ui6: u32: the skill list (sub_15C840)"
+    },
+    {
+     "off": 44,
+     "width": 2,
+     "type": "u16",
+     "name": "TargetKind",
+     "note": "ui6: u16: the skill's target kind (sub_17BB40)"
+    },
+    {
+     "off": 48,
+     "width": 4,
+     "type": "u32",
+     "name": "Pak",
+     "note": "ui6: u32: camp/camp_skil.pak"
+    },
+    {
+     "off": 56,
+     "width": 4,
+     "type": "u32",
+     "name": "Tweens",
+     "note": "ui6: u32: 60 tween records"
+    },
+    {
+     "off": 76,
+     "width": 4,
+     "type": "s32",
+     "name": "TargetCount",
+     "note": "ui6: s32"
+    }
+   ]
+  }
+ ]
+}

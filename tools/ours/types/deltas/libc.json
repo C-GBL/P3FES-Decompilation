@@ -1,0 +1,50 @@
+{"records": [
+  {"name": "NewlibReent", "anchors": [{"how": "param", "fn": "0x5204A0", "index": 0}, {"how": "param", "fn": "0x521620", "index": 0}, {"how": "ret", "fn": "0x51F690"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "errno_"},
+    {"off": 48, "width": 4, "type": "s32", "name": "current_category"},
+    {"off": 52, "width": 4, "type": "ptr", "name": "current_locale"},
+    {"off": 76, "width": 4, "type": "ptr", "name": "bigint_freelist"},
+    {"off": 92, "width": 4, "type": "ptr", "name": "strtok_last"}
+   ]},
+  {"name": "MprecBigint", "anchors": [{"how": "param", "fn": "0x521E70", "index": 0}, {"how": "param", "fn": "0x521E70", "index": 1}, {"how": "param", "fn": "0x51E280", "index": 0}, {"how": "param", "fn": "0x51E280", "index": 1}, {"how": "param", "fn": "0x521620", "index": 1}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "next"},
+    {"off": 4, "width": 4, "type": "s32", "name": "k"},
+    {"off": 8, "width": 4, "type": "s32", "name": "maxwds"},
+    {"off": 12, "width": 4, "type": "s32", "name": "sign"},
+    {"off": 16, "width": 4, "type": "s32", "name": "wds"},
+    {"off": 20, "width": 4, "type": "u32", "name": "x0"}
+   ]},
+  {"name": "NewlibFile", "anchors": [{"how": "param", "fn": "0x51F838", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "cursor"},
+    {"off": 4, "width": 4, "type": "s32", "name": "read_left"},
+    {"off": 8, "width": 4, "type": "s32", "name": "write_left"},
+    {"off": 12, "width": 2, "type": "s16", "name": "flags"},
+    {"off": 14, "width": 2, "type": "s16", "name": "file"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "buf_base"},
+    {"off": 20, "width": 4, "type": "s32", "name": "buf_size"},
+    {"off": 24, "width": 4, "type": "s32", "name": "line_buf_size"},
+    {"off": 28, "width": 4, "type": "ptr", "name": "cookie"},
+    {"off": 32, "width": 4, "type": "fnptr", "name": "read"},
+    {"off": 36, "width": 4, "type": "fnptr", "name": "write"},
+    {"off": 40, "width": 4, "type": "fnptr", "name": "seek"},
+    {"off": 44, "width": 4, "type": "fnptr", "name": "close"},
+    {"off": 84, "width": 4, "type": "ptr", "name": "reent"}
+   ]},
+  {"name": "SoftFloatParts", "size": 24, "anchors": [{"how": "param", "fn": "0x530DE0", "index": 0}, {"how": "param", "fn": "0x530EB8", "index": 1}, {"how": "param", "fn": "0x530F48", "index": 0}, {"how": "param", "fn": "0x530F48", "index": 1}, {"how": "param", "fn": "0x530F48", "index": 2}, {"how": "ret", "fn": "0x530F48"}, {"how": "param", "fn": "0x5315D0", "index": 0}, {"how": "param", "fn": "0x5315D0", "index": 1}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "fp_class"},
+    {"off": 4, "width": 4, "type": "s32", "name": "sign"},
+    {"off": 8, "width": 4, "type": "s32", "name": "normal_exp"},
+    {"off": 16, "width": 8, "type": "u64", "name": "fraction"}
+   ]},
+  {"name": "SoftFloatPartsF", "size": 16, "anchors": [{"how": "param", "fn": "0x530C60", "index": 0}, {"how": "param", "fn": "0x530D18", "index": 1}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "fp_class"},
+    {"off": 4, "width": 4, "type": "s32", "name": "sign"},
+    {"off": 8, "width": 4, "type": "s32", "name": "normal_exp"},
+    {"off": 12, "width": 4, "type": "u32", "name": "fraction"}
+   ]}
+]}

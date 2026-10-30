@@ -1,0 +1,25 @@
+# queue_vu1_gs.txt -- Phase 5 hand-decompile candidates from topic 14 (addr name purpose)
+0x4d59d0 _rwDMAOpenVIFPkt owner of every VIF1 packet (69 callers); packet buffer/DMA chain layout
+0x4d54e0 _rwDMAOpenGIFPkt owner of PATH2 texture-upload packets
+0x4d5000 _rwDMAAddPkt queues a packet into the frame DMA chain
+0x4d4350 _rwDMAHandler DMA-end interrupt handler (VIF1/GIF channels)
+0x4d47f0 _rwDMAVSYNCHandler vblank handler: display-buffer flip via sceGsPutDispEnv
+0x4a0e00 RpMeshPS2AllBridgeCallBack stock material bridge: VIF packet + GIF tag + MSCAL selection
+0x4a05d0 RpAtomicPS2AllPrimTypeTransTypeSetupFunc transform-type bits that index the VU1 code arrays
+0x46ad80 RpPDSSkyMatPipeCreate pipeline construction from PDS definitions
+0x4a1430 RpAtomicPS2AllInstance mesh instancing into VIF UNPACK streams
+0x4a35c0 RxPipelineNodePS2AllMatGenerateCluster cluster -> UNPACK format selection
+0x4d6b90 _rwSkySetRenderState RW render states -> GS register shadows
+0x4d7f60 RpSkyRenderStateSet game-facing ALPHA/TEST/DIMX funnel (665 call sites)
+0x4ef020 skyFillInPktForUpLoadAlignedContiguousRectangle texture upload DMA/GIF chain
+0x4ef1d0 skyPrepareUploadRaster BITBLTBUF/TRXPOS/TRXREG/TRXDIR for uploads
+0x4f0990 skyTexCacheOpenCache GS texture memory allocator (TBP layout)
+0x4e40b0 _rwSkyRasterFinaliseStart GS frame/Z/texture memory partition
+0x4e3100 SkyCreateFBRaster frame-buffer raster and FRAME fields
+0x4e3320 SkyCreateDBRaster display-buffer raster and ZBUF-style fields
+0x4d84c0 SkyCameraBeginUpdate per-camera FRAME/ZBUF/XYOFFSET/SCISSOR draw-env packet
+0x197350 kwlnInitRenderer pipeline registration and video mode (game side)
+0x10e880 uttmxCreateRaster TMX -> RwRaster format mapping
+0x4709e0 RpPDS_G3_2DFont_PS2AllBridgeCallBack Rt2d font bridge (UI text path)
+0x474d30 _rpPTankSkyFillTags PTank particle DMA tags (MSCAL/MSCALF)
+0x4edba0 SkyIm2DRenderPrimitive Im2D sprite/triangle path (2D fallback)

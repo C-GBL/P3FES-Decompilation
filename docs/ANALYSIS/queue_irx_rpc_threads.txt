@@ -1,0 +1,56 @@
+# Phase 5 hand-decompile queue -- topic 12 (addr name one-line purpose). Evidence: docs/ANALYSIS/12_irx_rpc_threads.md
+0x197030 kwlnInitPS2Systems IOP reboot + 15 IRX loads in fixed order; pad/memcard init; the whole EE<->IOP bring-up
+0x196fe0 kwlnT0OverflowHandler INTC9 handler extending the 64-bit T0 tick counter (game time base)
+0x19d360 kwlnInstallVBlankStartHandler AddIntcHandler(2)+EnableIntc(2) for the field-tracking VBlank handler
+0x19d320 kwlnVBlankStartHandler INTC2 handler returning GS_CSR.FIELD state
+0x197fe0 kwlnGsSyncVCallback INTC2 callback feeding ADX vsync servers
+0x103000 H_Pad_Init scePadInit + two scePadPortOpen (ports 0/1, slot 0)
+0x103110 H_Pad_UpdateWorkPad per-frame pad state machine (SetMainMode/InfoAct/SetActAlign/Read/SetActDirect), button decode
+0x18f100 H_Memcard_Init sceDbcInit, sceMc2Init, sceMc2CreateSocket
+0x18f190 H_Memcard_Check sceMc2CheckAsync result/error mapping
+0x18f2c0 H_Memcard_UpdateSeqMode save sequence (GetInfo/SearchFile/Format/Mkdir/CreateFile/WriteFile icon.sys+icon.ico+data)
+0x10cac0 H_Sndcom_Init libsdr/libsk init, SPU2 RAM budget, master params
+0x10cdd0 H_Sndcom_Update sound-bank load/upload/bind state machine (6 slots)
+0x10cce0 H_Sndcom_CopyToIop EE->IOP SIF DMA copy with busy wait
+0x10db60 H_Sndcom_PlayVoice SESQ_Control play
+0x10da70 H_Sndcom_StopVoice SESQ_Status + SESQ_Control stop
+0x10d950 H_Sndcom_UnbindSfx unbind + free IOP memory
+0x10c050 H_ResrcMan_Init resource-manager thread creation (prio 28, 128 KiB stack)
+0x10c5f0 H_ResrcMan_Update per-frame request pump / WakeupThread
+0x10c7d0 H_Resman_ThreadProc resource-manager worker (RenderWare stream reads)
+0x10bff0 H_ResrcMan_MaybeResumeThread ResumeThread guard
+0x51da50 sceSkSsInit libsk init (callback thread, SetParam x4)
+0x51db00 sceSkSsSOUND_Control SK SOUND control command block
+0x51dbc0 sceSkSsSOUND_Send SK IOP->SPU2 upload command
+0x51dc70 sceSkSsHSYNTH_Bind SK HSYNTH bind
+0x51dd48 sceSkSsHSYNTH_Unbind SK HSYNTH unbind
+0x51ddf0 sceSkSsSESQ_Bind SK SESQ bind
+0x51deb0 sceSkSsSESQ_Unbind SK SESQ unbind
+0x51df58 sceSkSsSESQ_Control SK SESQ control (play/stop)
+0x51e028 sceSkSsSESQ_Status SK SESQ status
+0x5129c0 sceSdRemote libsdr RPC marshaller (HLE boundary for all libsd/SK traffic)
+0x512d48 sceSdRemoteCallbackInit creates the EE RPC server thread 0x80000704
+0x511590 scePadPortOpen pad RPC cmd 1 fn 1; EE DMA buffer registration
+0x511830 scePadGetDmaStr two-frame pad buffer selection (shared-memory protocol)
+0x511478 _send_to_iop actuator packet by direct SIF DMA
+0x5130e8 sceMc2Init libmc2 semaphores + basic_thread (prio 1)
+0x5145f8 basic_thread libmc2 EE-side FAT dispatcher (HLE boundary for memcard)
+0x506088 sceSifSetDma libsifcmd public SIF DMA entry
+0x505fc0 sceSifSetDmaInternal DMA list + sync packet builder
+0x506148 sceSifInitCmd sifcmd init, DMAC5 handler
+0x5068a8 sceSifInitRpc sifrpc init, cmd handlers 0x80000008/9/A/C, IOP handshake
+0x507050 sceSifBindRpc RPC bind
+0x507230 sceSifCallRpc RPC call (sync/async)
+0x50c2c0 _sceSifLoadModule loadfile RPC MOD_LOAD marshalling
+0x50ca18 sceSifRebootIop UDNL reboot string + sceSifResetIop
+0x50c848 sceSifResetIop SIF reset handshake registers
+0x50d658 crt_init_runtime libkernel _InitSys (kernel patches)
+0x50d780 InitExecPS2 conditional ExecPS2 kernel patch
+0x50db38 InitAlarm conditional alarm kernel patch
+0x50cc78 InitTLBFunctions TLB kernel patch
+0x50d718 PatchIsNeeded OSD-config probe deciding the ExecPS2 patch
+0x50dcb0 InitTimer T2 alarm engine init (INTC11)
+0x50e250 cbTimerHandler T2 alarm dispatcher
+0x5041d8 DelayThread SetTimerAlarm + semaphore wait
+0x4d6470 _rwDMAHook RenderWare INTC2/DMAC1/DMAC2 handler installation
+0x4d47f0 _rwDMAVSYNCHandler RenderWare VBlank flip handler

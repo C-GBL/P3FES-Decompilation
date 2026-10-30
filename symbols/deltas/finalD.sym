@@ -1,0 +1,11 @@
+# finalD.sym  Phase 5 slice delta (game/include/p3fes/game/finalD.h, game/src/lib/finalD.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own error texts, which name
+#   the function that reports them: "E02080848 adxt_EntryFnameRange: parameter error" 0x7C22F0 (the parameter check at
+#   the start of sub_53EF40; its body at 0x53EFC0 reports "E4063001:Can't entry file" 0x7C2320) and
+#   "E201191: SFX_CnvFrmZcmn : frmfmt is not support." 0x7CAB08 / "E201315: sfxcnv_CnvFrmZcmn : zclip is not set."
+#   0x7CAAD8 (both wrappers of sub_5A0C00, the 16-byte start and the 32-byte entry 0x5A0CA0, report them from the
+#   worker at 0x5A0CF0). Checked by tests/game/test_finalD.cpp. Proposals only: the code keeps the symbols/ names.
+#   No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-finalD verified=yes ev=<anchor>
+0053ef40 000000f0 F adxt_EntryFnameRange source=phase5-finalD verified=yes ev=string 0x7C22F0 "E02080848 adxt_EntryFnameRange: parameter error" loaded at 0x53EF40+... (game/src/lib/finalD.cpp sub_53EF40)
+005a0c00 00000488 F SFX_CnvFrmZcmn source=phase5-finalD verified=yes ev=strings 0x7CAB08 "E201191: SFX_CnvFrmZcmn : frmfmt is not support." and 0x7CAAD8 "E201315: sfxcnv_CnvFrmZcmn : zclip is not set." (game/src/lib/finalD.cpp sub_5A0C00)

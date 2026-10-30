@@ -1,0 +1,1010 @@
+# Phase 5 rewrite queue -- the unmapped EE bands of docs/ANALYSIS/27_unmapped_bands.md (0x1E0000-0x26FFFF, 0x2A0000-0x2BFFFF,
+# 0x2E0000-0x2EFFFF, 0x320000-0x34FFFF, 0x360000-0x38FFFF, 0x3C0000-0x45FFFF), grouped into ten proposed wave-10 slices.
+# Generated from a copy of the IDA master (ida/work_bands.i64, headless, read-only) + symbols/functions.json + game/replaced.txt.
+# Leaf-first per slice: depth = longest chain of calls into the six bands (K_Assert/K_Abort 0x19D3F0/0x19D400 and
+# out-of-band callees count 0). A slice lists at most 120 functions; "+N more" says how many of its eligible functions wait.
+# Columns: addr  name  size  status  depth  flags  gate  role.
+# status: a = no flagged callee, b = has the flags listed; skip = hardware/syscall/COP0, heap (H_Malloc 0x191AF0 / H_Free 0x191A10 /
+#   malloc, or a load of the RW memory-function slots 0x960178-0x96018C: RwHeapMalloc/RwFree/realloc/calloc/free-list) or printf -- PHASE5_AGENT_BRIEF step 7, left out of the slice lists and counted per slice.
+# flags: heap (as above), io (H_Cdvd_*), print (printf/sprintf), task (kwlnTask create/init/destroy), rw (RenderWare 0x460000-0x4FB100),
+#   sdk (0x4FB100-0x521000), libc (0x521000-0x540000), jalrN (N indirect calls), hw, vu0.
+# gate: B/D/M = statically reachable (direct calls and tail jumps only) from the update function of a kwlnTask that is live or
+#   left in the heap in a snapshot of the battle / dorm / M1 replay route; T = is itself such a task update. Indirect (jalr/table)
+#   dispatch is NOT followed, so table-dispatched functions show '---' even when they run: B/D/M is evidence, '-' is not absence.
+# role: task names (from the kwlnTask create sites), BF COMM index (sScrCommandTable 0x7B92B0), data-table slots, first string.
+# Names are functions.json's (all sub_* here unless shown); a bracketed name is proposed in symbols/deltas/bands.sym (task creators and
+#   updates only, not imported). Community hint names are not used (ADR-0009).
+# Functions already owned by another queue (field, rendering, menu_ui, frame_loop_gs) or in game/replaced.txt are excluded.
+#
+# === slice fx_layers: after effects (eff_after.c, eff_afpack.c) + the effect manager task layers (effect_* tasks, effpack.bin) ===
+# 0x1E7F90-0x1EF500, 0x320060-0x32415C: 111 functions: 79 listed, +0 more eligible, 22 skip-class, 10 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 46, dorm 43, M1 43.
+001e8330  sub_1E8330         36  a       0                         BDM   
+001e88f0  sub_1E88F0       1424  b       0  rw                     BDM   
+001ecd90  sub_1ECD90        296  b       0  rw                     BDM   
+001ecec0  sub_1ECEC0        444  b       0  rw                     BDM   
+001ed080  sub_1ED080         36  a       0                         BDM   
+001ed0b0  sub_1ED0B0         24  a       0                         BDM   
+001ed0d0  sub_1ED0D0         24  a       0                         BDM   
+001ed0f0  sub_1ED0F0       1960  a       0                         BDM   
+001ed8a0  sub_1ED8A0        308  a       0                         BDM   
+001ed9e0  sub_1ED9E0         20  a       0                         BDM   
+001ee220  nullsub_10          8  a       0                         BDM   
+001eef20  effAfter_CreateAfterEffectRenderTask        160  b       0  io,task,rw             ---   [effAfter_CreateAfterEffectRenderTask]; creates 'after effect render'; str 'effect/z0.tmx'
+001eefc0  sub_1EEFC0         64  a       0                         BDM   
+001ef000  sub_1EF000         88  a       0                         BDM   
+00320060  sub_320060         16  a       0                         ---   table slot 0x69BB30
+00320070  nullsub_106         8  a       0                         ---   table slot 0x69BB3C
+00320080  sub_320080        424  b       0  jalr4                  BDM   
+00320380  sub_320380        276  b       0  jalr2                  BDM   
+00320640  sub_320640        296  b       0  jalr2                  BDM   
+00320770  sub_320770        152  a       0                         BDM   
+00320810  sub_320810        104  a       0                         BDM   
+00320da0  sub_320DA0         60  b       0  rw                     BDM   
+00320de0  sub_320DE0        396  b       0  rw,libc                ---   
+00320f70  sub_320F70         56  b       0  rw                     BDM   
+00321050  sub_321050         24  a       0                         BDM   
+00321070  sub_321070         40  a       0                         ---   
+003210a0  sub_3210A0         32  a       0                         BDM   
+003210c0  sub_3210C0         84  b       0  rw                     ---   
+00321120  sub_321120         12  a       0                         BDM   
+00321130  sub_321130         12  a       0                         B--   
+00321140  sub_321140         60  a       0                         ---   
+00321180  sub_321180         80  a       0                         ---   
+003211d0  sub_3211D0         80  a       0                         ---   
+00321220  sub_321220         60  a       0                         ---   
+00321260  sub_321260         60  a       0                         ---   
+003212a0  sub_3212A0         60  a       0                         ---   
+003212e0  sub_3212E0         60  a       0                         ---   
+00321320  sub_321320         64  a       0                         B--   
+00321f10  sub_321F10        208  a       0                         B--   
+003226b0  sub_3226B0        456  a       0                         ---   
+00322ab0  sub_322AB0        596  a       0                         ---   
+00322d40  sub_322D40         88  a       0                         ---   
+00322da0  sub_322DA0         28  a       0                         ---   
+00322fb0  sub_322FB0         24  a       0                         ---   
+00322fd0  sub_322FD0        288  a       0                         BDM   
+00323bf0  sub_323BF0         48  a       0                         ---   
+001e8360  sub_1E8360       1420  b       1  rw                     BDM   
+001e8e80  sub_1E8E80       2720  b       1  rw                     BDM   
+001eba50  sub_1EBA50         48  a       1                         BDM   
+001eba80  sub_1EBA80        768  a       1                         BDM   
+001eda90  sub_1EDA90        324  b       1  rw                     BDM   
+001eded0  sub_1EDED0         64  a       1                         BDM   
+001ee230  sub_1EE230        172  a       1                         BDM   
+003204a0  sub_3204A0        408  b       1  jalr2                  BDM   
+00320ba0  sub_320BA0        324  b       1  rw,libc                ---   
+00321a60  effMng_UpdateEffectProgramTask        156  b       1  rw                     BDMT  [effMng_UpdateEffectProgramTask]; update of task 'effect_program'
+00322d10  sub_322D10         40  a       1                         ---   
+00323240  sub_323240        344  b       1  rw                     ---   
+003233a0  sub_3233A0        336  b       1  rw                     ---   
+00323640  sub_323640        384  b       1  rw                     ---   
+00323860  sub_323860         32  a       1                         ---   
+00323920  sub_323920        268  b       1  rw                     ---   
+00323a30  sub_323A30        344  b       1  rw                     ---   
+00323b90  sub_323B90         88  b       1  rw                     ---   
+00323e10  sub_323E10        412  b       1  rw                     ---   
+00323fb0  sub_323FB0        428  b       1  rw                     ---   
+001ebd80  sub_1EBD80       4108  b       2  rw                     BDM   
+001eee40  sub_1EEE40        224  a       2                         BDM   
+00320cf0  sub_320CF0        168  a       2                         ---   
+00323880  sub_323880         68  b       2  rw                     ---   
+003238d0  sub_3238D0         68  b       2  rw                     ---   
+001e9af0  sub_1E9AF0       7720  b       3  rw                     BDM   
+001eb920  sub_1EB920        304  a       3                         BDM   
+001eda00  sub_1EDA00        140  a       3                         BDM   
+001ee1d0  sub_1EE1D0         80  a       3                         BDM   
+001edbe0  sub_1EDBE0        744  b       4  rw                     BDM   
+00321cb0  effMng_UpdateEffect3dTask         40  a       5                         BDMT  [effMng_UpdateEffect3dTask]; update of task 'effect_3d'
+00321e20  effMng_UpdateEffect2dTask         40  a       5                         BDMT  [effMng_UpdateEffect2dTask]; update of task 'effect_2d'
+00321fe0  sub_321FE0         36  a       5                         BDM   
+# skip-class in this slice: 1e9920(heap), 1e9a90(heap), 1ee2e0(heap), 1eeb90(heap), 1ef340(heap), 320230(heap), 320290(heap), 320880(heap), 320fb0(heap), 321010(heap), 322010(print), 322530(heap), 3225d0(heap), 322660(heap), 322880(heap), 322a20(heap), 322dc0(heap), 322f20(heap), 3230f0(heap), 3234f0(heap), 3237c0(heap), 323c20(heap)
+#
+# === slice fx_epl: EPL effect-object player API ===
+# 0x34C160-0x350034: 75 functions: 60 listed, +0 more eligible, 13 skip-class, 2 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 16, dorm 16, M1 15.
+0034c250  sub_34C250        200  a       0                         ---   table slot 0x69C380
+0034c320  sub_34C320         44  a       0                         ---   table slot 0x69C384
+0034c350  sub_34C350         56  a       0                         ---   table slot 0x69C370
+0034c630  sub_34C630         16  a       0                         ---   table slot 0x69C388
+0034c640  sub_34C640         16  a       0                         ---   table slot 0x69C38C
+0034c650  sub_34C650         12  a       0                         ---   table slot 0x69C398
+0034c660  sub_34C660         12  a       0                         ---   table slot 0x69C390
+0034d090  sub_34D090         16  a       0                         ---   table slot 0x69C3BC
+0034d0a0  sub_34D0A0         16  a       0                         ---   table slot 0x69C3C0
+0034d0b0  sub_34D0B0         12  a       0                         ---   table slot 0x69C3CC
+0034d0c0  sub_34D0C0         12  a       0                         ---   table slot 0x69C3C4
+0034d0d0  sub_34D0D0         96  a       0                         ---   
+0034d130  sub_34D130         28  a       0                         ---   
+0034d150  sub_34D150        588  b       0  vu0                    ---   
+0034d3a0  sub_34D3A0        364  b       0  vu0                    BDM   
+0034d810  sub_34D810        140  b       0  rw                     ---   table slot 0x69C3E8
+0034d990  sub_34D990        360  b       0  rw                     ---   
+0034e480  sub_34E480         12  a       0                         ---   table slot 0x69C400
+0034e800  sub_34E800         28  a       0                         ---   table slot 0x69C41C
+0034e940  sub_34E940        404  a       0                         ---   
+0034fc90  sub_34FC90         12  a       0                         ---   table slot 0x69C434
+0034c390  sub_34C390        524  b       1  vu0                    BDM   
+0034c5a0  sub_34C5A0         36  a       1                         ---   table slot 0x69C374
+0034c5d0  sub_34C5D0         84  a       1                         ---   table slot 0x69C36C
+0034cb60  sub_34CB60        148  a       1                         ---   table slot 0x69C3B8
+0034db00  sub_34DB00         44  a       1                         ---   table slot 0x69C3EC
+0034db30  sub_34DB30        204  a       1                         ---   table slot 0x69C3D8
+0034e390  sub_34E390         52  a       1                         ---   table slot 0x69C3DC
+0034e420  sub_34E420         36  a       1                         ---   table slot 0x69C3F0
+0034e450  sub_34E450         36  a       1                         ---   table slot 0x69C3F4
+0034e490  sub_34E490         40  a       1                         ---   table slot 0x69C3F8
+0034e7c0  sub_34E7C0         52  a       1                         ---   
+0034e910  sub_34E910         44  a       1                         ---   table slot 0x69C420
+0034f6b0  sub_34F6B0        596  a       1                         ---   table slot 0x69C40C
+0034fba0  sub_34FBA0         52  a       1                         ---   table slot 0x69C410
+0034fc30  sub_34FC30         36  a       1                         ---   table slot 0x69C424
+0034fc60  sub_34FC60         36  a       1                         ---   table slot 0x69C428
+0034fca0  sub_34FCA0         40  a       1                         ---   table slot 0x69C42C
+0034fcf0  sub_34FCF0         32  a       1                         BDM   
+0034fd10  sub_34FD10         32  a       1                         BDM   
+0034fdf0  sub_34FDF0         64  a       1                         BDM   
+0034ff70  sub_34FF70         32  a       1                         BDM   
+0034ff90  sub_34FF90         36  a       1                         BDM   
+0034ffc0  sub_34FFC0        116  a       1                         ---   
+0034e3d0  sub_34E3D0         76  a       2                         ---   table slot 0x69C3D4
+0034f910  sub_34F910        560  b       2  vu0,jalr1              BDM   
+0034fbe0  sub_34FBE0         76  a       2                         ---   table slot 0x69C408
+0034fe30  sub_34FE30         80  b       2  vu0                    BD-   
+0034fe80  sub_34FE80        232  b       2  vu0                    BDM   
+0034cc00  sub_34CC00        808  b       3  vu0                    ---   table slot 0x69C3A4
+0034cf30  sub_34CF30        284  a       3                         ---   table slot 0x69C3A8
+0034fb40  sub_34FB40         36  a       3                         BDM   
+0034fb70  sub_34FB70         36  a       3                         BDM   
+0034fcd0  sub_34FCD0         32  a       3                         BDM   
+0034fd30  sub_34FD30         32  a       3                         BDM   
+0034fd50  sub_34FD50         32  a       3                         BDM   
+0034fd70  sub_34FD70         60  a       3                         BDM   
+0034c940  sub_34C940        100  b       4  libc                   ---   table slot 0x69C3B0
+0034d050  sub_34D050         56  a       4                         ---   table slot 0x69C3A0
+0034fdb0  sub_34FDB0         60  a       4                         ---   
+# skip-class in this slice: 34c160(heap), 34c1b0(heap), 34c670(heap), 34c890(heap), 34c9b0(heap), 34d510(heap), 34d670(heap), 34d6f0(heap), 34d8a0(heap), 34e4c0(heap), 34e610(heap), 34e690(heap), 34e820(heap)
+#
+# === slice nm_message: nmlist.c / nmSequence.c / nmCmdList.c + the shared message-window helpers ===
+# 0x3C4430-0x3C7794: 95 functions: 87 listed, +0 more eligible, 8 skip-class, 0 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 11, dorm 11, M1 4.
+003c4710  nmListInsertAfter        260  a       0                         BDM   
+003c4820  nmListUnlink        236  a       0                         BDM   
+003c4b50  nmListFindByKey        152  a       0                         ---   
+003c4bf0  nmListFindByWord4        132  a       0                         ---   
+003c4c80  nmListCursorNext        156  a       0                         ---   
+003c4d20  nmListCursorPrev        156  a       0                         ---   
+003c4dc0  nmListCursorClearEnd         32  a       0                         ---   
+003c4de0  sub_3C4DE0         16  a       0                         ---   
+003c4df0  nmListCursorSeek         88  a       0                         ---   
+003c4e50  nmListCursorHead         16  a       0                         ---   
+003c4e60  sub_3C4E60         16  a       0                         ---   
+003c4f80  nmByteSum         56  a       0                         ---   
+003c5170  nmSeqNullStep         12  a       0                         ---   
+003c5210  sub_3C5210         12  a       0                         ---   
+003c5460  nmObjPayloadWord12         16  a       0                         ---   
+003c5470  sub_3C5470         16  a       0                         ---   
+003c5480  nmNodePayloadArea40         16  a       0                         ---   
+003c57e0  sub_3C57E0         44  b       0  jalr1                  ---   
+003c5810  nmSeqStepOnRemove         44  b       0  jalr1                  ---   
+003c5840  nmSeqStepRun         40  b       0  jalr1                  ---   
+003c5870  nmSeqStepCall36         44  b       0  jalr1                  ---   
+003c58a0  nullsub_56          8  a       0                         ---   
+003c58b0  nullsub_57          8  a       0                         ---   
+003c58c0  nullsub_54          8  a       0                         ---   
+003c58d0  nullsub_55          8  a       0                         ---   
+003c58e0  nullsub_58          8  a       0                         ---   
+003c5e20  nmCmdListSetDrawFunc         84  a       0                         -D-   
+003c5e80  nmCmdListSetUpdateFunc         84  a       0                         -D-   
+003c5ee0  nmCmdListSetRowDrawFunc         84  a       0                         -D-   
+003c5f40  nmCmdListSetRowRemoveFunc         84  a       0                         ---   
+003c60c0  nmCmdListOnInsert         36  a       0                         ---   
+003c60f0  nmCmdListOnRemove         44  b       0  jalr1                  ---   
+003c6120  nmCmdListDrawRow        324  b       0  jalr1                  ---   
+003c6900  nmCmdListStartFade        208  a       0                         ---   
+003c69d0  sub_3C69D0        408  a       0                         ---   
+003c6c50  nmCmdListDecidedRow         44  a       0                         ---   
+003c6c80  nmCmdListCancelled         20  a       0                         ---   
+003c6ca0  nmCmdListPagedDown         20  a       0                         ---   
+003c6cc0  nmCmdListMovedUp         24  a       0                         ---   
+003c6ce0  nmCmdListMovedDownRow         44  a       0                         ---   
+003c6d10  nmCmdListScrolledRow         44  a       0                         ---   
+003c6d40  nmCmdListSetPosition         20  a       0                         -D-   
+003c6d60  sub_3C6D60         28  a       0                         ---   
+003c6d80  nmCmdListStatus        136  a       0                         ---   
+003c6e10  nmCmdListStatus28        144  a       0                         ---   
+003c6ea0  nmCmdListHold         24  a       0                         ---   
+003c6ec0  nmCmdListRelease         28  a       0                         ---   
+003c6ee0  sub_3C6EE0         40  a       0                         -D-   
+003c6f10  nmCmdListClose         52  a       0                         ---   
+003c6f50  nmCmdListCloseNow         40  a       0                         ---   
+003c6f80  nmCmdListVisibleRows         44  a       0                         ---   
+003c6fb0  nmCmdListCursorLine         72  a       0                         ---   
+003c7070  sub_3C7070        504  b       0  libc                   ---   
+003c72a0  msgWinRecordInit         48  a       0                         ---   
+003c4910  nmListAppendNew        200  b       1  jalr1                  BDM   
+003c4e70  nmListRemoveFiltered        188  b       1  jalr2                  --M   
+003c50b0  nmListRebuild        184  b       1  libc                   ---   
+003c5180  nmSequenceCreate        136  a       1                         ---   
+003c53e0  sub_3C53E0        116  a       1                         ---   
+003c5760  nmSequenceCallAll36        120  a       1                         ---   
+003c58f0  sub_3C58F0        292  a       1                         -D-   
+003c5af0  sub_3C5AF0        188  a       1                         ---   
+003c5bb0  nmCmdListCursorDown        156  a       1                         ---   
+003c5c50  sub_3C5C50        236  a       1                         ---   
+003c5d40  nmCmdListSelect        224  a       1                         ---   
+003c6b70  nmCmdListScrollBar        224  a       1                         ---   
+003c7270  msgWinReset         40  a       1                         ---   
+003c72d0  sub_3C72D0        188  a       1                         BD-   
+003c7390  msgWinSetStateFlags         76  a       1                         ---   
+003c73e0  sub_3C73E0         76  a       1                         ---   
+003c7430  msgWinRequestMessage        172  a       1                         B--   
+003c7560  msgWinSetType         68  a       1                         B--   
+003c75b0  msgWinGetSelection         84  a       1                         B--   
+003c7610  msgWinLastSelection         56  a       1                         B--   
+003c5220  nmSequenceDestroy         32  a       2                         ---   
+003c5240  nmSequenceAddStep        404  b       2  libc,jalr1             ---   
+003c5490  sub_3C5490        708  b       2  jalr2                  ---   
+003c5a20  nmCmdListDestroy         32  a       2                         ---   
+003c5a40  nmCmdListAddRow        168  b       2  libc                   -D-   
+003c5fa0  nmCmdListRemoveRow        276  a       2                         ---   
+003c6380  nmCmdListDraw        108  b       2  jalr1                  ---   
+003c63f0  sub_3C63F0       1292  b       2  jalr1                  ---   
+003c74e0  sub_3C74E0        120  a       2                         B--   
+003c7650  msgWinClose        168  a       2                         B--   
+003c7700  sub_3C7700        148  a       2                         B--   
+003c6270  nmCmdListUpdate        272  b       3  jalr1                  ---   
+003c7000  nmCmdListSort        112  a       3                         ---   
+# skip-class in this slice: 3c4430(heap), 3c44d0(heap), 3c45f0(heap), 3c4650(heap), 3c49e0(heap), 3c4a90(heap), 3c4f30(heap), 3c4fc0(heap)
+#
+# === slice battle_cmd_menu: bcm_main.c: the battle command menu ===
+# 0x1FF890-0x208AC4: 101 functions: 95 listed, +0 more eligible, 6 skip-class, 0 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 61, dorm 0, M1 0.
+00201af0  sub_201AF0         92  a       0                         B--   
+002024b0  sub_2024B0        300  a       0                         B--   
+00202bc0  sub_202BC0        208  a       0                         B--   
+00203030  sub_203030        400  a       0                         B--   
+00203360  sub_203360        172  a       0                         B--   
+00203760  sub_203760        232  a       0                         ---   
+00203990  sub_203990        480  a       0                         B--   table slot 0x5B52DC,0x5B5334..
+00203b70  sub_203B70        180  a       0                         B--   
+00203de0  sub_203DE0        532  a       0                         B--   
+00204000  sub_204000       1144  a       0                         ---   
+00204760  sub_204760        904  a       0                         B--   
+00204be0  sub_204BE0        216  a       0                         B--   
+00205000  sub_205000        952  a       0                         B--   
+002053c0  sub_2053C0         68  a       0                         B--   
+002054c0  sub_2054C0         64  a       0                         B--   
+00205500  sub_205500         76  a       0                         B--   
+00205550  sub_205550         76  a       0                         B--   
+002055a0  sub_2055A0         76  a       0                         B--   
+002055f0  sub_2055F0         84  a       0                         B--   
+00205650  sub_205650         80  a       0                         B--   
+002056a0  sub_2056A0         88  a       0                         ---   
+00205700  sub_205700         88  a       0                         ---   
+00205760  sub_205760         88  a       0                         ---   
+00206310  sub_206310        212  a       0                         B--   table slot 0x6B6EE4,0x6CF75C..
+00206eb0  sub_206EB0        192  a       0                         B--   
+00207930  sub_207930         44  a       0                         B--   
+00207960  sub_207960         96  a       0                         B--   
+002079c0  sub_2079C0         72  a       0                         ---   
+00207a10  sub_207A10         72  a       0                         ---   
+00207a60  sub_207A60         72  a       0                         ---   
+00207ab0  sub_207AB0         72  a       0                         ---   
+00207b00  sub_207B00         72  a       0                         ---   
+00207b50  sub_207B50         72  a       0                         ---   
+00207ba0  sub_207BA0         72  a       0                         ---   
+00207bf0  sub_207BF0         76  a       0                         ---   
+00207c40  sub_207C40         76  a       0                         ---   
+00207c90  sub_207C90         76  a       0                         ---   
+00207ce0  sub_207CE0         76  a       0                         ---   
+00207d30  sub_207D30         76  a       0                         ---   
+00207d80  sub_207D80         76  a       0                         ---   
+00207dd0  sub_207DD0         76  a       0                         ---   
+00207f70  sub_207F70         72  a       0                         B--   
+00207fc0  sub_207FC0         72  a       0                         B--   
+00208050  sub_208050        220  a       0                         ---   
+002082c0  sub_2082C0        148  a       0                         B--   
+002083d0  sub_2083D0        140  a       0                         B--   table slot 0x5B5AF4,0x5B7F0C..
+00208570  sub_208570        104  a       0                         B--   
+002085e0  sub_2085E0         76  a       0                         B--   
+00208630  sub_208630         80  a       0                         B--   
+00208680  sub_208680         76  a       0                         ---   
+002086d0  sub_2086D0         80  a       0                         ---   
+00208720  sub_208720        108  a       0                         ---   
+00208860  sub_208860        612  a       0                         B--   
+001ffc60  sub_1FFC60        724  a       1                         ---   
+00201730  sub_201730         76  a       1                         B--   
+00201780  sub_201780        252  a       1                         ---   
+00201ef0  sub_201EF0        280  a       1                         ---   
+00202c90  sub_202C90        220  a       1                         ---   
+00204af0  sub_204AF0        232  a       1                         B--   
+00205410  sub_205410        168  a       1                         ---   
+00208010  sub_208010         64  a       1                         ---   
+00208130  sub_208130        396  a       1                         ---   
+00208360  sub_208360        108  a       1                         B--   
+00208790  sub_208790        204  b       1  rw                     B--   
+00201880  sub_201880        460  a       2                         B--   
+00201ad0  sub_201AD0         32  a       2                         B--   
+00202a10  sub_202A10        428  a       2                         B--   
+00203410  sub_203410        544  a       2                         B--   table slot 0x5AD49C,0x5BD3A4
+00206170  sub_206170        412  a       2                         B--   
+00206e40  sub_206E40        108  a       2                         B--   
+00207010  sub_207010        812  a       2                         B--   
+00207e20  sub_207E20        236  a       2                         ---   
+00207f10  sub_207F10         92  a       2                         B--   
+002025e0  sub_2025E0        584  a       3                         B--   
+002031c0  sub_2031C0        404  a       3                         B--   
+00203c30  sub_203C30        432  a       3                         B--   
+00204cc0  sub_204CC0        832  a       3                         B--   
+00205d60  sub_205D60        848  a       3                         B--   
+002060b0  sub_2060B0        188  a       3                         B--   
+00206f70  sub_206F70        160  a       3                         B--   
+00207340  sub_207340       1364  a       3                         B--   
+002078a0  sub_2078A0        144  a       3                         B--   
+00208460  sub_208460        264  a       3                         B--   
+002016b0  sub_2016B0        116  a       4                         B--   
+00201a50  sub_201A50        128  a       4                         B--   
+00201b50  sub_201B50        220  a       4                         B--   
+00201c30  sub_201C30        224  a       4                         ---   
+00201d10  sub_201D10        232  a       4                         ---   
+00201e00  sub_201E00        236  a       4                         ---   table slot 0x6B6044,0x6B8F64..
+00202010  sub_202010       1172  a       4                         B--   
+00202d70  sub_202D70        692  a       4                         B--   
+00203850  sub_203850        316  a       4                         B--   
+00204480  sub_204480        728  a       4                         B--   
+002065a0  sub_2065A0        416  a       4                         B--   
+00206740  sub_206740       1792  a       4                         B--   
+# skip-class in this slice: 1ff890(print), 1fff40(print), 202830(print), 203630(print), 2057c0(print), 2063f0(print)
+#
+# === slice battle_panel: pb_main.c / bp_root.c / bp_misc.c + the unnamed 2D helpers 0x21C9F0 ===
+# 0x1FC720-0x1FF888, 0x21C9F0-0x21EC38: 112 functions: 106 listed, +0 more eligible, 6 skip-class, 0 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 29, dorm 10, M1 2.
+001fccc0  sub_1FCCC0        340  a       0                         ---   
+001fce20  sub_1FCE20       1324  b       0  sdk                    ---   
+001fddf0  sub_1FDDF0        204  a       0                         B--   
+001fe510  sub_1FE510        104  a       0                         B--   
+001fe580  sub_1FE580        104  a       0                         B--   
+001fe630  sub_1FE630         24  a       0                         ---   
+001feb30  sub_1FEB30         24  a       0                         ---   
+001ff3d0  sub_1FF3D0         32  a       0                         ---   
+001ff3f0  sub_1FF3F0         32  a       0                         ---   
+001ff410  sub_1FF410         32  a       0                         ---   
+001ff430  sub_1FF430        200  a       0                         B--   
+001ff500  sub_1FF500        164  a       0                         B--   
+001ff5b0  sub_1FF5B0        116  a       0                         ---   
+001ff630  sub_1FF630        264  a       0                         ---   
+001ff740  sub_1FF740        164  a       0                         B--   
+001ff7f0  sub_1FF7F0        152  a       0                         ---   
+0021cca0  sub_21CCA0         56  a       0                         BD-   
+0021cce0  sub_21CCE0         32  a       0                         BD-   
+0021cd00  sub_21CD00        440  a       0                         BD-   
+0021cec0  sub_21CEC0       1264  a       0                         B--   
+0021d890  sub_21D890         72  a       0                         BD-   
+0021d8e0  sub_21D8E0        104  a       0                         BDM   
+0021d950  sub_21D950       1032  a       0                         BD-   
+0021dd60  sub_21DD60       1032  a       0                         B--   
+0021e170  sub_21E170        516  b       0  libc                   B--   
+0021ea00  sub_21EA00        188  a       0                         B--   
+0021eac0  sub_21EAC0         24  a       0                         BD-   
+0021eae0  sub_21EAE0        152  a       0                         BD-   
+0021eb80  sub_21EB80        184  a       0                         BDM   
+001fd350  sub_1FD350        728  b       1  sdk                    ---   
+001fdf10  sub_1FDF10        528  a       1                         B--   
+001fe220  sub_1FE220         76  a       1                         ---   
+001fe350  sub_1FE350         92  a       1                         ---   
+001fe3b0  sub_1FE3B0        116  a       1                         ---   
+001fe430  sub_1FE430        100  a       1                         ---   
+001fe4a0  sub_1FE4A0        100  a       1                         ---   
+001fe5f0  sub_1FE5F0         60  a       1                         ---   
+001fe7f0  sub_1FE7F0         32  a       1                         ---   
+001fe990  sub_1FE990         32  a       1                         ---   
+001feb50  sub_1FEB50         32  a       1                         ---   
+001feb70  sub_1FEB70         52  a       1                         ---   
+001febb0  sub_1FEBB0         52  a       1                         ---   
+001febf0  sub_1FEBF0         64  a       1                         ---   
+001fec30  sub_1FEC30         32  a       1                         ---   
+001fecc0  sub_1FECC0         32  a       1                         ---   
+001fece0  sub_1FECE0         32  a       1                         ---   
+001fed00  sub_1FED00         32  a       1                         ---   
+001fed20  sub_1FED20         32  a       1                         ---   
+001fed40  sub_1FED40         32  a       1                         ---   
+001fed60  sub_1FED60         32  a       1                         ---   
+001fed80  sub_1FED80         32  a       1                         ---   
+001feda0  sub_1FEDA0         32  a       1                         ---   
+001fedc0  sub_1FEDC0         32  a       1                         ---   
+001fede0  sub_1FEDE0         32  a       1                         ---   
+001fee00  sub_1FEE00         32  a       1                         ---   
+001fee20  sub_1FEE20         32  a       1                         ---   
+001fee40  sub_1FEE40         32  a       1                         ---   
+001fee60  sub_1FEE60         32  a       1                         ---   
+001fee80  sub_1FEE80         32  a       1                         ---   
+001fef10  sub_1FEF10         32  a       1                         B--   
+001fef50  sub_1FEF50         32  a       1                         ---   
+001fef70  sub_1FEF70         32  a       1                         ---   
+001ff100  sub_1FF100         32  a       1                         ---   
+001ff120  sub_1FF120         32  a       1                         ---   
+001ff140  sub_1FF140         32  a       1                         ---   
+001ff2b0  sub_1FF2B0         32  a       1                         ---   
+001ff2d0  sub_1FF2D0         32  a       1                         ---   
+001ff2f0  sub_1FF2F0         32  a       1                         ---   
+001ff310  sub_1FF310         32  a       1                         B--   
+001ff330  sub_1FF330         32  a       1                         B--   
+001ff350  sub_1FF350         32  a       1                         B--   
+001ff370  sub_1FF370         32  a       1                         ---   
+001ff390  sub_1FF390         32  a       1                         ---   
+001ff3b0  sub_1FF3B0         32  a       1                         ---   
+0021d3b0  sub_21D3B0       1244  a       1                         BD-   
+0021e380  sub_21E380       1660  a       1                         B--   
+001fc720  sub_1FC720        332  a       2                         ---   
+001fc870  sub_1FC870        264  a       2                         ---   
+001fdda0  sub_1FDDA0         76  a       2                         ---   
+001fea70  sub_1FEA70         32  a       2                         ---   
+001fea90  sub_1FEA90         32  a       2                         ---   
+001feea0  sub_1FEEA0         32  a       2                         ---   
+001feec0  sub_1FEEC0         76  a       2                         ---   
+001fe270  sub_1FE270        108  a       3                         ---   
+001fe2e0  sub_1FE2E0        108  a       3                         ---   
+001feab0  sub_1FEAB0        120  a       3                         ---   
+001fec50  sub_1FEC50        108  a       3                         ---   
+001fef30  sub_1FEF30         32  a       3                         ---   
+001fef90  sub_1FEF90        360  a       3                         ---   
+001ff160  sub_1FF160        328  a       3                         ---   
+001fdd20  sub_1FDD20         32  a       4                         ---   
+001fe8d0  sub_1FE8D0         76  a       4                         ---   
+001fe920  sub_1FE920         76  a       4                         ---   
+001fe970  sub_1FE970         32  a       4                         ---   
+001fe9b0  sub_1FE9B0         92  a       4                         ---   
+001fea10  sub_1FEA10         92  a       4                         B--   
+001fdac0  bpRoot_UpdateBattlePanelDrawTask        280  a       5                         B--T  [bpRoot_UpdateBattlePanelDrawTask]; update of task 'battle panel draw'
+001fdd40  sub_1FDD40         32  a       5                         ---   
+001fdec0  sub_1FDEC0         72  a       5                         ---   
+001fe120  sub_1FE120        116  a       5                         ---   
+001fe1a0  sub_1FE1A0        124  a       5                         ---   
+001fe650  sub_1FE650        404  a       5                         ---   
+001fe810  sub_1FE810        184  a       5                         ---   
+001fdbe0  sub_1FDBE0         32  a       6                         ---   
+001fdd60  sub_1FDD60         60  a       6                         ---   
+001fd890  bpRoot_UpdateBattlePanelTask        556  a       8                         B--T  [bpRoot_UpdateBattlePanelTask]; update of task 'battle panel'
+# skip-class in this slice: 1fc980(print), 1fcb30(print), 1fd630(heap), 1fdc00(heap), 21c9f0(heap), 21cc20(heap)
+#
+# === slice battle_result: br_root/br_friend/br_data/br_res/br_panel/brp_*: the battle result screen ===
+# 0x1EF500-0x1F2080, 0x1F9D70-0x1FC718, 0x2338D0-0x239164, 0x24A870-0x24D104: 120 functions: 94 listed, +0 more eligible, 22 skip-class, 4 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 70, dorm 5, M1 2.
+001f0940  sub_1F0940         44  a       0                         B--T  update of task 'battle result draw'
+001f0ab0  sub_1F0AB0         24  a       0                         B--   
+001f0c40  sub_1F0C40        292  a       0                         B--   
+001f0eb0  sub_1F0EB0        144  a       0                         B--   
+001f1b00  sub_1F1B00         20  a       0                         ---   
+001f1b20  sub_1F1B20         24  a       0                         ---   
+001f1b40  sub_1F1B40         20  a       0                         ---   
+001f1c20  sub_1F1C20         36  b       0  task                   ---   
+001f1c50  sub_1F1C50         60  a       0                         B--   
+001f1df0  sub_1F1DF0        152  a       0                         ---   
+001f9d70  sub_1F9D70        280  a       0                         BD-   
+001fa0d0  sub_1FA0D0        888  a       0                         BDM   
+001fb1b0  sub_1FB1B0         60  a       0                         B--   
+001fb3f0  sub_1FB3F0        188  a       0                         BD-   
+001fb4b0  sub_1FB4B0        172  a       0                         B--   
+001fbd50  sub_1FBD50        156  a       0                         B--   
+001fbdf0  sub_1FBDF0        432  a       0                         B--   
+001fbfa0  sub_1FBFA0        584  a       0                         B--   
+001fc1f0  sub_1FC1F0         52  a       0                         BDM   
+002338d0  sub_2338D0         20  a       0                         ---   
+002338f0  sub_2338F0         24  a       0                         ---   
+00233910  sub_233910         20  a       0                         ---   
+00233930  sub_233930         24  a       0                         ---   
+00233950  sub_233950         12  a       0                         B--   
+00233960  sub_233960         12  a       0                         B--   
+00233970  sub_233970         84  a       0                         ---   
+002339d0  sub_2339D0        244  b       0  io                     ---   str 'battle/result/AGS_br_base.bin'
+00233ad0  sub_233AD0         68  a       0                         B--   
+00233b20  sub_233B20        144  b       0  io                     B--   str 'battle/result/br_level.bin'
+00233bb0  sub_233BB0         68  a       0                         B--   
+00233c00  sub_233C00        284  b       0  io                     B--   str 'battle/result/AGS_br_lvh.bin'
+00233d20  sub_233D20         68  a       0                         B--   
+00233d70  sub_233D70        128  a       0                         B--   
+00233df0  sub_233DF0        128  a       0                         B--   
+00234570  sub_234570         84  a       0                         B--   
+002345d0  sub_2345D0         84  a       0                         B--   
+00234630  sub_234630         84  a       0                         B--   
+002347e0  sub_2347E0         64  a       0                         B--   
+00234960  sub_234960        160  a       0                         ---   
+00236280  sub_236280         84  a       0                         B--   
+002362e0  sub_2362E0         84  a       0                         B--   
+00236340  sub_236340         68  a       0                         B--   
+00238fd0  bpIfontSetDigitQuad    364  a       0                         B--   
+00239140  sub_239140         36  a       0                         B--   
+0024aa90  sub_24AA90        116  a       0                         B--   
+0024ac40  sub_24AC40         68  a       0                         B--   
+0024b9e0  sub_24B9E0         68  a       0                         B--   
+0024ba30  sub_24BA30         20  a       0                         B--   
+0024be40  sub_24BE40        144  b       0  io                     B--   str 'battle/result/brp_birth.bin'
+0024bed0  sub_24BED0         68  a       0                         B--   
+0024bf20  sub_24BF20         84  a       0                         B--   
+0024bf80  sub_24BF80        184  b       0  io                     B--   str 'facility/msg/msg_combine.bmd'
+0024c040  sub_24C040         68  a       0                         B--   
+0024c090  sub_24C090        108  a       0                         B--   
+0024c100  sub_24C100         16  a       0                         B--   
+0024d0c0  sub_24D0C0         68  a       0                         B--   
+001f0a60  sub_1F0A60         72  a       1                         B--   
+001f0fd0  sub_1F0FD0         32  a       1                         B--   
+001f10f0  sub_1F10F0         72  a       1                         B--   
+001f1aa0  sub_1F1AA0         64  a       1                         B--   
+001f1e90  sub_1F1E90        164  a       1                         B--   
+001fa4f0  sub_1FA4F0       2476  a       1                         BD-   
+001fb1f0  sub_1FB1F0        508  a       1                         ---   
+001fc230  sub_1FC230        400  a       1                         ---   
+001fc3c0  sub_1FC3C0        464  a       1                         ---   
+00234820  sub_234820        320  a       1                         ---   
+0024c110  sub_24C110       2952  a       1                         B--   
+001f08c0  sub_1F08C0         60  a       2                         B--T  update of task 'battle result draw'
+001f0900  sub_1F0900         64  a       2                         B--T  update of task 'battle result draw'
+001f10b0  sub_1F10B0         64  a       2                         B--   
+001f1140  sub_1F1140        200  a       2                         B--   
+001f1f40  sub_1F1F40        320  a       2                         ---   
+001fb130  sub_1FB130        128  a       2                         ---   
+00234690  sub_234690        128  a       2                         B--   
+002361d0  sub_2361D0        172  a       2                         B--   
+0024ab10  sub_24AB10        184  a       2                         B--   
+0024abd0  sub_24ABD0        112  a       2                         B--   
+0024cf00  sub_24CF00        436  a       2                         ---   
+001f0ff0  sub_1F0FF0        192  a       3                         B--   str 'SOUND2\\EVENT\\EVE_530.ADX'
+001f1210  sub_1F1210         44  a       3                         B--   
+001f1240  sub_1F1240        368  a       3                         B--   
+001faea0  sub_1FAEA0        656  a       3                         ---   BF COMM 0x171
+001fc590  sub_1FC590        392  b       3  rw                     ---   
+00235010  sub_235010        220  a       3                         B--   
+001f0f40  sub_1F0F40        144  a       4                         B--   
+00234a00  sub_234A00       1540  a       4                         B--   
+0024a870  sub_24A870        544  b       4  rw                     B--   
+0024adf0  sub_24ADF0       2728  b       4  rw,libc                B--   
+0024b8a0  sub_24B8A0        320  a       4                         B--   
+001f0970  sub_1F0970         32  a       5                         ---   
+001f0d70  sub_1F0D70        308  a       5                         B--   
+001f1b60  sub_1F1B60        188  a       5                         ---   
+001f1c90  sub_1F1C90        348  a       5                         B--   
+001f1ae0  sub_1F1AE0         32  a       6                         ---   
+# skip-class in this slice: 1ef500(heap), 1ef7f0(print), 1f0990(heap), 1f0ad0(print), 1f13b0(print), 1f9e90(print), 1fa450(print), 1fb560(print), 1fba70(print), 1fbca0(print), 233e70(heap), 234070(heap), 234710(heap), 235f30(print), 235ff0(print), 236390(print), 238a50(print), 238bf0(print), 238dc0(print), 24ac90(heap), 24ba50(heap), 24bb30(heap)
+#
+# === slice battle_camera: battle camera work and camera state tables ===
+# 0x2A0050-0x2B7058: 151 functions: 120 listed, +30 more eligible, 1 skip-class, 0 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 9, dorm 0, M1 0.
+002a0050  sub_2A0050       1000  a       0                         ---   table slot 0x5DC220
+002a0440  sub_2A0440       3136  a       0                         ---   
+002a1080  sub_2A1080         88  a       0                         ---   
+002a10e0  sub_2A10E0        412  a       0                         ---   
+002a1280  sub_2A1280        376  a       0                         ---   
+002a1400  sub_2A1400        700  a       0                         ---   
+002a16c0  sub_2A16C0         72  a       0                         ---   
+002a1710  sub_2A1710       1004  a       0                         ---   
+002a1b00  sub_2A1B00        108  a       0                         ---   
+002a1b70  sub_2A1B70        576  a       0                         ---   
+002a1db0  sub_2A1DB0         72  a       0                         ---   
+002a1e00  sub_2A1E00        592  b       0  rw                     ---   
+002a2050  sub_2A2050        280  b       0  rw                     ---   
+002a2170  sub_2A2170        288  b       0  rw                     ---   
+002a2660  sub_2A2660        948  b       0  rw                     ---   
+002a2a20  sub_2A2A20        296  a       0                         B--   
+002a2b50  sub_2A2B50        240  a       0                         B--   
+002a2c40  sub_2A2C40        652  b       0  rw                     B--   
+002a3010  sub_2A3010        252  a       0                         B--   
+002a3110  sub_2A3110         76  a       0                         ---   
+002a3160  sub_2A3160         68  a       0                         ---   
+002a32f0  sub_2A32F0        140  a       0                         ---   
+002a3380  sub_2A3380        148  a       0                         ---   
+002a3420  sub_2A3420        248  a       0                         ---   
+002a3520  sub_2A3520         44  a       0                         ---   
+002a3550  sub_2A3550         60  a       0                         ---   
+002a3590  sub_2A3590        444  b       0  rw                     ---   
+002a3750  sub_2A3750        204  a       0                         ---   
+002a3820  sub_2A3820         48  a       0                         ---   
+002a3850  sub_2A3850        160  a       0                         ---   
+002a3a80  sub_2A3A80         16  a       0                         ---   
+002a3a90  sub_2A3A90        112  a       0                         ---   
+002a3b40  sub_2A3B40         88  a       0                         ---   
+002a3d70  sub_2A3D70        268  a       0                         ---   
+002a3e80  sub_2A3E80       1052  a       0                         ---   
+002a42a0  sub_2A42A0        136  a       0                         ---   
+002a4330  sub_2A4330        316  b       0  rw                     B--   
+002a4470  sub_2A4470         64  a       0                         ---   
+002a44b0  sub_2A44B0         64  a       0                         ---   
+002a44f0  sub_2A44F0         64  a       0                         ---   
+002a4530  sub_2A4530        344  b       0  rw                     ---   
+002a48f0  sub_2A48F0        380  a       0                         B--   
+002a4c20  sub_2A4C20         48  b       0  rw                     ---   
+002a4c50  sub_2A4C50         24  a       0                         ---   
+002a6ed0  nullsub_87          8  a       0                         ---   table slot 0x693B5C
+002a7380  nullsub_88          8  a       0                         ---   table slot 0x693B70
+002a7820  nullsub_89          8  a       0                         ---   table slot 0x693B84
+002adc70  nullsub_90          8  a       0                         ---   table slot 0x693BC0
+002adcc0  nullsub_91          8  a       0                         ---   table slot 0x693BD4
+002add00  nullsub_92          8  a       0                         ---   table slot 0x693BE8
+002ae250  nullsub_93          8  a       0                         ---   table slot 0x693C24
+002ae4c0  nullsub_94          8  a       0                         ---   table slot 0x693BFC
+002ae730  nullsub_95          8  a       0                         ---   table slot 0x693C10
+002b1050  nullsub_96          8  a       0                         ---   table slot 0x693AD0
+002b2800  sub_2B2800        128  a       0                         ---   table slot 0x693AF4
+002b2ea0  nullsub_97          8  a       0                         ---   table slot 0x693B0C
+002b3330  nullsub_98          8  a       0                         ---   table slot 0x693C4C
+002b3680  nullsub_99          8  a       0                         ---   table slot 0x693C60
+002b55d0  sub_2B55D0         36  a       0                         ---   table slot 0x693CAC
+002b6490  sub_2B6490         52  b       0  libc                   ---   
+002b6bd0  sub_2B6BD0         20  a       0                         ---   
+002b6bf0  sub_2B6BF0        220  a       0                         ---   
+002b6cd0  sub_2B6CD0        212  a       0                         ---   
+002b6db0  sub_2B6DB0         40  b       0  libc                   B--   
+002b6de0  sub_2B6DE0        400  b       0  libc                   ---   
+002b6f70  sub_2B6F70        144  a       0                         ---   
+002b7000  sub_2B7000         88  a       0                         ---   
+002a2290  sub_2A2290        972  b       1  rw                     ---   
+002a2ed0  sub_2A2ED0        316  b       1  rw                     B--   
+002a38f0  sub_2A38F0        396  b       1  jalr1                  ---   
+002a4690  sub_2A4690         76  b       1  rw                     ---   
+002a5460  sub_2A5460        144  a       1                         ---   table slot 0x693AA8
+002a5f40  sub_2A5F40        144  a       1                         ---   table slot 0x693B34
+002a6560  sub_2A6560        144  a       1                         ---   table slot 0x693B48
+002a7830  sub_2A7830        448  a       1                         ---   
+002ab2a0  sub_2AB2A0        140  a       1                         ---   
+002ad770  sub_2AD770        260  a       1                         ---   table slot 0x693BAC
+002b0210  sub_2B0210        112  a       1                         ---   table slot 0x693ABC
+002b1cf0  sub_2B1CF0        268  a       1                         ---   table slot 0x693B20
+002b1e00  sub_2B1E00        600  a       1                         ---   table slot 0x693AE0
+002b4720  sub_2B4720        144  a       1                         ---   table slot 0x693A58
+002b4bc0  sub_2B4BC0         52  a       1                         ---   table slot 0x693A40
+002b4f40  sub_2B4F40        136  a       1                         ---   table slot 0x693A68
+002b5650  sub_2B5650        136  a       1                         ---   table slot 0x693CC0
+002a31b0  sub_2A31B0        316  a       2                         B--   
+002a3b00  sub_2A3B00         52  a       2                         ---   
+002a3ba0  sub_2A3BA0        452  a       2                         ---   
+002a54f0  sub_2A54F0       2540  b       2  rw,libc                ---   
+002a5fd0  sub_2A5FD0       1424  b       2  rw                     ---   table slot 0x693B44
+002a65f0  sub_2A65F0       2260  b       2  rw,libc                ---   table slot 0x693B58
+002a7390  sub_2A7390       1156  b       2  rw,libc                ---   table slot 0x693B80
+002a79f0  sub_2A79F0       1884  b       2  rw,libc                ---   
+002a8150  sub_2A8150       3020  b       2  rw,libc                ---   
+002a8d20  sub_2A8D20       2220  b       2  rw,libc                ---   
+002a95d0  sub_2A95D0       3296  b       2  rw,libc                ---   
+002aa2b0  sub_2AA2B0       4080  b       2  rw,libc                ---   
+002ab330  sub_2AB330       4616  b       2  rw,libc                ---   
+002ac6e0  sub_2AC6E0        564  a       2                         ---   table slot 0x693B98
+002ac920  sub_2AC920       1648  b       2  rw,libc                ---   
+002acf90  sub_2ACF90       1772  b       2  rw,libc                ---   
+002ad880  sub_2AD880        936  b       2  rw,libc                ---   
+002add10  sub_2ADD10       1076  b       2  rw,libc                ---   
+002ae260  sub_2AE260        604  b       2  rw,libc                ---   table slot 0x693BF8
+002ae4d0  sub_2AE4D0        604  b       2  rw,libc                ---   table slot 0x693C0C
+002ae740  sub_2AE740       2108  b       2  rw,libc                ---   
+002aef80  sub_2AEF80       2152  b       2  rw,libc                ---   
+002af7f0  sub_2AF7F0         96  a       2                         ---   table slot 0x693C34
+002af960  sub_2AF960       2220  b       2  rw,libc                ---   table slot 0x693AB8
+002b0280  sub_2B0280       3488  b       2  rw,libc                ---   
+002b1060  sub_2B1060       1852  b       2  rw,libc                ---   
+002b17a0  sub_2B17A0       1052  b       2  rw                     ---   
+002b21f0  sub_2B21F0       1540  b       2  rw,libc                ---   
+002b2940  sub_2B2940       1372  b       2  rw,libc                ---   table slot 0x693B08
+002b2eb0  sub_2B2EB0       1028  b       2  rw,libc                ---   
+002b3340  sub_2B3340        820  b       2  rw,libc                ---   table slot 0x693C5C
+002b3690  sub_2B3690        744  b       2  rw,libc                ---   table slot 0x693A18
+002b3980  sub_2B3980        732  b       2  rw,libc                ---   table slot 0x693C70
+002b3c60  sub_2B3C60        800  b       2  rw,libc                ---   table slot 0x693C84
+002b3f80  sub_2B3F80        600  b       2  rw,libc                ---   table slot 0x693C98
+002b41e0  sub_2B41E0       1336  b       2  rw,libc                ---   table slot 0x693A54
+# skip-class in this slice: 2a4a70(heap)
+#
+# === slice battle_fx: btlFormation.c, battle effect packets, battle_command_calc/draw ===
+# 0x2B7060-0x2B77B4, 0x2B77C0-0x2BC0DC, 0x2BC0E0-0x2C006C: 154 functions: 120 listed, +15 more eligible, 18 skip-class, 0 owned by other queues, 1 already replaced.
+# gate counts among the listed: battle 21, dorm 0, M1 0.
+002b77c0  sub_2B77C0        540  a       0                         ---   
+002b79e0  sub_2B79E0        496  b       0  rw                     ---   
+002b7bd0  sub_2B7BD0        120  a       0                         ---   
+002b7c50  sub_2B7C50       3240  b       0  rw                     ---   
+002b8900  sub_2B8900        104  a       0                         ---   
+002b8970  sub_2B8970         24  a       0                         ---   
+002b8990  sub_2B8990        444  a       0                         ---   
+002b8b50  sub_2B8B50         24  a       0                         ---   
+002b8b70  sub_2B8B70        144  a       0                         ---   
+002b8c00  sub_2B8C00        344  a       0                         ---   
+002b8d60  sub_2B8D60         88  a       0                         ---   
+002b8f40  sub_2B8F40         72  a       0                         ---   
+002b9350  sub_2B9350         20  a       0                         ---   
+002b9370  sub_2B9370         68  a       0                         ---   
+002b93c0  sub_2B93C0         28  a       0                         ---   
+002b9590  sub_2B9590        112  a       0                         ---   
+002b9600  sub_2B9600         56  a       0                         ---   
+002b9640  sub_2B9640        148  a       0                         ---   
+002b96e0  sub_2B96E0         12  a       0                         ---   
+002b9b00  sub_2B9B00        256  b       0  rw                     ---   table slot 0x696494,0x6964AC
+002b9c00  sub_2B9C00        316  b       0  rw                     ---   table slot 0x6964B0,0x6964B8
+002b9d40  sub_2B9D40        316  b       0  rw                     ---   table slot 0x6964B4,0x6964BC
+002ba0d0  sub_2BA0D0         24  a       0                         ---   table slot 0x6964C0
+002bac00  sub_2BAC00        176  b       0  libc                   ---   
+002baf90  sub_2BAF90        184  a       0                         ---   
+002bb2f0  sub_2BB2F0        172  a       0                         ---   
+002bb760  nullsub_14          8  a       0                         B--   
+002bbbc0  sub_2BBBC0         60  a       0                         ---   
+002bbdc0  sub_2BBDC0         44  a       0                         B--   
+002bbdf0  sub_2BBDF0         12  a       0                         B--   
+002bbf80  sub_2BBF80         32  a       0                         B--   
+002bbfa0  sub_2BBFA0        316  a       0                         B--   
+002bc0e0  sub_2BC0E0        528  a       0                         B--   
+002bc420  sub_2BC420         88  b       0  io                     ---   
+002bc680  sub_2BC680         76  a       0                         ---   
+002bc7b0  sub_2BC7B0         40  a       0                         ---   
+002bc7e0  sub_2BC7E0         72  a       0                         ---   
+002bc830  sub_2BC830         92  a       0                         ---   
+002bc890  sub_2BC890        116  a       0                         ---   
+002bc910  sub_2BC910         52  a       0                         ---   
+002bc950  sub_2BC950        104  a       0                         ---   
+002bcde0  sub_2BCDE0         44  a       0                         ---   
+002bd060  sub_2BD060         24  a       0                         ---   
+002bd080  sub_2BD080        388  a       0                         ---   
+002bd210  sub_2BD210         24  a       0                         ---   
+002bd230  sub_2BD230        140  a       0                         ---   
+002bd2c0  sub_2BD2C0         24  a       0                         ---   
+002bd2e0  sub_2BD2E0        384  a       0                         ---   
+002bd460  sub_2BD460         24  a       0                         ---   
+002bd480  sub_2BD480        108  a       0                         ---   
+002bd590  sub_2BD590         92  a       0                         ---   
+002bd690  sub_2BD690         92  a       0                         ---   
+002bd780  sub_2BD780         92  a       0                         ---   
+002bd850  sub_2BD850         92  a       0                         ---   
+002bd8b0  sub_2BD8B0         40  a       0                         ---   
+002bdba0  sub_2BDBA0         40  a       0                         ---   
+002bdbd0  sub_2BDBD0        248  b       0  libc                   ---   
+002bddd0  sub_2BDDD0         60  a       0                         ---   
+002bde10  sub_2BDE10        404  a       0                         ---   
+002bdfb0  sub_2BDFB0        812  a       0                         ---   
+002be2e0  nullsub_100         8  a       0                         ---   table slot 0x696E20
+002be580  sub_2BE580         68  a       0                         ---   table slot 0x696E54
+002be5d0  sub_2BE5D0         20  a       0                         ---   table slot 0x696E84
+002be5f0  sub_2BE5F0         24  a       0                         ---   table slot 0x696EB4
+002be610  sub_2BE610         16  a       0                         ---   table slot 0x696EE0
+002be9d0  nullsub_101         8  a       0                         ---   table slot 0x696F10
+002becc0  sub_2BECC0         76  a       0                         ---   str 'battle_command_calc'
+002bf2b0  btlCommand_UpdateBattleCommandDrawTask        192  b       0  jalr1                  B--T  [btlCommand_UpdateBattleCommandDrawTask]; update of task 'battle_command_draw'
+002bf650  sub_2BF650         60  b       0  task                   ---   str 'battle_command_calc'
+002bf970  nullsub_15          8  a       0                         B--   
+002bf980  nullsub_16          8  a       0                         ---   
+002bf990  nullsub_17          8  a       0                         B--   
+002bf9a0  nullsub_18          8  a       0                         B--   
+002bfae0  sub_2BFAE0         52  a       0                         ---   
+002bfb50  sub_2BFB50         52  a       0                         ---   
+002bfc00  sub_2BFC00         72  a       0                         ---   
+002bfcb0  sub_2BFCB0        680  b       0  libc                   ---   
+002b9220  sub_2B9220        220  a       1                         B--   
+002b96f0  sub_2B96F0        732  b       1  vu0,rw                 ---   
+002ba0f0  sub_2BA0F0        676  b       1  vu0,rw,libc            B--   
+002bad60  sub_2BAD60        344  a       1                         ---   
+002baec0  sub_2BAEC0        112  a       1                         ---   
+002bb0b0  sub_2BB0B0        468  a       1                         ---   
+002be2f0  sub_2BE2F0        156  b       1  jalr1                  ---   table slot 0x696E24
+002be390  sub_2BE390        492  a       1                         ---   table slot 0x696E28
+002be620  sub_2BE620        248  a       1                         ---   table slot 0x696EE4
+002be720  sub_2BE720        684  a       1                         ---   table slot 0x696EE8
+002be9e0  sub_2BE9E0        148  a       1                         ---   table slot 0x696F14
+002bea80  sub_2BEA80        564  a       1                         ---   table slot 0x696F18
+002bfc50  sub_2BFC50         32  a       1                         ---   
+002bfc70  sub_2BFC70         32  a       1                         ---   
+002bfc90  sub_2BFC90         32  a       1                         ---   
+002bff60  sub_2BFF60        268  a       1                         ---   
+002b8dc0  sub_2B8DC0        384  b       2  rw                     ---   
+002b99d0  sub_2B99D0        292  b       2  rw                     ---   table slot 0x696490
+002b9e80  sub_2B9E80        176  a       2                         ---   table slot 0x6964A0
+002b9f30  sub_2B9F30        204  a       2                         ---   table slot 0x696498
+002ba000  sub_2BA000        204  a       2                         ---   table slot 0x69649C
+002bb580  sub_2BB580        136  a       2                         ---   
+002bb9c0  sub_2BB9C0        244  a       2                         ---   
+002bbac0  sub_2BBAC0        244  a       2                         ---   
+002bce10  sub_2BCE10        584  a       2                         B--   
+002bef20  btlCommand_UpdateBattleCommandCalcTask        900  b       2  jalr1                  B--T  [btlCommand_UpdateBattleCommandCalcTask]; update of task 'battle_command_calc'
+002bfab0  sub_2BFAB0         36  a       2                         ---   
+002bfb20  sub_2BFB20         36  a       2                         ---   
+002bfb90  sub_2BFB90        104  a       2                         ---   
+002b90d0  sub_2B90D0        332  b       3  libc                   B--   
+002ba3a0  sub_2BA3A0       1376  b       3  jalr1                  B--   
+002ba900  sub_2BA900        280  a       3                         B--   
+002baf30  sub_2BAF30         96  a       3                         ---   
+002bb290  sub_2BB290         84  a       3                         ---   
+002bf9b0  sub_2BF9B0        252  a       3                         B--   
+002b9300  sub_2B9300         80  a       4                         B--   
+002baa20  sub_2BAA20        168  b       4  io                     ---   
+002bb3a0  sub_2BB3A0        480  a       4                         B--   
+002bb770  sub_2BB770         88  a       4                         ---   
+002bdcd0  sub_2BDCD0        252  a       4                         ---   
+002bacb0  sub_2BACB0        164  a       5                         ---   
+002bb050  sub_2BB050         88  a       5                         ---   
+002bbe00  sub_2BBE00        372  a       5                         B--   
+# skip-class in this slice: 2b7060(print), 2b71e0(print), 2b8f90(heap), 2b9030(heap), 2b93e0(heap), 2b94f0(heap), 2baad0(heap), 2bb610(heap), 2bb6f0(print), 2bb7d0(heap), 2bb8f0(heap), 2bbc00(heap), 2bbd00(heap), 2bc2f0(heap), 2bc480(heap), 2bc6d0(heap), 2bf370(heap), 2bf3f0(heap)
+#
+# === slice title: op_root/gm_root/op_res/op_title/op_logo/op_menu/op_wait: game root, logo, title ===
+# 0x265030-0x266EA4, 0x2673A0-0x271230: 78 functions: 66 listed, +0 more eligible, 6 skip-class, 4 owned by other queues, 2 already replaced.
+# gate counts among the listed: battle 12, dorm 59, M1 10.
+00265bb0  sub_265BB0        104  a       0                         -D-   
+00266060  sub_266060        112  a       0                         -D-   
+002660d0  sub_2660D0        112  a       0                         -D-   
+00266430  sub_266430        144  a       0                         BDM   
+00266660  sub_266660         12  a       0                         -D-   
+00266670  sub_266670         20  a       0                         BDM   
+00266a20  sub_266A20        184  b       0  io                     -D-   str 'oped/op_title.bin'
+00266ae0  sub_266AE0         68  a       0                         -D-   
+00266bf0  sub_266BF0         84  a       0                         -D-   
+00266c50  sub_266C50         84  a       0                         -D-   
+00266cb0  sub_266CB0        184  b       0  io                     BDM   str 'oped/op_logo.bin'
+00266d70  sub_266D70         68  a       0                         -D-   
+00266dc0  sub_266DC0        140  b       0  rw                     -D-   
+00266e50  sub_266E50         84  a       0                         -D-   
+002673a0  sub_2673A0         76  a       0                         BDM   
+002673f0  sub_2673F0         60  a       0                         ---   
+002694b0  sub_2694B0         76  a       0                         -D-   
+00269500  sub_269500         80  a       0                         -D-   
+00269550  sub_269550         84  a       0                         -D-   
+002695b0  sub_2695B0        144  a       0                         -D-   
+00269640  sub_269640         68  a       0                         -D-   
+00269a10  sub_269A10        620  b       0  jalr2                  -D-   
+00269c80  sub_269C80         32  b       0  libc                   B--   
+00269ca0  sub_269CA0         32  b       0  libc                   B--   
+00269cc0  sub_269CC0         76  a       0                         BDM   
+00269d10  sub_269D10         60  a       0                         ---   
+00269d50  sub_269D50        500  a       0                         -D-   
+0026a1e0  sub_26A1E0         68  a       0                         -D-   
+0026a230  opMenuSetWork      76  a       0                         BDM   
+0026a280  sub_26A280         60  a       0                         ---   
+0026da90  sub_26DA90        148  a       0                         -D-   
+0026db30  sub_26DB30        148  a       0                         -D-   
+0026dbd0  sub_26DBD0         72  a       0                         -D-   
+0026dc20  sub_26DC20         76  a       0                         -D-   
+0026dc70  sub_26DC70         76  a       0                         -D-   
+0026dcc0  sub_26DCC0         68  a       0                         -D-   
+0026dd10  sub_26DD10         76  a       0                         BDM   
+0026ec50  sub_26EC50         80  a       0                         -D-   
+0026edd0  sub_26EDD0         84  a       0                         -D-   
+0026ee30  sub_26EE30         68  a       0                         -D-   
+0026ee80  sub_26EE80         68  a       0                         -D-   
+00266b30  sub_266B30        184  b       1  rw                     -D-   
+00267430  sub_267430       6628  b       1  rw                     -D-   
+0026a0f0  sub_26A0F0        236  a       1                         -D-   
+0026a2c0  sub_26A2C0       9296  b       1  libc                   -D-   
+0026da10  sub_26DA10        116  a       1                         -D-   
+0026ed40  sub_26ED40        108  a       1                         -D-   
+0026edb0  sub_26EDB0         32  a       1                         -D-   
+0026eed0  sub_26EED0       9056  b       1  libc                   -D-   
+00265e30  opRoot_UpdateOpDrawTask        188  a       2                         -D-T  [opRoot_UpdateOpDrawTask]
+002663c0  sub_2663C0        112  a       2                         BDM   
+00266690  sub_266690        120  a       2                         ---   
+00266710  sub_266710        784  b       2  io                     -D-   
+002692d0  sub_2692D0        468  b       2  rw                     -D-   
+0026d430  sub_26D430       1492  a       2                         -D-   
+0026dd60  sub_26DD60         88  a       2                         ---   
+0026ddc0  sub_26DDC0        564  a       2                         -D-   
+0026ebf0  sub_26EBF0         96  a       2                         -D-   
+0026eca0  sub_26ECA0        152  a       2                         -D-   
+00265f80  sub_265F80        220  a       3                         -D-   
+00266140  sub_266140        640  a       3                         BDM   
+0026e780  sub_26E780       1136  b       3  rw                     -D-   
+00265b30  sub_265B30        116  a       4                         -D-   
+00266590  gmRoot_UpdateGameRootTask        100  a       4                         BDMT  [gmRoot_UpdateGameRootTask]; update of task 'game root'
+00265030  sub_265030       2812  a       5                         -D-   
+00265dc0  opRoot_UpdateOpTask        100  a       6                         -D-T  [opRoot_UpdateOpTask]
+# skip-class in this slice: 265c20(heap), 265ef0(heap), 2664c0(heap), 266600(heap), 269690(heap), 2699a0(heap)
+#
+# === slice tartarus: Tartarus field: stratum proc, enemy think, smap symbols, mini-map, time limit ===
+# 0x447AD0-0x4575D4, 0x4281F0-0x4312AC, 0x45A020-0x45A3A4: 139 functions: 116 listed, +0 more eligible, 21 skip-class, 2 owned by other queues, 0 already replaced.
+# gate counts among the listed: battle 46, dorm 4, M1 0.
+00429e80  sub_429E80         16  a       0                         BD-   
+00429e90  sub_429E90         88  a       0                         B--   
+00429ef0  sub_429EF0        232  a       0                         ---   
+00429fe0  sub_429FE0        232  a       0                         ---   
+0042a230  sub_42A230        224  a       0                         ---   
+0042a310  sub_42A310        224  a       0                         ---   
+0042adb0  sub_42ADB0        660  b       0  rw                     ---   
+0042b050  sub_42B050       1256  b       0  rw                     ---   
+0042b540  sub_42B540       1256  b       0  rw                     ---   
+0042ba30  sub_42BA30         20  a       0                         BD-   
+0042fd80  sub_42FD80        736  a       0                         ---   
+00430060  Y_SMap_UpdateStaireDispTask        232  a       0                         B--T  [Y_SMap_UpdateStaireDispTask]; update of task 'y_staire_disp_proc'
+00430220  sub_430220         72  a       0                         ---   
+00430270  sub_430270         44  a       0                         ---   
+004302a0  sub_4302A0         16  a       0                         ---   
+004302b0  sub_4302B0        892  b       0  io,rw                  ---   str 'smap/i_mini_map01.spr'
+00430630  sub_430630        332  a       0                         ---   
+00430780  sub_430780        704  b       0  libc                   ---   
+00430a40  sub_430A40        368  b       0  rw                     ---   
+004311f0  sub_4311F0        188  a       0                         ---   
+00447f90  sub_447F90        200  a       0                         ---   
+00449c90  sub_449C90        124  a       0                         ---   
+00449d10  sub_449D10         68  a       0                         ---   
+0044a240  sub_44A240        228  a       0                         ---   
+0044a330  sub_44A330        228  a       0                         ---   
+0044a630  sub_44A630        348  a       0                         ---   
+0044e530  sub_44E530         36  a       0                         ---   
+0044f060  sub_44F060        188  b       0  rw                     B--   
+0044f120  sub_44F120         80  a       0                         B--   
+0044f170  sub_44F170         80  a       0                         B--   
+0044f1c0  sub_44F1C0        176  b       0  rw                     B--   
+0044f270  sub_44F270        132  b       0  rw                     B--   
+004514a0  sub_4514A0       2248  b       0  rw                     B--   
+00452010  sub_452010        932  a       0                         B--   
+00452f70  sub_452F70        864  a       0                         B--   
+004532d0  sub_4532D0        272  a       0                         BD-   
+004533e0  sub_4533E0        120  a       0                         B--   
+00453460  sub_453460         12  a       0                         B--   
+00453470  sub_453470         12  a       0                         B--   
+00453480  sub_453480         12  a       0                         B--   
+00453490  sub_453490         20  a       0                         ---   
+00453d90  sub_453D90        320  a       0                         B--   
+004541f0  Y_Stratum_UpdateEneDeadEffectTask        148  a       0                         ---   [Y_Stratum_UpdateEneDeadEffectTask]; update of task 'y_ene_dead effect proc'
+004543c0  sub_4543C0         64  a       0                         B--   
+00454400  sub_454400        288  a       0                         B--   
+00454520  sub_454520        252  b       0  rw                     B--   
+00454620  sub_454620       1096  b       0  rw                     B--   
+00454a70  sub_454A70        656  b       0  rw                     B--   
+00454d00  sub_454D00        588  a       0                         B--   
+00455b50  sub_455B50        404  a       0                         B--   
+00455cf0  sub_455CF0        272  a       0                         BD-   
+004561d0  sub_4561D0         20  a       0                         ---   
+004561f0  sub_4561F0        448  b       0  rw                     B--   
+004563b0  sub_4563B0         16  a       0                         ---   
+004563c0  sub_4563C0         16  a       0                         ---   
+004563d0  sub_4563D0         40  a       0                         ---   
+00456400  sub_456400         16  a       0                         ---   
+00456410  sub_456410         64  a       0                         ---   
+00456450  sub_456450         64  a       0                         ---   
+00456490  sub_456490         68  a       0                         ---   
+004564e0  sub_4564E0         68  a       0                         ---   
+00456530  sub_456530         68  a       0                         ---   
+00456580  sub_456580         68  a       0                         ---   
+004565d0  sub_4565D0         68  a       0                         ---   
+00456620  sub_456620         68  a       0                         ---   
+00457340  sub_457340         76  a       0                         ---   
+00457390  sub_457390         52  a       0                         ---   
+004573d0  sub_4573D0         52  a       0                         ---   
+00457410  sub_457410         88  a       0                         ---   
+00457470  sub_457470        356  a       0                         ---   
+0042a0d0  sub_42A0D0        172  a       1                         ---   
+0042a180  sub_42A180        172  a       1                         ---   
+0042a3f0  sub_42A3F0        164  a       1                         ---   
+0042a4a0  sub_42A4A0        164  a       1                         ---   
+0042a550  sub_42A550       1256  a       1                         ---   
+0042ba50  sub_42BA50        448  a       1                         ---   
+0042bc10  sub_42BC10        368  a       1                         ---   
+0042bd80  sub_42BD80        580  a       1                         ---   
+0042bfd0  sub_42BFD0        208  a       1                         ---   
+0042c0a0  sub_42C0A0       3296  b       1  libc                   ---   
+0042cd80  sub_42CD80        576  b       1  rw                     ---   
+0042cfc0  sub_42CFC0       3532  b       1  libc                   ---   
+0042dd90  sub_42DD90       3280  b       1  rw                     ---   
+0042ea60  sub_42EA60       2528  a       1                         ---   
+0042f440  sub_42F440       2360  a       1                         ---   
+00430bb0  Y_SMap_UpdateSmapMaskDrawTask       1320  a       1                         ---   [Y_SMap_UpdateSmapMaskDrawTask]; update of task 'y_smap mask draw '
+00448060  sub_448060       3208  a       1                         ---   
+00448cf0  sub_448CF0       4000  a       1                         ---   
+00449d60  sub_449D60        356  a       1                         ---   
+00449fe0  sub_449FE0        304  a       1                         ---   
+0044a110  sub_44A110        304  a       1                         ---   
+0044a420  sub_44A420        524  a       1                         ---   
+0044a790  sub_44A790        512  b       1  libc                   ---   
+0044dfc0  sub_44DFC0       1380  a       1                         B--   
+0044e560  sub_44E560       2804  b       1  rw                     B--   
+0044f300  sub_44F300       1956  b       1  rw                     B--   
+0044fab0  sub_44FAB0       1268  a       1                         B--   
+0044ffb0  sub_44FFB0        508  a       1                         B--   
+004534b0  sub_4534B0       2272  a       1                         B--   
+00454f50  sub_454F50       3068  b       1  rw                     B--   
+00456ea0  sub_456EA0       1180  a       1                         ---   
+0045a020  Y_TimeLimit_UpdateTimeLimitDrawTask        504  a       1                         ---   [Y_TimeLimit_UpdateTimeLimitDrawTask]; update of task 'y_TimeLimit draw'; str 'smap/i_timelimit01.spr'
+0044b7d0  sub_44B7D0       1756  b       2  rw                     B--   
+0044d600  sub_44D600       2488  a       2                         B--   
+004501b0  sub_4501B0       2432  b       2  rw                     B--   
+00450b30  sub_450B30       2404  b       2  rw                     B--   
+00453ed0  sub_453ED0        564  a       2                         B--   
+00456670  sub_456670       1044  a       2                         ---   
+00456a90  sub_456A90       1032  a       2                         ---   
+0044af60  sub_44AF60       2148  b       3  rw                     B--   
+00451d70  sub_451D70        664  a       3                         B--   
+004523c0  sub_4523C0       1704  b       3  rw                     B--   
+00452a70  sub_452A70       1280  b       3  rw                     B--   
+00454110  sub_454110        224  a       3                         B--   
+0044beb0  sub_44BEB0       5960  a       4                         B--   
+0044aaf0  Y_Stratum_UpdateEneThinkTask        512  a       5                         B--T  [Y_Stratum_UpdateEneThinkTask]; update of task 'ene think proc'
+# skip-class in this slice: 4281f0(print), 429c60(heap), 429d40(heap), 42aa40(print), 42ac60(print), 430150(heap), 430180(heap), 4310e0(heap), 431110(heap), 447ad0(heap), 447e70(heap), 449ed0(heap), 449fa0(heap), 44acf0(heap), 44ad20(heap), 454290(heap), 4542c0(heap), 456050(heap), 4560d0(heap), 45a220(heap), 45a280(heap)

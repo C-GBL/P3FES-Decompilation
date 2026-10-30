@@ -1,0 +1,13 @@
+# libs1.sym  Phase 5 slice delta (game/include/p3fes/game/libs1_kernel.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-25 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the pair tests on built alarm pools; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>,
+#   source=phase5-libs1 verified=yes: names from what each body does (the timer-counter operations on sce1's alarm
+#   pool). ev=<doc>#<section>. Not imported by the agent.
+# sub_50E850: start a counter (stamp the start time, set the running bit, re-queue an armed alarm, reprogram the timer)
+0050e850 000000ac F StartTimerCounter source=phase5-libs1 verified=yes ev=INTEGRATION_LOG.md#libs1
+# sub_50E950: stop a counter (add the running stretch to the total, clear the running bit, take an armed alarm off the list)
+0050e950 000000dc F StopTimerCounter source=phase5-libs1 verified=yes ev=INTEGRATION_LOG.md#libs1
+# sub_50EBE8: a counter's total time including the running stretch
+0050ebe8 0000006c F GetTimerCounterTime source=phase5-libs1 verified=yes ev=INTEGRATION_LOG.md#libs1
+# sub_50ECA8: arm / disarm a counter's alarm (target, handler, argument, the caller's $gp) and reprogram the timer
+0050eca8 0000010c F SetTimerCounterHandler source=phase5-libs1 verified=yes ev=INTEGRATION_LOG.md#libs1

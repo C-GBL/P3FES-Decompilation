@@ -1,0 +1,11 @@
+{"records": [
+  {"name": "MwsfdPlayerHdrRing", "size": 684,
+   "anchors": [{"how": "param", "fn": "0x583740", "index": 0}, {"how": "param", "fn": "0x581220", "index": 0}, {"how": "param", "fn": "0x5816E8", "index": 0}, {"how": "param", "fn": "0x582830", "index": 0}],
+   "fields": [
+    {"off": 392, "width": 4, "type": "ptr", "name": "addinf_usr_buf"},
+    {"off": 396, "width": 4, "type": "s32", "name": "addinf_usr_size"},
+    {"off": 456, "width": 4, "type": "s32", "name": "read_size"},
+    {"off": 484, "width": 4, "type": "ptr", "name": "mem_buf"},
+    {"off": 488, "width": 4, "type": "s32", "name": "mem_size"}
+   ]}
+]}

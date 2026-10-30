@@ -1,0 +1,38 @@
+{
+ "note": "slice events2: the parsed PM scene (work + 8), named from the instructions of sub_3942F0 [pmSceneParse] and sub_3912F0 [evtSetGameData] (game/src/event/events2.cpp) and checked on the live event (extracted/_ours/events_dorm_2100 / 2300: parsing the live PM1 / PM2 / PM3 again gives the live record's section pointers, tests/game/test_events2.cpp)",
+ "records": [
+  {
+   "name": "EvtScene",
+   "anchors": [
+    {"how": "param", "fn": "0x3942F0", "index": 1},
+    {"how": "param", "fn": "0x3912F0", "index": 0},
+    {"how": "param", "fn": "0x3902C0", "index": 0},
+    {"how": "param", "fn": "0x391080", "index": 0}
+   ],
+   "fields": [
+    {"off": 16, "width": 4, "type": "ptr", "name": "pm1"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "pm1_rows"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "names"},
+    {"off": 28, "width": 4, "type": "s32", "name": "name_count"},
+    {"off": 76, "width": 4, "type": "ptr", "name": "message"},
+    {"off": 80, "width": 4, "type": "s32", "name": "message_count"},
+    {"off": 84, "width": 4, "type": "ptr", "name": "name_rows"},
+    {"off": 88, "width": 4, "type": "s32", "name": "name_row_count"},
+    {"off": 96, "width": 4, "type": "ptr", "name": "ext_refs"},
+    {"off": 100, "width": 4, "type": "ptr", "name": "paths"},
+    {"off": 104, "width": 4, "type": "s32", "name": "path_count"},
+    {"off": 132, "width": 4, "type": "ptr", "name": "pm2"},
+    {"off": 136, "width": 4, "type": "ptr", "name": "pm2_rows"},
+    {"off": 148, "width": 4, "type": "ptr", "name": "frame_header"},
+    {"off": 152, "width": 4, "type": "ptr", "name": "keys_v4"},
+    {"off": 156, "width": 4, "type": "ptr", "name": "keys"},
+    {"off": 160, "width": 4, "type": "ptr", "name": "pm3"},
+    {"off": 164, "width": 4, "type": "ptr", "name": "pm3_rows"},
+    {"off": 176, "width": 4, "type": "s32", "name": "key_count"},
+    {"off": 260, "width": 4, "type": "ptr", "name": "objects"},
+    {"off": 264, "width": 4, "type": "s32", "name": "object_count"},
+    {"off": 300, "width": 4, "type": "ptr", "name": "ref_table"}
+   ]
+  }
+ ]
+}

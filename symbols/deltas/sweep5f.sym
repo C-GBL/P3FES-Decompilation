@@ -1,0 +1,8 @@
+# sweep5f.sym  Phase 5 slice delta (game/include/p3fes/game/sweep5f.h, game/src/render/sweep5f.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and the binary's own error texts, which name
+#   the function that reports them: "E1052501 ADXT_AttachAHX" 0x7C3140 (sub_54F5C0) and
+#   "E2003062000 AIXP_GetStatPause: parameter AIXP_CREATE_ERROR" 0x7C35F0 (sub_553658). Checked by
+#   tests/game/test_sweep5f.cpp. Proposals only: the code keeps the symbols/ names. No community hint, no CRI material.
+# <addr8> <size8> <F|D|L> <name> source=phase5-sweep5f verified=yes ev=<anchor>
+0054f5c0 00000144 F ADXT_AttachAHX source=phase5-sweep5f verified=yes ev=INTEGRATION_LOG.md#sweep5f
+00553658 00000030 F AIXP_GetStatPause source=phase5-sweep5f verified=yes ev=INTEGRATION_LOG.md#sweep5f

@@ -1,0 +1,17 @@
+# sweep5b.sym  Phase 5 slice delta (game/include/p3fes/game/sweep5b.h, game/src/field/sweep5b.cpp); SLUS_216.21
+# generated 2026-10-29 from the instructions (the p3fes_handgen bodies) and checked by tests/game/test_sweep5b.cpp
+#   (the CRI channel table, the scrambler seed, the small rules, the field object / camera lookups). A proposal only:
+#   the code keeps the symbols/ name. Our own names (no community hint).
+# <addr8> <size8> <F|D|L> <name> source=phase5-sweep5b verified=yes ev=<anchor>
+001a0430 00000160 F K_FldObj_SetFlag31ById source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+001a0700 000000e8 F K_FldObj_GetVecAById source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+001a07f0 000000e8 F K_FldObj_GetVecBById source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+001a08e0 000000e8 F K_FldObj_GetVecCById source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+001a1150 00000038 F K_FldCamera_GetWord264 source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+003580f0 00000070 F effMng_SeedScrambler source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+00588f48 00000048 F criChan_SetVec source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+005895f0 00000060 F criChan_GetValue source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+00589cb0 00000020 F criChan_SetWord source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+00589cd0 00000020 F criChan_GetWord source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+00589f38 00000034 F u64_SetLowWithCarry source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b
+00595bc0 00000024 F criHandle_IsIdle source=phase5-sweep5b verified=yes ev=INTEGRATION_LOG.md#sweep5b

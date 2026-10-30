@@ -1,0 +1,27 @@
+{"records": [
+  {"name": "SfxCnv",
+   "anchors": [{"how": "param", "fn": "0x59EF08", "index": 0}, {"how": "param", "fn": "0x59FF48", "index": 0}, {"how": "param", "fn": "0x59FF60", "index": 0}, {"how": "param", "fn": "0x59FE60", "index": 0}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "s32", "name": "compo"},
+    {"off": 36, "width": 4, "type": "ptr", "name": "zobj"},
+    {"off": 48, "width": 4, "type": "ptr", "name": "cb_rec"},
+    {"off": 56, "width": 4, "type": "ptr", "name": "table"}
+   ]},
+  {"name": "SfxCbRec",
+   "anchors": [{"how": "param", "fn": "0x59E918", "index": 0}, {"how": "param", "fn": "0x59E9D0", "index": 0}, {"how": "param", "fn": "0x59EA18", "index": 0}],
+   "fields": [
+    {"off": 4, "width": 4, "type": "s32", "name": "busy"},
+    {"off": 8, "width": 4, "type": "u32", "name": "copy_arg0"},
+    {"off": 12, "width": 4, "type": "u32", "name": "copy_arg1"},
+    {"off": 16, "width": 4, "type": "u32", "name": "copy_arg2"},
+    {"off": 24, "width": 4, "type": "ptr", "name": "copy_cb"}
+   ]},
+  {"name": "SfxZObj",
+   "anchors": [{"how": "param", "fn": "0x5A0B00", "index": 0}, {"how": "param", "fn": "0x5A03B0", "index": 0}],
+   "fields": [
+    {"off": 12, "width": 4, "type": "ptr", "name": "data"},
+    {"off": 16, "width": 4, "type": "u32", "name": "data_size"},
+    {"off": 60, "width": 4, "type": "f32", "name": "clip_near"},
+    {"off": 64, "width": 4, "type": "f32", "name": "clip_far"}
+   ]}
+]}

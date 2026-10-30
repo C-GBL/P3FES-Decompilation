@@ -1,0 +1,17 @@
+# libs7.sym  Phase 5 slice delta (game/include/p3fes/game/libs7.h); SLUS_216.21
+# generated 2026-10-28 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint; no
+#   IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-libs7 verified=yes: CRI library names
+#   taken from each function's own error text in the binary ("E9040811:'adxf' is NULL.(adxf_ReadSj32)" etc.).
+#   Not imported by the agent.
+005379f8 000002ec F ADXB_DecodeHeaderAdx source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053b6b0 00000048 F adxf_ChkPrmPt source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053c7c8 00000094 F adxf_CreateAdxFs source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053d098 0000008c F adxf_ReadSj32 source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053d450 000000ec F adxf_Stop source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053d578 000000c4 F adxf_StopNw source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053d7e8 00000114 F adxf_Seek source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053d938 00000030 F adxf_Tell source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053dad8 0000004c F adxf_GetNumReqSct source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053db60 00000030 F adxf_GetNumReadSct source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053f080 000000c8 F adxt_EntryAfs source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7
+0053f178 000000ac F adxt_StartSeamless source=phase5-libs7 verified=yes ev=INTEGRATION_LOG.md#libs7

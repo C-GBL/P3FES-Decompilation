@@ -1,0 +1,45 @@
+# Phase 5 hand-decompile queue -- topic 10 (frame loop / GS / DMA). <addr> <name> <purpose>. Evidence: docs/ANALYSIS/10_frame_loop_gs.md
+001984c0 kwlnMain top-level: three init stages then the root-task frame loop
+00197030 kwlnInitPS2Systems SIF/CDVD init, IOP reboot, timer 0 setup, IRX loads, pad/memcard init
+001983a0 kwlnUpdate one game frame: T0 timing, CDVD/sound/pad updates, kwlnTaskMain
+00198940 kwlnRootCreateTask creates the "rootProc" task that owns the per-frame draw tasks
+00198650 kwlnRootUpdateTask root task state machine; creates the 13 draw/show tasks
+00199140 kwlnRootUpdateShowRasterTask RwCameraShowRaster + frame-time/CPU-load statistics, T0 reset
+001989e0 kwlnRootUpdate2DDrawBeginTask RwCameraClear + RwCameraBeginUpdate + sprite draw
+00198b20 kwlnRootUpdate2DDrawEndTask RwCameraEndUpdate
+00196fe0 kwlnT0OverflowHandler INTC9 handler accumulating a 64-bit T0 count
+0019d320 kwlnVsyncFieldGate INTC2 handler gating the flip to even fields (30 fps lock, verify)
+0019d360 kwlnInstallVsyncFieldGate installs kwlnVsyncFieldGate on INTC cause 2
+00197fe0 kwlnGsSyncVCallback INTC2 handler: ADXM_ExecVint
+004241d0 Y_Misc_GetT0Count returns T0_COUNT
+00488dd0 RpRandomSeed LCG RNG seed (rand() table) from T0_COUNT
+00488c70 RpRandomSeedMT MT19937 seed from T0_COUNT
+004ca640 RwEngineStart device START request -> SkyStart, pipeline overload
+004e1060 SkyStart complete GS/DMA/VIF initialisation and double-buffer setup (long, but the reference for the Phase 3 first-flip milestone)
+004d6b10 _rwSkyInitConfigSystem VIF/GIF/VU1 reset + sceDmaReset
+004d67b0 _rwDMADmaOpen RW DMA buffer allocation, tag templates, hook installation
+004d6470 _rwDMAHook installs INTC2 + DMAC1/2 handlers, enables them
+004d4350 _rwDMAHandler RW software DMA queue driver (DMAC handler), kicks VIF1/GIF transfers
+004d47f0 _rwDMAVSYNCHandler VBLANK_START handler performing the display flip (PutDispEnv + DISPFB1/DISPLAY1)
+004d5270 _rwDMAReqFlip queues the flip entry for the current frame
+004d4df0 _rwDMAForceBufferSwap flushes SPR packet via D8, waits for queue drain, swaps DMA half-buffers
+004d53f0 _rwDMAWaitQueue frame throttle entry from SkyCameraBeginUpdate
+004d9460 SkyRasterShowRaster frame counter + flip request
+004f8eb0 sceGsResetGraph GS reset, GsPutIMR, SetGsCrt (SDK, re-implement for the runtime)
+004f9168 sceGsSetDefDispEnv builds PMODE/SMODE2/DISPFB2/DISPLAY2 (SDK)
+004f94e0 sceGsPutDispEnv writes the 5 GS privileged display registers (SDK)
+004f9668 sceGsSetDefDrawEnv builds the context-1 draw environment (SDK)
+004fa558 sceGsSetDefDrawEnv2 builds the context-2 draw environment (SDK)
+004f9850 sceGsPutDrawEnv sends a GIF packet on D2 normal mode (SDK)
+004fa738 sceGsSwapDBuffDc PutDispEnv + PutDrawEnv for one buffer (SDK)
+004f99d0 sceGsSyncPath polls D1/D2/VIF1/VU1/GIF idle (SDK)
+004f9938 sceGsSyncV vsync wait via VSync/VSync2 (SDK)
+004fa4b8 sceGsSyncVCallback registers an INTC2 handler (SDK)
+004fa798 WaitDma polls CHCR.STR with timeout (SDK libdma)
+004fa918 sceDmaReset resets libdma channel structs and D_CTRL/D_STAT/D_PCR (SDK)
+004fa9f8 sceDmaPutEnv programs D_CTRL/D_PCR/D_SQWC/D_RBSR/D_RBOR (SDK)
+004fac20 sceDmaSend chain-mode kick (CHCR 0x105) (SDK)
+004fac88 sceDmaSendN normal-mode kick (CHCR 0x101) (SDK)
+004fa8f0 sceDmaGetChan channel register block lookup (SDK)
+005035f0 VSync INTC_STAT bit 2 spin (SDK libkernel)
+00503680 VSync2 INTC_STAT bit 2 spin with SetVSyncFlag (SDK libkernel)

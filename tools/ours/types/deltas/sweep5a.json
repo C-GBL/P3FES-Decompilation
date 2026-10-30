@@ -1,0 +1,13 @@
+{"records": [
+  {"name": "SprHandle", "size": 448,
+   "anchors": [{"how": "ret", "fn": "0x112420"}, {"how": "param", "fn": "0x1124B0", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 2, "type": "u16", "name": "loaded"},
+    {"off": 260, "width": 4, "type": "ptr", "name": "rasters"},
+    {"off": 388, "width": 4, "type": "ptr", "name": "buffer"},
+    {"off": 392, "width": 4, "type": "ptr", "name": "request"},
+    {"off": 396, "width": 4, "type": "ptr", "name": "data"},
+    {"off": 440, "width": 4, "type": "ptr", "name": "next"},
+    {"off": 444, "width": 4, "type": "ptr", "name": "prev"}
+   ]}
+]}

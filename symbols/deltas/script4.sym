@@ -1,0 +1,217 @@
+# script4.sym  Phase 5 slice delta (game/include/p3fes/game/script4_fx.h / script4_msg.h, game/src/script/script4_*.cpp); SLUS_216.21
+# generated 2026-10-23 from the instructions (the p3fes_handgen bodies, the effect class rows 0x69BE20 + 52 * class and the
+#   kind rows 0x69CCC0 / 0x69CCF0, sScrCommandTable 0x7B92B0 row 146, sFrTagTable 0x6A2370, itfMesManagerDrawTypeTbl 0x6A1C90,
+#   the K_Assert file strings itfMesManager.c / itfPanel.c / frTagTable.c and the debug prints "itfPnlRegist2()" /
+#   "itfPnlSetPositionOffset()" read from the ELF) and checked by tests/game/test_script4.cpp. Only functions whose
+#   functions.json name is sub_*. Rows: <addr8> <size8> F <name> source=phase5-script4 verified=yes ev=<doc>#<section>.
+#   Not imported by the agent.
+# sub_3296A0: out(a0) = rotation rows of the normalised quaternion *a1, translation 0
+003296a0 0000009c F fxQuatToMatrix34 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_350070: return a0 +132
+00350070 0000000c F fxGetWord132 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_350080: sub_321F10() (field root destroy, field event update)
+00350080 00000020 F fxClearBank source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3500A0: (duration, kind): start a requested screen shake
+003500a0 00000034 F fxShakeRequest source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3500E0: stop the shake, clear the request
+003500e0 00000024 F fxShakeCancel source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_350110: per frame: run / end the requested shake
+00350110 00000074 F fxShakeRequestUpdate source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_350200: COMM 146 (no arguments): stop the shake, return 1
+00350200 00000028 F scrCommand_SHAKE_STOP source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3503E0: class 23 slot 4
+003503e0 0000006c F fxC23Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_350500: class 23 slot 6: (inst, source)
+00350500 00000098 F fxC23CopyFrom source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3505A0: class 23 slot 7: frame = 0
+003505a0 0000000c F fxC23Restart source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3505B0: class 23 slot 2: ++frame
+003505b0 00000014 F fxC23Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_351280: class 23 slot 12: +0 = a1
+00351280 0000000c F fxC23SetWord source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_351BB0: (kind): arm the "effect_crossfade" task, 1 if armed
+00351bb0 00000070 F fxCrossfadeRequest source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_351CA0: the strip mesh colour from gp-18348
+00351ca0 0000007c F fxC30Kind1Init source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_351D20: the colour-strip mesh of block A
+00351d20 000000fc F fxC30Kind1Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_351E20: 
+00351e20 00000044 F fxC30Kind1Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352800: class 30 slot 0
+00352800 00000104 F fxC30Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352910: class 30 slot 4
+00352910 00000064 F fxC30Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352980: class 30 slot 5
+00352980 000000f8 F fxC30Clone source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352A80: class 30 slot 7
+00352a80 00000050 F fxC30Restart source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352AD0: class 30 slot 2
+00352ad0 00000058 F fxC30Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352B30: class 30 slot 3
+00352b30 0000004c F fxC30Draw source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352B80: class 30 slot 1
+00352b80 0000008c F fxC30Step source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352C10: class 30 slot 8: quadword copy
+00352c10 00000010 F fxC30SetPos source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352C20: class 30 slot 12: +16 = a1
+00352c20 0000000c F fxC30SetWord source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352C30: (actor A, actor B)
+00352c30 00000018 F fxSetFadeActors source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352C50: (unit 0, unit 1, unit 2)
+00352c50 00000020 F fxSetFadeList source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352C70: (unit, selector) -> 1 when the selector picks the unit
+00352c70 000001a0 F fxUnitSelected source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352E10: the model kinds' create (model only for type 3)
+00352e10 0000009c F fxC31Kind1Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352EB0: 
+00352eb0 00000070 F fxC31Kind1Clone source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_352F20: 
+00352f20 0000004c F fxC31Kind1Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_353960: 32-byte saved-colour state
+00353960 00000030 F fxC31Kind2Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_353990: 
+00353990 00000028 F fxC31Kind2Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3539C0: the battle scene-light fade
+003539c0 000008d0 F fxC31Kind2Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3542A0: the selected battle units' colour fade
+003542a0 0000087c F fxC31Kind3Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_354B20: 
+00354b20 00000030 F fxC31Kind4Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_354B50: 
+00354b50 00000028 F fxC31Kind4Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_354B80: the field scene-light fade
+00354b80 00000aec F fxC31Kind4Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_355670: 
+00355670 00000030 F fxC31Kind5Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3556A0: 
+003556a0 00000028 F fxC31Kind5Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_355DD0: 
+00355dd0 0000009c F fxC31Kind6Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_355E70: 
+00355e70 00000070 F fxC31Kind6Clone source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_355EE0: 
+00355ee0 0000004c F fxC31Kind6Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_355F30: a model posed by the instance, lit by a light fade
+00355f30 00000aa8 F fxC31Kind6Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_356B00: 
+00356b00 000000a0 F fxC31Kind8Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_356BA0: 
+00356ba0 00000074 F fxC31Kind8Clone source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_356C20: 
+00356c20 0000004c F fxC31Kind8Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_356FD0: model + random start frame
+00356fd0 000000e0 F fxC31Kind9Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3570B0: 
+003570b0 000000b4 F fxC31Kind9Clone source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357170: 
+00357170 0000004c F fxC31Kind9Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357450: the battle camera FOV back to 40 degrees
+00357450 00000014 F fxC31Kind10Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357470: the battle camera FOV fade
+00357470 000000d0 F fxC31Kind10Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357770: (kind, parameters) -> a fresh class 31 instance
+00357770 000000bc F fxC31Alloc source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357830: class 31 slot 0
+00357830 00000100 F fxC31Create source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357930: class 31 slot 4
+00357930 00000078 F fxC31Destroy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3579B0: class 31 slot 5
+003579b0 000001ec F fxC31Clone source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357BA0: class 31 slot 7
+00357ba0 00000064 F fxC31Restart source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357C10: class 31 slot 2
+00357c10 0000006c F fxC31Update source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357C80: class 31 slot 3
+00357c80 00000054 F fxC31Draw source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357CE0: class 31 slot 1
+00357ce0 000000ac F fxC31Step source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357D90: class 31 slot 8
+00357d90 00000010 F fxC31SetPos source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357DA0: class 31 slot 9
+00357da0 00000010 F fxC31SetRot source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357DB0: class 31 slot 12
+00357db0 0000000c F fxC31SetColour source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357DC0: class 31 slot 10 ($f12)
+00357dc0 0000000c F fxC31SetScale source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357DD0: vf10 = vf10 * vf11
+00357dd0 0000002c F vu0QuatMul source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357E00: vf10 /= |vf10|
+00357e00 00000024 F vu0QuatNormalize source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357E30: vf28..vf31 = the rotation of the unit quaternion vf10
+00357e30 00000070 F vu0QuatToMatrix source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357EA0: vf10 = the quaternion of the angles $f12 / $f13 / $f14
+00357ea0 00000124 F vu0EulerToQuat source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_357FD0: (state or 0) -> next 32-bit value of the 4-word generator
+00357fd0 0000005c F effMiscRand source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_358160: vf28..vf31 = rotation by $f12 about x
+00358160 0000008c F vu0RotMatrixX source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3581F0: out(a1) = rotation by $f12 about the axis *a0
+003581f0 00000148 F vu0AxisAngleMatrix source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_358340: the same into vf28..vf31
+00358340 00000038 F vu0AxisAngleMatrixLoad source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_358380: vf24..vf27 = rotation by $f12 about y
+00358380 0000008c F vu0RotMatrixY source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_358410: vf28..vf31 = vf28..vf31 x vf24..vf27
+00358410 00000048 F vu0MatMul source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A0B50: (work) -> 1 when the message sequence of work +192 is done
+003a0b50 00000334 F evtMsgSequenceStep source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A1C00: (task) the card effect's load steps -> 0, -1 when done
+003a1c00 00000324 F ceCardEffLoadStep source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A3530: the type-9 selection panel around the option rows
+003a3530 00000148 F itfMesMngOpenSelPanel9 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A3680: the type-11 selection panel
+003a3680 00000138 F itfMesMngOpenSelPanel11 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A4A70: (slot, key, value) -> 1 when stored
+003a4a70 00000118 F itfMesMngSetTagParam source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A4DD0: (slot id)
+003a4dd0 00000114 F itfMesMngReleaseSlot source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A4EF0: (handle)
+003a4ef0 00000134 F itfMesMngFreeHandle source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A53B0: (x, y, rgba, style, colour set, flags, slot, line) -> line chain
+003a53b0 0000018c F itfMesMngBuildLine source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A5570: one dialogue line drawn once
+003a5570 0000017c F itfMesMngDrawLine source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A56F0: one or two dialogue lines drawn once
+003a56f0 00000248 F itfMesMngDrawLine2 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A5980: the current line of the handle's record
+003a5980 00000320 F itfMesMngBuildText source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A5CA0: (handle, index, data, size)
+003a5ca0 000001fc F itfMesMngSetArgString source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A5EA0: (handle, index, word)
+003a5ea0 00000124 F itfMesMngSetArgWord source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A6140: the selection's option lines
+003a6140 0000013c F itfMesMngBuildOptions source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A6520: the window panel of the handle's window type
+003a6520 000002c0 F itfMesMngOpenWindow source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A67E0: the speaker name plate
+003a67e0 0000011c F itfMesMngOpenPlate source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A6CA0: (panel record, window type, alpha)
+003a6ca0 00000190 F itfMesMngSetWindowLayout source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A6E30: per frame: the three panels' phases
+003a6e30 000002e4 F itfMesMngStepPanels source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A87D0: (x, y, points, count, rgba, keep state, $f12 z)
+003a87d0 00000330 F itfPnlDrawIm2D source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A8B00: (type, arg) -> panel (named by its debug print)
+003a8b00 00000258 F itfPnlRegist2 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A8EA0: (panel, dx0, dy0, dx1, dy1, dz) (named by its debug print)
+003a8ea0 00000104 F itfPnlSetPositionOffset source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3A9ED0: (panel, arg)
+003a9ed0 00000130 F itfPnlDrawType1 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AA000: 
+003aa000 00000130 F itfPnlDrawType2 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AA130: 
+003aa130 0000014c F itfPnlDrawType3 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AA370: the name-plate panel
+003aa370 000003a8 F itfPnlDrawType6 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AC240: 
+003ac240 00000110 F itfPnlDrawType7 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AC350: 
+003ac350 000001b0 F itfPnlDrawType8 source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AC900: tag 0x0C: character 1's names into the text
+003ac900 00000124 F frTagHeroName source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AD400: (item, column, tag, layout): icon glyph + item name
+003ad400 00000234 F frTagItemNameWithIcon source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3AD740: tag 0x1A: the item / column from two message arguments
+003ad740 0000011c F frTagItemName source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4
+# sub_3CF630: -> 1 while the event's step or one of its 3 panels runs
+003cf630 00000084 F evtIsBusy source=phase5-script4 verified=yes ev=INTEGRATION_LOG.md#script4

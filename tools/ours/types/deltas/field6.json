@@ -1,0 +1,25 @@
+{"records": [
+  {"name": "BattleResultWork", "anchors": [{"how": "gslot", "addr": "0x7CE2D8"}], "size": 42912,
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags", "note": "field6: 0x2 Shuffle Time, 0x4 skills, 0x8 hero level, 0x20 members, 0x40 skip a frame, 0x2000 may start, 0x10000 level-up quad, 0x200000 the result BGM"},
+    {"off": 4, "width": 4, "type": "u32", "name": "loads pending", "note": "field6: brRoot_UpdateBattleResultTask moves finished bits to +8"},
+    {"off": 8, "width": 4, "type": "u32", "name": "loads done", "note": "field6"},
+    {"off": 12, "width": 4, "type": "s32", "name": "state", "note": "field6: 0..12, jump table 0x7B6E10"},
+    {"off": 16, "width": 4, "type": "s32", "name": "skills page step", "note": "field6: state 8"},
+    {"off": 20, "width": 4, "type": "s32", "name": "birth step", "note": "field6: state 12, 0..7"},
+    {"off": 40, "width": 4, "type": "s32", "name": "button latch", "note": "field6: state 7"},
+    {"off": 56, "width": 4, "type": "s32", "name": "members step", "note": "field6: state 9"},
+    {"off": 60, "width": 4, "type": "s32", "name": "message window", "note": "field6: 0 none, 1 / 2 / 3 (K_Assert br_root.c when not 0 on open)"},
+    {"off": 148, "width": 4, "type": "ptr", "name": "shuffle root task", "note": "field6: sflRoot_CreateShuffleRootTasks"},
+    {"off": 176, "width": 4, "type": "s32", "name": "unit count", "note": "field6: sub_1F0AD0 from the battle packet +28"},
+    {"off": 188, "width": 4, "type": "s32", "name": "hero level before", "note": "field6: sub_1F13B0"},
+    {"off": 192, "width": 4, "type": "s32", "name": "hero level after", "note": "field6: sub_1F13B0"},
+    {"off": 236, "width": 4, "type": "s32", "name": "members levelled", "note": "field6: count of the u16 list +212"},
+    {"off": 276, "width": 4, "type": "s32", "name": "drop count", "note": "field6: count of the u16 list +268"},
+    {"off": 280, "width": 4, "type": "s32", "name": "units", "note": "field6: printed num_unit"},
+    {"off": 284, "width": 4, "type": "s32", "name": "dead units", "note": "field6: printed num_unit_dead"},
+    {"off": 336, "width": 4, "type": "s32", "name": "new skills", "note": "field6: count of the u16 list +320"},
+    {"off": 10844, "width": 4, "type": "s32", "name": "100", "note": "field6: brRoot_CreateBattleResultTasks"},
+    {"off": 42624, "width": 4, "type": "s32", "name": "page to show", "note": "field6: 3 members, 2 hero, 1 skills, 0 none (sub_1F13B0)"}
+   ]}
+]}

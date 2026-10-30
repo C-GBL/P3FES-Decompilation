@@ -1,0 +1,26 @@
+# libs18.sym  Phase 5 slice delta (game/include/p3fes/game/libs18.h); SLUS_216.21 SHA-256 d1b163eb...3957bc
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint,
+#   the callees' documented roles in libs7 / cri1 / cri2; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>.
+#   verified=yes: the body's own error / message string names the function. verified=no: the CRI public-API name a
+#   locked wrapper of a documented adxf_ worker would carry (lock, worker, unlock). ev=<doc>#<section>. Not imported by
+#   the agent.
+# sub_53E850: its error strings read "E02041201: NULL pointer is specified.(ADXT_GetHdrInfo)"
+0053e850 00000168 F ADXT_GetHdrInfo source=phase5-libs18 verified=yes ev=INTEGRATION_LOG.md#libs18
+# sub_541AF0: prints "ADXRNA_GetStat: not implemented" and spins
+00541af0 00000034 F ADXRNA_GetStat source=phase5-libs18 verified=yes ev=INTEGRATION_LOG.md#libs18
+# sub_53EF00: the locked wrapper of sub_53EF40, whose error string names adxt_EntryFnameRange
+0053ef00 0000003c F ADXT_EntryFnameRange source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53D418: ADXF lock, stop a read with completion (sub_53D450), unlock
+0053d418 00000038 F ADXF_Stop source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53D540: ADXF lock, stop a read without completion (sub_53D578), unlock
+0053d540 00000038 F ADXF_StopNw source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53D790: ADXF lock, seek (sub_53D7E8), unlock
+0053d790 00000058 F ADXF_Seek source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53D900: ADXF lock, tell (sub_53D938), unlock
+0053d900 00000038 F ADXF_Tell source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53D9E0: ADXF lock, the file size in bytes (sub_53DA18), unlock
+0053d9e0 00000038 F ADXF_GetFsizeByte source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53DB28: ADXF lock, sectors read by the last request (sub_53DB60), unlock
+0053db28 00000038 F ADXF_GetNumReadSct source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18
+# sub_53CC78: ADXF lock, open a handle on a partition entry (sub_53CCC0), unlock
+0053cc78 00000048 F ADXF_OpenAfs source=phase5-libs18 verified=no ev=INTEGRATION_LOG.md#libs18

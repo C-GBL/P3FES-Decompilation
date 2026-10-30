@@ -1,0 +1,342 @@
+{
+ "records": [
+  {
+   "name": "gGlobalWork",
+   "anchors": [
+    {
+     "how": "gobj",
+     "addr": "0x836200"
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 18,
+     "type": "u8[18]",
+     "name": "hero first name",
+     "note": "savedata: save block 1 +0 (sub_177DB0 copies it to the header +12; sub_179030 to 0x833BB0)"
+    },
+    {
+     "off": 18,
+     "width": 18,
+     "type": "u8[18]",
+     "name": "hero surname",
+     "note": "savedata: save block 1 +18 (header +30; 0x833BD0)"
+    },
+    {
+     "off": 17688,
+     "width": 16,
+     "type": "u8[16]",
+     "name": "block 27 table",
+     "note": "savedata: 4 x {s16 id (-1 free), s16 counter}; sub_17C350 / sub_17C4E0 / sub_17C590 / sub_17C610 / sub_17C670 / sub_17C700 / sub_17C750; save block 27"
+    },
+    {
+     "off": 17704,
+     "width": 8,
+     "type": "u8[8]",
+     "name": "block 28 bytes",
+     "note": "savedata: sub_17C7F0 / sub_17C860 (K_Assert for i >= 8); save block 28"
+    },
+    {
+     "off": 17712,
+     "width": 4,
+     "type": "s32",
+     "name": "block 29 counter",
+     "note": "savedata: sub_17D030 / sub_17D040; save block 29"
+    },
+    {
+     "off": 17716,
+     "width": 256,
+     "type": "u8[256]",
+     "name": "block 30 rows",
+     "note": "savedata: 32 x {u16 a, u16 b, u16 key, u16 value}; sub_17D060 / sub_17D1A0 / sub_17D250; save block 30"
+    },
+    {
+     "off": 17972,
+     "width": 144,
+     "type": "u8[144]",
+     "name": "block 31 rows",
+     "note": "savedata: 9 x {8 bytes current, 8 bytes previous}, filled with the floats of 0x5E38C0 by sub_17D3C0; sub_17D450 / sub_17D610 / sub_17D700; save block 31"
+    },
+    {
+     "off": 18584,
+     "width": 4,
+     "type": "s32",
+     "name": "block 35 word",
+     "note": "savedata: sub_17D7B0; save block 35, the header's byte +10"
+    }
+   ]
+  },
+  {
+   "name": "SaveHeader",
+   "size": 52,
+   "anchors": [],
+   "fields": [
+    {
+     "off": 0,
+     "width": 2,
+     "type": "u16",
+     "name": "day",
+     "note": "savedata: sub_177DB0 (days since April 5); sub_41F370 / sub_41F940 draw it"
+    },
+    {
+     "off": 2,
+     "width": 2,
+     "type": "u16",
+     "name": "time slot",
+     "note": "savedata: sub_177DB0"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "s32",
+     "name": "play time (1/30 s)",
+     "note": "savedata: 0x83A598 = counter 47; drawn as t / 108000 h, t / 1800 % 60 min"
+    },
+    {
+     "off": 8,
+     "width": 1,
+     "type": "u8",
+     "name": "level",
+     "note": "savedata: from the hero exp and the table 0x5DC050"
+    },
+    {
+     "off": 9,
+     "width": 1,
+     "type": "u8",
+     "name": "clear mark",
+     "note": "savedata: 2 flag 0x1319, 1 flag 0x1311, else 0"
+    },
+    {
+     "off": 10,
+     "width": 1,
+     "type": "u8",
+     "name": "block 35 byte",
+     "note": "savedata: sub_17D7B0(); sub_41FD90 picks the row draw by it"
+    },
+    {
+     "off": 12,
+     "width": 18,
+     "type": "u8[18]",
+     "name": "first name",
+     "note": "savedata: gGlobalWork +0"
+    },
+    {
+     "off": 30,
+     "width": 18,
+     "type": "u8[18]",
+     "name": "surname",
+     "note": "savedata: gGlobalWork +0x12"
+    },
+    {
+     "off": 48,
+     "width": 1,
+     "type": "u8",
+     "name": "field major",
+     "note": "savedata: *0x7CD540 +0"
+    },
+    {
+     "off": 49,
+     "width": 1,
+     "type": "u8",
+     "name": "field minor",
+     "note": "savedata: *0x7CD540 +4"
+    },
+    {
+     "off": 50,
+     "width": 2,
+     "type": "u16",
+     "name": "header sum",
+     "note": "savedata: the u8 sum of bytes 0..49"
+    }
+   ]
+  },
+  {
+   "name": "McProcWork",
+   "size": 956,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x41CC70",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 2,
+     "type": "u16",
+     "name": "task state",
+     "note": "savedata: sub_41E830 (0..10)"
+    },
+    {
+     "off": 2,
+     "width": 2,
+     "type": "u16",
+     "name": "menu state",
+     "note": "savedata: sub_41E010 (0..13, jump table 0x7BC120)"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "flags",
+     "note": "savedata: bit 0 ready, 1 save screen, 2 drawing pass, 3 done (sub_4204F0), 10 / 11 fades"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "s32",
+     "name": "mode",
+     "note": "savedata: 0 check, 1 area check, 2 save, 3 load (sub_41CC70)"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "s32",
+     "name": "step",
+     "note": "savedata: sub_41CEA0 / sub_41D120 / sub_41D330 / sub_41DB20"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "u32",
+     "name": "step flags",
+     "note": "savedata: bit 0 the card needs formatting (sub_41D330)"
+    },
+    {
+     "off": 20,
+     "width": 64,
+     "type": "s32[16]",
+     "name": "slot used",
+     "note": "savedata: sub_41EC70 / sub_41FD90"
+    },
+    {
+     "off": 84,
+     "width": 832,
+     "type": "u8[832]",
+     "name": "slot headers",
+     "note": "savedata: 16 x SaveHeader (sub_41F370 / sub_41F940 / sub_41FD90)"
+    },
+    {
+     "off": 916,
+     "width": 4,
+     "type": "ptr",
+     "name": "draw task",
+     "note": "savedata: Y_McProc_CreateMcProcDrawTask"
+    },
+    {
+     "off": 920,
+     "width": 4,
+     "type": "ptr",
+     "name": "window task",
+     "note": "savedata: the mcWNDProc task (sub_4215B0 / sub_421700 calls)"
+    },
+    {
+     "off": 924,
+     "width": 4,
+     "type": "ptr",
+     "name": "row list",
+     "note": "savedata: the nmCmdList of 16 rows"
+    },
+    {
+     "off": 928,
+     "width": 4,
+     "type": "ptr",
+     "name": "buffer",
+     "note": "savedata: the heap block {u32 size, u32 data, data} of a save / load"
+    },
+    {
+     "off": 938,
+     "width": 2,
+     "type": "u16",
+     "name": "fade alpha",
+     "note": "savedata: sub_41E830 / Y_McProc_UpdateMcProcDrawTask"
+    },
+    {
+     "off": 944,
+     "width": 4,
+     "type": "ptr",
+     "name": "icon file",
+     "note": "savedata: camp/icon.bin (H_Cdvd node)"
+    },
+    {
+     "off": 948,
+     "width": 4,
+     "type": "ptr",
+     "name": "pak file",
+     "note": "savedata: facility/mc.pak (H_Cdvd node)"
+    },
+    {
+     "off": 952,
+     "width": 4,
+     "type": "s32",
+     "name": "frame counter",
+     "note": "savedata: sub_41CEA0 (15 frames)"
+    }
+   ]
+  },
+  {
+   "name": "AnimTrack",
+   "size": 152,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x45AFD0",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 128,
+     "type": "u8[128]",
+     "name": "keys",
+     "note": "savedata: 4 x 32 bytes {f32 x0, y0, x1, y1, dx, dy, rate; u8 delay; u8 hold; s16 frames} (sub_45AFD0)"
+    },
+    {
+     "off": 128,
+     "width": 4,
+     "type": "s32",
+     "name": "current key",
+     "note": "savedata: sub_45B420"
+    },
+    {
+     "off": 132,
+     "width": 4,
+     "type": "s32",
+     "name": "key count",
+     "note": "savedata: sub_45AFD0 (4 at most)"
+    },
+    {
+     "off": 136,
+     "width": 4,
+     "type": "s32",
+     "name": "frame in key",
+     "note": "savedata"
+    },
+    {
+     "off": 140,
+     "width": 4,
+     "type": "u32",
+     "name": "flags",
+     "note": "savedata: 1 running, 2 done (sub_45B480 / sub_45B4B0)"
+    },
+    {
+     "off": 144,
+     "width": 4,
+     "type": "s32",
+     "name": "time",
+     "note": "savedata: sub_45B4E0"
+    },
+    {
+     "off": 148,
+     "width": 4,
+     "type": "s32",
+     "name": "total frames",
+     "note": "savedata: sub_45AFD0 adds delay + hold + frames"
+    }
+   ]
+  }
+ ]
+}

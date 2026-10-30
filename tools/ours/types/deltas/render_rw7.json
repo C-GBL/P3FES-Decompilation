@@ -1,0 +1,93 @@
+{
+ "records": [
+  {
+   "name": "RpUserDataArray",
+   "size": 16,
+   "anchors": [{"how": "param", "fn": "0x48EF20", "index": 0}, {"how": "param", "fn": "0x48EF30", "index": 0}, {"how": "param", "fn": "0x48DD70", "index": 0}, {"how": "param", "fn": "0x48E4F0", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "name"},
+    {"off": 4, "width": 4, "type": "s32", "name": "format"},
+    {"off": 8, "width": 4, "type": "s32", "name": "num_elements"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "data"}
+   ]
+  },
+  {
+   "name": "RpMeshHeader",
+   "size": 16,
+   "anchors": [{"how": "param", "fn": "0x4964F0", "index": 0}, {"how": "ret", "fn": "0x496230"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 4, "width": 2, "type": "u16", "name": "num_meshes"},
+    {"off": 6, "width": 2, "type": "u16", "name": "serial_num"},
+    {"off": 8, "width": 4, "type": "u32", "name": "total_indices"},
+    {"off": 12, "width": 4, "type": "u32", "name": "first_mesh_offset"}
+   ]
+  },
+  {
+   "name": "RpSpline",
+   "anchors": [{"how": "param", "fn": "0x48D200", "index": 0}, {"how": "param", "fn": "0x48D370", "index": 0}, {"how": "param", "fn": "0x48B910", "index": 0}],
+   "fields": [
+    {"off": 8, "width": 4, "type": "s32", "name": "num_points"},
+    {"off": 12, "width": 4, "type": "s32", "name": "type"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "ctrl_points"},
+    {"off": 56, "width": 4, "type": "f32", "name": "b_points"}
+   ]
+  },
+  {
+   "name": "RpPTankData",
+   "size": 172,
+   "anchors": [{"how": "param", "fn": "0x473600", "index": 0}, {"how": "param", "fn": "0x473B10", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "num_particles"},
+    {"off": 12, "width": 4, "type": "ptr", "name": "block"},
+    {"off": 84, "width": 4, "type": "ptr", "name": "position"},
+    {"off": 88, "width": 4, "type": "s32", "name": "position_stride"},
+    {"off": 92, "width": 4, "type": "ptr", "name": "matrix"},
+    {"off": 96, "width": 4, "type": "s32", "name": "matrix_stride"},
+    {"off": 100, "width": 4, "type": "ptr", "name": "normal"},
+    {"off": 104, "width": 4, "type": "s32", "name": "normal_stride"},
+    {"off": 108, "width": 4, "type": "ptr", "name": "size"},
+    {"off": 112, "width": 4, "type": "s32", "name": "size_stride"},
+    {"off": 116, "width": 4, "type": "ptr", "name": "color"},
+    {"off": 120, "width": 4, "type": "s32", "name": "color_stride"},
+    {"off": 124, "width": 4, "type": "ptr", "name": "vtx_color"},
+    {"off": 128, "width": 4, "type": "s32", "name": "vtx_color_stride"},
+    {"off": 132, "width": 4, "type": "ptr", "name": "rotate_2d"},
+    {"off": 136, "width": 4, "type": "s32", "name": "rotate_2d_stride"},
+    {"off": 140, "width": 4, "type": "ptr", "name": "vtx_2_tex_coords"},
+    {"off": 144, "width": 4, "type": "s32", "name": "vtx_2_tex_coords_stride"},
+    {"off": 148, "width": 4, "type": "ptr", "name": "vtx_4_tex_coords"},
+    {"off": 152, "width": 4, "type": "s32", "name": "vtx_4_tex_coords_stride"},
+    {"off": 160, "width": 4, "type": "s32", "name": "num_components"},
+    {"off": 164, "width": 4, "type": "s32", "name": "record_size"},
+    {"off": 168, "width": 4, "type": "u32", "name": "format"}
+   ]
+  },
+  {
+   "name": "Rt2dFont",
+   "size": 324,
+   "anchors": [{"how": "param", "fn": "0x4A9BD0", "index": 0}, {"how": "param", "fn": "0x4A96B0", "index": 0}, {"how": "param", "fn": "0x4A7620", "index": 0}, {"how": "param", "fn": "0x4A9560", "index": 0}],
+   "fields": [
+    {"off": 12, "width": 4, "type": "f32", "name": "char_gap"},
+    {"off": 16, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 20, "width": 4, "type": "ptr", "name": "textures"},
+    {"off": 36, "width": 2, "type": "s16", "name": "glyph_map"},
+    {"off": 292, "width": 4, "type": "s32", "name": "first_high_code"},
+    {"off": 296, "width": 4, "type": "s32", "name": "num_high_codes"},
+    {"off": 300, "width": 4, "type": "ptr", "name": "high_map"},
+    {"off": 304, "width": 4, "type": "s32", "name": "num_glyphs"},
+    {"off": 308, "width": 4, "type": "ptr", "name": "glyphs"}
+   ]
+  },
+  {
+   "name": "PdsRegistry",
+   "size": 16,
+   "anchors": [{"how": "gobj", "addr": "0x95C44C"}, {"how": "param", "fn": "0x46A970", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "ptr", "name": "entries"},
+    {"off": 4, "width": 4, "type": "s32", "name": "count"},
+    {"off": 8, "width": 4, "type": "s32", "name": "capacity"}
+   ]
+  }
+ ]
+}

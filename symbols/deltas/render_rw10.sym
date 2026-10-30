@@ -1,0 +1,59 @@
+# render_rw10.sym  Phase 5 slice delta (game/include/p3fes/game/render_rw10.h); SLUS_216.21
+# generated 2026-10-28 from the role comments of game/src/render/render_rw10.cpp (no IDA database opened).
+#   Rows: <addr8> <size8> F <name> source=phase5-render_rw10 verified=yes ev=<doc>#<section>
+#   our own names: each role is read from the body (fields, callers, chunk ids, strings) and checked by the
+#   pair tests; RW 3.x public API names only where the body does what that API does.
+#   Not imported by the agent (one master owner at a time).
+00467860 000002d4 F matFXMaterialCopy source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0046bfb0 00000380 F rt2dFontRenderString source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0047bd20 000000e4 F ptankInstGeometryCreate source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+00486340 00000378 F ptankQuadGeometryCreate source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0048d0e0 0000011c F splineStreamRead source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049bcd0 00000008 F geometryNativeWriteCB source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049bce0 00000030 F geometryNativeReadCB source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049bd20 00000008 F sectorNativeWriteCB source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049bd30 00000030 F sectorNativeReadCB source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049c240 000000ec F RpWorldAddClump source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049e830 000001c0 F geometryNativeStreamWrite source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049e9f0 000002dc F geometryNativeStreamRead source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049ee70 000001c8 F sectorNativeStreamWrite source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+0049f040 000002f4 F sectorNativeStreamRead source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a6ce0 000001c8 F rt2dFontStrokeString source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a6eb0 00000770 F rt2dFontBitmapShowString source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a7820 0000061c F rt2dFontReadMetrics1 source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a7e40 00000b38 F rt2dFontReadMetrics2 source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a8980 0000076c F rt2dFontReadMetrics3 source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a90f0 000000f4 F rt2dFontCreate source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a97c0 000000d8 F rt2dFontOpenMetrics source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004a98a0 000001c4 F Rt2dFontRead source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004acb90 00000130 F rt2dPathStreamReadNew source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004ace80 000005fc F rt2dShapeStrokeGeometry source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004ae270 0000007c F rt2dPickRegionStreamRead source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004ae4e0 000000bc F rt2dSceneDestroyBody source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004b24c0 000001d4 F rt2dAnimPropBlendMatrix source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004b43c0 00000050 F Rt2dMaestroCreate source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bccd0 00000590 F textureStreamReadImages source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bd260 00000280 F textureStreamReadHeader source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bd4e0 00000530 F textureReadImageEntry source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bda10 00000118 F texDictStreamReadImages source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bec20 0000091c F RtTileRender source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bf540 00000020 F rtTileRenderThunk source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bf560 00000174 F rtTileArchiveBmpCB source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bf880 00000100 F rtfsBuildPath source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004bf980 00000054 F rtfsFileExists source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004c0550 00000154 F RwFgets source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004c0f70 00000044 F sceFsFileStatus source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004c0fc0 00000008 F rtfsFileExistsThunk source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004c7460 000000b8 F rwStringStreamWrite source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004c76c0 000001dc F rwStringStreamReadUnicode source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004c7b90 00000158 F cameraStreamRead source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004ca850 00000154 F RwEngineInit source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004cffd0 00000620 F textureReadDefaultMipmapped source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004d6700 000000a8 F rwDMARemoveHandlers source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004d8440 0000005c F skyTextureKLStreamWrite source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004df140 000002b0 F skyRasterNativeStreamWrite source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004df7c0 000000a4 F skyTextureNativeGetSize source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004df870 0000015c F skyTextureNativeStreamWrite source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004e9680 0000003c F skySetSubRasterGlobals source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004eb7e0 000000e0 F skyRasterQuantiseImage source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10
+004ebb40 0000046c F skyRasterSetImageDirect source=phase5-render_rw10 verified=yes ev=INTEGRATION_LOG.md#render_rw10

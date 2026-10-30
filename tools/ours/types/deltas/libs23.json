@@ -1,0 +1,8 @@
+{"records": [
+  {"name": "SfdHandle",
+   "anchors": [{"how": "param", "fn": "0x5984C8", "index": 0}, {"how": "param", "fn": "0x593730", "index": 0}, {"how": "param", "fn": "0x59A4A8", "index": 0}, {"how": "param", "fn": "0x59AEF8", "index": 0}],
+   "fields": [
+    {"off": 2336, "width": 4, "type": "s32", "name": "time_src"},
+    {"off": 2432, "width": 4, "type": "s32", "name": "frame_locks"}
+   ]}
+]}

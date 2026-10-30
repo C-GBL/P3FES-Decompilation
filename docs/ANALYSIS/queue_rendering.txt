@@ -1,0 +1,558 @@
+# Phase 5 rewrite queue -- rendering path (docs/ANALYSIS/22_rendering.md). Leaf-first by call depth on the SCC
+# condensation of the render-path call graph (direct jal + function pointers stored by code + the Im2D dispatch tables).
+# Columns: addr  name  size  class  depth  notes.  Names: the exported name (symbols/functions.json); a bracketed name is
+# verified in 22_rendering.md and proposed in symbols/deltas/rendering.sym (not imported). Community hint names are not used.
+# Class: a = pure builder (guest RAM / scratchpad writes only), a0 = builder that also uses di/ei/mfc0 Status (state in
+# EEContext), b = touches hardware registers (EE 0x1000xxxx / GS 0x1200xxxx / VU control via cfc2-ctc2) -- address list in notes.
+# Flags: c = hot on the per-frame path (c1 particles, c2 skin palette, c3 Im2D, c4 per mesh/atomic, c5 texture cache, c6 render
+# state, c7 culling, c8 instancing (load time), c9 raster lock/blit); callsB = reaches a class-b callee (pair test: RecordingBus
+# log + scratchpad + DMA buffer compare); vu0 = VU0 macro / lqc2-sqc2; spr = scratchpad base 0x70000000.
+# Depth 0 = no callee on the path (jalr callbacks excepted).
+#
+# === Recommended first slice (22_rendering.md section 8.1): the Im2D submission path, leaf-first ===
+004ec100  open2DVU1Pkt                                    420  a+c+callsB          3  Im2D descriptor open callback (descriptors 0x7BCF70 {prog 038 lines, 039 triangles}, 0x7BCF80 (fog bit, inf) {036, 037}); opens the VIF packet; c3 Im2D; 1 back-edges
+004ecac0  addCopyVU1Triangle                              544  a+c+callsB          4  one triangle, same packet shape; c3 Im2D; 1 back-edges
+004ec8a0  addCopyVU1Line                                  436  a+c+callsB          4  one line (SkyIm2DRenderLine); c3 Im2D; 1 back-edges
+004ecd40  addCopyVU1PrimLineList                          652  a+c+callsB          4  Im2D prim array 0x77F1B0 slot 1 (rwPRIMTYPELINELIST); c3 Im2D; 4 back-edges
+004ecfd0  addCopyVU1PrimPolyLine                          652  a+c+callsB          4  slot 2 (POLYLINE); c3 Im2D; 4 back-edges
+004ed260  addCopyVU1PrimTriList                           784  a+c+callsB          4  slot 3 (TRILIST); c3 Im2D; 4 back-edges
+004ed570  addCopyVU1PrimTriStrip                          800  a+c+callsB          4  slot 4 (TRISTRIP): strip expanded to triangles, batches of <= 16 triangles (3 x 64-byte RwIm2DVertex) behind a cnt + UNPACK V4-32m header; descriptor open per batch; c3 Im2D; 4 back-edges
+004ed890  addCopyVU1PrimTriFan                            784  a+c+callsB          4  slot 5 (TRIFAN); c3 Im2D; 4 back-edges
+004edc20  addCopyVU1IndPrimLineList                       688  a+c+callsB          4  indexed array 0x77F1D0 slot 1; c3 Im2D; 4 back-edges
+004eded0  addCopyVU1IndPrimPolyLine                       688  a+c+callsB          4  indexed slot 2; c3 Im2D; 4 back-edges
+004ee180  addCopyVU1IndPrimTriList                        816  a+c+callsB          4  indexed slot 3; c3 Im2D; 4 back-edges
+004ee4b0  addCopyVU1IndPrimTriStrip                       864  a+c+callsB          4  indexed slot 4; c3 Im2D; 4 back-edges
+004ee810  addCopyVU1IndPrimTriFan                         828  a+c+callsB          4  indexed slot 5; c3 Im2D; 4 back-edges
+004ecce0  SkyIm2DRenderTriangle                            96  a+callsB            5  addCopyVU1Triangle(descriptor, 0, v0, v1, v2)
+004eca60  SkyIm2DRenderLine                                88  a+callsB            5  addCopyVU1Line
+004edba0  SkyIm2DRenderPrimitive                          116  a+callsB            5  prim 1..5 -> prim-function array 0x77F1xx with descriptor 0x7BCF80 / 0x7BCF70 chosen by bit 0 of gp-16892 (fog, inf)
+004eeb50  SkyIm2DRenderIndexedPrimitive                   112  a+callsB            5  indexed variant (array 0x77F1Cx)
+004ec4c0  closeAndDispatchVU1Packet                        72  a                   0  appends the 64-byte dispatch trailer (MSCALF/FLUSH tags) to the open packet
+# === Second slice (section 8.2): the PS2All mesh seam (stock + skin path), leaf-first ===
+0049ca50  sub_49CA50                                                    88  a+c                 0  c4 per mesh
+0049cab0  sub_49CAB0                                                   288  a+c                 0  c4 per mesh
+0049cbd0  sub_49CBD0                                                    88  a+c                 0  c4 per mesh
+004f1e20  sub_4F1E20                                                    32  a                   0  leaf
+004f1e40  sub_4F1E40                                                   140  a                   0  leaf
+004a05d0  RpAtomicPS2AllPrimTypeTransTypeSetupFunc        228  a+c                 0  prim type (mesh+41) and transType bits (mesh+40): camera bits (0 fog inf, 3 parallel) | clip bit 1 | list bit 2 | line bit 4; c4 per atomic; 4 back-edges
+004a0480  sub_4A0480                                                   332  a+c                 0  c4 per atomic
+004a06c0  sub_4A06C0                                                   560  a+c                 6  c4 per atomic lights; 2 back-edges
+0049ff10  sub_49FF10                                                  1308  a+c                 4  c4 per atomic lights; 2 back-edges
+004a0430  sub_4A0430                                                    80  a                   5  calls sub_49FF10; 1 back-edges
+004a09d0  sub_4A09D0                                                   588  a+c                 7  c4 per atomic; 3 back-edges
+0046b510  _rpSkinMatrixUpdating                           968  a+c+vu0             4  per bone: LTM x skin-to-bone (VU0 macro 4x4), x inverse atomic LTM -> matrix palette; c2 skin palette; 4 back-edges
+0046b8e0  sub_46B8E0                                                   456  a+c+callsB          3  c2 skin palette upload; 3 back-edges
+0046eb90  sub_46EB90                                                  2148  a+c+callsB          6  c2 skin object setup: per skinned atomic; 18 back-edges
+004ec2b0  openVU1SetupPktNew                              516  a+c+callsB          3  per-object VIF packet: matrix + light block UNPACK (callee of PS2AllNodeBody); c4 per atomic; 2 back-edges
+004f0f30  sub_4F0F30                                                   232  a+c                 0  c5 per material
+004f1020  RpSkyTexCacheAccessRaster                      1304  a+c+callsB          3  makes a raster resident (upload callback), patches TEX0 TBP/CBP, emits the TEX0/TEX1 A+D packet; c5 tex cache; 10 back-edges
+004a0e00  RpMeshPS2AllBridgeCallBack                                  1572  a0+c+callsB         4  stock material bridge: tex cache, GIF tag, mat colour/surface props UNPACKs, TEST/TEX0/CLAMP A+D, VU code `call` on change, resEntry `call`, MSCAL; code index = (tt&0x20)>>5 | (tt&0x18)>>2; c4 per mesh; 9 back-edges
+0046ea80  sub_46EA80                                                   132  a                   0  leaf
+0049f5d0  PS2AllNodeBody                                 1220  a+c+callsB          4  object node: setup CB (node+16) -> openVU1SetupPktNew -> per mesh: material pipe, instance (PS2AllNodeInstance) if needed, bridge CB [3], post-mesh CB [4]; c4 per atomic + per mesh; 9 back-edges
+00490860  AtomicDefaultRenderCallBack                     100  a                   5  atomic+0x6C pipeline (or global default) -> RxPipelineExecute(pipe, atomic, 1); installed by the atomic constructor sub_491880; 1 back-edges
+# === Full queue: RenderWare sky driver / PS2All / plugins (band 0x460000-0x4FB100) ===
+00468720  sub_468720                                                   180  a                   0  [matfx] leaf; 5 back-edges
+0046ad20  sub_46AD20                                                    84  a                   0  [matfx] leaf; 1 back-edges
+0046b1b0  skinInstanceWeights                                                   864  a+c                 0  [skin] c8 skin weights at instance; 2 back-edges
+00474160  sub_474160                                                   164  a                   0  [ptank] leaf
+004749a0  sub_4749A0                                                   224  a                   0  [ptank] leaf
+00474a80  sub_474A80                                                   304  a                   0  [ptank] leaf
+00476140  sub_476140                                                   836  b+c+spr             0  [ptank] hw 1000d000,1000d400,1000e010,1000e020; c1 particles: per particle per frame; 11 back-edges
+00476490  sub_476490                                                   644  b+c+spr             0  [ptank] hw 1000d000,1000d400,1000e010,1000e020; c1 particles: per particle per frame; 10 back-edges
+00476720  sub_476720                                                   600  b+c+spr             0  [ptank] hw 1000d000,1000d400,1000e010,1000e020; c1 particles: per particle per frame; 6 back-edges
+00476980  sub_476980                                                   664  b+c+spr             0  [ptank] hw 1000d000,1000d400,1000e010,1000e020; c1 particles: per particle per frame; 6 back-edges
+00477610  sub_477610                                                   512  a+c                 0  [ptank] c1 particles: per particle per frame; 3 back-edges
+00477a20  sub_477A20                                                   620  a+c                 0  [ptank] c1 particles: per particle per frame; 3 back-edges
+00477eb0  sub_477EB0                                                   588  a+c                 0  [ptank] c1 particles: per particle per frame; 3 back-edges
+00478280  sub_478280                                                   440  a+c                 0  [ptank] c1 particles: per particle per frame; 3 back-edges
+0047bb40  sub_47BB40                                                   468  a                   0  [ptank] leaf; 2 back-edges
+0047c240  sub_47C240                                                  1664  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000e010; c1 particles: per particle per frame; 10 back-edges
+0047c8c0  sub_47C8C0                                                  1808  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000e010; c1 particles: per particle per frame; 11 back-edges
+0047cfd0  sub_47CFD0                                                  3668  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d080,1000d400,1000d420,1000e010; c1 particles: per particle per frame; 18 back-edges
+0047de30  sub_47DE30                                                  2984  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d080,1000d400,1000d420,1000e010; c1 particles: per particle per frame; 20 back-edges
+0047e9e0  sub_47E9E0                                                  4392  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000d420,1000e010; c1 particles: per particle per frame; 24 back-edges
+0047fb10  sub_47FB10                                                  4376  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000d420,1000e010; c1 particles: per particle per frame; 22 back-edges
+00480c30  sub_480C30                                                  3120  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d080,1000d400,1000d420,1000e010; c1 particles: per particle per frame; 20 back-edges
+00481860  sub_481860                                                  4592  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000d420,1000e010; c1 particles: per particle per frame; 24 back-edges
+00482a50  sub_482A50                                                  1824  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000e010; c1 particles: per particle per frame; 16 back-edges
+00483170  sub_483170                                                  1892  b+c+vu0+spr         0  [ptank] hw 1000d000,1000d400,1000e010; c1 particles: per particle per frame; 16 back-edges
+004838e0  sub_4838E0                                                  6032  b+c+spr             0  [ptank] hw 1000d000,1000d400,1000d420,1000e010,1000e020; c1 particles: per particle per frame; 31 back-edges
+00485070  sub_485070                                                   156  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00485750  sub_485750                                                  1740  b+c+spr             0  [ptank] hw 1000d000,1000d400,1000e010,1000e020; c1 particles: per particle per frame; 24 back-edges
+00485e20  sub_485E20                                                   204  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00486100  sub_486100                                                   168  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+004861b0  sub_4861B0                                                   400  a                   0  [ptank] leaf; 1 back-edges
+00486980  sub_486980                                                   344  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00486ae0  sub_486AE0                                                   416  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00486c80  sub_486C80                                                   568  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00486ec0  sub_486EC0                                                   360  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00487030  sub_487030                                                   580  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00487280  sub_487280                                                   660  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00487520  sub_487520                                                   464  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+004876f0  sub_4876F0                                                   672  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00487990  sub_487990                                                   296  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00487ac0  sub_487AC0                                                   304  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00487bf0  sub_487BF0                                                   644  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00487e80  sub_487E80                                                   104  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00487ef0  sub_487EF0                                                   440  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+004880b0  sub_4880B0                                                   424  a+c                 0  [ptank] c1 particles: per particle per frame; 2 back-edges
+00488260  sub_488260                                                   144  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+004882f0  sub_4882F0                                                   152  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00488390  sub_488390                                                   128  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00488410  sub_488410                                                   136  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+004884a0  sub_4884A0                                                   168  a+c                 0  [ptank] c1 particles: per particle per frame; 1 back-edges
+00488b90  sub_488B90                                                   212  a                   0  [ptank] leaf
+0048a3e0  sub_48A3E0                                                     8  a                   0  [skin] leaf
+00490d80  sub_490D80                                                     8  a                   0  [rpworld-atomic] leaf
+00491100  sub_491100                                                   432  a+c                 0  [rpworld-atomic] c7; 1 back-edges
+00493370  geometryLock                                                    84  a                   0  [rpworld-atomic] leaf
+00495320  sub_495320                                                    20  a                   0  [rpworld-atomic] leaf
+00495f10  meshHeaderForAllMeshes                                                   160  a                   0  [rpworld-atomic] leaf; 2 back-edges
+004965a0  meshSortCompare                                                   504  a                   0  [rpworld-atomic] leaf; 2 back-edges
+004967a0  sub_4967A0                                                   804  a                   0  [rpworld-atomic] leaf; 5 back-edges
+00496e80  triStripTriangleEdge                                                   216  a                   0  [rpworld-atomic] leaf; 3 back-edges
+00496f60  triStripTakeTriangle                                                   464  a                   0  [rpworld-atomic] leaf; 9 back-edges
+004982b0  sub_4982B0                                                  1136  a                   0  [rpworld-atomic] leaf; 14 back-edges
+00499230  worldSectorRenderDispatch                                                    20  a                   0  [rpworld-sector] leaf
+004992f0  sub_4992F0                                                    40  a                   0  [rpworld-sector] leaf
+00499c20  worldForAllLights                                                   128  a                   0  [rpworld-sector] leaf; 1 back-edges
+00499ca0  worldSectorForAllLights                                                   132  a                   0  [rpworld-sector] leaf; 1 back-edges
+0049a870  worldForAllSectors                                                   168  a                   0  [rpworld-sector] leaf; 2 back-edges
+0049c330  sub_49C330                                                   148  a+c                 0  [rpworld-sector] c7; 2 back-edges
+0049c7a0  sub_49C7A0                                                   104  a                   0  [ps2all] leaf; 1 back-edges
+0049cc70  ps2AllMatClusterLayout                                                  2140  a+c                 0  [ps2all] c8; 28 back-edges
+0049d4d0  ps2AllInstanceSizes                                                  1944  a+c                 0  [ps2all] c8; 7 back-edges
+0049dc70  ps2AllInstanceDmaChain                                                  2172  a+c                 0  [ps2all] c8; 6 back-edges
+0049fec0  sub_49FEC0                                                    52  a                   0  [ps2all] leaf
+004a0c20  sub_4A0C20                                                   188  a                   0  [ps2all] leaf; 3 back-edges
+004a1430  ps2AllAtomicInstance                                                  4196  a+c                 0  [ps2all] c8 instancing: per vertex at (re)instance; 28 back-edges
+004a24a0  sub_4A24A0                                                   184  a                   0  [ps2all] leaf; 1 back-edges
+004a2ba0  sub_4A2BA0                                                     8  a                   0  [ps2all] leaf
+004a2bb0  ps2AllIm3DInstance                                                  1300  a+c                 0  [ps2all] c8 Im3D instance (per Im3D call); 9 back-edges
+004a35b0  sub_4A35B0                                                     8  a                   0  [ps2all] leaf
+004a35c0  sub_4A35C0                                                   808  a+c                 0  [ps2all] c8; 14 back-edges
+004a3f70  sub_4A3F70                                                   232  a                   0  [ps2all] leaf; 1 back-edges
+004a42f0  ps2AllSectorInstance                                                  2644  a+c                 0  [ps2all] c8 per vertex at instance; 18 back-edges
+004a55b0  sub_4A55B0                                                  2068  a                   0  [rt2d] leaf
+004a9a70  sub_4A9A70                                                    12  a                   0  [rt2d] leaf
+004aac70  sub_4AAC70                                                   224  a                   0  [rt2d] leaf; 2 back-edges
+004aad50  sub_4AAD50                                                    68  a                   0  [rt2d] leaf; 1 back-edges
+004ab0c0  sub_4AB0C0                                                    32  a                   0  [rt2d] leaf
+004ab0e0  sub_4AB0E0                                                   136  a                   0  [rt2d] leaf
+004ab910  sub_4AB910                                                   260  a                   0  [rt2d] leaf
+004c1c50  sub_4C1C50                                                   116  a                   0  [rwcore] leaf; 1 back-edges
+004c1d10  sub_4C1D10                                                    56  a                   0  [rwcore] leaf
+004c1e60  sub_4C1E60                                                     8  a                   0  [rwcore] leaf
+004c2090  sub_4C2090                                                    32  a                   0  [rwcore] leaf
+004c2120  sub_4C2120                                                     8  a                   0  [rwcore] leaf
+004c21b0  sub_4C21B0                                                    20  a                   0  [rwcore] leaf
+004c2330  sub_4C2330                                                  1328  a                   0  [rwcore] leaf
+004c2860  sub_4C2860                                                   464  a                   0  [rwcore] leaf
+004c2f30  sub_4C2F30                                                   124  a+vu0               0  [rwcore] leaf
+004c6970  sub_4C6970                                                   116  a                   0  [rwcore] leaf
+004c6be0  sub_4C6BE0                                                    60  a                   0  [rwcore] leaf
+004c6c60  sub_4C6C60                                                    60  a                   0  [rwcore] leaf
+004c6d60  sub_4C6D60                                                   144  a                   0  [rwcore] leaf; 1 back-edges
+004c6e60  sub_4C6E60                                                   208  a                   0  [rwcore] leaf; 1 back-edges
+004c9d00  RwCameraEndUpdate                                12  a                   0  [rwcore] jalr camera+28
+004c9d10  RwCameraBeginUpdate                              12  a                   0  [rwcore] jalr camera+24 (CameraBeginUpdate -> device -> SkyCameraBeginUpdate)
+004c9df0  sub_4C9DF0                                                   152  a+c                 0  [rwcore] c7 per atomic; 1 back-edges
+004c9e90  RwCameraClear                                    52  a                   0  [rwcore] device clear pointer -> sub_4D8F40
+004cae30  sub_4CAE30                                                    16  a                   0  [rwcore] leaf
+004cc0a0  sub_4CC0A0                                                   296  a                   0  [rwcore] leaf; 3 back-edges
+004cdc70  sub_4CDC70                                                   112  a                   0  [rwcore] leaf; 1 back-edges
+004cdce0  sub_4CDCE0                                                   112  a                   0  [rwcore] leaf; 1 back-edges
+004cdd50  sub_4CDD50                                                   168  a                   0  [rwcore] leaf
+004cde00  sub_4CDE00                                                    60  a                   0  [rwcore] leaf
+004cdfe0  RwRasterShowRaster                              100  a                   0  [rwcore] resource purge + device show -> SkyRasterShowRaster
+004ce050  sub_4CE050                                                   156  a                   0  [rwcore] leaf
+004ce200  sub_4CE200                                                    76  a                   0  [rwcore] leaf
+004ce3a0  sub_4CE3A0                                                  1524  a                   0  [rwcore] leaf; 2 back-edges
+004d13e0  sub_4D13E0                                                    52  a                   0  [rwcore] leaf
+004d4350  _rwDMAHandler                                               1184  b                   0  [dma] hw 10003020,10009000,10009010,10009030,1000a030,cfc2 vi29; 5 back-edges
+004d5e90  sub_4D5E90                                                   328  b+spr               0  [dma] hw 1000d000,1000e010,1000e020; 3 back-edges
+004d6b60  sub_4D6B60                                                    48  a                   0  [renderstate] leaf; 1 back-edges
+004d78b0  sub_4D78B0                                                  1708  a                   0  [renderstate] leaf; 5 back-edges
+004d81b0  sub_4D81B0                                                   236  a                   0  [renderstate] leaf
+004db200  sub_4DB200                                                   324  a                   0  [raster] leaf
+004dd480  sub_4DD480                                                   636  a                   0  [raster] leaf; 6 back-edges
+004dd700  sub_4DD700                                                   916  a                   0  [raster] leaf; 7 back-edges
+004ddaa0  sub_4DDAA0                                                   644  a                   0  [raster] leaf; 6 back-edges
+004ddd30  sub_4DDD30                                                   876  a                   0  [raster] leaf; 7 back-edges
+004e2f10  sub_4E2F10                                                   372  a                   0  [raster] leaf
+004e4a90  sub_4E4A90                                                   400  a                   0  [raster] leaf; 4 back-edges
+004e4c20  sub_4E4C20                                                   532  a                   0  [raster] leaf; 4 back-edges
+004eec20  sub_4EEC20                                                  1016  a                   0  [upload] leaf
+004ef020  skyFillInPktForUpLoadAlignedContiguousRectangle              428  a+c                 0  [upload] c5 per upload; 2 back-edges
+004f0c60  sub_4F0C60                                                     8  a                   0  [texcache] leaf
+004f1540  sub_4F1540                                                   572  a+c                 0  [texcache] c5; 13 back-edges
+004f1f80  sub_4F1F80                                                    76  a                   0  [im3d] leaf
+004f2710  sub_4F2710                                                    24  a                   0  [im3d] leaf
+004f2e60  sub_4F2E60                                                     8  a                   0  [rxheap] leaf
+004f9040  sceGsGetGParam                                                12  a                   0  [sce] leaf
+004f99d0  sceGsSyncPath                                                788  b                   0  [sce] hw cfc2 vi29; 5 back-edges
+004f9ce8  sceGsSetDefStoreImage                                        320  a                   0  [sce] leaf
+004f9e28  sceGsExecStoreImage                                         1676  a+spr               0  [sce] leaf; 14 back-edges
+004fa8f0  sceDmaGetChan                                                 40  a                   0  [sce] leaf
+0046a890  RpPDSGetPipe                                                  56  a                   1  [matfx] calls sub_46AD20
+0046eb10  RpPDS_G3d_Skin_PS2AllInstanceCallBack           128  a                   1  [pds-bridge] ps2AllAtomicInstance + skin weights skinInstanceWeights; 1 back-edges
+00477470  sub_477470                                                   412  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 4 back-edges
+00477810  sub_477810                                                   524  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 3 back-edges
+00477c90  sub_477C90                                                   536  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 3 back-edges
+00478100  sub_478100                                                   372  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 3 back-edges
+00485110  sub_485110                                                   816  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 3 back-edges
+00485440  sub_485440                                                   784  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 3 back-edges
+00485ef0  sub_485EF0                                                   256  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 2 back-edges
+00485ff0  sub_485FF0                                                   264  a+c+callsB          1  [ptank] c1 particles: per particle per frame; 2 back-edges
+00495cf0  sub_495CF0                                                   532  a                   1  [rpworld-atomic] calls sub_4C1C50, sub_4C1D10
+00497130  triStripExtend                                                  1232  a                   1  [rpworld-atomic] calls triStripTriangleEdge, triStripTakeTriangle; 23 back-edges
+00498e70  sub_498E70                                                   716  a                   1  [rpworld-atomic] calls meshHeaderForAllMeshes, sub_4C1C50, sub_4C1D10, meshSortCompare; 3 back-edges
+0049a170  worldSectorGetWorld                                                   220  a                   1  [rpworld-sector] calls worldForAllSectors, sub_4992F0; 2 back-edges
+0049faa0  PS2AllNodeInstance                              924  a                   1  [ps2all] re-instance path: ps2AllInstanceSizes / ps2AllInstanceDmaChain / instance CB; only when the resEntry is missing or stale; 6 back-edges
+004a0dc0  RpMeshPS2AllInstanceCallBack                     64  a                   1  [ps2all] type byte 0xFF -> ps2AllSectorInstance (sector) else ps2AllAtomicInstance (atomic)
+004a2560  ps2AllIm3DObjectSetup                                                   368  a                   1  [ps2all] calls sub_4A24A0, sub_4C2F30; 6 back-edges
+004a2780  sub_4A2780                                                     8  a                   1  [ps2all] calls ps2AllIm3DInstance
+004aab40  sub_4AAB40                                                   304  a                   1  [rt2d] calls sub_4C2F30; 2 back-edges
+004ac020  sub_4AC020                                                   248  a                   1  [rt2d] calls sub_4C2090, sub_4C2120; 3 back-edges
+004ac390  sub_4AC390                                                   120  a                   1  [rt2d] calls sub_4AB0E0; 4 back-edges
+004ae690  sub_4AE690                                                   256  a                   1  [rt2d] calls sub_4C2090; 4 back-edges
+004c1e70  sub_4C1E70                                                   244  a                   1  [rwcore] calls sub_4C1C50, sub_4C1D10; 1 back-edges
+004c2fb0  sub_4C2FB0                                                     8  a                   1  [rwcore] calls sub_4C2330
+004c32a0  sub_4C32A0                                                   300  a                   1  [rwcore] calls sub_4C2860; 3 back-edges
+004c33d0  sub_4C33D0                                                   500  a                   1  [rwcore] calls sub_4C1C50, sub_4C1D10
+004c35d0  sub_4C35D0                                                   392  a                   1  [rwcore] calls sub_4C1C50, sub_4C1D10
+004c3760  sub_4C3760                                                   288  a                   1  [rwcore] calls sub_4C1C50, sub_4C1D10, sub_4C2F30; 3 back-edges
+004c47e0  sub_4C47E0                                                   168  a                   1  [rwcore] calls sub_4C6E60; 1 back-edges
+004c6f30  sub_4C6F30                                                   240  a                   1  [rwcore] calls sub_4C6D60; 5 back-edges
+004c9ed0  RwCameraShowRaster                                            48  a                   1  [rwcore] calls RwRasterShowRaster
+004cbf20  sub_4CBF20                                                   304  a                   1  [rwcore] calls sub_4C1C50, sub_4C1D10
+004ce9a0  sub_4CE9A0                                                   620  a                   1  [rwcore] calls sub_4CE3A0; 2 back-edges
+004cf3b0  sub_4CF3B0                                                   268  a                   1  [rwcore] calls sub_4C2F30; 4 back-edges
+004d0fd0  sub_4D0FD0                                                   156  a                   1  [rwcore] calls sub_4C1C50, sub_4C1D10; 1 back-edges
+004d4280  sub_4D4280                                                   208  a+callsB            1  [dma] calls _rwDMAAddPkt; 2 back-edges
+004d4a60  _rwDMAClosePkt                                               900  b+spr               1  [dma] hw 1000e010,1000e020; 7 back-edges
+004d4df0  _rwDMAForceBufferSwap                                        516  b                   1  [dma] hw 1000d000; 5 back-edges
+004d5000  _rwDMAAddPkt                                                 448  b                   1  [dma] hw 1000d000; 2 back-edges
+004dece0  sub_4DECE0                                                   560  a+c                 1  [raster] c9; 5 back-edges
+004def10  sub_4DEF10                                                   192  a                   1  [raster] calls sub_4F1540; 2 back-edges
+004e4e90  sub_4E4E90                                                  1360  a+c                 1  [raster] c5 per upload; 3 back-edges
+004f3150  sub_4F3150                                                   108  a                   1  [rxheap] calls sub_4C1C50, sub_4C1D10
+004f61c0  sub_4F61C0                                                   272  a                   1  [rxheap] calls sub_4C1C50, sub_4C1D10; 3 back-edges
+004f94e0  sceGsPutDispEnv                                              188  b                   1  [sce] hw 12000000
+00469d00  matfxSetSectorPipeline                                                    92  a                   2  [matfx] calls RpPDSGetPipe, worldSectorGetWorld
+00469d60  matfxSetAtomicPipeline                                                    88  a                   2  [matfx] calls RpPDSGetPipe
+00497600  sub_497600                                                  3248  a                   2  [rpworld-atomic] calls triStripTakeTriangle, triStripExtend; 21 back-edges
+0049e5a0  sub_49E5A0                                                   284  a                   2  [ps2all] calls sub_4C47E0; 2 back-edges
+004ab6a0  sub_4AB6A0                                                   540  a                   2  [rt2d] calls sub_4C1E70, sub_4C2090, sub_4C2120, sub_4C21B0
+004ab8c0  sub_4AB8C0                                                    80  a                   2  [rt2d] calls sub_4AC390, sub_4C1E60
+004aba20  sub_4ABA20                                                   816  a                   2  [rt2d] calls sub_4AB910, sub_4C1E70, sub_4C2120; 3 back-edges
+004ad750  sub_4AD750                                                   496  a                   2  [rt2d] calls sub_4A55B0, sub_4A9A70, sub_4AAB40, sub_4AAC70; 4 back-edges
+004ae2f0  sub_4AE2F0                                                   180  a                   2  [rt2d] calls sub_4AAB40, sub_4AAC70, sub_4AAD50, sub_4AB0C0; 2 back-edges
+004c4930  sub_4C4930                                                   708  a                   2  [rwcore] calls sub_4C1C50, sub_4C1D10, sub_4C6E60, sub_4C6F30; 5 back-edges
+004cb7f0  sub_4CB7F0                                                   148  a                   2  [rwcore] calls sub_4C3760; 1 back-edges
+004cc1d0  sub_4CC1D0                                                  1000  a                   2  [rwcore] calls sub_4C1C50, sub_4C1D10, sub_4CBF20; 8 back-edges
+004cec10  sub_4CEC10                                                   536  a                   2  [rwcore] calls sub_4CE9A0; 3 back-edges
+004cf4c0  sub_4CF4C0                                                   248  a                   2  [rwcore] calls sub_4C2F30, sub_4CF3B0; 4 back-edges
+004d47f0  _rwDMAVSYNCHandler                                           616  b                   2  [dma] hw 1000a030,12000070,12001000
+004d51c0  _rwDMAAddPURef                                  168  a+callsB            2  [dma] ring of pending resource references (gp-17268/-17264); closes the packet when the ring is full; 1 back-edges
+004d53f0  _rwDMAWaitQueue                                              232  a+callsB            2  [dma] calls _rwDMAHandler, _rwDMAForceBufferSwap
+004d54e0  _rwDMAOpenGIFPkt                                            1256  b+spr               2  [dma] hw 1000d000,1000e010; 5 back-edges
+004d59d0  _rwDMAOpenVIFPkt                                            1208  b+spr               2  [dma] hw 1000d000,1000e010; 7 back-edges
+004de0a0  sub_4DE0A0                                                  3132  a+c+callsB          2  [raster] c9 raster lock: per locked frame (FMV, screenshots); 26 back-edges
+004f5d30  sub_4F5D30                                                    88  a                   2  [rxheap] calls sub_4F3150; 1 back-edges
+004f62d0  sub_4F62D0                                                   244  a                   2  [rxheap] calls sub_4F61C0
+004687e0  sub_4687E0                                                  1128  a                   3  [matfx] calls sub_468720, sub_4CBF20, sub_4CC0A0, sub_4CC1D0; 9 back-edges
+0046c330  sub_46C330                                                   632  a+callsB            3  [pds-bridge] calls _rwDMAOpenVIFPkt; 2 back-edges
+0046f400  sub_46F400                                                  1904  a+callsB            3  [pds-2d] calls _rwDMAOpenVIFPkt; 5 back-edges
+0046fdd0  sub_46FDD0                                                  1060  a0+callsB           3  [pds-2d] calls sub_49CAB0, sub_49CBD0, _rwDMAAddPURef, _rwDMAOpenVIFPkt; 4 back-edges
+00470200  sub_470200                                                  1396  a+callsB            3  [pds-2d] calls sub_4C2090, _rwDMAOpenVIFPkt; 8 back-edges
+004709e0  RpPDS_G3_2DFont_PS2AllBridgeCallBack                        1060  a0+callsB           3  [pds-2d] calls sub_49CAB0, sub_49CBD0, _rwDMAAddPURef, _rwDMAOpenVIFPkt; 4 back-edges
+00470e10  sub_470E10                                                  1016  a+callsB            3  [pds-2d] calls _rwDMAOpenVIFPkt; 2 back-edges
+00471470  sub_471470                                                  1060  a0+callsB           3  [pds-2d] calls sub_49CAB0, sub_49CBD0, _rwDMAAddPURef, _rwDMAOpenVIFPkt; 4 back-edges
+00477150  sub_477150                                                   796  a+c+callsB          3  [ptank] c1 particles: per particle per frame; 6 back-edges
+00498720  sub_498720                                                  1808  a                   3  [rpworld-atomic] calls sub_497600, sub_4982B0, meshSortCompare; 11 back-edges
+004a08f0  sub_4A08F0                                                   212  a                   3  [ps2all] calls sub_4C4930; 1 back-edges
+004a2790  sub_4A2790                                                  1040  a0+callsB           3  [ps2all] calls sub_49CAB0, sub_49CBD0, _rwDMAAddPURef, _rwDMAOpenVIFPkt; 4 back-edges
+004cb2f0  sub_4CB2F0                                                    76  a                   3  [rwcore] calls sub_4CF4C0; 1 back-edges
+004d5270  _rwDMAReqFlip                                                376  a0+callsB           3  [dma] calls _rwDMAHandler, _rwDMAForceBufferSwap, _rwDMAAddPkt, _rwDMAOpenVIFPkt; 3 back-edges
+004d5fe0  sub_4D5FE0                                                   612  b+spr               3  [dma] hw 1000d000,1000e010,1000e020; 4 back-edges
+004d7f60  RpSkyRenderStateSet                                          588  a+c+callsB          3  [renderstate] c6 render state (665 call sites); 4 back-edges
+004d8f40  sub_4D8F40                                                  1312  a0+callsB           3  [camera] calls _rwDMAWaitQueue, _rwDMAOpenVIFPkt; 5 back-edges
+004e3640  sub_4E3640                                                  2036  a+callsB            3  [raster] calls _rwDMAOpenVIFPkt; 4 back-edges
+004e4180  sub_4E4180                                                   664  a0+callsB           3  [raster] calls _rwDMAOpenVIFPkt; 2 back-edges
+004e4420  sub_4E4420                                                   320  a+callsB            3  [raster] calls _rwDMAOpenVIFPkt
+004e4560  sub_4E4560                                                   352  a+callsB            3  [raster] calls _rwDMAOpenVIFPkt
+004e46c0  sub_4E46C0                                                   312  a0+callsB           3  [raster] calls _rwDMAOpenVIFPkt; 2 back-edges
+004ef540  sub_4EF540                                                   548  a+c+callsB          3  [upload] c5 per upload
+004f1b30  sub_4F1B30                                                   736  a+callsB            3  [texcache] calls _rwDMAOpenVIFPkt
+004f6890  sub_4F6890                                                   212  a                   3  [rxheap] calls sub_4F62D0; 3 back-edges
+00469dc0  sub_469DC0                                                     8  a                   4  [matfx] calls sub_4687E0
+0046b060  matfxEffectMatrix                                                   336  a                   4  [matfx] calls sub_4C2F30, sub_4C2FB0, sub_4C32A0, sub_4CB2F0; 7 back-edges
+0046e170  matfxBridgeDual                                                  2312  a0+c+callsB         4  [pds-bridge] c4 per mesh; 8 back-edges
+0046fb70  sub_46FB70                                                    12  a+callsB            4  [pds-2d] calls sub_46F400
+00470780  sub_470780                                                    12  a+callsB            4  [pds-2d] calls sub_470200
+00471210  sub_471210                                                    12  a+callsB            4  [pds-2d] calls sub_470E10
+00472270  matfxBridgeUvTransform                                                  1792  a0+c+callsB         4  [pds-bridge] c4 per mesh; 10 back-edges
+00472970  matfxBridgeDualUvTransform                                                  2508  a0+c+callsB         4  [pds-bridge] c4 per mesh; 11 back-edges
+004733c0  sub_4733C0                                                   240  a+callsB            4  [pds-bridge] calls sub_4CB2F0, _rwDMAOpenVIFPkt
+004748c0  sub_4748C0                                                   220  a+callsB            4  [ptank] calls RpSkyTexCacheAccessRaster, sub_4F1E40; 1 back-edges
+00478440  sub_478440                                                   212  a+callsB            4  [ptank] calls sub_4861B0, sub_477150, sub_477470
+00479170  sub_479170                                                  1056  a+c+callsB          4  [ptank] c1 particles: per particle per frame; 7 back-edges
+00479590  sub_479590                                                   676  a+c+callsB          4  [ptank] c1 particles: per particle per frame; 5 back-edges
+00488550  sub_488550                                                  1580  a+c                 4  [ptank] c1 particles: per particle per frame; 13 back-edges
+004912b0  atomicGetWorldBoundingSphere                                                   352  a+c                 4  [rpworld-atomic] c7 per atomic; 2 back-edges
+00491630  RpClumpRender                                   148  a                   4  [rpworld-atomic] walks clump atomics (+8), render flag, frame LTM sub_4CB2F0, atomic->renderCallBack; 3 back-edges
+00498e30  sub_498E30                                                    12  a                   4  [rpworld-atomic] calls sub_498720
+004a0ce0  sub_4A0CE0                                                   224  a                   4  [ps2all] calls sub_4A08F0, sub_4C4930; 1 back-edges
+004a26d0  HandleUnexpected__FP12ThrowContextP13ExceptionInfoP16ex_specificationPc   164  a+callsB            4  [ps2all] calls _rwDMAOpenVIFPkt, sub_4D5FE0
+004aae60  sub_4AAE60                                                   608  a                   4  [rt2d] calls sub_4C2F30, sub_4C32A0, sub_4C33D0, sub_4C35D0
+004d6250  sub_4D6250                                                   536  b+c+spr             4  [dma] hw 1000d000; c5 per upload; 2 back-edges
+004d6b90  _rwSkySetRenderState                                        3352  a+c+callsB          4  [renderstate] c6 render state: ~1000 calls per field frame; 8 back-edges
+004d84c0  SkyCameraBeginUpdate                                        2484  a0+callsB           4  [camera] calls sub_4C1C50, sub_4C1D10, sub_4C6970, _rwDMAWaitQueue; 9 back-edges
+004d8e80  sub_4D8E80                                                   192  a+callsB            4  [camera] calls _rwDMAOpenVIFPkt, sub_4E3640; 3 back-edges
+004d9460  SkyRasterShowRaster                                          172  a+callsB            4  [camera] calls _rwDMAReqFlip, sub_4E2F10, sub_4F0C60; 2 back-edges
+004e4800  sub_4E4800                                                   656  a+callsB            4  [raster] calls sub_4E4180, sub_4E4420, sub_4E46C0; 6 back-edges
+004e53e0  sub_4E53E0                                                  6520  a+c+callsB          4  [raster] c9 raster blit; 42 back-edges
+004e6d60  sub_4E6D60                                                  6312  a+c+callsB          4  [raster] c9; 68 back-edges
+004e8610  sub_4E8610                                                  4208  a+c+callsB          4  [raster] c9; 37 back-edges
+004ef770  sub_4EF770                                                   640  a+callsB            4  [upload] calls _rwDMAOpenGIFPkt, sub_4D5FE0; 1 back-edges
+004f2e70  RxPipelineExecute                               252  a                   4  [rxheap] sets the exec context globals, calls the first node body (node->def->body at +4); 2 back-edges
+0046c5b0  matfxBridgeBumpMap                                                  2012  a0+c+callsB         5  [pds-bridge] c4 per mesh; 9 back-edges
+0046cd90  matfxBridgeEnvMap                                                  2396  a0+c+callsB         5  [pds-bridge] c4 per mesh; 8 back-edges
+0046d6f0  matfxBridgeBumpEnvMap                                                  2680  a0+c+callsB         5  [pds-bridge] c4 per mesh; 9 back-edges
+0046fb80  pds2DObjectSetupA                                                   584  a                   5  [pds-2d] calls sub_4AAE60, sub_4C2F30; 7 back-edges
+00470790  pds2DObjectSetupB                                                   584  a                   5  [pds-2d] calls sub_4AAE60, sub_4C2F30; 7 back-edges
+00471220  pds2DObjectSetupC                                                   584  a                   5  [pds-2d] calls sub_4AAE60, sub_4C2F30; 7 back-edges
+00472130  sub_472130                                                    60  a+callsB            5  [pds-bridge] calls sub_46B8E0, RpMeshPS2AllBridgeCallBack
+00472230  sub_472230                                                    60  a+callsB            5  [pds-bridge] calls sub_46B8E0, matfxBridgeDual
+00473340  sub_473340                                                    60  a+callsB            5  [pds-bridge] calls sub_46B8E0, matfxBridgeUvTransform
+00473380  sub_473380                                                    60  a+callsB            5  [pds-bridge] calls sub_46B8E0, matfxBridgeDualUvTransform
+00478520  sub_478520                                                  1360  a0+callsB           5  [ptank] calls sub_4748C0, sub_4749A0, sub_49CAB0, ps2AllInstanceDmaChain; 3 back-edges
+00479840  sub_479840                                                   188  a+callsB            5  [ptank] calls sub_4861B0, sub_479170, sub_479590
+00479900  sub_479900                                                  1360  a0+callsB           5  [ptank] calls sub_4748C0, sub_4749A0, sub_49CAB0, ps2AllInstanceDmaChain; 3 back-edges
+0047a710  sub_47A710                                                  1116  a+callsB            5  [ptank] calls sub_4748C0, sub_4749A0, sub_49CAB0, _rwDMAAddPURef; 5 back-edges
+0047b280  sub_47B280                                                  1232  a+callsB            5  [ptank] calls sub_46C330, sub_4C6BE0, RxPipelineExecute; 10 back-edges
+0047b750  sub_47B750                                                  1000  a+callsB            5  [ptank] calls sub_46C330, sub_4C6BE0, RxPipelineExecute; 10 back-edges
+00499140  sub_499140                                                   164  a                   5  [rpworld-sector] calls sub_498E30, sub_498E70, sub_498E70
+00499320  WorldSectorRender                               224  a+c                 5  [rpworld-sector] sector render + per atomic in sector: render-frame stamp, frustum sphere test, renderCallBack; c7 per sector; 2 back-edges
+00499b90  _rpSectorDefaultRenderCallBack                  136  a                   5  [rpworld-sector] sector+124 / world+108 / global default pipe -> RxPipelineExecute; 2 back-edges
+004a3f20  ps2AllSectorLightCB                                                    80  a                   5  [ps2all] calls sub_49FF10; 1 back-edges
+004aa2c0  sub_4AA2C0                                                   204  a                   5  [rt2d] calls sub_4AAE60, sub_4C6C60; 1 back-edges
+004e4e40  sub_4E4E40                                                    68  a+callsB            5  [raster] calls sub_4E4800
+004efa00  sub_4EFA00                                                  2268  a+c+callsB          5  [upload] c5 tex cache: per miss (allocator walk); 14 back-edges
+004f0c70  sub_4F0C70                                                   704  a+callsB            5  [texcache] calls _rwDMAOpenVIFPkt, sub_4D6250; 2 back-edges
+004f1ed0  sub_4F1ED0                                                   176  a                   5  [im3d] calls sub_4C1C50, sub_4C1D10, RxPipelineExecute; 1 back-edges
+004f1fd0  sub_4F1FD0                                                   384  a                   5  [im3d] calls sub_4C1C50, sub_4C1D10, RxPipelineExecute; 1 back-edges
+004f2150  sub_4F2150                                                   340  a                   5  [im3d] calls sub_4C1C50, sub_4C1D10, sub_4F2E60, RxPipelineExecute; 1 back-edges
+004718a0  skinSplitObjectSetupCB                                                  2184  a+c+callsB          6  [pds-bridge] c2 SkSpt object setup: per atomic; 19 back-edges
+00472170  sub_472170                                                    60  a+callsB            6  [pds-bridge] calls sub_46B8E0, matfxBridgeBumpMap
+004721b0  sub_4721B0                                                    60  a+callsB            6  [pds-bridge] calls sub_46B8E0, matfxBridgeEnvMap
+004721f0  sub_4721F0                                                    60  a+callsB            6  [pds-bridge] calls sub_46B8E0, matfxBridgeBumpEnvMap
+0047be10  sub_47BE10                                                   356  a+callsB            6  [ptank] calls sub_4733C0, sub_47B280, sub_47B750, sub_4CB2F0; 2 back-edges
+004933d0  sub_4933D0                                                   828  a                   6  [rpworld-atomic] calls sub_495320, sub_495CF0, sub_499140; 7 back-edges
+0049a250  RpWorldRender                                    60  a                   6  [rpworld-sector] sub_49C330(camera, WorldSectorRender, world): frustum sector walk
+0049a3d0  worldSetSectorRenderCallBack                                                    40  a                   6  [rpworld-sector] calls _rpSectorDefaultRenderCallBack; 1 back-edges
+004a4060  ps2AllSectorObjectSetup                                                   652  a+c                 6  [ps2all] c4 per sector; 9 back-edges
+004abd50  sub_4ABD50                                                   712  a                   6  [rt2d] calls sub_4AA2C0, sub_4AB6A0, sub_4ABA20, sub_4C1E70; 3 back-edges
+004defd0  sub_4DEFD0                                                   272  a+callsB            6  [raster] calls sub_4C1C50, sub_4C1D10, sub_4F0C70; 1 back-edges
+004f1780  sub_4F1780                                                   936  a+callsB            6  [texcache] calls sub_4EFA00; 6 back-edges
+0046bab0  sub_46BAB0                                                   580  a                   7  [skin] calls sub_4AB8C0, sub_4ABD50, sub_4C2090, sub_4C2120; 2 back-edges
+0046bd00  sub_46BD00                                                   676  a                   7  [skin] calls sub_4AB8C0, sub_4ABD50, sub_4AC020, sub_4C2090; 1 back-edges
+00488b80  sub_488B80                                                     8  a+c                 7  [ptank] c1 particles: per particle per frame
+0047bf80  sub_47BF80                                                   700  a+callsB            8  [ptank] calls sub_47C240, sub_47C8C0, sub_47CFD0, sub_47DE30; 6 back-edges
+004866c0  sub_4866C0                                                   704  a                   8  [ptank] calls sub_486980, sub_486AE0, sub_486C80, sub_486EC0; 5 back-edges
+004a6600  sub_4A6600                                                    40  a                   8  [rt2d] calls sub_46BD00
+004ace70  sub_4ACE70                                                     8  a                   8  [rt2d] calls sub_46BAB0
+004af9d0  sub_4AF9D0                                                  1540  a                   9  [rt2d] calls sub_4A55B0, sub_4A6600, sub_4AAB40, sub_4AAC70; 8 back-edges
+004adf30  sub_4ADF30                                                   156  a                  10  [rt2d] calls sub_4AD750, sub_4AE2F0, sub_4AE960, sub_4AF9D0
+004ae960  sub_4AE960                                                   500  a                  10  [rt2d] calls sub_4AAB40, sub_4AAC70, sub_4AAD50, sub_4AB0C0; 5 back-edges
+004ae940  sub_4AE940                                                    20  a                  11  [rt2d] calls sub_4AE960
+004b5330  sub_4B5330                                                    72  a                  12  [rt2d] calls sub_4AE940
+# === Full queue: game-side draw layer (callers of the RW render API) ===
+00100230  H_Cursor_UpdateDrawTask                                      828  a                   0  [game] leaf; 1 back-edges
+00104710  dbgPrintDrawStrings                                                  1536  a                   0  [game] leaf; 4 back-edges
+001053f0  dbgPrintDrawWindow                                                  1040  a                   0  [game] leaf; 5 back-edges
+001059b0  sub_1059B0                                                  3448  a                   0  [game] leaf; 4 back-edges
+001071f0  sub_1071F0                                                   956  a                   0  [game] leaf; 1 back-edges
+001075b0  H_Fade_DrawBlue                                                   752  a                   0  [game] leaf; 1 back-edges
+001078a0  H_Fade_DrawWhite                                                   628  a                   0  [game] leaf; 1 back-edges
+001081e0  H_Fade_DrawColour                                                   908  a                   0  [game] leaf; 1 back-edges
+00126710  sub_126710                                                   656  a                   0  [game] leaf; 1 back-edges
+001875f0  H_MoonIcon_Draw                                                  1520  a                   0  [game] leaf; 5 back-edges
+001997e0  drawGradientQuad                                                  1144  a                   0  [game] leaf
+002699d0  drawIm2DIndexedTriList                                                    64  a                   0  [game] leaf
+00269f50  sub_269F50                                                   408  a                   0  [game] leaf
+002bc9c0  btlDrawTexturedQuad                                                   780  a                   0  [game] leaf; 1 back-edges
+003275d0  sub_3275D0                                                  3340  a+vu0               0  [game] leaf; 14 back-edges
+00395570  dbgDrawRect                                                   600  a                   0  [game] leaf
+003b38f0  frFontRasterDrawGlyph                                       1124  a                   0  [game] leaf; 3 back-edges
+00422670  sub_422670                                                   804  a                   0  [game] leaf; 1 back-edges
+00455e00  sub_455E00                                                   584  a                   0  [game] leaf; 1 back-edges
+00104420  dbgPrintDrawScreen                                                   752  a                   1  [game] calls dbgPrintDrawStrings, dbgPrintDrawWindow; 4 back-edges
+00187be0  H_MoonIcon_UpdateTask                                                   524  a                   1  [game] calls H_MoonIcon_Draw, RwCameraEndUpdate, RwCameraBeginUpdate
+00188250  sub_188250                                                   380  a                   1  [game] calls RwCameraEndUpdate, RwCameraBeginUpdate
+00198b20  kwlnRootUpdate2DDrawEndTask                                   48  a                   1  [game] calls RwCameraEndUpdate
+00198c10  kwlnRootUpdate3DOn2DZClearTask                   76  a                   1  [game] "3D on 2D Zclear" (prio 0x147B): RwCameraClear Z
+00198c60  kwlnRootUpdate3DOn2DDrawBeginTask               192  a                   1  [game] "3D on 2D Draw Begin" (prio 0x147D): RwCameraBeginUpdate + states 6/8
+00198d20  kwlnRootUpdate3DOn2DDrawEndTask                 172  a                   1  [game] "3D on 2D Draw End" (prio 0x18B0): fog states 14/15/16 + RwCameraEndUpdate
+00198e90  kwlnRootUpdateEtcDrawBeginTask                  252  a                   1  [game] "etc Draw Begin" (prio 0x18B3): Z clear + BeginUpdate
+00198fd0  kwlnRootUpdateDrawEndTask                                    172  a                   1  [game] Draw End (prio 0x1CD3): fog states + RwCameraEndUpdate
+00199520  K_SPipe_Update3DDrwBeginTask                    200  a                   1  [game] "3D Draw Begin" (prio 2098): RwCameraBeginUpdate + states 6/8
+001995f0  K_SPipe_Update3DDrwEndTask                      196  a                   1  [game] "3D Draw End" (prio 4167): fog states + RwCameraEndUpdate
+00199740  kwlnRootUpdateShadowNodeCameraTask                                                    92  a                   1  [game] calls RwCameraClear
+0027b310  btlDrawMessagePass                                                   216  a                   1  [game] calls RwCameraEndUpdate, RwCameraBeginUpdate
+0027ccf0  btlUpdateDraw3DTask                             124  a                   1  [game] "battle draw 3d" (prio 2081): BeginUpdate, effect pass sub_321120(2), sub_27F160(2), effects + models sub_2BB3A0, EndUpdate
+003282e0  sub_3282E0                                                  4208  a+vu0               1  [game] calls sub_4C6BE0; 2 back-edges
+00199140  kwlnRootUpdateShowRasterTask                                 540  b                   2  [game] ShowRaster (prio 0x1CE4): RwCameraShowRaster + T0 CPU-load statistic (reads/writes T0_COUNT: class b); hw 10000000
+003294d0  sub_3294D0                                                   116  a+callsB            3  [game] calls _rwDMAOpenVIFPkt
+00329550  sub_329550                                                   100  a+callsB            3  [game] calls _rwDMAOpenVIFPkt
+003295c0  sub_3295C0                                                   108  a+callsB            3  [game] calls _rwDMAOpenVIFPkt
+00329630  sub_329630                                                   100  a+callsB            3  [game] calls _rwDMAOpenVIFPkt
+001127d0  sub_1127D0                                                  4692  a+c+callsB          4  [game] sprite draw: builds 4 RwIm2DVertex, RwRenderStateSet(raster), RwIm2DRenderPrimitive(tristrip) (193 callers); c3 per sprite; 4 back-edges
+00113a30  sub_113A30                                                   836  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00113d80  sub_113D80                                                   836  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+001140d0  sub_1140D0                                                   884  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00114450  sub_114450                                                  1688  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00114af0  sub_114AF0                                                   884  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00114e70  sub_114E70                                                  1248  a+callsB            4  [game] calls RpSkyRenderStateSet; 2 back-edges
+00115350  sub_115350                                                  1368  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00139dc0  sub_139DC0                                                   500  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+001842c0  H_DayPartsDraw_DrawHud                                      1476  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+001989e0  kwlnRootUpdate2DDrawBeginTask                                304  a+callsB            4  [game] 2D pass: RwCameraClear(Z only, flag 2) + BeginUpdate + Im2D state + sub_1120C0 + sprSpriteDrawAll
+001d4610  sub_1D4610                                                  2724  a+callsB            4  [game] calls RpSkyRenderStateSet; 4 back-edges
+001dcb60  sub_1DCB60                                                  2252  a+callsB            4  [game] calls RwCameraEndUpdate, RwCameraBeginUpdate, RpSkyRenderStateSet; 1 back-edges
+001edf10  sub_1EDF10                                                   704  a+callsB            4  [game] calls sub_4CB7F0, RpSkyRenderStateSet; 1 back-edges
+002095a0  sub_2095A0                                                   920  a+callsB            4  [game] calls RpSkyRenderStateSet; 2 back-edges
+00227800  sub_227800                                                  1288  a+callsB            4  [game] calls RpSkyRenderStateSet; 2 back-edges
+002289b0  sub_2289B0                                                  1156  a+callsB            4  [game] calls RpSkyRenderStateSet; 2 back-edges
+0022c5a0  sub_22C5A0                                                   376  a+callsB            4  [game] calls RpSkyRenderStateSet
+00232ea0  sub_232EA0                                                  2276  a+callsB            4  [game] calls RpSkyRenderStateSet; 7 back-edges
+0023c8c0  sub_23C8C0                                                   336  a+callsB            4  [game] calls RpSkyRenderStateSet
+0023e970  sub_23E970                                                  1236  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00241910  sub_241910                                                  2380  a+callsB            4  [game] calls RpSkyRenderStateSet; 4 back-edges
+002496e0  sub_2496E0                                                  1316  a                   4  [game] calls sub_4C6BE0, sub_4CB2F0; 2 back-edges
+00249c10  sub_249C10                                                  1384  a                   4  [game] calls sub_4C32A0, sub_4C6BE0, sub_4CB2F0; 1 back-edges
+0024cca0  sub_24CCA0                                                   596  a+callsB            4  [game] calls RpSkyRenderStateSet
+002520f0  sub_2520F0                                                   584  a+callsB            4  [game] calls RpSkyRenderStateSet
+002532b0  sub_2532B0                                                   348  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+0025a440  sub_25A440                                                   908  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+0025bbf0  sub_25BBF0                                                   500  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+0025d470  sub_25D470                                                   580  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+0025ed40  sub_25ED40                                                  1576  a+callsB            4  [game] calls RpSkyRenderStateSet
+00260e00  sub_260E00                                                  1664  a+callsB            4  [game] calls RpSkyRenderStateSet
+00268e20  sub_268E20                                                  1188  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+0026c710  sub_26C710                                                  1400  a+callsB            4  [game] calls RpSkyRenderStateSet
+0026cc90  sub_26CC90                                                  1952  a+callsB            4  [game] calls RpSkyRenderStateSet; 4 back-edges
+0026e000  sub_26E000                                                  1916  a+callsB            4  [game] calls drawIm2DIndexedTriList, RpSkyRenderStateSet; 1 back-edges
+002720c0  sub_2720C0                                                   272  a+callsB            4  [game] calls RpSkyRenderStateSet
+00275cb0  sub_275CB0                                                  1080  a+callsB            4  [game] calls RpSkyRenderStateSet
+0027b880  sub_27B880                                                   364  a+callsB            4  [game] calls RpSkyRenderStateSet
+0029e4b0  sub_29E4B0                                                  1392  a+callsB            4  [game] calls RpSkyRenderStateSet
+002fe0b0  sub_2FE0B0                                                  1732  a+callsB            4  [game] calls RpSkyRenderStateSet
+002fe780  sub_2FE780                                                  1416  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+003151d0  sub_3151D0                                                  2628  a+callsB            4  [game] calls sub_4C2F30, sub_4CB7F0, RpSkyRenderStateSet; 1 back-edges
+00348da0  sub_348DA0                                                   388  a+callsB            4  [game] calls sub_3294D0, sub_329550, sub_3295C0, sub_329630
+00349a30  sub_349A30                                                   188  a+callsB            4  [game] calls sub_3295C0, sub_329630, RpSkyRenderStateSet
+00349d30  sub_349D30                                                   408  a+callsB            4  [game] calls sub_3294D0, sub_329550, sub_3295C0, sub_329630
+0034a800  sub_34A800                                                   180  a+callsB            4  [game] calls sub_3295C0, sub_329630, RpSkyRenderStateSet
+0034ada0  sub_34ADA0                                                   140  a+callsB            4  [game] calls RpSkyRenderStateSet
+0034b010  sub_34B010                                                   396  a+callsB            4  [game] calls sub_3294D0, sub_329550, RpSkyRenderStateSet, sub_4D81B0
+0034eae0  sub_34EAE0                                                  3016  a+callsB+vu0        4  [game] calls sub_3294D0, sub_329550, sub_3295C0, sub_329630
+00351290  sub_351290                                                   632  a+callsB            4  [game] calls RwCameraEndUpdate, RwCameraBeginUpdate, RpSkyRenderStateSet
+00351510  sub_351510                                                  1068  a+callsB            4  [game] calls RwCameraEndUpdate, RwCameraBeginUpdate, RpSkyRenderStateSet
+00358460  sub_358460                                                  1488  a+callsB            4  [game] calls RpSkyRenderStateSet; 2 back-edges
+00358a30  sub_358A30                                                  1756  a+callsB            4  [game] calls sub_4C6BE0, RpSkyRenderStateSet; 2 back-edges
+00359560  sub_359560                                                  1504  a+callsB            4  [game] calls sub_4C6BE0, sub_4C9DF0, RpSkyRenderStateSet; 4 back-edges
+00386f70  sub_386F70                                                  2120  a+callsB            4  [game] calls RpSkyRenderStateSet
+003877c0  sub_3877C0                                                  2104  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+00388000  sub_388000                                                  2616  a+callsB            4  [game] calls sub_4C6BE0, RpSkyRenderStateSet
+00388a40  sub_388A40                                                   936  a+callsB            4  [game] calls RpSkyRenderStateSet
+003a87d0  sub_3A87D0                                                   816  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+003b1360  frFontDraw                                                   944  a+callsB            4  [game] calls frFontRasterDrawGlyph, RpSkyRenderStateSet; 2 back-edges
+003b4b40  sub_3B4B40                                                   460  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+003f3fc0  sub_3F3FC0                                                   908  a+callsB            4  [game] calls RpSkyRenderStateSet
+0040d640  sub_40D640                                                  1652  a+callsB            4  [game] calls RpSkyRenderStateSet
+0040dcc0  sub_40DCC0                                                  1588  a+callsB            4  [game] calls RpSkyRenderStateSet
+00411ee0  sub_411EE0                                                   448  a+callsB            4  [game] calls RpSkyRenderStateSet; 2 back-edges
+00426590  sub_426590                                                  4260  a+callsB            4  [game] calls RpSkyRenderStateSet; 6 back-edges
+00427e70  sub_427E70                                                   884  a+callsB            4  [game] calls RpSkyRenderStateSet; 1 back-edges
+0044a990  sub_44A990                                                   352  a+callsB            4  [game] calls drawIm2DIndexedTriList, RpSkyRenderStateSet
+00107b20  sub_107B20                                                  1728  a+callsB            5  [game] calls sub_1140D0; 1 back-edges
+00124fd0  sub_124FD0                                                  1900  a+callsB            5  [game] calls sub_1127D0, RpSkyRenderStateSet
+00183410  H_DayPartsDraw_UpdateTask                                   1068  a+callsB            5  [game] calls H_DayPartsDraw_DrawHud, RwCameraEndUpdate, RwCameraBeginUpdate
+001a50f0  sub_1A50F0                                                   400  a+callsB            5  [game] calls atomicGetWorldBoundingSphere, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4C9DF0; 1 back-edges
+001a7b50  sub_1A7B50                                                  1136  a+c+callsB          5  [game] renders 4 atomic lists: frustum sphere test, zwrite state 14, atomic->renderCallBack (+0x48); c7 per atomic; 4 back-edges
+001a7fc0  sub_1A7FC0                                                   372  a+callsB            5  [game] calls atomicGetWorldBoundingSphere, sub_4C9DF0, RpSkyRenderStateSet; 1 back-edges
+001a8140  sub_1A8140                                                  1752  a+c+callsB          5  [game] translucent counterpart of sub_1A7B50 (21 jalr: atomic render callbacks); c7 per atomic; 6 back-edges
+001a8b10  sub_1A8B10                                                   672  a+callsB            5  [game] calls atomicGetWorldBoundingSphere, sub_4C9DF0, RpSkyRenderStateSet; 1 back-edges
+001ef060  sub_1EF060                                                   732  a+callsB            5  [game] calls sub_1EDF10, RwCameraEndUpdate, RwCameraBeginUpdate; 5 back-edges
+00213e80  sub_213E80                                                  6384  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 12 back-edges
+00219370  sub_219370                                                  1536  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 1 back-edges
+00224150  sub_224150                                                  1292  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 2 back-edges
+00225040  sub_225040                                                  1108  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 2 back-edges
+00226040  sub_226040                                                   724  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 1 back-edges
+00229b40  sub_229B40                                                  1904  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 1 back-edges
+0022ae80  sub_22AE80                                                  1620  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 1 back-edges
+0022bcf0  sub_22BCF0                                                   612  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 1 back-edges
+0022df10  sub_22DF10                                                  2156  a+callsB            5  [game] calls sub_232EA0, RpSkyRenderStateSet
+002350f0  sub_2350F0                                                  3644  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 3 back-edges
+0023b990  sub_23B990                                                  2276  a+callsB            5  [game] calls sub_23C8C0, RpSkyRenderStateSet; 4 back-edges
+00243150  sub_243150                                                  4048  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 3 back-edges
+00248bb0  sub_248BB0                                                   900  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet
+0025c9c0  sub_25C9C0                                                   868  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet
+00263db0  sub_263DB0                                                  3812  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 10 back-edges
+00278550  sub_278550                                                  3024  a+callsB            5  [game] calls frFontDraw, RpSkyRenderStateSet; 6 back-edges
+002fed10  sub_2FED10                                                  1360  a+callsB            5  [game] calls sub_2FE0B0, sub_2FE780, sub_3294D0, sub_329550; 2 back-edges
+0034dc00  sub_34DC00                                                  1928  a+vu0               5  [game] calls RpClumpRender, sub_4C2F30, sub_4C33D0, sub_4C35D0; 2 back-edges
+00359b40  sub_359B40                                                   784  a+callsB            5  [game] calls sub_359560, sub_4C9DF0, RpSkyRenderStateSet; 4 back-edges
+00199d90  sub_199D90                                                  1668  a                   6  [game] calls sub_4F1ED0, sub_4F1F80, sub_4F2150
+0019a420  sub_19A420                                                  1796  a                   6  [game] calls sub_4CB2F0, sub_4F1ED0, sub_4F1F80, sub_4F2150; 1 back-edges
+0019d530  sub_19D530                                                   584  a+callsB            6  [game] calls sub_1A8B10, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4CB7F0; 1 back-edges
+001ae290  sub_1AE290                                                   296  a+callsB            6  [game] calls sub_359B40, RwCameraEndUpdate, RwCameraBeginUpdate; 1 back-edges
+001b4720  K_FldSrc_DrawFieldTrans                        1760  a+callsB            6  [game] translucent field pass: sub_1A8140; 2 back-edges
+001f07a0  sub_1F07A0                                                   288  a+callsB            6  [game] calls sub_263DB0, RpSkyRenderStateSet
+0020d500  sub_20D500                                                   300  a                   6  [game] calls sub_4F1ED0, sub_4F1F80, sub_4F1FD0; 1 back-edges
+002168f0  sub_2168F0                                                  2000  a+callsB            6  [game] calls sub_219370, sub_260E00, RpSkyRenderStateSet; 3 back-edges
+00221b60  sub_221B60                                                  2948  a+callsB            6  [game] calls sub_224150, sub_225040, sub_226040, sub_227800; 2 back-edges
+00315c20  sub_315C20                                                   676  a+callsB            6  [game] calls sub_1A7B50, sub_1A7FC0, sub_1A8140, atomicGetWorldBoundingSphere; 1 back-edges
+00321360  sub_321360                                                  1788  a+callsB            6  [game] calls sub_3282E0, sub_34DC00, RpSkyRenderStateSet; 12 back-edges
+00359110  sub_359110                                                   612  a+callsB            6  [game] calls RpSkyRenderStateSet, sub_4F1ED0; 2 back-edges
+0041bf80  sub_41BF80                                                   448  a+callsB            6  [game] calls sub_4C2F30, RpSkyRenderStateSet, sub_4F1ED0, sub_4F1F80; 1 back-edges
+0010a860  sub_10A860                                                  4768  a+callsB            7  [game] calls sub_4C2120, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4F1780; 6 back-edges
+0019ab80  sub_19AB80                                                  1832  a                   7  [game] calls sub_4C32A0, sub_4C33D0, sub_4C35D0, sub_4F1ED0; 6 back-edges
+0019bcf0  sub_19BCF0                                                   444  a+callsB            7  [game] calls sub_4F1780
+001a1550  sub_1A1550                                                  3096  a+callsB            7  [game] calls geometryLock, sub_4933D0, RpSkyRenderStateSet; 1 back-edges
+001a2a80  sub_1A2A80                                                  4052  a+callsB            7  [game] calls geometryLock, sub_4933D0, RpSkyRenderStateSet; 4 back-edges
+001b3e50  K_FldSrc_DrawFieldOpaque                       2244  a+callsB            7  [game] field world: lights, camera into world, RpWorldRender(world/sub-worlds), sub_1A7B50 per object list; 2 back-edges
+0020b250  sub_20B250                                                  4292  a+callsB            7  [game] calls sub_20D500, RpSkyRenderStateSet, sub_4F1ED0, sub_4F1F80
+00317a20  sub_317A20                                                  2220  a+c+callsB          7  [game] the model draw (18 callers: field char/obj/persona/NPC tasks, battle front pass sub_2891E0, battle effects sub_2BB3A0, shadow map): atomic lists via sub_1A7B50 / sub_1A8140, model colour, clump-atomic walk sub_4916D0; c7 per model; 3 back-edges
+00321b00  sub_321B00                                                   332  a+callsB            7  [game] calls sub_321360, sub_3294D0, sub_329550, sub_358460
+00321c50  sub_321C50                                                    88  a+callsB            7  [game] calls sub_321360, RwCameraEndUpdate, RwCameraBeginUpdate
+00321ce0  sub_321CE0                                                    88  a+callsB            7  [game] calls sub_321360, RwCameraEndUpdate, RwCameraBeginUpdate
+00321d40  sub_321D40                                                   224  a+callsB            7  [game] calls sub_321360, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4CB7F0; 1 back-edges
+00321e50  sub_321E50                                                    88  a+callsB            7  [game] calls sub_321360, RwCameraEndUpdate, RwCameraBeginUpdate
+00321eb0  sub_321EB0                                                    88  a+callsB            7  [game] calls sub_321360, RwCameraEndUpdate, RwCameraBeginUpdate
+00351940  sub_351940                                                   204  a+callsB            7  [game] calls sub_4F1780
+00359380  sub_359380                                                   472  a+callsB            7  [game] calls sub_359110, sub_4C6BE0, RpSkyRenderStateSet; 3 back-edges
+00359e50  sub_359E50                                                  1076  a+callsB            7  [game] calls sub_359110, sub_359560, sub_4C9DF0, RpSkyRenderStateSet; 5 back-edges
+0019b2b0  sub_19B2B0                                                  2616  a+callsB            8  [game] calls sub_19AB80, sub_317A20, sub_4933D0, RwCameraEndUpdate; 7 back-edges
+0019c4b0  sub_19C4B0                                                  3520  a+callsB            8  [game] calls drawGradientQuad, sub_317A20, sub_4C2FB0, RwCameraEndUpdate; 6 back-edges
+0019db10  sub_19DB10                                                   812  a+callsB            8  [game] calls sub_317A20, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4CB7F0; 2 back-edges
+0019de80  sub_19DE80                                                   812  a+callsB            8  [game] calls sub_317A20, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4CB7F0; 2 back-edges
+0019e330  sub_19E330                                                  2828  a+callsB            8  [game] "draw character model" (prio 2084): per character sub_317A20 (10 loops); 10 back-edges
+0019ef80  sub_19EF80                                                  1256  a+callsB            8  [game] "draw trans NPC sort" (prio 4183): distance sort + sub_317A20; 5 back-edges
+0019f470  sub_19F470                                                   704  a+callsB            8  [game] "draw persona model" (prio 4168): sub_317A20; 3 back-edges
+001a4c10  sub_1A4C10                                                   140  a+callsB            8  [game] calls sub_359380, sub_359B40, RwCameraEndUpdate, RwCameraBeginUpdate
+002891e0  sub_2891E0                                                  1132  a+callsB            8  [game] battle front pass: lights, sub_317A20 per unit, mask packets 0x3294D0/0x329550, screen effect sub_358460, qsort; 5 back-edges
+00351a10  sub_351A10                                                   416  a+callsB            8  [game] calls sub_351290, sub_351510, sub_351940, sub_4F1780
+00395950  sub_395950                                                  1220  a+callsB            8  [game] calls sub_359380, sub_359B40, sub_4C35D0, sub_4F1ED0; 4 back-edges
+003cea50  sub_3CEA50                                                  1572  a+callsB            8  [game] calls sub_317A20, sub_4C2F30, sub_4C35D0, RwCameraEndUpdate; 3 back-edges
+0041baf0  sub_41BAF0                                                   404  a+callsB            8  [game] calls sub_20B250, sub_317A20, sub_41BF80, RwCameraEndUpdate; 1 back-edges
+00425690  sub_425690                                                  1284  a+callsB            8  [game] calls sub_317A20, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4CB7F0; 3 back-edges
+004260a0  sub_4260A0                                                  1020  a+callsB            8  [game] calls sub_317A20, RwCameraEndUpdate, RwCameraBeginUpdate, sub_4CB7F0; 1 back-edges
+0010ec50  sub_10EC50                                                  2668  a+callsB            9  [game] calls sub_4A6600, sub_4AAD50, sub_4AB6A0, sub_4ACE70; 3 back-edges
+0010f6c0  sub_10F6C0                                                  3092  a+callsB            9  [game] calls sub_4A6600, sub_4AAD50, sub_4AB6A0, sub_4ACE70; 7 back-edges
+0019beb0  sub_19BEB0                                                  1088  a+callsB            9  [game] calls sub_4F1780, sub_19B2B0, sub_19BCF0; 1 back-edges
+0019d780  K_SceneDraw_UpdateDrwOpcFldObjTask              912  a+callsB            9  [game] "draw opaque field obj" (prio 2071): lights, BeginUpdate, model draw sub_317A20 per object, trans field; 4 back-edges
+003962c0  sub_3962C0                                                   248  a+callsB            9  [game] calls sub_359B40, dbgDrawRect, sub_395950, RwCameraEndUpdate
+00111610  sub_111610                                                  1596  a                  13  [game] calls sub_4AAD50, sub_4B5330, sub_4C2090, RwCameraEndUpdate

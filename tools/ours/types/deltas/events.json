@@ -1,0 +1,597 @@
+{
+ "note": "slice events: the event viewer's work, units and keys, named from the instructions of game/src/event/events.cpp (mt_evtMain.c / mt_evtMisc.c / mt_evtLoadSave.c) and checked on a live event (extracted/_ours/events_dorm_2100)",
+ "records": [
+  {
+   "name": "EvtWork",
+   "size": 2448,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x386E10",
+     "index": 0
+    },
+    {
+     "how": "param",
+     "fn": "0x36D030",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "u32",
+     "name": "self"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "u32",
+     "name": "flags"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "u32",
+     "name": "scene"
+    },
+    {
+     "off": 12,
+     "width": 4,
+     "type": "u32",
+     "name": "field12"
+    },
+    {
+     "off": 16,
+     "width": 4,
+     "type": "s32",
+     "name": "start_frame"
+    },
+    {
+     "off": 20,
+     "width": 4,
+     "type": "s32",
+     "name": "end_frame"
+    },
+    {
+     "off": 24,
+     "width": 4,
+     "type": "s32",
+     "name": "frame"
+    },
+    {
+     "off": 28,
+     "width": 4,
+     "type": "s32",
+     "name": "prev_frame"
+    },
+    {
+     "off": 36,
+     "width": 4,
+     "type": "s32",
+     "name": "jump_request"
+    },
+    {
+     "off": 40,
+     "width": 4,
+     "type": "s32",
+     "name": "jump_frame"
+    },
+    {
+     "off": 69,
+     "width": 1,
+     "type": "s8",
+     "name": "comu_index"
+    },
+    {
+     "off": 76,
+     "width": 1,
+     "type": "u8",
+     "name": "mode"
+    },
+    {
+     "off": 80,
+     "width": 4,
+     "type": "s32",
+     "name": "name_count"
+    },
+    {
+     "off": 128,
+     "width": 4,
+     "type": "s32",
+     "name": "unit_count"
+    },
+    {
+     "off": 132,
+     "width": 4,
+     "type": "ptr",
+     "name": "unit_head"
+    },
+    {
+     "off": 136,
+     "width": 4,
+     "type": "ptr",
+     "name": "unit_tail"
+    },
+    {
+     "off": 140,
+     "width": 4,
+     "type": "s32",
+     "name": "metrics"
+    },
+    {
+     "off": 208,
+     "width": 4,
+     "type": "s32",
+     "name": "menu_depth"
+    },
+    {
+     "off": 212,
+     "width": 4,
+     "type": "s32",
+     "name": "menu_id"
+    },
+    {
+     "off": 216,
+     "width": 4,
+     "type": "s32",
+     "name": "menu_fn"
+    },
+    {
+     "off": 220,
+     "width": 4,
+     "type": "s32",
+     "name": "menu_arg"
+    },
+    {
+     "off": 224,
+     "width": 4,
+     "type": "s32",
+     "name": "menu_font"
+    },
+    {
+     "off": 236,
+     "width": 4,
+     "type": "s32",
+     "name": "light_on"
+    },
+    {
+     "off": 348,
+     "width": 4,
+     "type": "s32",
+     "name": "ed_key_index"
+    },
+    {
+     "off": 352,
+     "width": 4,
+     "type": "s32",
+     "name": "ed_key_scroll"
+    },
+    {
+     "off": 356,
+     "width": 4,
+     "type": "ptr",
+     "name": "ed_unit"
+    },
+    {
+     "off": 364,
+     "width": 4,
+     "type": "s32",
+     "name": "ed_field364"
+    },
+    {
+     "off": 616,
+     "width": 4,
+     "type": "s32",
+     "name": "ed_column"
+    },
+    {
+     "off": 614,
+     "width": 2,
+     "type": "s16",
+     "name": "branch_pos"
+    },
+    {
+     "off": 632,
+     "width": 4,
+     "type": "s32",
+     "name": "light27_on"
+    },
+    {
+     "off": 684,
+     "width": 4,
+     "type": "s32",
+     "name": "se_count"
+    },
+    {
+     "off": 688,
+     "width": 4,
+     "type": "s32",
+     "name": "se_ids"
+    },
+    {
+     "off": 804,
+     "width": 4,
+     "type": "ptr",
+     "name": "cam_unit"
+    },
+    {
+     "off": 1624,
+     "width": 4,
+     "type": "s32",
+     "name": "cam_sel_saved"
+    },
+    {
+     "off": 1628,
+     "width": 4,
+     "type": "s32",
+     "name": "cam_sel"
+    },
+    {
+     "off": 1808,
+     "width": 4,
+     "type": "u32",
+     "name": "effect_set"
+    },
+    {
+     "off": 1916,
+     "width": 4,
+     "type": "s32",
+     "name": "stopped"
+    },
+    {
+     "off": 2256,
+     "width": 4,
+     "type": "f32",
+     "name": "field_scale"
+    },
+    {
+     "off": 2260,
+     "width": 2,
+     "type": "u16",
+     "name": "fade_unit_arg"
+    },
+    {
+     "off": 2264,
+     "width": 4,
+     "type": "ptr",
+     "name": "wait_task"
+    },
+    {
+     "off": 2268,
+     "width": 4,
+     "type": "s32",
+     "name": "fading"
+    },
+    {
+     "off": 2340,
+     "width": 4,
+     "type": "ptr",
+     "name": "sub_task"
+    },
+    {
+     "off": 2344,
+     "width": 4,
+     "type": "u32",
+     "name": "field2344"
+    },
+    {
+     "off": 2348,
+     "width": 4,
+     "type": "ptr",
+     "name": "task"
+    },
+    {
+     "off": 2352,
+     "width": 4,
+     "type": "ptr",
+     "name": "pm_task"
+    },
+    {
+     "off": 2356,
+     "width": 4,
+     "type": "ptr",
+     "name": "pm_reader"
+    },
+    {
+     "off": 2360,
+     "width": 4,
+     "type": "ptr",
+     "name": "overlay_task"
+    },
+    {
+     "off": 2364,
+     "width": 4,
+     "type": "ptr",
+     "name": "voice_task"
+    },
+    {
+     "off": 2368,
+     "width": 1,
+     "type": "u8",
+     "name": "cursor_shown"
+    },
+    {
+     "off": 2372,
+     "width": 4,
+     "type": "ptr",
+     "name": "cursors"
+    },
+    {
+     "off": 2400,
+     "width": 4,
+     "type": "s32",
+     "name": "load_state"
+    },
+    {
+     "off": 2404,
+     "width": 4,
+     "type": "s32",
+     "name": "load_arg"
+    },
+    {
+     "off": 2408,
+     "width": 4,
+     "type": "s32",
+     "name": "major"
+    },
+    {
+     "off": 2412,
+     "width": 4,
+     "type": "s32",
+     "name": "minor"
+    },
+    {
+     "off": 2420,
+     "width": 4,
+     "type": "s32",
+     "name": "npc_loads"
+    },
+    {
+     "off": 2424,
+     "width": 4,
+     "type": "s32",
+     "name": "load_result"
+    },
+    {
+     "off": 2428,
+     "width": 4,
+     "type": "s32",
+     "name": "res_count"
+    },
+    {
+     "off": 2432,
+     "width": 4,
+     "type": "ptr",
+     "name": "resources"
+    }
+   ]
+  },
+  {
+   "name": "EvtUnit",
+   "size": 156,
+   "anchors": [
+    {
+     "how": "ret",
+     "fn": "0x361CA0"
+    },
+    {
+     "how": "param",
+     "fn": "0x361140",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 4,
+     "type": "s32",
+     "name": "type"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "s32",
+     "name": "param"
+    },
+    {
+     "off": 8,
+     "width": 4,
+     "type": "s32",
+     "name": "name"
+    },
+    {
+     "off": 12,
+     "width": 2,
+     "type": "u16",
+     "name": "res_id"
+    },
+    {
+     "off": 32,
+     "width": 2,
+     "type": "s16",
+     "name": "hold"
+    },
+    {
+     "off": 34,
+     "width": 1,
+     "type": "s8",
+     "name": "cam_mode"
+    },
+    {
+     "off": 36,
+     "width": 2,
+     "type": "u16",
+     "name": "cam_target"
+    },
+    {
+     "off": 56,
+     "width": 4,
+     "type": "ptr",
+     "name": "model"
+    },
+    {
+     "off": 60,
+     "width": 4,
+     "type": "f32",
+     "name": "pos"
+    },
+    {
+     "off": 72,
+     "width": 4,
+     "type": "f32",
+     "name": "rot"
+    },
+    {
+     "off": 84,
+     "width": 1,
+     "type": "u8",
+     "name": "color"
+    },
+    {
+     "off": 88,
+     "width": 4,
+     "type": "u32",
+     "name": "model_flags"
+    },
+    {
+     "off": 100,
+     "width": 4,
+     "type": "s32",
+     "name": "path_move"
+    },
+    {
+     "off": 104,
+     "width": 4,
+     "type": "s32",
+     "name": "key_count"
+    },
+    {
+     "off": 108,
+     "width": 4,
+     "type": "ptr",
+     "name": "key_head"
+    },
+    {
+     "off": 112,
+     "width": 4,
+     "type": "ptr",
+     "name": "key_tail"
+    },
+    {
+     "off": 116,
+     "width": 4,
+     "type": "ptr",
+     "name": "slot_keys"
+    },
+    {
+     "off": 148,
+     "width": 4,
+     "type": "ptr",
+     "name": "next"
+    },
+    {
+     "off": 152,
+     "width": 4,
+     "type": "ptr",
+     "name": "prev"
+    }
+   ]
+  },
+  {
+   "name": "EvtKey",
+   "size": 84,
+   "anchors": [
+    {
+     "how": "ret",
+     "fn": "0x361350"
+    },
+    {
+     "how": "param",
+     "fn": "0x360ED0",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 0,
+     "width": 2,
+     "type": "u16",
+     "name": "frame"
+    },
+    {
+     "off": 2,
+     "width": 2,
+     "type": "u16",
+     "name": "length"
+    },
+    {
+     "off": 4,
+     "width": 4,
+     "type": "s32",
+     "name": "name"
+    },
+    {
+     "off": 8,
+     "width": 2,
+     "type": "s16",
+     "name": "cond_flag"
+    },
+    {
+     "off": 10,
+     "width": 2,
+     "type": "s16",
+     "name": "cond_value"
+    },
+    {
+     "off": 12,
+     "width": 1,
+     "type": "s8",
+     "name": "cond_type"
+    },
+    {
+     "off": 14,
+     "width": 1,
+     "type": "u8",
+     "name": "cond_bank"
+    },
+    {
+     "off": 16,
+     "width": 1,
+     "type": "u8",
+     "name": "cmd"
+    },
+    {
+     "off": 56,
+     "width": 4,
+     "type": "s32",
+     "name": "owner_type"
+    },
+    {
+     "off": 64,
+     "width": 4,
+     "type": "ptr",
+     "name": "path"
+    },
+    {
+     "off": 72,
+     "width": 4,
+     "type": "ptr",
+     "name": "extra"
+    },
+    {
+     "off": 76,
+     "width": 4,
+     "type": "ptr",
+     "name": "next"
+    },
+    {
+     "off": 80,
+     "width": 4,
+     "type": "ptr",
+     "name": "prev"
+    }
+   ]
+  }
+ ]
+}

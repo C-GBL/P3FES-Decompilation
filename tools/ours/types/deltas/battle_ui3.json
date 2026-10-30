@@ -1,0 +1,47 @@
+{"records": [
+  {"name": "BpResWork", "anchors": [{"how": "gslot", "addr": "0x7CE304"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 4, "width": 4, "type": "u32", "name": "loaded"},
+    {"off": 16, "width": 4, "type": "ptr", "name": "set0"},
+    {"off": 36, "width": 4, "type": "ptr", "name": "set_id1"},
+    {"off": 56, "width": 4, "type": "ptr", "name": "id_set0"},
+    {"off": 68, "width": 4, "type": "s32", "name": "id_count"},
+    {"off": 72, "width": 4, "type": "u32", "name": "id0"},
+    {"off": 108, "width": 4, "type": "u32", "name": "value_108"},
+    {"off": 120, "width": 4, "type": "ptr", "name": "block0"}]},
+  {"name": "BcmPanelWork", "anchors": [{"how": "gslot", "addr": "0x7CE308"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 4, "width": 4, "type": "u32", "name": "list_kind"},
+    {"off": 17968, "width": 4, "type": "u32", "name": "state"},
+    {"off": 17972, "width": 4, "type": "u32", "name": "cur"},
+    {"off": 17976, "width": 4, "type": "u32", "name": "prev"},
+    {"off": 17980, "width": 4, "type": "u32", "name": "sub"},
+    {"off": 17984, "width": 4, "type": "u32", "name": "sub_prev"},
+    {"off": 17988, "width": 4, "type": "u32", "name": "sub_step"},
+    {"off": 17996, "width": 4, "type": "u32", "name": "timer"},
+    {"off": 24688, "width": 4, "type": "s32", "name": "row_count"},
+    {"off": 29200, "width": 4, "type": "u32", "name": "frame_mode"}]},
+  {"name": "BrpSeqWork", "anchors": [{"how": "gslot", "addr": "0x7CE3C0"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 16, "width": 4, "type": "u32", "name": "step"},
+    {"off": 24, "width": 4, "type": "u32", "name": "msg_state"},
+    {"off": 116, "width": 4, "type": "u32", "name": "state"},
+    {"off": 432, "width": 4, "type": "s32", "name": "index"},
+    {"off": 448, "width": 4, "type": "s32", "name": "count"},
+    {"off": 452, "width": 2, "type": "u16", "name": "entry0_id"},
+    {"off": 456, "width": 4, "type": "s32", "name": "entry0_value"}]},
+  {"name": "BrLvpnlWork", "anchors": [{"how": "gslot", "addr": "0x7CE3C8"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 1552, "width": 4, "type": "s32", "name": "frame"},
+    {"off": 1556, "width": 4, "type": "u32", "name": "mode"}]},
+  {"name": "BpSelectWork", "anchors": [{"how": "gslot", "addr": "0x7CE3E4"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "u32", "name": "flags"},
+    {"off": 272, "width": 4, "type": "s32", "name": "frame"},
+    {"off": 276, "width": 4, "type": "f32", "name": "x"},
+    {"off": 280, "width": 4, "type": "f32", "name": "y"}]}
+]}

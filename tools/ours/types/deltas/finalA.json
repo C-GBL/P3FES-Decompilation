@@ -1,0 +1,140 @@
+{
+ "records": [
+  {
+   "name": "FldUnit",
+   "header": "game/include/p3fes/game/finalA.h",
+   "size": 448,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x1D1640",
+     "index": 0
+    }
+   ],
+   "fields": [
+    {
+     "off": 72,
+     "width": 4,
+     "type": "ptr",
+     "name": "instance"
+    },
+    {
+     "off": 76,
+     "width": 4,
+     "type": "ptr",
+     "name": "encounter"
+    },
+    {
+     "off": 80,
+     "width": 4,
+     "type": "ptr",
+     "name": "model"
+    },
+    {
+     "off": 84,
+     "width": 4,
+     "type": "ptr",
+     "name": "resource"
+    },
+    {
+     "off": 360,
+     "width": 4,
+     "type": "ptr",
+     "name": "spawn_ptr"
+    },
+    {
+     "off": 364,
+     "width": 4,
+     "type": "ptr",
+     "name": "task364"
+    },
+    {
+     "off": 368,
+     "width": 4,
+     "type": "ptr",
+     "name": "task368"
+    },
+    {
+     "off": 372,
+     "width": 4,
+     "type": "ptr",
+     "name": "task372"
+    },
+    {
+     "off": 376,
+     "width": 4,
+     "type": "ptr",
+     "name": "task376"
+    },
+    {
+     "off": 384,
+     "width": 4,
+     "type": "ptr",
+     "name": "task384"
+    },
+    {
+     "off": 388,
+     "width": 4,
+     "type": "s32",
+     "name": "level"
+    },
+    {
+     "off": 396,
+     "width": 4,
+     "type": "s32",
+     "name": "model_kind"
+    },
+    {
+     "off": 400,
+     "width": 4,
+     "type": "s32",
+     "name": "size_class"
+    },
+    {
+     "off": 404,
+     "width": 2,
+     "type": "s16",
+     "name": "cell_x"
+    },
+    {
+     "off": 406,
+     "width": 2,
+     "type": "s16",
+     "name": "cell_z"
+    },
+    {
+     "off": 424,
+     "width": 2,
+     "type": "u16",
+     "name": "word424"
+    }
+   ]
+  },
+  {
+   "name": "FldSpawnRecord",
+   "header": "game/include/p3fes/game/finalA.h",
+   "size": 272,
+   "anchors": [
+    {
+     "how": "param",
+     "fn": "0x1CF940",
+     "index": 1
+    }
+   ],
+   "fields": [
+    {
+     "off": 256,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_x"
+    },
+    {
+     "off": 264,
+     "width": 4,
+     "type": "f32",
+     "name": "pos_z"
+    }
+   ]
+  }
+ ]
+}

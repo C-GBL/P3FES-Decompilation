@@ -1,0 +1,71 @@
+{"records": [
+  {"name": "SfhView", "size": 16, "anchors": [{"how": "param", "fn": "0x59D240", "index": 0}, {"how": "param", "fn": "0x59D2B0", "index": 0}, {"how": "param", "fn": "0x59D1B0", "index": 0}, {"how": "ret", "fn": "0x59D098"}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "state"},
+    {"off": 4, "width": 4, "type": "ptr", "name": "buf"},
+    {"off": 8, "width": 4, "type": "s32", "name": "size"},
+    {"off": 12, "width": 4, "type": "s32", "name": "version"}
+   ]},
+  {"name": "SfdHeaderInfo", "size": 2196, "anchors": [{"how": "param", "fn": "0x58B560", "index": 0}, {"how": "param", "fn": "0x58B5C8", "index": 1}, {"how": "param", "fn": "0x58B140", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "valid"},
+    {"off": 4, "width": 4, "type": "s32", "name": "major"},
+    {"off": 8, "width": 4, "type": "s32", "name": "minor"},
+    {"off": 12, "width": 4, "type": "s32", "name": "sys_word4"},
+    {"off": 16, "width": 4, "type": "s32", "name": "general0"},
+    {"off": 32, "width": 4, "type": "s32", "name": "system0"},
+    {"off": 60, "width": 4, "type": "s32", "name": "first_private1"},
+    {"off": 64, "width": 4, "type": "s32", "name": "first_private2"},
+    {"off": 68, "width": 4, "type": "s32", "name": "first_audio"},
+    {"off": 72, "width": 4, "type": "s32", "name": "first_video"},
+    {"off": 76, "width": 4, "type": "s32", "name": "audio0"},
+    {"off": 92, "width": 4, "type": "s32", "name": "video0"},
+    {"off": 144, "width": 4, "type": "s32", "name": "hdr_size"}
+   ]},
+  {"name": "SfdHandle", "size": 14256, "anchors": [{"how": "param", "fn": "0x58C060", "index": 0}, {"how": "param", "fn": "0x599240", "index": 0}, {"how": "param", "fn": "0x58BBB0", "index": 0}],
+   "fields": [
+    {"off": 72, "width": 4, "type": "s32", "name": "valid"},
+    {"off": 120, "width": 4, "type": "s32", "name": "info_valid"},
+    {"off": 2552, "width": 4, "type": "fnptr", "name": "err_fn"},
+    {"off": 2556, "width": 4, "type": "u32", "name": "err_arg"},
+    {"off": 2560, "width": 4, "type": "s32", "name": "err_code"},
+    {"off": 2572, "width": 4, "type": "u32", "name": "params0"},
+    {"off": 2972, "width": 4, "type": "u32", "name": "params2_0"},
+    {"off": 7996, "width": 4, "type": "s32", "name": "stream_rec0_active"},
+    {"off": 8060, "width": 4, "type": "ptr", "name": "buf_obj"},
+    {"off": 14000, "width": 4, "type": "ptr", "name": "hdr_buf_obj"}
+   ]},
+  {"name": "CriErrRec", "size": 12, "anchors": [{"how": "param", "fn": "0x58BEB0", "index": 0}, {"how": "param", "fn": "0x577C30", "index": 0}, {"how": "param", "fn": "0x578ED8", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "fnptr", "name": "fn"},
+    {"off": 4, "width": 4, "type": "u32", "name": "arg"},
+    {"off": 8, "width": 4, "type": "s32", "name": "code"}
+   ]},
+  {"name": "MpsHandle", "size": 256, "anchors": [{"how": "param", "fn": "0x577DB0", "index": 0}, {"how": "param", "fn": "0x577F78", "index": 0}],
+   "fields": [
+    {"off": 0, "width": 4, "type": "s32", "name": "state"},
+    {"off": 4, "width": 4, "type": "fnptr", "name": "err_fn"},
+    {"off": 8, "width": 4, "type": "u32", "name": "err_arg"},
+    {"off": 12, "width": 4, "type": "s32", "name": "err_code"}
+   ]},
+  {"name": "MpvHandle", "anchors": [{"how": "param", "fn": "0x57B7F0", "index": 0}, {"how": "param", "fn": "0x579770", "index": 0}, {"how": "param", "fn": "0x5792A0", "index": 0}],
+   "fields": [
+    {"off": 392, "width": 4, "type": "s32", "name": "state"},
+    {"off": 592, "width": 4, "type": "fnptr", "name": "err_fn"},
+    {"off": 596, "width": 4, "type": "u32", "name": "err_arg"},
+    {"off": 600, "width": 4, "type": "s32", "name": "err_code"},
+    {"off": 680, "width": 4, "type": "s32", "name": "bit_rate_value"},
+    {"off": 684, "width": 4, "type": "s32", "name": "vbv_buffer_size_value"},
+    {"off": 856, "width": 4, "type": "s32", "name": "mpeg_kind"},
+    {"off": 1000, "width": 4, "type": "u32", "name": "window0"}
+   ]},
+  {"name": "MwsfdPlayerHdrRing", "anchors": [{"how": "param", "fn": "0x57F328", "index": 0}, {"how": "param", "fn": "0x57F3E0", "index": 0}, {"how": "param", "fn": "0x582A08", "index": 0}],
+   "fields": [
+    {"off": 60, "width": 4, "type": "ptr", "name": "sfd_handle"},
+    {"off": 180, "width": 4, "type": "s32", "name": "hdr_count"},
+    {"off": 184, "width": 4, "type": "s32", "name": "ring_read"},
+    {"off": 188, "width": 4, "type": "s32", "name": "ring_write"},
+    {"off": 192, "width": 4, "type": "s32", "name": "ring0_valid"},
+    {"off": 208, "width": 4, "type": "s32", "name": "ring0_kind"}
+   ]}
+]}

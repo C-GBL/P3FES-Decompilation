@@ -1,0 +1,14 @@
+# sweep5e.sym  Phase 5 slice delta (game/include/p3fes/game/sweep5e.h); SLUS_216.21
+# generated 2026-10-29 from the slice's readability pass (p3fes_handgen bodies, the pseudocode reference as a hint, the
+#   pair tests' host checks; no IDA database opened). Rows: <addr8> <size8> F <name> <tags>, source=phase5-sweep5e
+#   verified=no: proposals from the bodies' own strings / calls. Not imported by the agent.
+# sub_2F8790: if gBtl+2836 holds a node, sub_2F8460, H_Cdvd_Destroy(node), then the slot is cleared
+002f8790 00000048 F btlReleaseFileNode source=phase5-sweep5e verified=no ev=INTEGRATION_LOG.md#sweep5e
+# sub_31B820: sprintf of "%sweapon/wp%03X_R.RMD" / "_R_h" / "_L" / "_L_h" from the unit's held weapon, then the load
+0031b820 00000658 F mdlLoadWeaponModel source=phase5-sweep5e verified=no ev=INTEGRATION_LOG.md#sweep5e
+# sub_31C820: sprintf of "%splayer/bc003_c0a.RMD" .. by character / costume (two jump tables), then the load
+0031c820 00000cd0 F mdlLoadPlayerModel source=phase5-sweep5e verified=no ev=INTEGRATION_LOG.md#sweep5e
+# sub_3CF240: its own debug printf "fclBankManagerSetState:Bank Hit[%d]!!!" with "[%s:%d]" "fclBankManager.c"
+003cf240 00000158 F fclBankManagerSetState source=phase5-sweep5e verified=no ev=INTEGRATION_LOG.md#sweep5e
+# sub_4C3EE0: the retail RW free-list free slot function (0x96018C; tests/game/stand_ins.h kRwSlotFns), RW 3.7 public name
+004c3ee0 0000019c F _rwFreeListFreeReal source=phase5-sweep5e verified=no ev=INTEGRATION_LOG.md#sweep5e
