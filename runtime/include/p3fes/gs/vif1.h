@@ -57,6 +57,11 @@ public:
     virtual ~IVuRunHook() = default;
     virtual bool run(const VuRunInfo& r, vu1::VU1Interpreter& vu) = 0;
     virtual void after_exact(const VuRunInfo&, vu1::VU1Interpreter&) {}
+    // An UNPACK into VU1 data memory `mem`, on the stage that writes VU1 memory (MODERNIZE layer 5 step 2): true = the
+    // hook wrote exactly what vif_unpack would (and `vectors` = its return value), false = vif_unpack runs.
+    virtual bool unpack(const UnpackArgs&, const u32* /*words*/, std::size_t /*n*/, u8* /*mem*/, u32* /*row*/, u32& /*vectors*/) {
+        return false;
+    }
 };
 
 struct VifStats {

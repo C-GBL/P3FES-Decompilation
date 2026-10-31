@@ -17,6 +17,8 @@
 #include "hle_fixtures.h"
 #include "p3fes/hle/cdvd.h"
 #include "p3fes/hle/mods_overlay.h"
+#include "p3fes/hle/read_log.h"
+#include "native_files.h"
 
 using namespace p3fes;
 using namespace p3fes::hle;
@@ -976,4 +978,268 @@ TEST_CASE("mods: over extracted/disc -- CVM members work, outer files are refuse
     auto f = ov.find_file("\\DATA.CVM;1");
     REQUIRE(f.ok());
     CHECK(f.value()->lsn == ov.cvm_lsn("DATA.CVM").value());
+}
+
+// ---- the read log (p3fes/hle/read_log.h; docs/MODERNIZE_PLAN.md §3 stage 0) ---------------------------------------
+// Kept here for the synthetic disc with a CVM above.
+
+TEST_CASE("read log: FNV-1a 64 and the line format") {
+    CHECK(fnv1a64({}) == kFnv1a64Basis);
+    const std::string a = "a", foobar = "foobar";
+    CHECK(fnv1a64(std::as_bytes(std::span(a.data(), a.size()))) == 0xAF63DC4C8601EC8Cull);
+    CHECK(fnv1a64(std::as_bytes(std::span(foobar.data(), foobar.size()))) == 0x85944171F73967E8ull);
+    ReadLogRecord r;
+    r.vblank = 1595;
+    r.lsn = 584'500;
+    r.sectors = 3;
+    r.dst = 0x01A2B340;
+    r.file = ResolvedRead{"DATA.CVM:\\FIELD\\PACK\\F032_002.PAC", 8192, 70'000};
+    r.hash = 0x0123456789ABCDEFull;
+    CHECK(format_read_log_line(r) ==
+          "1595 lsn=584500 n=3 bytes=6144 dst=01A2B340 path=DATA.CVM:\\FIELD\\PACK\\F032_002.PAC off=8192 fsize=70000 "
+          "hash=0123456789ABCDEF");
+    r.error = 0x30;
+    r.file = ResolvedRead{};
+    CHECK(format_read_log_line(r) == "1595 lsn=584500 n=3 bytes=6144 dst=01A2B340 path=- off=0 fsize=0 hash=- err=48");
+    CHECK(kReadLogHeader.front() == '#');
+}
+
+TEST_CASE("read log: the path index of a synthetic disc -- CVM members, outer files, spans across files") {
+    Synth s = make_synth();
+    auto disc = IsoFileSource::open(s.file->path());
+    REQUIRE(disc.ok());
+    const DiscPathIndex ix = DiscPathIndex::build(*disc.value());
+    CHECK(ix.members() == 5);
+    CHECK(ix.outer_files() == 4);  // DATA.CVM, LIB31\TEST.IRX, SLUS_216.21, SYSTEM.CNF
+    const u32 cvm = s.data_cvm().lsn, img = cvm + 3;
+    const Node& a = s.in("A.BIN");
+    ResolvedRead r = ix.resolve(img + a.lsn, 1);
+    CHECK(r.path == "DATA.CVM:\\A.BIN");
+    CHECK(r.offset == 0);
+    CHECK(r.file_size == 5000);
+    r = ix.resolve(img + a.lsn + 1, 2);  // the last two sectors, padding included
+    CHECK(r.path == "DATA.CVM:\\A.BIN");
+    CHECK(r.offset == S);
+    r = ix.resolve(img + s.in("SUB", "KEEP.BIN").lsn, 1);
+    CHECK(r.path == "DATA.CVM:\\SUB\\KEEP.BIN");
+    CHECK(r.file_size == 100);
+    CHECK(ix.resolve(img + s.in("NOEXT.").lsn, 1).path == "DATA.CVM:\\NOEXT.");
+    r = ix.resolve(img + a.lsn, 4);  // runs into the next member: the CVM itself
+    CHECK(r.path == "DATA.CVM");
+    CHECK(r.offset == static_cast<u64>(3 + a.lsn) * S);
+    CHECK(r.file_size == s.cvm.size());
+    r = ix.resolve(cvm, 1);  // the CVMH header
+    CHECK(r.path == "DATA.CVM");
+    CHECK(r.offset == 0);
+    r = ix.resolve(s.outer.kid("LIB31")->kid("TEST.IRX")->lsn, 1);
+    CHECK(r.path == "LIB31\\TEST.IRX");
+    CHECK(r.file_size == 700);
+    CHECK(ix.resolve(s.outer.kid("SLUS_216.21")->lsn, 2).path == "SLUS_216.21");
+    r = ix.resolve(16, 1);  // the PVD: no file
+    CHECK(r.path == "-");
+    CHECK(r.offset == 16u * S);
+    CHECK(r.file_size == 0);
+    CHECK(ix.resolve(s.outer.kid("SLUS_216.21")->lsn, 1000).path == "-");  // past the end of every file
+}
+
+TEST_CASE("read log: the path index over a mods overlay follows the relocated CVM") {
+    Synth s = make_synth();
+    auto ov = open_overlay(s, {});
+    const DiscPathIndex ix = DiscPathIndex::build(*ov);
+    CHECK(ix.members() == 5);
+    const u32 img = ov->cvm_lsn("DATA.CVM").value() + 3;
+    const ResolvedRead r = ix.resolve(img + s.in("GROW.BIN").lsn, 1);
+    CHECK(r.path == "DATA.CVM:\\GROW.BIN");
+    CHECK(r.file_size == 3000);
+}
+
+TEST_CASE("read log: the path index of the user's disc (ISO and extracted volumes agree)") {
+    auto iso = test::open_real_iso();
+    if (!iso) return;
+    const DiscPathIndex ix = DiscPathIndex::build(*iso);
+    MESSAGE("ISO: " << ix.outer_files() << " outer files, " << ix.members() << " CVM members");
+    CHECK(ix.members() > 10'000);
+    const DiscLayoutEntry& slus = *find_disc_layout("SLUS_216.21");
+    ResolvedRead r = ix.resolve(slus.lsn, 2);
+    CHECK(r.path == "SLUS_216.21");
+    CHECK(r.offset == 0);
+    CHECK(r.file_size == slus.size);
+    const DiscLayoutEntry& data = *find_disc_layout("DATA.CVM");
+    CHECK(ix.resolve(data.lsn, 1).path == "DATA.CVM");
+    auto ext = test::open_real_extracted();
+    if (!ext) return;
+    const DiscPathIndex ex = DiscPathIndex::build(*ext);
+    CHECK(ex.members() == ix.members());
+    CHECK(ex.outer_files() == kDiscLayout.size());
+    CHECK(ex.resolve(slus.lsn, 2).path == "SLUS_216.21");
+}
+
+// ---- modernize layer 1: the native files service (runtime/native/files/native_files.h) -------------------------
+
+TEST_CASE("native files: path keys fold case, separators, versions and trailing dots") {
+    using native::files::path_key;
+    CHECK(path_key("DATA.CVM:\\FIELD\\X.PAC") == "DATA.CVM:\\FIELD\\X.PAC");
+    CHECK(path_key("data.cvm:/field//x.pac;1") == "DATA.CVM:\\FIELD\\X.PAC");
+    CHECK(path_key("\\DATA.CVM;1") == "DATA.CVM");
+    CHECK(path_key("DATA.CVM:\\FIELD\\LMAP_DAT.") == path_key("DATA.CVM:\\FIELD\\LMAP_DAT"));
+    CHECK(path_key("LIB31\\TEST.IRX;1") == "LIB31\\TEST.IRX");
+}
+
+TEST_CASE("native files: by path -- members, outer files, the disc's padding, container reads, search, the observer") {
+    Synth s = make_synth();
+    auto disc = IsoFileSource::open(s.file->path());
+    REQUIRE(disc.ok());
+    auto opened = native::files::NativeFiles::open(*disc.value());
+    REQUIRE(opened.ok());
+    native::files::NativeFiles& nf = *opened.value();
+    CHECK(nf.members() == 5);
+    CHECK(nf.outer_files() == 4);
+    const u32 cvm = s.data_cvm().lsn, img = cvm + 3;
+    const Node& a = s.in("A.BIN");
+
+    const auto f = nf.find("DATA.CVM:\\A.BIN");
+    REQUIRE(f);
+    CHECK(f->size == 5000);
+    CHECK(f->lsn == img + a.lsn);
+    const auto f2 = nf.find("data.cvm:/a.bin;1");
+    REQUIRE(f2);
+    CHECK(f2->id == f->id);
+    CHECK(nf.find("DATA.CVM:\\NOEXT"));   // ROFS's "NOEXT." and the bare name are the same file
+    CHECK(nf.find("DATA.CVM:\\NOEXT."));
+    CHECK(nf.find("DATA.CVM:\\SUB\\KEEP.BIN")->size == 100);
+    CHECK_FALSE(nf.find("DATA.CVM:\\NONE.BIN"));
+    CHECK_FALSE(nf.find("DATA.CVM:\\KEEP.BIN"));  // not in the root directory
+
+    std::vector<native::files::NativeRead> seen;
+    std::vector<std::vector<std::byte>> seen_bytes;
+    nf.set_read_observer([&](const native::files::NativeRead& r) {
+        seen.push_back(r);
+        seen_bytes.emplace_back(r.data.begin(), r.data.end());
+    });
+    // Whole sectors, the last one's padding as the disc holds it (what a sector read delivers).
+    std::vector<std::byte> got(3 * S);
+    REQUIRE(nf.read(*f, 0, got, 0x01234000u));
+    CHECK(got == read(*disc.value(), img + a.lsn, 3));
+    REQUIRE(seen.size() == 1);
+    CHECK(seen[0].lsn == img + a.lsn);
+    CHECK(seen[0].sectors == 3);
+    CHECK(seen[0].guest_dst == 0x01234000u);
+    CHECK(seen_bytes[0] == got);
+    // An unaligned range.
+    std::vector<std::byte> part(50);
+    REQUIRE(nf.read(*f, 100, part, 0));
+    CHECK(std::equal(part.begin(), part.end(), a.data.begin() + 100));
+    // The container by its LSN (dvCi), at the member's offset in it; the CVMH header sector.
+    const auto c = nf.outer_at(cvm);
+    REQUIRE(c);
+    CHECK(c->size == s.cvm.size());
+    CHECK_FALSE(nf.outer_at(cvm + 1));
+    std::vector<std::byte> via(3 * S);
+    REQUIRE(nf.read(*c, static_cast<u64>(3 + a.lsn) * S, via, 0));
+    CHECK(via == got);
+    std::vector<std::byte> hdr(S);
+    REQUIRE(nf.read(*c, 0, hdr, 0));
+    CHECK(std::memcmp(hdr.data(), "CVMH", 4) == 0);
+    // Outer files and sceCdSearchFile's answer.
+    const auto irx = nf.find("LIB31\\TEST.IRX");
+    REQUIRE(irx);
+    CHECK(irx->size == 700);
+    const auto o = nf.search("\\DATA.CVM;1");
+    REQUIRE(o);
+    CHECK(o->identifier == "DATA.CVM;1");
+    CHECK(o->file.lsn == cvm);
+    CHECK(o->file.size == s.cvm.size());
+    CHECK_FALSE(nf.search("\\NONE.CVM;1"));
+    CHECK_FALSE(nf.search("DATA.CVM:\\A.BIN"));  // a member is not an outer file
+    // Past the disc: an error, never a short read.
+    std::vector<std::byte> beyond(S);
+    CHECK_FALSE(nf.read(*c, static_cast<u64>(disc.value()->sector_count()) * S, beyond, 0));
+}
+
+TEST_CASE("native files: mods by path -- the mod file's bytes and size at the disc file's LSN, zeros after it, containers") {
+    Synth s = make_synth();
+    TempDir mods;
+    const std::vector<std::byte> grown = pattern(7000, 40);
+    mods.write("DATA\\GROW.BIN", grown);
+    const std::vector<std::byte> irx = pattern(300, 41);
+    mods.write("LIB31\\TEST.IRX", irx);
+    auto ov = open_overlay(s, {mods.path()});
+    REQUIRE(ov->scan().overrides.size() == 2);
+    // Native mode reads the plain disc (the overlay's base): no relocated LSNs.
+    auto opened = native::files::NativeFiles::open(ov->base());
+    REQUIRE(opened.ok());
+    native::files::NativeFiles& nf = *opened.value();
+    const u32 cvm = s.data_cvm().lsn, img = cvm + 3;
+    const Node& g = s.in("GROW.BIN");
+    CHECK(nf.find("DATA.CVM:\\GROW.BIN")->size == 3000);
+    CHECK(nf.set_overrides(ov->scan().overrides) == 2);
+    const auto f = nf.find("DATA.CVM:\\GROW.BIN");
+    REQUIRE(f);
+    CHECK(f->size == 7000);
+    CHECK(f->lsn == img + g.lsn);
+    std::vector<std::byte> got(4 * S, std::byte{0xCC});
+    REQUIRE(nf.read(*f, 0, got, 0));
+    CHECK(std::equal(grown.begin(), grown.end(), got.begin()));
+    CHECK(std::all_of(got.begin() + 7000, got.end(), [](std::byte b) { return b == std::byte{0}; }));
+    CHECK(nf.find("LIB31\\TEST.IRX")->size == 300);
+    // A container read over the replaced member (a stream through dvCi): the member's disc extent (2 sectors for
+    // 3000 bytes) serves the mod file; the sectors around it stay the disc's.
+    const auto c = nf.outer_at(cvm);
+    REQUIRE(c);
+    const u64 at = static_cast<u64>(3 + g.lsn) * S;
+    std::vector<std::byte> span(4 * S);
+    REQUIRE(nf.read(*c, at - S, span, 0));
+    const std::vector<std::byte> disc_bytes = read(ov->base(), img + g.lsn - 1, 4);
+    CHECK(std::equal(span.begin(), span.begin() + S, disc_bytes.begin()));
+    CHECK(std::equal(span.begin() + S, span.begin() + 3 * S, grown.begin()));
+    CHECK(std::equal(span.begin() + 3 * S, span.end(), disc_bytes.begin() + 3 * S));
+    // Untouched members are the disc's.
+    std::vector<std::byte> a(S);
+    REQUIRE(nf.read(*nf.find("DATA.CVM:\\A.BIN"), 0, a, 0));
+    CHECK(std::equal(a.begin(), a.end(), s.in("A.BIN").data.begin()));
+    // Overrides off again: the disc's bytes and size.
+    CHECK(nf.set_overrides({}) == 0);
+    CHECK(nf.find("DATA.CVM:\\GROW.BIN")->size == 3000);
+    REQUIRE(nf.read(*nf.find("DATA.CVM:\\GROW.BIN"), 0, got, 0));
+    CHECK(std::equal(g.data.begin(), g.data.end(), got.begin()));
+}
+
+TEST_CASE("native files: the user's disc -- every container by LSN, sceCdSearchFile's records, ISO and extracted agree") {
+    auto iso = test::open_real_iso();
+    if (!iso) return;
+    auto opened = native::files::NativeFiles::open(*iso);
+    REQUIRE(opened.ok());
+    native::files::NativeFiles& nf = *opened.value();
+    MESSAGE("native files over the ISO: " << nf.outer_files() << " outer files, " << nf.members() << " CVM members");
+    CHECK(nf.members() > 10'000);
+    for (const DiscLayoutEntry& e : kDiscLayout) {
+        const auto f = nf.outer_at(e.lsn);
+        REQUIRE(f);
+        CHECK(f->size == e.size);
+        const auto o = nf.search("\\" + std::string(e.identifier));
+        REQUIRE(o);
+        CHECK(o->identifier == e.identifier);
+        CHECK(o->recorded == e.recorded);
+    }
+    auto ext = test::open_real_extracted();
+    if (!ext) return;
+    auto opened_ext = native::files::NativeFiles::open(*ext);
+    REQUIRE(opened_ext.ok());
+    native::files::NativeFiles& nx = *opened_ext.value();
+    CHECK(nx.members() == nf.members());
+    // A sample of members, by path, from both host files.
+    std::size_t i = 0, compared = 0;
+    std::vector<std::byte> a(S), b(S);
+    nf.for_each_file([&](const std::string& path, u32, u64 size) {
+        if (i++ % 997 != 0 || path.find(':') == std::string::npos || size == 0) return;
+        const auto fa = nf.find(path), fb = nx.find(path);
+        REQUIRE(fa);
+        REQUIRE(fb);
+        CHECK(fa->lsn == fb->lsn);
+        REQUIRE(nf.read(*fa, 0, a, 0));
+        REQUIRE(nx.read(*fb, 0, b, 0));
+        CHECK(a == b);
+        ++compared;
+    });
+    CHECK(compared > 5);
 }

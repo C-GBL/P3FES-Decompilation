@@ -10493,3 +10493,94 @@ run in the lead's merge gate.
 **Audit.** `slice.ps1 audit -Jobs 2` (--seeds 96 --snapshots dorm_replay_4900,b_5800,climb_ref_17000,fusion_ref_6300,shop_ref_4100 --snapshot-seeds 16): **faithful 15 of 15**, 0 not.
 
 **Gate.** `gate.ps1 -Slice -NoSuites -FastGs -Jobs 2` on the finalB tree (main 8af8339 + this slice; main was not merged in on the lead's instruction, the lead resolves the merge; the full suites run in the merge gate): dorm `EE0EB5DA` (90.6 s), m1 `E3A93615` (11.0 s), battle `CFAA5A61` (112.2 s), fusion `9B5B5374` (96.1 s), shop `1165B3E0` (96.2 s), climb `F3440652` (360.9 s): eeMemory 0 bytes each, gsMemory identical, **GATE: PASSED** (first run, no rerun needed).
+
+## Modernize stage 0: the --native switch set, the read log and the scene log (2026-10-30)
+
+**What.** The plumbing of `docs/MODERNIZE_PLAN.md` §3 stage 0 (ADR-0017), on `journey-100` (2265e36). `--native LIST`
+(`HostConfig::native`, `runtime/app/modernize.h`): files, input, sound, movies, graphics, kernel, `all`, `none`;
+unknown names refused (exit 2); no layer is implemented, so each switched-on layer prints "layer X has no native
+implementation yet; running faithful" and changes nothing; `state_config()` and `capture.json` carry ` native=...`
+only when the set is non-empty. `--read-log FILE` (`p3fes/hle/read_log.h`, `IopConfig::cd_read_sink` from cdvdfsv):
+one line per sceCdRead with the LSN, sectors, guest destination, the file by path through `DiscPathIndex` (the disc's
+ISO9660 directories plus each CVM's inner image), the offset in it, its size and FNV-1a 64 of the bytes delivered.
+`--scene-log FILE`: one line per change of MT_Scene's major / minor (`*(0x7CD540)`), the field root's entry / event
+id / event viewer (`sField 0x869F60`), `gBtl` (`0x7CE3EC`) and the movie player (`0x7CDF10`), sampled at
+VBLANK_START through `EEMemory::ram_ptr`. `tools/ours/modernize/logcmp.py` compares two read logs (in order, or
+`--by-path` as a multiset) or two scene logs (in order, or `--coarse`), with `--selftest` (16 checks).
+
+**Runs** (Release MSVC, `--vu1 aot --gs-backend d3d11 --gs-exact`, logs not committed). Dorm to vblank 4900: 223 reads
+(26,363 B), 23 scene lines; battle to vblank 6150: 319 reads (38,265 B), 16 scene lines. Each route run twice: both
+logs byte-identical, eeMemory / gsMemory identical; dorm with `--native all` gives the same logs and snapshot. No read
+was refused or unresolved; 9 reads per route resolve to a CVM container (the CVMH header sectors 0 / 1 and the inner
+PVD at sector 19 of DATA, BGM and BTL, read by ROFS at boot); the rest are CVM members, ADX (58 dorm / 77 battle)
+and SFD (16 / 5) streams among them. The index of the user's ISO: 27 outer files, 12,017 CVM members.
+
+**Tests.** `tests/app/test_modernize.cpp` (parsing, notices, the scene sampler, the line), `tests/hle` "read log: ..."
+(FNV-1a, the line, the index of a synthetic disc, over a mods overlay, of the user's ISO and extracted volumes),
+`tests/sif/test_cdvdfsv.cpp` (the sink's events and bytes; guest RAM identical with and without it). app / hle / sif
+suites green on MSVC and clang-cl.
+
+**Gate.** `gate.ps1 -Slice -NoSuites -FastGs -Jobs 3 -Routes dorm,m1,battle,fusion,shop,climb`: all six routes
+eeMemory 0 bytes, gsMemory identical, the expected frames; GATE: PASSED (the empty set is the baseline build).
+
+## SQRT.S rounds to nearest: the keyboard's S and the stick's run bands (2026-10-31)
+
+**Report.** Keyboard S alone (pad sticks lx 0x80, ly 0xFF) turned the hero away from the camera and left him walking in
+place; a controller's speed rose and fell with the stick angle at full deflection. Also under `--reference-mode`.
+
+**Root cause (the EE FPU model).** The field pad heading `sub_1B02C0` (`game/src/field/field4_root.cpp`, 0x1B065C..0x1B06A0)
+normalises the stick vector (`sub_4C69F0`), then calls acosf(z / sqrt(x * x + z * z)). For (0, 127): 1 / 127 =
+0x3C010204 (DIV.S, nearest), z = 127 * that = 0x3F7FFFFF, z * z = 0x3F7FFFFE, and SQRT.S **truncated** that to 0x3F7FFFFE,
+so DIV.S gave 0x3F800001: acosf of a value above 1 returns its (x-x)/(x-x) clamp 0x7FFFFFFF and the heading becomes
+garbage (snapshots: gp-19004, the hero's speed, stays 0.0 and the hero position at 0x965360 does not move). With x
+byte 0x80 this happens for 64 of the 256 y bytes (0xFF, 0x01, 0xE4, ... ; never for x != 0x80); under any consistent
+rounding (both truncating, both nearest) for none. `fpu.h` already followed PCSX2's EE recompiler -- the state oracle
+(ADR-0012) -- for DIV.S (nearest, integration decision 1) but kept the interpreter's truncating SQRT.S, although the
+recompiler rounds SQRT.S to nearest too (docs/PCSX2.md: sqrt(10) = 0x404A62C2). PCSX2's own pad never shows it: its
+neutral byte is 0x7F (the PCSX2 `dorm` capture's pad record holds 7F 7F 7F 7F), so its S is (0x7F, 0xFF).
+
+**Fix.** `fpu::sqrt_nearest` for SQRT.S (`runtime/include/p3fes/ee/fpu.h`); VU0 VSQRT keeps truncation. eevec: 4 sqrt.s
+vectors move to `agree-rec:int-sqrt-truncates` (statuses regenerated), mismatch 0.
+
+**The angle-dependent speed (host mapping).** K_VPad_UpdateTask zeroes each stick axis inside +-48 and runs (speed 25.6)
+only when the rest is >= 125 long, else walks (13.0). On the unit circle a full deflection 10..22 degrees off an axis has
+its minor component zeroed and its major one 127 cos(angle) < 125: walk. The DUALSHOCK 2 (and PCSX2's pad: independent
+axes, 1.33 scale) reaches the square's corners, so the game expects a full deflection to run at every angle.
+`map_gamepad` now maps the stick onto the square (`stick_to_square`, full from raw magnitude 0.9 = `kStickFullAt`).
+Sweep (shop route to vblank 2015, the lounge; one stick state held, gp-19004 at +60): circle bytes every 5 degrees before
+and after the FPU fix: run 25.6 except walk 13.0 at 16 angles (15, 20, 70, 75, 105, 110, 160, 165, 195, 200, 250, 255,
+285, 290, 340, 345) and 0.0 at 90 degrees
+before the fix only; square bytes after both fixes: 25.6 at all 72 angles. Raw bytes: 80 FF and 80 01 0.0 -> 25.6;
+81 FF, 80 00, FF 80, 00 80 and the four corners 25.6 before and after.
+
+**Tests.** `tests/ee/test_fpu.cpp` (sqrt_nearest, the 0x1B067C..0x1B068C sequence bit for bit, every z byte with x = 0),
+`tests/game/test_field4_root.cpp` (sub_1B02C0 for x 0x80 and every y byte outside the dead zone: 180 / 360 degrees, was
+the clamp for 64 bytes; K_VPad_UpdateTask on the real field snapshot: (0x80, y) steers like (0x81, y)), the scene2 path
+length print (30.00, was 29.99 with the truncating SQRT.S), `tests/app/test_gamepad.cpp` (stick_to_square; every angle at
+rim 1.0 / 0.95 / 0.9 runs under the game's rule). Both new game tests fail with the old SQRT.S (65 + 2 assertions).
+
+**Gate** (`gate.ps1 -Tree build\mv -ClangTree build\mv-clang -FastGs -Jobs 3`): ctest 210/211 on MSVC and on clang-cl
+(the one failure, scene2's printed path length, is the expectation updated above; that file passes on both compilers
+after it). Routes: dorm, m1, fusion and shop reach their expected frames (eeMemory 8,429 / 8 / 384 / 2,865,088 bytes
+differ: the new rounding; dorm gsMemory differs, the others identical). **battle and climb desync: both were recorded
+with the bug.** battle (`to_battle.txt`): identical frames up to vblank 1858, different from 1866: the held S at
+1859..1871 (`80 FF`) now walks the hero down in Tartarus 1F Entrance; at 6150 the route stands on 1F Entrance instead of
+the battle result screen. climb (`full_battle.txt`): identical up to 2182, different by 2190 after the S at 2177..2181;
+at 39820 it is in the dorm lounge (4/21 evening) instead of Tartarus. The native routes (`config/inputs/native/*.txt`)
+also hold `80 FF` in field segments (dorm 6, shop 6, fusion 15, battle 5, climb 34). Not re-baselined.
+
+**Re-baselined (lead, 2026-10-31, on main 96beac5; the user's decision: the full fix, re-recorded routes).**
+- The gate on 96beac5 (`-Routes dorm,m1,fusion,shop`): ctest 211/211 MSVC and 210/210 clang-cl, pair tests 1,244 / 1,244.
+  The four routes kept their frames; only their memory references were stale.
+- Faithful references rewritten from 96beac5: `dorm_replay_4900`, `v_m1`, `fusion_ref_6300`, `shop_ref_4100`. The old
+  ones are kept as `*_pre_sqrt`. All four are 0 differing bytes against the new references.
+- battle and climb were re-recorded by the user on the fixed build (`config/inputs/to_battle.txt`, `full_battle.txt`;
+  the climb is shorter). The new references `battle_ref_7800` (Thebel 2F after the 251/1 battle) and `climb_ref_18350`
+  (Thebel 4F after the 221/1 battle) are taken about 300 vblanks after the field returns, because the earlier end
+  points 7500 / 18050 were still black.
+  - The expected frames are battle 7AACF224... and climb 3425C762....
+  - The climb's state point is moved from 20000 to 12000, since 20000 is now past the route's end.
+- Native routes (`-Native -NativeLayers files,input`): dorm, shop and m1 keep their end frames, and their baselines were
+  rewritten. battle, fusion and climb desync (the plain S stretches): they now end on Thebel 2F, Tartarus 1F Entrance
+  and the dorm lounge instead of the battle, the Velvet Room and the Tartarus status screen. Their baselines are moved
+  to `*_desync_sqrt` until the user re-records those three native routes.

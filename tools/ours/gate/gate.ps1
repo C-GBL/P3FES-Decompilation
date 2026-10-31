@@ -80,6 +80,14 @@ param(
                                       # except that -Slice skips the climb (~20 min) -- the lead's merge gate runs it
     [int]$Jobs = 4,
     [int]$TestJobs = 0,               # ctest -j; 0 = -Jobs
+    [switch]$Native,                  # the native configuration's routes (config\inputs\native), --native $NativeLayers
+    [string]$NativeLayers = 'files',  # the layer set those routes run with (ADR-0017); each set has its own baselines
+    [int]$TestTimeout = 2400,        # ctest --timeout per entry, seconds (the longest file: ~230 s alone, but libs25
+                                      # ran past 1200 s under a full gate's load): a hung pair test fails instead of
+                                      # holding the gate for hours (2026-10-30)
+    [string]$ExtraArgs = '',          # appended to every game run of the route set (e.g. '--native graphics': a native layer whose
+                                      # check is the faithful references byte for byte, docs/MODERNIZE_PLAN.md layer 5)
+    [int]$RunTimeout = 3600,          # cap per game process (route, reference, segment, state load), seconds: killed and failed
     [string]$Repo = ''                # the tree to build and gate; default: the repository this script lives in.
                                       # Agents: run the MAIN tree's copy with -Repo <your worktree> (fixes reach you at once)
 )
@@ -150,9 +158,20 @@ $shardDefs = ($shardVars.Keys | ForEach-Object { "-D$_=$($shardVars[$_])" }) -jo
 if ($TestJobs -le 0) { $TestJobs = $Jobs }
 # ctest of one tree as a background process; Report-Suites prints its summary, failures and the pair-test counts.
 $ctestFilter = if ($Slice) { ' -R p3fes_game_tests' } else { '' }   # -Slice: the pair tests only
-function Start-Suites($dir) { Start-Bg "ctest --test-dir $dir -j $TestJobs$ctestFilter" (Join-Path $out ("ctest-{0}.log" -f (Split-Path $dir -Leaf))) }
+function Start-Suites($dir) { Start-Bg "ctest --test-dir $dir -j $TestJobs --timeout $TestTimeout$ctestFilter" (Join-Path $out ("ctest-{0}.log" -f (Split-Path $dir -Leaf))) }
+# Wait for a background process at most $secs seconds; past that, kill its tree, say so and fail the gate.
+function Wait-Capped($p, $secs, $tag) {
+    if (-not $p) { return }
+    if (-not $p.WaitForExit([int][Math]::Min([int64]$secs * 1000, [int]::MaxValue))) {
+        cmd /c "taskkill /T /F /PID $($p.Id)" *> $null
+        $p.WaitForExit()
+        "TIMEOUT        $tag ran over $secs s: killed"
+        $script:failed = $true
+    }
+}
 function Report-Suites($what, $dir, $p) {
-    $p.WaitForExit()
+    # the suites' own cap: every entry has --timeout, so this only catches ctest itself hanging
+    Wait-Capped $p ([int64]$TestTimeout * 20) "$what suites"
     $f = Join-Path $out ("ctest-{0}.log" -f (Split-Path $dir -Leaf))
     $o = Get-Content $f
     Add-Content $log "---- $what ----" -Encoding ascii; $o | Add-Content $log -Encoding ascii
@@ -214,33 +233,58 @@ if ($Slice -and $ClangTree) { "clang-cl       skipped (-Slice: the lead's merge 
 
 # ---- the replay gates (background unless -Serial) -----------------------------------------------------------------
 $gs = if ($FastGs) { '--gs-backend d3d11 --gs-exact' } else { '' }
+if ($ExtraArgs) { $gs = ($gs + ' ' + $ExtraArgs).Trim(); "extra args     $ExtraArgs (every route; the references are unchanged)" }
 # (not $routes: PowerShell names are case-insensitive, and the [string] -Routes parameter would turn the list into
 # one string -- every route then failed to start)
 $routeSet = @(
     @{ name = 'dorm';   args = "--memcard new --replay-input $Main\config\inputs\to_dorm.txt --snapshot-at vblank:4900"; ref = 'dorm_replay_4900' },
     @{ name = 'm1';     args = '--snapshot-at sky:11'; ref = 'v_m1' },
-    @{ name = 'battle'; args = "--memcard $ref\cards\tartarus.ps2 --replay-input $Main\config\inputs\to_battle.txt --snapshot-at vblank:6150"; ref = 'battle_ref_6150' },
+    # the user's battle route, re-recorded 2026-10-31 after the SQRT.S fix (the old one held a plain S that the bug
+    # ignored): Tartarus 1F, a battle (251/1), back on Thebel 2F; reference from 96beac5
+    @{ name = 'battle'; args = "--memcard $ref\cards\tartarus.ps2 --replay-input $Main\config\inputs\to_battle.txt --snapshot-at vblank:7800"; ref = 'battle_ref_7800' },
     # the user's Velvet Room recording (2026-10-21): enters the Velvet Room and fuses; reference from a zero-replacement
     # build at 57948d7 (F:\P3FES-PORT\norep, build\norep2)
     @{ name = 'fusion'; args = "--memcard $ref\cards\fusion.ps2 --replay-input $Main\config\inputs\fusion.txt --snapshot-at vblank:6300"; ref = 'fusion_ref_6300' },
     # the user's shop recording (2026-10-21): the pharmacy's item menu and the shopkeeper; it caught the missing
     # spills of RFMAI_ToUpperStr and frFontCreateGlyphNode
     @{ name = 'shop';   args = "--memcard $ref\cards\shop_buy.ps2 --replay-input $Main\config\inputs\shop.txt --snapshot-at vblank:4100"; ref = 'shop_ref_4100' },
-    # the user's full Tartarus climb (2026-10-21): floors, fights and the boss, ~39,800 vblanks (~15 min headless, the
-    # longest route); it caught datSetFlag's missing frame. A transient 318-byte heap-frame difference at vblank 17000
-    # (gone by the end) is still open -- the faithfulness audit is on it.
-    @{ name = 'climb';  args = "--memcard $ref\cards\full_battle.ps2 --replay-input $Main\config\inputs\full_battle.txt --snapshot-at vblank:39820"; ref = 'climb_ref_39820' }
+    # the user's Tartarus climb, re-recorded 2026-10-31 after the SQRT.S fix (the 2026-10-21 recording, ~39,800 vblanks,
+    # held plain S stretches the bug ignored; it caught datSetFlag's missing frame): floors and a battle (221/1), back
+    # on Thebel 4F, ~18,350 vblanks (the longest route); reference from 96beac5
+    @{ name = 'climb';  args = "--memcard $ref\cards\full_battle.ps2 --replay-input $Main\config\inputs\full_battle.txt --snapshot-at vblank:18350"; ref = 'climb_ref_18350' }
 )
+# -Native (ADR-0017): the native configuration's routes instead -- the user's recordings made with the native layers on
+# (config\inputs\native, 2026-10-30), run with --native $NativeLayers. Their references are baselines of our own
+# output, kept per layer set in extracted\_ours\native-<layers>_<route>_<end>: the first run of a set writes them
+# (BASELINE, not a pass); re-baselining is the user's decision (delete the folder). m1 has no input and needs no recording.
+if ($Native) {
+    $nl = $NativeLayers -replace '\s', ''
+    $tag = 'native-' + ($nl -replace ',', '+')
+    $nat = "--native $nl"
+    $routeSet = @(
+        @{ name = 'dorm';   args = "$nat --memcard new --replay-input $Main\config\inputs\native\dorm.txt --snapshot-at vblank:4226"; ref = "${tag}_dorm_4226" },
+        @{ name = 'm1';     args = "$nat --snapshot-at sky:11"; ref = "${tag}_m1_sky11" },
+        @{ name = 'battle'; args = "$nat --memcard $ref\cards\tartarus.ps2 --replay-input $Main\config\inputs\native\battle.txt --snapshot-at vblank:5492"; ref = "${tag}_battle_5492" },
+        @{ name = 'fusion'; args = "$nat --memcard $ref\cards\fusion.ps2 --replay-input $Main\config\inputs\native\fusion.txt --snapshot-at vblank:4296"; ref = "${tag}_fusion_4296" },
+        @{ name = 'shop';   args = "$nat --memcard $ref\cards\shop_buy.ps2 --replay-input $Main\config\inputs\native\shop.txt --snapshot-at vblank:3405"; ref = "${tag}_shop_3405" },
+        @{ name = 'climb';  args = "$nat --memcard $ref\cards\full_battle.ps2 --replay-input $Main\config\inputs\native\climb.txt --snapshot-at vblank:33211"; ref = "${tag}_climb_33211" }
+    )
+    "native         --native $nl (references: extracted\_ours\${tag}_*)"
+}
 $wanted = if ($Routes) { $Routes.Split(',') | ForEach-Object { $_.Trim() } } elseif ($Slice) { 'dorm', 'm1', 'battle', 'fusion', 'shop' } else { $null }
 if ($wanted) {
+    # a name that is no route (e.g. a list PowerShell split or mangled when -Routes was not quoted) must not pass silently
+    $unknown = @($wanted | Where-Object { $_ -notin $routeSet.name })
+    if ($unknown.Count -gt 0) { "ABORT: -Routes names no route: $($unknown -join ', ') (pass the list quoted: -Routes 'dorm,m1')"; exit 1 }
     $routeSet = @($routeSet | Where-Object { $wanted -contains $_.name })
+    if ($routeSet.Count -eq 0) { 'ABORT: -Routes selected no route'; exit 1 }
     'routes         {0}{1}' -f ($routeSet.name -join ', '), $(if (-not $Routes -and $Slice) { ' (-Slice: the climb runs in the merge gate)' } else { '' })
 }
 # the memory card opens copy-on-write into .\extracted\_ours\memcards (relative to this repo): start from the pristine card
 foreach ($c in 'tartarus.ps2', 'fusion.ps2', 'shop_buy.ps2', 'full_battle.ps2') { Remove-Item (Join-Path $Repo "extracted\_ours\memcards\$c") -ErrorAction SilentlyContinue }
 # -StateCheck: the vblank at which each route saves the machine (runtime/STATE.md); a route not listed is not checked.
 # (The save goes before the route's arguments: they end with --snapshot-at K:N, whose directory Start-Route appends.)
-$statePoints = @{ dorm = 3500; m1 = 300; battle = 4700; fusion = 4500; shop = 3000; climb = 20000 }
+$statePoints = @{ dorm = 3500; m1 = 300; battle = 4700; fusion = 4500; shop = 3000; climb = 12000 }
 function Start-Route($r) {
     $r.dir = Join-Path $out $r.name
     Remove-Item -Recurse -Force $r.dir -ErrorAction SilentlyContinue
@@ -327,7 +371,7 @@ function Run-Segments {
         }
         Start-Sleep -Milliseconds 500
     }
-    foreach ($j in $jobs) { if ($j.proc) { $j.proc.WaitForExit() } }
+    foreach ($j in $jobs) { Wait-Capped $j.proc $RunTimeout $j.tag }
     $script:gatesWall = $swGates.Elapsed.TotalSeconds
     foreach ($r in $routeSet) {
         $rj = $jobs | Where-Object { $_.route -eq $r } | Select-Object -First 1
@@ -378,7 +422,7 @@ if (-not $Serial) {
     if (-not $NoBuild -and -not $NoSuites) { $msvcSuites = Start-Suites $Tree }
 }
 if (-not $NoBuild) {
-    if ($Serial -and -not $NoSuites) { $msvcSuites = Start-Suites $Tree; $msvcSuites.WaitForExit() }
+    if ($Serial -and -not $NoSuites) { $msvcSuites = Start-Suites $Tree; Wait-Capped $msvcSuites ([int64]$TestTimeout * 20) 'msvc suites' }
     if ($ClangTree) {
         # Release unless -ClangDebug (the second compiler's optimised codegen); the preset when this repo has it
         $clangType = if ($ClangDebug) { 'Debug' } else { 'Release' }
@@ -392,17 +436,17 @@ if (-not $NoBuild) {
         }
         $clangOk = $lastRc -eq 0
         if ($clangOk) { Run 'build clang' "cmake --build $ClangTree -j $Jobs"; $clangOk = $lastRc -eq 0 }
-        if ($clangOk) { $clangSuites = Start-Suites $ClangTree; $clangSuites.WaitForExit() } else { 'clang-cl build failed: its suites were not run' }
+        if ($clangOk) { $clangSuites = Start-Suites $ClangTree; Wait-Capped $clangSuites ([int64]$TestTimeout * 20) 'clang suites' } else { 'clang-cl build failed: its suites were not run' }
     }
     Start-StateLoads
     if ($NoSuites) { "ctest          skipped (-NoSuites: the slice's own pair tests ran in its test / clang steps; the merge gate runs every suite)" }
     else { Report-Suites 'ctest msvc' $Tree $msvcSuites }
     if ($ClangTree -and $clangSuites) { Report-Suites 'ctest clang' $ClangTree $clangSuites }
 }
-if ($Serial) { $swGates.Restart(); foreach ($r in $routeSet) { Start-Route $r; $r.proc.WaitForExit() } }
-foreach ($r in $routeSet) { Start-StateLoads; $r.proc.WaitForExit() }
+if ($Serial) { $swGates.Restart(); foreach ($r in $routeSet) { Start-Route $r; Wait-Capped $r.proc $RunTimeout $r.name } }
+foreach ($r in $routeSet) { Start-StateLoads; Wait-Capped $r.proc $RunTimeout $r.name }
 Start-StateLoads
-foreach ($r in $routeSet) { if ($r.load) { $r.load.WaitForExit() } }
+foreach ($r in $routeSet) { Wait-Capped $r.load $RunTimeout "$($r.name) state load" }
 $gatesWall = $swGates.Elapsed.TotalSeconds
 foreach ($r in $routeSet) {
     $name = $r.name; $dir = $r.dir; $refDir = Join-Path $ref $r.ref
@@ -414,6 +458,11 @@ foreach ($r in $routeSet) {
     if ($rc -ne 0) { $failed = $true }
     $frame = Join-Path $dir 'frame.png'
     if (Test-Path $frame) { '{0,-14} frame {1}' -f $name, (Get-FileHash $frame).Hash } else { "${name}: no frame.png"; $failed = $true; continue }
+    if ($Native -and -not (Test-Path (Join-Path $refDir 'eeMemory.bin'))) {
+        # the first run of this layer set: its own output becomes the reference (only after a clean exit)
+        if ($rc -eq 0) { New-Item -ItemType Directory -Force $refDir | Out-Null; Copy-Item (Join-Path $dir '*') $refDir -Recurse -Force; "{0,-14} BASELINE written to {1} (not compared)" -f '', $refDir }
+        continue
+    }
     $d = cmd /c "$b\tracediff.exe snapshot $refDir\eeMemory.bin $dir\eeMemory.bin --dead-stack $dir\capture.json 2>&1" | Select-String 'differing bytes'
     "{0,-14} {1}" -f '', $d
     if ("$d" -notmatch 'differing bytes: 0 ') { $failed = $true }
@@ -439,6 +488,6 @@ foreach ($r in $routeSet) {
     }
 }
 'replay gates   {0,6:N1} s wall{1}' -f $gatesWall, $(if ($Serial) { '' } else { ' (from their start, incl. the overlapped suites)' })
-'expected frames: dorm EE0EB5DA4042B042..., m1 E3A93615056A12B6..., battle CFAA5A615C721AF7..., fusion 9B5B5374654299DB..., shop 1165B3E0312F684F..., climb F3440652970E0161...'
+if ($Native) { 'expected frames: the native baselines (extracted\_ours\native-*)' } else { 'expected frames: dorm EE0EB5DA4042B042..., m1 E3A93615056A12B6..., battle 7AACF2243020D668..., fusion 9B5B5374654299DB..., shop 1165B3E0312F684F..., climb 3425C762A22B706F...' }
 'total          {0}' -f (Secs $t0)
 if ($failed) { 'GATE: FAILED'; exit 1 } else { 'GATE: PASSED' }

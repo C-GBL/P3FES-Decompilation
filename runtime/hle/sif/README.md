@@ -345,3 +345,73 @@ carries `iop_sound_census` (requests and events by verb), `sk` (`IopHle::sk_stat
 RPC routed/pending, tick runs, instructions, key-ons/offs, voices active, voice frames and the first voice
 frame, mixer passes, late stream frames, fault) and `audio.first_non_silent_frame`. `--sk constants|modules`
 and `--iop-layout legacy|pcsx2` select the model and the map.
+
+## 10. Native input (modernize layer 2, `--native input`; `docs/MODERNIZE_PLAN.md` §3)
+
+With `--native input` the game's own pad wrapper asks the host's pad instead of libpad: no SIF RPC reaches PADMAN
+(not even the bind and the port opens), no pad frame is DMA'd into the game's buffers, and nothing models SIO2.
+Without `input` nothing changes: the native branches sit behind `native::input::service()`, which is `nullptr` (the
+six-route gate is byte-exact on that build).
+
+- **Seam** (`runtime/include/p3fes/native/input_service.h`): the `PadService` interface (libpad's eight answers the
+  game uses) and the inline pointer `g_service`, installed by `GameHost` while `--native input` is on. Host side:
+  `runtime/native/input/native_pad.h` (`NativePad`, library `p3fes_native_input`, pure C++): per port a DUALSHOCK 2
+  (digital 0x41 until the game asks for analog, then 0x73; request BUSY for one report after SetMainMode /
+  SetActAlign; the actuator map) and two report slots written alternately at each VBLANK_START, the newer one
+  answering -- the same answers with the same latency as PADMAN's frames in the two halves of the game's buffer, so
+  the game's pad work is the same in both modes. Opening a port prepares both slots as `scePadPortOpen` prepares its
+  buffer (state 5, BUSY, no data), so the first report answers at the second VBLANK_START after the open.
+- **Swap points** (game side: `game/include/p3fes/game/input_native.h`, `game/src/hpad/hpad_native.cpp`):
+  1. `H_Pad_Init 0x103000` (`field8_sys.cpp`): `scePadInit(0)` and the two `scePadPortOpen` -> `open(0, 0)`,
+     `open(1, 0)`.
+  2. `H_Pad_UpdateWorkPad 0x103110` (`sweep5a.cpp`): each of its nine libpad calls (`scePadGetState`,
+     `scePadGetReqState`, `scePadInfoAct`, `scePadSetActAlign`, three `scePadSetMainMode`, `scePadRead` into
+     0x7E0700, `scePadSetActDirect`) -> the service; its own state machine (record +2: 0 -> 1 -> 3 -> 4 -> 5) and
+     every store to the work record are the faithful code.
+  These two are the game's only libpad callers (the libpad entry points have no other caller in game/src), and
+  `H_Pad_UpdateAll 0x103580` runs `H_Pad_UpdateWorkPad` for both ports every frame; everything else reads the work
+  records it fills (0x7E09B0, 54 bytes per port): so this is the highest point that serves every pad read. One
+  level higher (H_Pad_UpdateAll) would have to re-implement the state machine and the button-word derivations;
+  one lower (libpad itself) is the platform library, not the game's wrapper.
+- **What the game uses** (from the code): the DUALSHOCK's analog sticks (it asks for analog mode, locked, at
+  start; the records keep lx / ly / rx / ry, `sub_103650` turns the left stick into d-pad bits, the field reads
+  the stick heading); **no pressure** (`scePadEnterPressMode` has no caller, `H_Pad_UpdateWorkPad` reads bytes 0..7
+  only; 0x79 is accepted but never appears); **vibration**: `sub_103B10` steps the game's pulse pattern into the
+  record's actuator words +46 (small motor, on / off) and +48 (large, 0..255), and `H_Pad_UpdateWorkPad` sends
+  them with `scePadSetActDirect` when they change, through the `SetActAlign` map (0x7CB270). Native: the values
+  go to `NativePad`'s rumble sink; the windowed host drives the XInput pad's motors with them (small -> right,
+  high-frequency motor full on; large -> left motor x 257), stopped on exit and on unplugging. **Two ports**: the
+  game opens both and reads port 2 too, but `H_Pad_UpdateAll` clears port 2's held word and centres its sticks after
+  every update (its record's +12 and +30..33 are the shared block's frame-edge words 0x7E09F2.. and analogue bytes
+  0x7E0A04..), so only port 1 reaches the game; `NativePad` keeps port 2 unplugged, as PADMAN does.
+- **Input path**: the pad feed (`runtime/app/input.h`: keyboard + XInput sampling, `--input-config`,
+  `--input-script` / `--press`, `--record-input`, `--replay-input`) is unchanged and sits above both modes:
+  `GameHost::host_service` takes the native report for the vblank and then latches the feed into `NativePad`
+  (faithful: `feed_pad_input` into PADMAN after its frame), so a recording made in either mode replays in either.
+  Port 1 is a controller, port 2 is unplugged, as PADMAN's default.
+- **Machine states**: a `native-input` section (the pad model) when the layer is on; `state_config()` records
+  ` native=input` so a state loads only into a run with the same set.
+- **Checks**: `--vblank-dump FILE RANGES` (the guest ranges at every VBLANK_START) and
+  `tools/ours/modernize/logcmp.py dumps A B [--mask=FILE]`; `tools/ours/modernize/layer2_pad_mask.txt` (the pad
+  layer's own state). Tests: `tests/app/test_native_input.cpp` (the model: answers and latency, buttons, sticks, the
+  keyboard / XInput mapping into a report, mode change, actuators and rumble, unplugging, two ports, state round
+  trip), `tests/game/test_input_native.cpp` (H_Pad_Init / H_Pad_UpdateAll / H_Pad_UpdateWorkPad on the service),
+  `tests/app/test_modernize.cpp`.
+
+## 11. Native sound (modernize layer 3, `--native sound`; `docs/MODERNIZE_PLAN.md` §3)
+
+With `--native sound` the game does not load `CRI_ADXI.IRX` (kwlnInitPS2Systems 0x197030) and nothing reaches its DTX
+server `0x90000200`: CRI's PS2 output layer (PS2RNA) plays on the host (`runtime/native/sound`, seam
+`p3fes/native/sound_service.h`, game side `game/src/cri/rna_native.cpp`; design: `runtime/audio/README.md` "Native
+sound"). The `RNA start` / `RNA stop` lines of `--sound-log` then come from the native output (the same arguments).
+`IopHle::adx_input()` is where its 48 kHz passes enter (the SPU2 mixer's stream input in Modules mode).
+
+Steps 2-3 (the SK sound effects and libsd remote calls, `runtime/native/sound/sk`): the six SK modules run as native
+code. With `--native-sk sif` (the default) the game's RPC traffic stays as it is and `SdrdrvServer` hands it to the
+native stack (`IopHle::set_native_sk`, `SkNativeBackend`): loadfile's requests for the six modules start them at the
+instant the interpreter would load them (nothing is loaded into the interpreter, `sk_stats().instructions` stays 0),
+the binding points at SDRDRV's native server buffer as in §9, and `call()` / `tick()` go to the native handler and the
+native SK tick. The native stack uses this model's RAM, its heap placement and libsd over the voice model through the
+`native_sk_*` calls of `IopHle` (`iop/libsd_hle.h libsd_call` is the one libsd implementation both paths call; the
+interpreter's host calls go through it too). With `--native-sk direct` nothing reaches SDRDRV at all (the game calls
+the stack itself); `--native-sk off` keeps §9.

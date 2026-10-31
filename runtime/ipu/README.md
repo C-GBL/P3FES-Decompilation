@@ -154,6 +154,49 @@ Not seen in the 42 functions that address the IPU or DMAC channels 3/4 with cons
 registers; scan of `recomp/generated/`, register-indirect accesses not covered): IDEC, PACK, CSC with RGB16/dither, a non-zero SETTH, CPU reads of the out
 FIFO.
 
+## Native movies (modernize layer 4, `--native movies`; `docs/MODERNIZE_PLAN.md` §3)
+
+With `--native movies` the movie player's video never reaches this device: CRI's SFD video decoder, on its
+"sceMpeg path" (`game/src/cri/libs13.cpp` 0x5941A8-0x595718), decodes each picture with a host decoder instead of
+Sony's libmpeg driving the IPU (`runtime/native/movies/mpeg_video.h`, service `native_movies.h`, seam
+`p3fes/native/movies_service.h`, game side `game/src/cri/sfd_native.cpp` / `p3fes/game/movies_native.h`). No IPU
+command, no DMAC channel 3 / 4 transfer, no sceMpegInit / sceIpuInit at boot.
+
+* **Swap point**: the SFD player's own glue to the platform pair, at the calls it makes: sceMpegInit (sub_594B88),
+  sceMpegCreate + its four callbacks (sub_594C38), sceMpegReset / Delete (sub_595060), sceMpegGetPicture / RAW8
+  (sub_595390: the player's picture call), and its five DMA helpers over the video-input ring (sub_5941A8 reset,
+  sub_5944A8 flush, sub_5946A8 / sub_5947A8 stop / restart around a picture, sub_594AC0 destroy). Everything else
+  of Sofdec -- the demux, the feed into the ring (sub_594EC8) and its free-space query, the start-code counter, the
+  frame pool, the time codes, the display, the movie's ADX audio -- runs its faithful body. One level higher (the
+  MPV / SFD decode step) would re-implement CRI's frame pool and timing; one lower is the IPU's registers.
+* **The decoder** is libmpeg's picture loop on the host (sequence / GOP / picture headers and extensions, slices,
+  macroblock headers, motion vectors, the reference rotation and display order: a reference is shown when the next
+  is decoded, B pictures at once, the held reference at the sequence end; frameCount = the shown picture's number)
+  over an `Engine`, the macroblock layer the IPU implements. `DirectEngine` reads bits on the host and calls this
+  module's `mpeg2::` functions (the same VLC tables, the BDEC coefficient loop of `ipu_core.cpp`, IQ, IDCT, RAW16,
+  CSC); `IpuEngine` drives an `IpuCore` with FDEC / VDEC / BDEC / SETIQ / CSC as libmpeg does (the stream fed as
+  qwords, CSC after a BCLR with the stream stopped, the BCLR(BP) rewind). Motion compensation is libmpeg's
+  (`_getRef0`, the `_rix_*` / `_ri0_*` kernels), including one quirk: the averaged luma kernel with both half-pel
+  bits (`_rix_111`, the backward half of a bidirectional macroblock) reuses its rounding register after the first
+  row, so rows 1..15 round with +1 instead of +2 (found by the in-game comparison: all 162 differing macroblocks of
+  the first B picture were that case).
+* **Output**: the shown picture as macroblocks in column-major order (macroblock (c, r) at c * mbh + r: the game
+  uploads 16-pixel columns), RGB32 through the IPU's CSC (TH0 = TH1 = 0) or RAW8.
+* **The ring**: 256 sectors of 2 KiB; the PS2's DMA chain covers the queued sectors (+16 from the head +12) and the
+  flush adds the whole sectors written since (+20) and frees the ones the DMA has passed. Natively the "DMA
+  position" is the decoder's read position plus the 10 qwords the DMA runs ahead into the IPU's FIFOs, never past the
+  queued end, and the record's words evolve by the faithful arithmetic: with that model the ring record after every
+  picture call equals the faithful one on the dorm, battle, fusion and shop routes (90 of 90 calls). A picture call
+  that would read past the queued sectors takes CRI's starvation callback's path (sub_594F68): the 16-byte end code
+  after the written data, the abort mark, the call returns -3 (tests/game/test_movies_native.cpp drives it at a
+  movie's end).
+* **Timing**: the call charges the guest the cycles the faithful call takes for the same work, modelled per call and
+  per macroblock kind (least squares over 90 faithful calls; `native_movies.cpp` kCost*), with check points, so the
+  player gets ready, decodes ahead and finishes at the faithful vblanks.
+* **Scope**: MPEG-1, and MPEG-2 4:2:0 progressive frame pictures with frame_pred_frame_dct (every MPEG-2 movie of the
+  disc: P3CTOP, P3FCT003, STAFF_ROLL_F); field pictures, field / dual-prime prediction, concealment vectors and D
+  pictures report Unsupported (none on the disc).
+
 ## Integration (for the lead / `runtime/app`)
 
 ```cpp

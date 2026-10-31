@@ -29,6 +29,15 @@ add_library(p3fes_game STATIC
     src/hcdvd/hcdvd_path.cpp
     src/hcdvd/hcdvd_cache.cpp
     src/hcdvd/hcdvd_pak.cpp
+    include/p3fes/game/files_native.h
+    src/hcdvd/hcdvd_native.cpp
+    include/p3fes/game/input_native.h
+    src/hpad/hpad_native.cpp
+    include/p3fes/game/sound_native.h
+    src/cri/rna_native.cpp
+    src/cri/sdr_native.cpp
+    include/p3fes/game/movies_native.h
+    src/cri/sfd_native.cpp
     src/script/script_vm.cpp
     src/msg/bmd_msg.cpp
     src/script/script_ops.cpp

@@ -163,6 +163,7 @@ public:
 
     // ---- RtHooks -------------------------------------------------------------------------------
     void syscall(EEContext& ctx, u32 pc) override;
+    void direct_call(EEContext& ctx, u32 pc);  // Kernel::direct_call (syscalls.cpp)
     void check_events(EEContext& ctx) override {
         if (ctx.cycles < next_deadline_) return;  // the hot path: one compare
         slow_check(ctx);
@@ -207,6 +208,16 @@ public:
     }
     void retry_dma_now(int ch);  // dmac.cpp: pump a stalled channel now (Kernel::retry_dma_now)
     void set_vu_control_handler(std::function<void(u32, u32)> fn) { vu_control_ = std::move(fn); }
+    void enable_census() {
+        if (!census_) census_ = std::make_unique<KernelCensus>();
+    }
+    const KernelCensus* census() const { return census_.get(); }
+    KernelCensus* census_mut() { return census_.get(); }
+    void census_bus(u32 pa, bool write) {
+        KernelCensus::Count2& c = census_->bus[pa & ~0xFu];
+        ++(write ? c.writes : c.reads);
+        ++census_->bus_sites[(static_cast<u64>(pa & ~0xFu) << 32) | ctx_.gpr[GPR_RA].u32[0]];
+    }
 
     // inspection
     int current_thread() const { return current_; }
@@ -319,6 +330,7 @@ private:
     u32 frame_save(int tid, const EEContext& c, const u128& v0);  // full context at c.sp - 0x280
     void frame_init(int tid);                                     // gp/sp/fp/ra at stack+size-0x2A0
     void frame_load(int tid, EEContext& c) const;                 // the BIOS restore (0x80003800)
+    void frame_load_at(u32 frame, EEContext& c) const;           // the same from an address
     bool valid_tid(s32 tid) const { return tid >= 0 && tid < kc::kMaxThreads && tcbs_[static_cast<unsigned>(tid)].status != kc::TStatus::Free; }
     bool sema_valid(s32 id) const { return id >= 0 && id < kc::kMaxSemas && semas_[static_cast<unsigned>(id)].used; }
     void sema_drop_waiter(int tid);
@@ -438,6 +450,9 @@ private:
     u32 osd_param_ = 0;
     u32 machine_type_ = 0;
     u64 positive_in_handler_ = 0;
+
+    // Layer 6's inventory (Kernel::enable_census); null = off. Host-side only, not part of the machine state.
+    std::unique_ptr<KernelCensus> census_;
 };
 
 } // namespace p3fes::hle

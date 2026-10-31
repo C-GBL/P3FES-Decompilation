@@ -1,0 +1,60 @@
+# Modernize layer 3, check 4: the sound layer's own state, excluded when a --native sound run is compared with a
+# faithful one (logcmp.py dumps A B --mask=tools\ours\modernize\layer3_sound_mask.txt, or tracediff snapshot A B
+# --mask ...). Established 2026-10-30 from the old routes m1, dorm, battle, fusion, shop (faithful vs --native sound,
+# the gate's end points), every differing run in 0x770000..0x9A0000 attributed with symbols/p3fes.sym and the CRI
+# bodies (docs/MODERNIZE_PLAN.md section 3, layer 3). Inclusive ranges. Native mode never makes these objects, or
+# makes them without the IOP side (game/src/cri/rna_native.cpp):
+#
+# DTR, the SIF DMA of PCM chunks EE -> IOP: 32 objects x 64 bytes (sub_559280)
+0x007A0938-0x007A1137
+# DTX: its init flag / counters (0x7A114C..) and the 16 objects x 68 bytes at 0x7A1160 (DTX_Create 0x559718)
+0x007A1148-0x007A159F
+# DTX's SIF RPC client of 0x90000200 (DTX_Init)
+0x007A19E0-0x007A1A0F
+# PS2RNA's IOP block addresses and sizes (0x7A93FC PSJ buffers, 0x7A9408 / 0x7A940C PSM work, 0x7A9410)
+0x007A93FC-0x007A9417
+# PS2RNA's 0x7A9440 / 0x7A9444 (the RNA DTX port's buffers) and the 16 PSJ channel records (24 bytes at 0x7A9450)
+0x007A9440-0x007A95CF
+# the PSJs' chain pools (16 x 256 bytes): the local SJUNIs' lines over the IOP buffers
+0x007A9750-0x007AA74F
+# the PS2RNA records (16 x 100 at 0x7AB850): per record +8..+43 -- the PSJ and DTR pointers, the input SJs' copy
+# the DTRs hold, the IOP RNA object (+32: the record itself in native mode), +40
+0x007AB858-0x007AB87B
+0x007AB8BC-0x007AB8DF
+0x007AB920-0x007AB943
+0x007AB984-0x007AB9A7
+0x007AB9E8-0x007ABA0B
+0x007ABA4C-0x007ABA6F
+0x007ABAB0-0x007ABAD3
+0x007ABB14-0x007ABB37
+0x007ABB78-0x007ABB9B
+0x007ABBDC-0x007ABBFF
+0x007ABC40-0x007ABC63
+0x007ABCA4-0x007ABCC7
+0x007ABD08-0x007ABD2B
+0x007ABD6C-0x007ABD8F
+0x007ABDD0-0x007ABDF3
+0x007ABE34-0x007ABE57
+# the RNA DTX port: its object pointer / length (0x7ABE90 / 0x7ABE94) and its 2,176-byte EE buffer 0x7ABEC0 (native
+# mode: the command builder's scratch; +2172 the exchange counter)
+0x007ABE90-0x007ABE97
+0x007ABEC0-0x007AC73F
+# SJUNI's handle pool (64 x 48 at 0x7B0CD8): the PSJs' local SJUNIs
+0x007B0CD8-0x007B18D7
+# SJX: its flags, IOP buffer 0x7B1AC4, the 32 SJX objects, 0x7B1D54 (wklen)
+0x007B1AB0-0x007B1D57
+# SJX's DTX port 0 EE buffer (2,176 bytes; +2172 the counter) and the word after it
+0x007B1D80-0x007B25FF
+0x007B2640-0x007B264F
+# DTX_CallUrpc's send / receive buffers (0x9979C0 / 0x997AC0) and SJRMT's (0x999C00 / 0x999D00, inf)
+0x009979C0-0x00997BBF
+0x00999C00-0x00999DFF
+# the "IOP identity" class: the IOP addresses the SK bank loader keeps (sSndcomWork 0x833710, 68 bytes per slot:
+# +0x18 hd, +0x28 sq) and its SIF DMA request -- native mode takes no IOP heap for CRI, so they start lower
+0x00833640-0x0083364F
+0x00833728-0x0083373F
+0x0083376C-0x00833783
+0x008337B0-0x008337C7
+0x008337F4-0x0083380B
+0x00833838-0x0083384F
+0x0083387C-0x00833893

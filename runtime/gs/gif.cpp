@@ -5,6 +5,7 @@
 #include "p3fes/prof.h"
 
 #include <algorithm>
+#include <cstring>
 
 namespace p3fes::gs {
 
@@ -183,6 +184,49 @@ void Gif::path1(std::span<const u128> q) {
     ++stats_.path1_queued;
 }
 
+bool Gif::host_form(std::span<const u128> q) noexcept {
+    std::size_t i = 0;
+    while (i < q.size()) {
+        const GifTag t = GifTag::decode(q[i]);
+        if (t.nloop && (t.flg != 0 || t.nreg != 3 || t.reg(0) != 0x2 || t.reg(1) != 0x1 || (t.reg(2) != 0x4 && t.reg(2) != 0x5)))
+            return false;
+        i += 1 + 3u * static_cast<std::size_t>(t.nloop);
+        if (t.eop) return i == q.size();
+    }
+    return false;
+}
+
+bool Gif::path1_host(std::span<const u128> q) {
+    if (owner_ != 0 || !p1_queue_.empty() || fwd_ || running_p1_queue_ || q.empty()) return false;
+    // The form: GIF tags, each without data or PACKED with NREG 3 and REGS ST RGBAQ XYZF2|XYZ2; EOP on the last one,
+    // which ends the packet.
+    u64 flg[4] = {};
+    std::size_t i = 0, last = 0;
+    for (;;) {
+        if (i >= q.size()) return false;
+        const GifTag t = GifTag::decode(q[i]);
+        if (t.nloop && (t.flg != 0 || t.nreg != 3 || t.reg(0) != 0x2 || t.reg(1) != 0x1 || (t.reg(2) != 0x4 && t.reg(2) != 0x5)))
+            return false;
+        ++flg[t.flg];
+        last = i;
+        i += 1 + 3u * static_cast<std::size_t>(t.nloop);
+        if (t.eop) break;
+    }
+    if (i != q.size()) return false;
+    const prof::Scope prof_zone(prof::Zone::Gif);
+    const prof::GifPath prof_path(1);
+    // feed(1, q) + close_path1: every tag read counts, the last one stays in TAG0-3
+    stats_.qwords[1] += q.size();
+    for (u32 f = 0; f < 4; ++f) stats_.tags[1][f] += flg[f];
+    owner_ = 1;  // (the register observer asks the active path)
+    core_.packed_run(q.data(), q.size());
+    owner_ = 0;
+    for (u32 w = 0; w < 4; ++w) last_tag_[w] = q[last].u32[w];
+    last_tag_path_ = 1;
+    path_[1] = Path{};
+    ++host_packets_;
+    return true;
+}
 std::size_t Gif::path2(std::span<const u128> q) {
     if (owner_ != 0 && owner_ != 2) {
         p2_waiting_ = true;

@@ -19,6 +19,7 @@
 #include "p3fes/game/bridges.h"
 
 #include "p3fes/game/mesh.h"
+#include "p3fes/native/graphics_service.h"
 #include "p3fes_recomp_rt.h"
 #include "p3fes/game/hg_cpu.h"
 
@@ -77,6 +78,8 @@ u32 matfx_ext(const EEContext& c, u32 pipe) {
 
 // The stock bridge's record (mesh::MeshDraw, filled as RpMeshPS2AllBridgeCallBack fills it).
 void report_mesh(EEContext& c, u32 pipe, const Pass& p) {
+    if (::p3fes::native::graphics::g_g3) [[unlikely]]  // modernize layer 5 step 3 (mesh.h report_native_mesh)
+        report_native_mesh(c, pipe, p.colour_at, p.surface_at, p.program, p.res_entry, true);
     const DrawObserver* obs = draw_observer();
     if (!obs || !obs->mesh) return;
     MeshDraw draw;

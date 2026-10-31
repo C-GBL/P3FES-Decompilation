@@ -22,7 +22,10 @@
 
 #include "p3fes/ee/hilo.h"
 #include <cstring>
+#include <utility>
+#include <vector>
 #include "p3fes/game/hg_cpu.h"
+#include "p3fes/native/graphics_service.h"
 
 // Callees of the register-faithful bodies (p3fes_handgen), through their recomp_gen entry points.
 namespace p3fes::recomp_gen {
@@ -53,6 +56,62 @@ struct Regs {
 
 u32 vertex_at(u32 verts, u32 index) { return verts + (index << 6); }
 
+// Modernize layer 5 (p3fes/native/graphics_service.h): the packet open2DVU1Pkt opened last, reported to the host's
+// graphics service when closeAndDispatchVU1Packet closes it. Host-side only: nothing here touches guest state.
+struct NativeOpen {
+    bool open = false;
+    u32 head = 0;      // scratchpad address of the packet head (p in open2DVU1Pkt)
+    u32 batches = 0;   // first batch header (after the head and the optional program `call`)
+    u32 program = 0;
+};
+NativeOpen g_native_open;
+
+// The batches between the head and the tail, as the builders write them (render_im2d.h data flow): a cnt tag of
+// prim_qw * n + 2 qw carrying ITOP n + STCYCL 4,4; STMASK 0xC000C000 + UNPACK V4-32 masked of prim_qw * n qw; the
+// vertices; the trailer (MSCALF 0 / MSCNT). Anything else = not reported (the host then runs the VU1 program).
+void report_native_packet(EEContext& ctx, u32 end) {
+    ::p3fes::native::graphics::Im2DService* svc = ::p3fes::native::graphics::g_service;
+    const NativeOpen o = g_native_open;
+    g_native_open = {};
+    if (!svc || !o.open || end <= o.batches) return;
+    if (!svc->wants(o.program)) {
+        svc->other_packet(o.program);
+        return;
+    }
+    u128 head[3];
+    for (u32 i = 0; i < 3; ++i) head[i] = load_q(ctx, o.head + 48u + 16u * i);
+    thread_local std::vector<u128> qws;
+    thread_local std::vector<::p3fes::native::graphics::Im2DBatchView> views;
+    thread_local std::vector<std::pair<u32, u32>> spans;  // (n, first qw in qws)
+    qws.clear();
+    spans.clear();
+    u32 at = o.batches;
+    while (at < end) {
+        const u128 tag = load_q(ctx, at);
+        const u32 n = tag.u32[2] & 0xFFFFu;
+        const u32 qwc = tag.u32[0] & 0xFFFFu;
+        if ((tag.u32[0] >> 28) != 1u || (tag.u32[2] & 0xFFFF0000u) != 0x04000000u || tag.u32[3] != 0x01000404u || n == 0 ||
+            n > 16u || qwc < 2u || (qwc - 2u) % n != 0)
+            return;
+        const u32 vq = qwc - 2u;
+        const u128 unpack = load_q(ctx, at + 16u);
+        if (unpack.u32[0] != 0x20000000u || unpack.u32[1] != 0xC000C000u || unpack.u32[2] != 0u ||
+            unpack.u32[3] != (0x7C008000u | (vq << 16)) || at + 16u * (qwc + 1u) > end)
+            return;
+        spans.emplace_back(n, static_cast<u32>(qws.size()));
+        for (u32 i = 0; i < vq; ++i) qws.push_back(load_q(ctx, at + 32u + 16u * i));
+        at += 16u * (qwc + 1u);
+    }
+    if (at != end || spans.empty()) return;
+    views.clear();
+    for (std::size_t b = 0; b < spans.size(); ++b) {
+        const u32 first = spans[b].second;
+        const u32 last = b + 1 < spans.size() ? spans[b + 1].second : static_cast<u32>(qws.size());
+        views.push_back({spans[b].first, std::span<const u128>(qws.data() + first, last - first)});
+    }
+    svc->packet(o.program, head, views);
+}
+
 }  // namespace
 
 // ======================================================================================================
@@ -60,6 +119,8 @@ u32 vertex_at(u32 verts, u32 index) { return verts + (index << 6); }
 void closeAndDispatchVU1Packet(EEContext& ctx) {
     guest::enter(ctx, 18);
     const u32 p = guest::load<u32>(ctx, kSprWritePtr);
+    if (::p3fes::native::graphics::g_service) [[unlikely]]
+        report_native_packet(ctx, p);
     const u128 cnt_a = load_q(ctx, kTplCnt1A);
     store_q(ctx, p + 0, cnt_a);
     const u128 flush = make_q(0x11000000u, 0);
@@ -141,6 +202,8 @@ u32 open2DVU1Pkt(EEContext& ctx, u32 batch_qw, u32 prim_qw, u32 prim_count, u32 
     }
     guest::charge(ctx, 2);
     guest::charge(ctx, 5);
+    if (::p3fes::native::graphics::g_service) [[unlikely]]  // layer 5: closeAndDispatchVU1Packet reports this packet
+        g_native_open = {true, p, p + (call ? 144u : 128u), static_cast<u32>(program)};
 
     // The registers as the original leaves them (bits 64..127 from the last LQ into each register).
     r.q(GPR_V0, 1, call ? 0 : base_offset.u64[1]);

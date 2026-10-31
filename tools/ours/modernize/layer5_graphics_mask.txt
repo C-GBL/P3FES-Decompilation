@@ -1,0 +1,12 @@
+# Modernize layer 5, check 2: the graphics layer's own state, excluded when a --native graphics run is compared with
+# a faithful one (logcmp.py dumps A B --mask=tools\ours\modernize\layer5_graphics_mask.txt, or tracediff snapshot A B
+# --mask ...). Established 2026-10-31 from the gate's routes (faithful vs --native graphics, the same end points:
+# dorm 4900, m1 sky:11, battle 6150, fusion 6300, shop 4100; docs/MODERNIZE_PLAN.md section 3, layer 5).
+#
+# Step 1 (RW Im2D: VU1 program 039 stood in for by the host) needs no range: eeMemory.bin is byte-identical on every
+# route. The game side still builds and queues every Im2D packet unchanged (only reports it to the host), and the host
+# leaves VU1 exactly as the program would (registers, flags, data memory, TPC) and kicks the same PATH1 packet, so
+# neither main RAM nor the DMA / VIF / GS timing the EE observes changes. Later steps that stop building the packets
+# (docs/MODERNIZE_PLAN.md "Layer 5 status", steps 2+) add their ranges here: RW's DMA buffer halves and queue
+# (0x9B0200 + 0x280000 in the snapshots), the scratchpad packet globals ($gp-17212 .. $gp-17124), the resident
+# program word ($gp-16888).

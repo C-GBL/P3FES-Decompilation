@@ -220,6 +220,62 @@ TEST_CASE("cdvdfsv: refused reads still end, and report SCECdErREAD") {
     CHECK(cd2.scmd(4) == 0);
 }
 
+// IopConfig::cd_read_sink (the host's --read-log; docs/MODERNIZE_PLAN.md §3 stage 0): one event per read with the
+// bytes delivered, and the same guest memory as a run without the sink.
+TEST_CASE("cdvdfsv: the read sink reports every read with its bytes and leaves guest memory untouched") {
+    struct Run {
+        std::vector<CdReadEvent> events;
+        std::vector<std::vector<std::byte>> data;
+        std::vector<u8> ram;
+    };
+    auto run = [](bool with_sink) {
+        Run out;
+        SynthDisc disc;
+        IopConfig cfg;
+        if (with_sink)
+            cfg.cd_read_sink = [&out](const CdReadEvent& ev) {
+                out.events.push_back(ev);
+                out.data.emplace_back(ev.data.begin(), ev.data.end());
+            };
+        EeSide e(cfg, &disc);
+        Cd cd(e);
+        fill(e, 0x00A00000, 0x10000, 0xEE);
+        cd.read(100, 4, 0x00A00000);  // aligned: straight into guest RAM
+        cd.wait();
+        cd.read(300, 2, 0x00A08010);  // unaligned: the staging copy + head / tail block
+        cd.wait();
+        cd.read(SynthDisc::kSectors - 1, 4, 0x00A00000);  // past the end: refused
+        cd.wait();
+        cd.read(7, 1, 0x00A04000);
+        cd.wait();
+        out.ram = e.read(0, static_cast<u32>(EEMemory::kMainRamSize));
+        return out;
+    };
+    const Run plain = run(false), logged = run(true);
+    CHECK(plain.events.empty());
+    CHECK(plain.ram == logged.ram);  // the sink changes nothing the guest sees
+    REQUIRE(logged.events.size() == 4);
+    auto expect = [](u32 lsn, u32 n) {
+        std::vector<std::byte> v(static_cast<std::size_t>(n) * 2048);
+        for (u32 s = 0; s < n; ++s)
+            for (u32 i = 0; i < 2048; ++i) v[static_cast<std::size_t>(s) * 2048 + i] = std::byte{SynthDisc::pattern(lsn + s, i)};
+        return v;
+    };
+    const CdReadEvent& a = logged.events[0];
+    CHECK(a.lsn == 100);
+    CHECK(a.sectors == 4);
+    CHECK(a.dst == 0x00A00000);
+    CHECK(a.error == 0);
+    CHECK(logged.data[0] == expect(100, 4));
+    CHECK(logged.events[1].dst == 0x00A08010);
+    CHECK(logged.data[1] == expect(300, 2));
+    CHECK(logged.events[2].error == hle::cd::kErrRead);
+    CHECK(logged.data[2].empty());
+    CHECK(logged.events[3].lsn == 7);
+    CHECK(logged.data[3] == expect(7, 1));
+    CHECK(logged.events[3].cycle > logged.events[0].cycle);
+}
+
 TEST_CASE("cdvdfsv: sceCdLayerSearchFile reply fields") {
     SynthDisc disc;
     EeSide e({}, &disc);

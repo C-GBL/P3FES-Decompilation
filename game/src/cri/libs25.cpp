@@ -13,6 +13,7 @@
 //   0x502DB0-0x51C8A0  kernel stubs (syscall wrappers), VSync2, DisableIntc, DelayThread, SIF RPC / loadfile, sceCd /
 //                      sceDbc RPC wrappers
 //   0x53E0E0-0x56CBB8  CRI: ADXT / ADXM file servers, SRD, DTR / DTX, PS2RNA, ROFS (RFHN / RFMAI / RFDIR) and ROCI
+#include "p3fes/game/sound_native.h"
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/libs25.h"
 
@@ -27900,6 +27901,10 @@ void PS2RNA_Init(EEContext& ctx) {
     Gpr v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, a3{ctx, 7}, t0{ctx, 8}, t1{ctx, 9}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, s3{ctx, 19}, s4{ctx, 20}, s5{ctx, 21}, s6{ctx, 22}, s7{ctx, 23}, sp{ctx, 29}, ra{ctx, 31};
     // 0x0055ff70
     enter(ctx, 18);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        ps2rna_native_init(ctx, *ns);
+        return;
+    }
     sp = addiu(sp, -0x60);
     v1 = 0x7B0000;
     sd(s0, sp, 0x10);

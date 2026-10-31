@@ -59,6 +59,15 @@ public:
     std::size_t path2(std::span<const u128> q);
     std::size_t path3(std::span<const u128> q);
     void path1(std::span<const u128> q);
+    // A PATH1 packet from a host stand-in for a VU1 program (MODERNIZE layer 5 steps 2-3: the native Im2D path, the g3
+    // runs' kicks): GIF tags each without data or PACKED with NREG 3 and REGS ST RGBAQ XYZF2|XYZ2 (program 039's one
+    // tag per triangle and its closing tag; the g3 programs' strips and lists), EOP on the last. When the GIF is idle
+    // (path1 would run the packet at once) it is applied as path1 would apply it -- statistics, the last-tag
+    // registers, every GsCore call's effect (GsCore::packed_run) -- without walking it, and true is returned. False
+    // (nothing done): another form, or a busy GIF; the caller then sends it through path1.
+    bool path1_host(std::span<const u128> q);
+    static bool host_form(std::span<const u128> q) noexcept;  // the packet is of path1_host's form
+    u64 host_packets() const noexcept { return host_packets_; }  // packets path1_host applied (host-side count, not state)
 
     // VIF1 MSKPATH3 (GIF_STAT.M3P). Unmasking with a stalled PATH3 calls the path3-ready callback.
     void set_m3p(bool masked);
@@ -159,6 +168,7 @@ private:
     std::function<void()> path3_ready_;
     std::function<bool()> path3_dma_busy_;  // DMAC channel 2 CHCR.STR (GsSystem::attach)
     GifStats stats_{};
+    u64 host_packets_ = 0;
 };
 
 // GIF registers device (physical 0x10003000-0x100030B0).

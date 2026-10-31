@@ -64,6 +64,11 @@ std::unique_ptr<HwDevice> kc::make_denable_device(KernelHooks& k) { return std::
 // ---- registers -------------------------------------------------------------------------------------
 
 u32 KernelHooks::dmac_read(u32 pa) {
+    if (census_) {
+        const int c = channel_of(pa);
+        if (c < 0) ++census_->dmac_ctrl_regs.reads;
+        else if ((pa & 0x3FFu) == 0 && dch_[static_cast<unsigned>(c)].active) ++census_->dma_busy_polls[static_cast<unsigned>(c)];
+    }
     switch (pa) {
     case kDCtrl: return d_ctrl_;
     case kDStat: return d_stat_;
@@ -93,6 +98,7 @@ u32 KernelHooks::dmac_read(u32 pa) {
 }
 
 void KernelHooks::dmac_write(u32 pa, u32 v) {
+    if (census_ && channel_of(pa) < 0) ++census_->dmac_ctrl_regs.writes;
     switch (pa) {
     case kDCtrl:
         d_ctrl_ = v;
@@ -125,6 +131,7 @@ void KernelHooks::dmac_write(u32 pa, u32 v) {
             // transfer now (CIS set; its handler chain runs at the next check point, as for a timely event),
             // then take the write — STR=1 starts the new transfer. (`_slice0 0x4FC3A8` re-arms D3 as soon as
             // D3_QWC reads 0; runtime/ipu/README.md open question 4.)
+            if (census_) ++census_->dma_rearms[static_cast<unsigned>(ch)];
             dma_complete_event(ch);
         }
         const bool was = (c.chcr & kChcrStr) != 0;
@@ -249,6 +256,10 @@ void KernelHooks::dma_start(int ch) {
         die("DMAC ch%d (%s) started (CHCR 0x%08X MADR 0x%08X QWC %u TADR 0x%08X) with no data path installed", ch,
             kChanName[ch], c.chcr, c.madr, c.qwc, c.tadr);
     if (mode == 1 && ch == 3) die("DMAC ch3 (fromIPU) started in chain mode: not modelled");
+    if (census_) {
+        ++census_->dma_starts[static_cast<unsigned>(ch)];
+        if (mode == 1) ++census_->dma_chain_starts[static_cast<unsigned>(ch)];
+    }
     c.active = true;
     c.stalled = false;
     c.device_driven = false;
@@ -387,6 +398,7 @@ void KernelHooks::dma_pump(int ch) {
     c.in_pump = false;
     if (c.active && c.phase != DmaChan::Phase::Done) {
         c.stalled = true;
+        if (census_) ++census_->dma_stalls[static_cast<unsigned>(ch)];
         dma_schedule_retry();
     }
 }
@@ -436,6 +448,7 @@ void KernelHooks::dma_finish(int ch) {
     DmaChan& c = dch_[static_cast<unsigned>(ch)];
     c.phase = DmaChan::Phase::Done;
     c.stalled = false;
+    if (census_) census_->dma_qwords[static_cast<unsigned>(ch)] += c.qw_total;
     schedule(kEvDma0 + ch, now() + opts_.dma_base_cycles + c.qw_total * opts_.dma_cycles_per_qword);
 }
 

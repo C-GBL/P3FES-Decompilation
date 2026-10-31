@@ -160,6 +160,14 @@ public:
     }
     // PACKED semantics for register descriptor `desc` (0x0..0xF): the 128-bit qword.
     void write_packed(u32 desc, const u128& q);
+    // One PATH1 packet of PACKED vertices as Gif::feed hands it to the core (MODERNIZE layer 5 steps 2-3, a host
+    // stand-in's packets; Gif::path1_host checks the form): `n` qwords of GIF tags, each with no data or with NLOOP
+    // vertices of ST, RGBAQ, XYZF2|XYZ2 (NREG 3). The same effect as feed's calls -- on_gif_tag, the PRE write of
+    // PRIM, the PACKED writes: registers, Q, the vertex queue, every kick and draw (draw observer or rasteriser), the
+    // counters, the register observer's PRIM calls -- without the per-qword dispatch; state_generation() changes at
+    // the packet's first PRIM write and where the value changes (the Im2D packets' equal per-triangle PRIM writes:
+    // a draw observer decodes the draw state once per packet). With a stream sink the calls are made one by one.
+    void packed_run(const u128* q, std::size_t n);
     // A GIF tag was read (any path): resets the internal Q to 1.0 (GS User's Manual, PACKED RGBAQ/ST).
     void on_gif_tag() {
         if (sink_) sink_->on_gif_tag();

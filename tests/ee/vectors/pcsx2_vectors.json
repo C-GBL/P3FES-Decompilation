@@ -24,10 +24,11 @@
    "fpu": {
     "vectors": 736,
     "ops": 26,
-    "agree": 590,
-    "agree-rec:int-ee-range": 15,
+    "agree": 588,
+    "agree-rec:int-ee-range": 13,
     "agree-rec:int-exact-rz-or-ee-range": 16,
     "agree-rec:int-fcr0": 1,
+    "agree-rec:int-sqrt-truncates": 4,
     "disagree:ee-range-clamp": 43,
     "disagree:ee-range-clamp+fcr31-cause-clear": 7,
     "disagree:ee-range-clamp+rsqrt-zero-sign": 2,
@@ -50757,7 +50758,7 @@
     "fcr31_pre": "0x00000000",
     "fcr0": "0x00002E00"
    },
-   "status": "agree-rec:int-ee-range",
+   "status": "agree-rec:int-sqrt-truncates",
    "ours": {
     "fd": "0x00000000",
     "fd64": "0x0000000000000000"
@@ -50980,8 +50981,8 @@
    },
    "status": "disagree:ee-range-input",
    "ours": {
-    "fd": "0x5FB504F2",
-    "fd64": "0x000000005FB504F2"
+    "fd": "0x5FB504F3",
+    "fd64": "0x000000005FB504F3"
    }
   },
   {
@@ -51015,8 +51016,8 @@
    },
    "status": "disagree:ee-range-input",
    "ours": {
-    "fd": "0x5FB504F2",
-    "fd64": "0x000000005FB504F2"
+    "fd": "0x5FB504F3",
+    "fd64": "0x000000005FB504F3"
    }
   },
   {
@@ -51143,8 +51144,8 @@
    },
    "status": "disagree:ee-range-input",
    "ours": {
-    "fd": "0x5F9CC470",
-    "fd64": "0x000000005F9CC470"
+    "fd": "0x5F9CC471",
+    "fd64": "0x000000005F9CC471"
    }
   },
   {
@@ -51211,7 +51212,11 @@
     "fcr31_pre": "0x00000000",
     "fcr0": "0x00002E00"
    },
-   "status": "agree"
+   "status": "agree-rec:int-sqrt-truncates",
+   "ours": {
+    "fd": "0x404A62C2",
+    "fd64": "0x00000000404A62C2"
+   }
   },
   {
    "id": "fpu_2272",
@@ -51273,7 +51278,7 @@
     "fcr31_pre": "0x00000000",
     "fcr0": "0x00002E00"
    },
-   "status": "agree-rec:int-ee-range",
+   "status": "agree-rec:int-sqrt-truncates",
    "ours": {
     "fd": "0x00000000",
     "fd64": "0x0000000000000000"
@@ -51401,7 +51406,11 @@
     "fcr31_pre": "0x00000000",
     "fcr0": "0x00002E00"
    },
-   "status": "agree"
+   "status": "agree-rec:int-sqrt-truncates",
+   "ours": {
+    "fd": "0x3FE2DFC5",
+    "fd64": "0x000000003FE2DFC5"
+   }
   },
   {
    "id": "fpu_2278",

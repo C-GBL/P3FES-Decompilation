@@ -20,6 +20,14 @@ public:
 
     int gamepad_user() const { return user_; }  // XInput user in use, -1 = none connected
 
+    // The pad's motors (--native input: the game's vibration): the DUALSHOCK's small motor (on / off) on XInput's
+    // right, high-frequency motor, its large motor (0..255) on the left, low-frequency one. Sent only on a change, to
+    // the XInput user in use; the destructor stops both.
+    void rumble(bool small_on, std::uint8_t large);
+    ~HostInputSampler();
+    HostInputSampler(const HostInputSampler&) = delete;
+    HostInputSampler& operator=(const HostInputSampler&) = delete;
+
 private:
     GamepadState poll_gamepad();
 
@@ -30,6 +38,8 @@ private:
     // kProbeInterval samples (2 s of vblanks) while no pad is connected.
     static constexpr unsigned kProbeInterval = 120;
     unsigned probe_countdown_ = 0;
+    int rumble_user_ = -1;
+    std::uint16_t rumble_left_ = 0, rumble_right_ = 0;
 };
 
 } // namespace p3fes::app

@@ -401,6 +401,11 @@ void Vif1::exec_unpack(const u32* words, std::size_t n) {
         }
         return;
     }
+    u32 vectors = 0;
+    if (run_hook_ && run_hook_->unpack(a, words, n, vu_.state().data, row_, vectors)) [[unlikely]] {
+        stats_.unpack_qwords += vectors;
+        return;
+    }
     stats_.unpack_qwords += vif_unpack(a, words, n, vu_.state().data, row_);
 }
 

@@ -18,10 +18,13 @@
 #include "pair_harness.h"
 
 #include "p3fes/game/render_im2d.h"
+#include "p3fes/native/graphics_service.h"
 
 #include <array>
 #include <cstring>
 #include <filesystem>
+#include <span>
+#include <utility>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -583,6 +586,95 @@ TEST_CASE("game(render_im2d): the packet layout of 22_rendering.md section 6 (st
         INFO("case " << which << " n " << n);
         check_packet(m, p0, w.resident != program, prim_qw, prims, per);
     }
+}
+
+// --- modernize layer 5 (p3fes/native/graphics_service.h): what closeAndDispatchVU1Packet reports -----------
+// A recording service in g_service while the pair runs: the hand run reports each packet (the recompiled one cannot),
+// and the pair still compares equal -- the report touches no guest state, no register, no cycle. The report must be
+// the packet's program, its three head quadwords and, per batch of at most 16, the vertex records in VU1 order.
+struct RecordingIm2D final : p3fes::native::graphics::Im2DService {
+    struct Packet {
+        u128 head[3] = {};
+        std::vector<std::pair<u32, std::vector<u128>>> batches;
+        u32 program = 0, spare = 0;
+    };
+    std::vector<Packet> packets;
+    std::vector<u32> others;
+    bool wants(u32 program) const noexcept override { return program == kPrograms[1]; }
+    void other_packet(u32 program) noexcept override { others.push_back(program); }
+    void packet(u32 program, const u128 (&head)[3], std::span<const p3fes::native::graphics::Im2DBatchView> b) override {
+        Packet p;
+        p.program = program;
+        std::memcpy(p.head, head, sizeof p.head);
+        for (const auto& v : b) p.batches.emplace_back(v.n, std::vector<u128>(v.qw.begin(), v.qw.end()));
+        packets.push_back(std::move(p));
+    }
+};
+
+TEST_CASE("game(render_im2d): layer 5 -- the packets reported to --native graphics (guest state unchanged)") {
+    Machine m;
+    LOAD_ELF_OR_SKIP(m);
+    RecordingIm2D rec;
+    p3fes::native::graphics::g_service = &rec;
+    struct Reset {
+        ~Reset() { p3fes::native::graphics::g_service = nullptr; }
+    } reset;
+    std::mt19937 rng{0x5D1Au};
+    u32 reported = 0, lines = 0;
+    for (int i = 0; i < 90; ++i) {
+        World w;
+        w.packet = Packet::VifOpen;
+        w.spr_fill = 16u * (rng() % 4);
+        w.spr_hi = rng() % 2 == 0;
+        w.limit_lines = w.limit_tris = 39;
+        w.resident = rng() % 2 ? kPrograms[1] : kPrograms[0];
+        w.tme = rng() % 2 == 0;
+        install(m, rng, w);
+        const u32 p0 = get32(m, im2d::kSprWritePtr);
+        const int which = i % 3;
+        const u64 n = 3 + rng() % 39;
+        auto vtx = [&](u32 k) { return kVerts + 64u * k; };
+        std::vector<std::array<u32, 3>> prims;
+        rec.packets.clear();
+        rec.others.clear();
+        if (which == 0) {
+            for (u32 t = 0; t + 2 < n; ++t) prims.push_back(t % 2 == 0 ? std::array<u32, 3>{vtx(t), vtx(t + 1), vtx(t + 2)}
+                                                                       : std::array<u32, 3>{vtx(t), vtx(t + 2), vtx(t + 1)});
+            run_pair_hw(m, PAIR(fn_addCopyVU1PrimTriStrip_004ed570), Args{im2d::kDescriptorNoFog, 0, kVerts, n}, rng(), "strip report",
+                        check_for(w, kV0));
+        } else if (which == 1) {
+            for (u32 t = 0; t + 2 < n; ++t) prims.push_back({vtx(0), vtx(t + 1), vtx(t + 2)});
+            run_pair_hw(m, PAIR(fn_addCopyVU1PrimTriFan_004ed890), Args{im2d::kDescriptorNoFog, 0, kVerts, n}, rng(), "fan report",
+                        check_for(w, kV0));
+        } else {
+            run_pair_hw(m, PAIR(fn_addCopyVU1PrimLineList_004ecd40), Args{im2d::kDescriptorNoFog, 0, kVerts, n}, rng(), "line report",
+                        check_for(w, kV0));
+            CHECK(rec.packets.empty());  // program 038: declined, counted
+            CHECK(!rec.others.empty());  // the hand run (the recompiled one may reach the hand tail too)
+            for (u32 o : rec.others) CHECK(o == kPrograms[0]);
+            ++lines;
+            continue;
+        }
+        INFO("case " << which << " n " << n);
+        REQUIRE(!rec.packets.empty());  // one packet per run that reached the hand tail (limit 39 >= the primitives)
+        for (const RecordingIm2D::Packet& p : rec.packets) {
+        CHECK(p.program == kPrograms[1]);
+        for (u32 k = 0; k < 3; ++k) CHECK(std::memcmp(&p.head[k], m.mem.scratchpad() + (p0 + 48u + 16u * k - 0x70000000u), 16) == 0);
+        std::size_t done = 0;
+        for (const auto& [bn, qws] : p.batches) {
+            CHECK(bn == std::min<std::size_t>(16, prims.size() - done));
+            REQUIRE(qws.size() == 12u * bn);
+            for (u32 t = 0; t < bn; ++t)
+                for (u32 v = 0; v < 3; ++v)
+                    CHECK(std::memcmp(&qws[12u * t + 4u * v], m.mem.main_ram() + prims[done + t][v], 64) == 0);
+            done += bn;
+        }
+        CHECK(done == prims.size());
+        }
+        ++reported;
+    }
+    CHECK(reported == 60);
+    CHECK(lines == 30);
 }
 
 // --- real RW state: a UI frame of game-shaped Im2D calls on the snapshots' driver state -------------------

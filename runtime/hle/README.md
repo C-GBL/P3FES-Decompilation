@@ -140,3 +140,64 @@ The header comment is the reference: folder layout and refusals, every place the
 size and how each is patched (relocated CVMs, directory records, CVM header sizes, the ELF's ROFS `#DirLst#`
 tables in guest RAM), and what the guest sees after a reload. `GameHost` exposes reload / enable / folder list /
 the active overrides / the files the guest read since the last reload (`runtime/app/game_host.h`).
+
+## 7. Read log (modernize pass, stage 0; `docs/MODERNIZE_PLAN.md` §3)
+
+`include/p3fes/hle/read_log.h` / `read_log.cpp`: `DiscPathIndex` (LSN → file by path, from the disc's own ISO9660
+directories and every CVM's inner image; `kDiscLayout` for the extracted volumes; a mods overlay's relocated extents
+are followed), FNV-1a 64 and the line format of `p3fes --read-log FILE`. The events come from cdvdfsv
+(`IopConfig::cd_read_sink`, `sif/iop/srv_cdvdfsv.cpp`): one per `sceCdRead`, completed (the bytes delivered, from the
+staging copy or guest RAM) or refused (`err=48`). The sink only reads. Line:
+`<vblank> lsn= n= bytes= dst= path= off= fsize= hash= [err=]`, `path` = `DATA.CVM:\FIELD\X.PAC` (a CVM member),
+`SLUS_216.21` / `LIB31\X.IRX` / `DATA.CVM` (an outer file, or a CVM when the read is not inside one member) or `-`.
+Compare two logs with `tools/ours/modernize/logcmp.py reads A B [--by-path]`. Tests: `tests/hle/test_mods_overlay.cpp`
+("read log: ..."), `tests/sif/test_cdvdfsv.cpp` (the sink).
+
+## 8. Native files (modernize layer 1, `--native files`; `docs/MODERNIZE_PLAN.md` §3)
+
+With `--native files` the game's own CD wrappers read host files by path and complete at once; the emulated CDVD,
+cdvdfsv, SIF RPC, libcdvd and CRI's SRD are not used for any game read. Without `files` nothing changes: the native
+branches are behind `native::files::service()`, which is `nullptr` (the six-route gate is byte-exact on that build).
+
+- **Seam** (`runtime/include/p3fes/native/files_service.h`): the `FileService` interface and the inline pointer
+  `g_service`, installed by `GameHost` while `--native files` is on. Host side: `runtime/native/files/native_files.h`
+  (`NativeFiles`, library `p3fes_native_files`): a by-path table of every outer file and every CVM member built from
+  the same walk as the read log (`DiscPathIndex::for_each_file`, so the path strings are the read log's), read straight
+  from the host file (the ISO, or `extracted/disc`'s CVMs) through the DiscSource's host reader.
+- **Swap points** (game side: `game/src/hcdvd/hcdvd_native.cpp`, `game/include/p3fes/game/files_native.h`):
+  1. `H_Cdvd_Update 0x100980` (the game's loader), state 0 after `H_Cdvd_SetRofsDir`: `"<CVM>:<dir><name>"` from the
+     node (+344 `VOL:` / `BTL:` / `BGM:` → `DATA.CVM` / `BTL.CVM` / `BGM.CVM`, +600 the directory), the buffer through
+     the same heap hook with the same size (`(sectors << 11) + 64`, archives `+ 320`), every sector of the file, the
+     256-byte PAK terminator, `H_Cdvd_AddFile`, state 4 — in the same pump, so **every queued request completes in one
+     `H_Cdvd_Update` call** (faithful: one request in flight, chunks of 512 sectors through ADXF / ADXSTM / ROFS / CVFS /
+     dvCi / SRD / sceCdRead over several frames). A file that is not found leaves the node in state 0 and stops the
+     walk, as a failed `ADXF_Open` does (and is printed once per path, up to 16).
+  2. `dvCiReqRd 0x55A490` (CRI's `CDV:` device, the CVM containers): the faithful clamp, the sectors copied at once,
+     the handle left complete (`+2 = 1`, `+20 = n`, `+12 += n`, no SRD at +28). This serves every read that is not a
+     whole-file load: the ROFS mount (CVMH header sectors 0 / 1 and the inner PVD at sector 19 of each CVM, by
+     container offset) and the ADX / AFS / Sofdec streams.
+  3. `dvCiCdSearchFile 0x559DD8`: `sceCdLayerSearchFile` answered from the host's directory (the sceCdlFILE as
+     cdvdfsv writes it), no RPC.
+  This is the highest point that serves every read: H_Cdvd sees only whole-file loads; streams and the mount go
+  through CRI's file system to `dvCi`, which sees all of them by container offset.
+- **Streams** go through point 2, chunk by chunk as ADXSTM asks: each chunk completes at once, but the chunking is
+  still the stream's own (its ring buffer frees space only as the decoder consumes), so a stream stays paced by
+  playback rather than by the disc. Loading a whole stream at once would need the sound / movie layers' own buffers
+  (layers 3 and 4).
+- **Reads past the end**: whole sectors, as faithful: the rest of a disc file's last sector is the disc's bytes; a mod
+  file is zero-padded.
+- **Mods** (ADR-0016) in native mode are a lookup by path (`NativeFiles::set_overrides`, from
+  `GameHost::patch_mods_tables`, also after every reload): the mod file's bytes and size, at the disc file's own LSN; no
+  relocated extents and the ELF's ROFS tables are not patched. Left: (1) a *streamed* replacement (ADX / Sofdec,
+  through dvCi) is served inside the disc file's extent, because CRI ROFS still takes the stream's size from the
+  ELF's `#DirLst#` table, so one longer than the disc file is cut there; (2) native reads bypass the overlay, so
+  `ModsOverlay::files_read()` / `stale_after_reload()` (the editor's "needs a scene reload" list) do not see them;
+  (3) the IOP's module loads (`LIB31\*.IRX`, read by the IOP itself, not through cdvdfsv) still read the overlay's
+  sectors: layer 3 owns them.
+- **Read log** in native mode: the same format; a whole-file load is logged as the 512-sector records ADXF_ReadNw
+  makes of it on the faithful path, so `logcmp.py reads --by-path` compares like with like.
+- **Checks** (2026-10-30): `p3fes_native_files_check reads --disc ISO LOG...` (check (a): every read of a faithful
+  read log served by path and by container offset) and `p3fes_native_files_check sweep --disc ISO --extracted DIR`
+  (check (b)); `tools/ours/modernize/layer1_cd_mask.txt` (check (d), the CD layer's own state). Tests:
+  `tests/hle/test_mods_overlay.cpp` ("native files: ..."), `tests/game/test_files_native.cpp`,
+  `tests/app/test_modernize.cpp`.

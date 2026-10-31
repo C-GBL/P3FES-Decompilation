@@ -160,6 +160,23 @@ thread exits or a fatal), `run_until(pred)` (resumable `Stopped`), `step_to_next
 `thread(tid)`, `intc_stat/mask`, `d_stat`, `unhandled_log`, `syscall_installed/address`, `cause12_dispatcher`,
 `gs_crt`, `gs_imr`, `handler_count`, `next_deadline` for an adapter that wants to inline the compare).
 
+## Modernize layer 6 (`--native kernel`; docs/MODERNIZE_PLAN.md "Layer 6 status")
+
+* **`Kernel::direct_call(ctx, pc)`**: a kernel call from the game's libkernel stub (`hg::syscall` hands it to
+  `runtime/native/kernel`'s `NativeKernel`), served by the `syscall` path itself: same result, scheduling and
+  closing check point.
+* **`KernelOptions::context_frames = false`** (what the layer sets): the BIOS frames are not written, but every
+  result rule of the BIOS wrappers still applies (a successful switching call or WaitSema returns the frame's `$v0`,
+  i.e. `$a0` -- also for an invalid WaitSema id; a released wait gets the low word -1; the first activation after
+  StartThread loads the registers the BIOS restore would load: the bytes at `stack + size - 0x2A0` as the guest left
+  them, with gp / sp / fp / ra and `$a0` = the argument in their low words). So with or without frames the guest
+  sees the same registers and results; only the bytes below each thread's sp differ (dead stack). `ThreadView::saved_sp`
+  is the bound `capture.json` reports for a thread without a frame.
+* **`Kernel::enable_census()` / `census()`** (`KernelCensus`, `--kernel-census FILE`): host-side counters of
+  everything a run asks of the kernel -- syscalls by slot and caller, chains and handlers, DMAC starts / qwords /
+  stalls / re-arms / busy polls, timer and INTC register accesses, semaphores, every hardware register access by
+  caller, switches, preemptions, idle time, slow check points. Null (and free) unless enabled.
+
 ## Integration contract (for the lead / other owners)
 
 * `set_hooks()`/`hooks()` are defined by `runtime/rt/`; install `&kernel.hooks()`. The kernel calls

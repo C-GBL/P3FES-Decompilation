@@ -16,6 +16,8 @@ add_library(p3fes_cdvd STATIC
     cdvd.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/p3fes/hle/mods_overlay.h
     mods_overlay.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include/p3fes/hle/read_log.h
+    read_log.cpp
 )
 add_library(p3fes::cdvd ALIAS p3fes_cdvd)
 target_include_directories(p3fes_cdvd PUBLIC

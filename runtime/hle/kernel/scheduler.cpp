@@ -249,13 +249,25 @@ void KernelHooks::activate(int next) {
             // ksched_preempt 0x80003A58: `sw -1, 32(frame)` -- only the low word of the saved $v0 changes.
             n.saved.gpr[GPR_V0].u32[0] = 0xFFFFFFFFu;
             mem_.write<u32>(n.frame + 32u, 0xFFFFFFFFu);
+        } else if (!opts_.context_frames) {
+            n.saved.gpr[GPR_V0].u32[0] = 0xFFFFFFFFu;  // the same word, on the host only (layer 6)
         } else {
             set_gpr(n.saved, GPR_V0, -1);
         }
     }
     if (n.start_from_frame) {  // first activation after StartThread: the BIOS restores the frame (0x80003800)
         n.start_from_frame = false;
-        frame_load(next, n.saved);
+        if (opts_.context_frames) {
+            frame_load(next, n.saved);
+        } else {
+            // Layer 6 (no frames in guest memory): what the BIOS restore would load -- the bytes at the fresh frame's
+            // place (stack + size - 0x2A0, unwritten here) with the words CreateThread / StartThread store there.
+            frame_load_at(n.stack + n.stack_size - 0x2A0u, n.saved);
+            n.saved.gpr[GPR_GP].u32[0] = n.gp;
+            n.saved.gpr[GPR_SP].u32[0] = n.saved.gpr[GPR_FP].u32[0] = n.stack + n.stack_size - 0x20u;
+            n.saved.gpr[GPR_RA].u32[0] = n.root;
+            n.saved.gpr[GPR_A0].u32[0] = n.arg;
+        }
     }
     n.status = TStatus::Run;
     current_ = next;
@@ -264,6 +276,7 @@ void KernelHooks::activate(int next) {
         load(next);
     }
     if (n.fiber == cur_fiber_) return;
+    if (census_) ++census_->switches;
     if (!n.fiber) n.fiber = create_fiber();
     const std::uint8_t prof_zone = prof::enter(prof::Zone::Fiber);
     switch_fiber(n.fiber);
@@ -292,6 +305,7 @@ void KernelHooks::idle_step() {
         current_ = kIdleTid;
     }
     save_loaded();  // ctx_ becomes scratch for the idle thread
+    if (census_) ++census_->idle_steps;
     ctx_.cop0[12] = opts_.thread_status;
     if (idle_since_ == kNever) idle_since_ = ctx_.cycles;
     if (!(dmac_pending() || intc_pending())) {
@@ -302,6 +316,7 @@ void KernelHooks::idle_step() {
             if (d - idle_since_ > opts_.idle_limit_cycles)
                 die("deadlock: no thread became runnable within %llu idle cycles (next event at %llu)",
                     static_cast<unsigned long long>(opts_.idle_limit_cycles), static_cast<unsigned long long>(d));
+            if (census_) census_->idle_cycles += d - ctx_.cycles;
             ctx_.cycles = d;
         }
     }
@@ -377,8 +392,9 @@ void KernelHooks::frame_init(int tid) {
     t.frame = f;
 }
 
-void KernelHooks::frame_load(int tid, EEContext& c) const {
-    const u32 f = tcbs_[static_cast<unsigned>(tid)].frame;
+void KernelHooks::frame_load(int tid, EEContext& c) const { frame_load_at(tcbs_[static_cast<unsigned>(tid)].frame, c); }
+
+void KernelHooks::frame_load_at(u32 f, EEContext& c) const {
     c.sa = mem_.read<u32>(f + 0u);
     c.fcr31 = mem_.read<u32>(f + 4u);
     c.acc = mem_.read<u32>(f + 8u);  // inf: restored with adda.s frame[8] + -0.0
@@ -409,6 +425,7 @@ void KernelHooks::reset_dormant(int tid) {
 [[noreturn]] void KernelHooks::exit_current(bool del) {
     const int tid = current_;
     if (tid == kIdleTid) die("ExitThread from the idle thread (an interrupt handler?)");
+    if (census_) ++census_->thread_exits;
     reset_dormant(tid);
     current_ = kIdleTid;
     if (del) {

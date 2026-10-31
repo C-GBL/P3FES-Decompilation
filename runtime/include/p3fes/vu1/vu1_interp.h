@@ -40,6 +40,9 @@ class IGifSink {
 public:
     virtual ~IGifSink() = default;
     virtual void kick(std::span<const u128> qwords) = 0;
+    // A PATH1 packet of PACKED triangles from a host stand-in for a VU1 program (MODERNIZE layer 5 step 2; the form of
+    // gs::Gif::path1_host). A GS-side receiver may apply it without walking its tags; the default is a kick.
+    virtual void kick_host(std::span<const u128> qwords) { kick(qwords); }
 };
 
 // 16 KiB micro memory. Writes go through `write`, which bumps `generation()` when a byte changes (re-uploading the
@@ -172,6 +175,7 @@ public:
     VU1State& state() noexcept { return s_; }
     const VU1State& state() const noexcept { return s_; }
     void set_sink(IGifSink* sink) noexcept { sink_ = sink; }
+    IGifSink* sink() const noexcept { return sink_; }  // where XGKICK sends (a stand-in for a run sends there too)
 
     // Power-on registers and flags (upstream `reset`): micro and data memory are kept, TOP/ITOP cleared.
     void reset() noexcept;

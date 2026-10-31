@@ -7,6 +7,7 @@
 // (libs13:: constants; each equals the literal it replaces). Names are symbols/ names (ADR-0009).
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/libs13.h"
+#include "p3fes/game/movies_native.h"
 
 namespace p3fes::recomp_gen {
 void fn___divdi3_0052eeb0(p3fes::EEContext&);
@@ -5022,7 +5023,11 @@ void sub_594B88(EEContext& ctx) {
     }
     // 0x00594b9c
     charge(ctx, 9);
-    jal(ctx, 0x594B9Cu, gen::fn_sceMpegInit_00500a20);
+    if (native::movies::service()) {  // modernize layer 4 (movies_native.h): no sceMpegInit / sceIpuInit
+        link(ctx, 0x594B9Cu);
+    } else {
+        jal(ctx, 0x594B9Cu, gen::fn_sceMpegInit_00500a20);
+    }
     a0 = 0x9B0000;
     ld(ra, sp, 0x0);
     a0 = addiu(a0, -13456);  // &0x9ACB70
@@ -5183,6 +5188,11 @@ void sub_594C38(EEContext& ctx) {
             charge(ctx, 3);
             a0 = s2;
             jal(ctx, 0x594DA8u, gen::fn_sub_595110_00595110);
+            s0 = addiu(s1, 112);
+        } else if (native::movies::MoviesService* nm = native::movies::service()) {
+            // modernize layer 4 (movies_native.h): the native decoder instead of sceMpegCreate + its callbacks
+            charge(ctx, 29);
+            sfd_native_mpeg_create(ctx, *nm, s3.u() - static_cast<u32>(native::movies::kWorkMpeg));
             s0 = addiu(s1, 112);
         } else {
             // 0x00594d34
@@ -5384,12 +5394,22 @@ void sub_595060(EEContext& ctx) {
         ld(s1, sp, 0x8);
         ld(ra, sp, 0x10);
         sp = addiu(sp, 0x20);
+        if (native::movies::MoviesService* nm = native::movies::service()) {  // layer 4: the native decoder goes
+            nm->mpeg_delete(ctx.cycles, a0.u());
+            v0 = 1;  // sceMpegDelete's result
+            return;
+        }
         gen::fn_sceMpegDelete_00500ad0(ctx);  // tail call
         return;
     }
     // 0x005950b8
     charge(ctx, 8);
-    jal(ctx, 0x5950B8u, gen::fn_sceMpegReset_00500bb8);
+    if (native::movies::MoviesService* nm = native::movies::service()) {  // layer 4: the native decoder resets
+        link(ctx, 0x5950B8u);
+        nm->mpeg_reset(ctx.cycles, a0.u());
+    } else {
+        jal(ctx, 0x5950B8u, gen::fn_sceMpegReset_00500bb8);
+    }
     a0 = s1;
     ld(s0, sp, 0x0);
     ld(s1, sp, 0x8);
@@ -5922,6 +5942,7 @@ void sub_595390(EEContext& ctx) {
         return;
     }
     // 0x00595408
+    const u64 log_c0 = ctx.cycles;  // the movie log (movies_service.h g_log; read-only)
     charge(ctx, 27);
     link(ctx, 0x595408u);  // $ra first: the delay slot below depends on it
     lw(s2, s5, sfd::kVdecWork);
@@ -5950,7 +5971,19 @@ void sub_595390(EEContext& ctx) {
     v0 = sra(v0, 4);
     v1 = sra(v1, 4);
     mult(a2, v0, v1);
-    if (t2 != t1) {
+    if (native::movies::MoviesService* nm = native::movies::service()) {
+        // modernize layer 4 (movies_native.h): the native decoder instead of sceMpegGetPicture / RAW8
+        charge(ctx, 4);
+        link(ctx, 0x595474u);
+        // the faithful call's guest time, charged with check points as its loops would (no host state is live here)
+        for (u64 left = sfd_native_get_picture(ctx, *nm, s2.u(), s4.u(), s5.u()); left != 0;) {
+            const u64 n = left < 4096u ? left : 4096u;
+            charge(ctx, n);
+            left -= n;
+            backedge(ctx);
+        }
+        sw(zero, s3, 20);
+    } else if (t2 != t1) {
         // 0x00595488
         charge(ctx, 3);
         link(ctx, 0x595488u);  // $ra first: the delay slot below depends on it
@@ -5975,6 +6008,9 @@ void sub_595390(EEContext& ctx) {
     v0 = si(-3);
     ld(s0, sp, 0x0);
     if (v1 == 0) v0 = s6;
+    if (native::movies::MovieLogSink* lg = native::movies::g_log)
+        lg->picture_call(log_c0, ctx.cycles, s2.u(), ctx.memory->read<u32>(s4.u() + 32u),
+                         ctx.memory->read<u32>(s5.u() + 56u), v0.s());
     ld(s1, sp, 0x8);
     ld(s2, sp, 0x10);
     ld(s3, sp, 0x18);

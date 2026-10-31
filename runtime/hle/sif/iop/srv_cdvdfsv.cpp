@@ -199,6 +199,7 @@ bool CdvdfsvServer::ncmd(IopCore& core, const RpcRequest& req, RpcReply& reply, 
         // the failure through sceCdGetError (srd_check_dvd_error 0x557FE8).
         error_override_ = cd::kErrRead;
         build_completion(p, false, reply);
+        if (p.kind == NcmdKind::Read) report_read(core, p, cd::kErrRead);
         return true;
     }
     error_override_ = -1;
@@ -220,9 +221,31 @@ void CdvdfsvServer::finish_pending(IopCore& core) {
     Pending p = std::move(*pending_);
     pending_.reset();
     if (cdvd_ && cdvd_->busy()) cdvd_->service();  // completes now (CdvdHle latency 0)
+    if (p.kind == NcmdKind::Read) report_read(core, p, error());
     RpcReply reply;
     build_completion(p, error() == cd::kErrNone, reply);
     core.complete(p.ticket, std::move(reply));
+}
+
+void CdvdfsvServer::report_read(IopCore& core, const Pending& p, int err) {
+    const auto& sink = core.config().cd_read_sink;
+    if (!sink) return;
+    CdReadEvent ev;
+    ev.lsn = p.lsn;
+    ev.sectors = p.sectors;
+    ev.dst = p.paddr;
+    ev.error = err;
+    ev.cycle = core.now();
+    ev.vblank = core.time().vblanks;
+    if (err == cd::kErrNone) {
+        // Read only: the bytes the drive delivered, where CdvdHle put them (the staging copy, or guest RAM).
+        if (p.staged) {
+            ev.data = p.staging;
+        } else if (auto g = guest_read_buffer(core.ee(), p.paddr, p.sectors)) {
+            ev.data = g.value().first(static_cast<std::size_t>(p.sectors) * kSectorSize);
+        }
+    }
+    sink(ev);
 }
 
 void CdvdfsvServer::build_completion(const Pending& p, bool ok, RpcReply& reply) {

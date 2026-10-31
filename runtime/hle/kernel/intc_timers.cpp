@@ -64,6 +64,7 @@ std::unique_ptr<HwDevice> kc::make_timer_device(KernelHooks& k) { return std::ma
 // ---- INTC ----------------------------------------------------------------------------------------
 
 u32 KernelHooks::intc_read(u32 pa) {
+    if (census_) ++census_->intc_regs.reads;
     if (pa == kIntcStat) return intc_stat_;
     if (pa == kIntcMask) return intc_mask_;
     report_unhandled(pa, 32, false, 0);
@@ -71,6 +72,7 @@ u32 KernelHooks::intc_read(u32 pa) {
 }
 
 void KernelHooks::intc_write(u32 pa, u32 v) {
+    if (census_) ++census_->intc_regs.writes;
     if (pa == kIntcStat) {
         intc_stat_ &= ~(v & 0x7FFFu);
     } else if (pa == kIntcMask) {
@@ -129,13 +131,19 @@ void KernelHooks::timer_advance(int n, u64 cycle) {
         if (e.cmp) {
             if (!(t.mode & kModeEquf)) {
                 t.mode |= kModeEquf;
-                if (t.mode & kModeCmpe) raise_intc(9u + static_cast<unsigned>(n));
+                if (t.mode & kModeCmpe) {
+                    if (census_) ++census_->timer_irqs[static_cast<unsigned>(n)];
+                    raise_intc(9u + static_cast<unsigned>(n));
+                }
             }
             if (t.mode & kModeZret) c = 0;
         }
         if (e.ovf && !(t.mode & kModeOvff)) {
             t.mode |= kModeOvff;
-            if (t.mode & kModeOvfe) raise_intc(9u + static_cast<unsigned>(n));
+            if (t.mode & kModeOvfe) {
+                if (census_) ++census_->timer_irqs[static_cast<unsigned>(n)];
+                raise_intc(9u + static_cast<unsigned>(n));
+            }
         }
         t.count_base = c;
         t.tick_base += e.step;
@@ -160,6 +168,7 @@ void KernelHooks::timer_event(int n) {
 }
 
 u32 KernelHooks::timer_read(u32 pa) {
+    if (census_) ++census_->timer_regs[(pa >> 11) & 3u].reads;
     const int n = static_cast<int>((pa >> 11) & 3u);
     const Timer& t = timers_[static_cast<unsigned>(n)];
     switch (pa & 0x7FFu) {
@@ -174,6 +183,7 @@ u32 KernelHooks::timer_read(u32 pa) {
 }
 
 void KernelHooks::timer_write(u32 pa, u32 v) {
+    if (census_) ++census_->timer_regs[(pa >> 11) & 3u].writes;
     const int n = static_cast<int>((pa >> 11) & 3u);
     Timer& t = timers_[static_cast<unsigned>(n)];
     const u32 reg = pa & 0x7FFu;

@@ -1,5 +1,7 @@
-﻿# Disc-derived data is never committed (GOAL.md ground rules)
+# Disc-derived data is never committed (GOAL.md ground rules)
 input/
+# (but modernize layer 2's code is not disc data)
+!runtime/native/input/
 extracted/
 build/
 /ida/

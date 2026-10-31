@@ -1,0 +1,27 @@
+# Modernize layer 1, check (d): the CD layer's own state, excluded when a --native files snapshot is compared with
+# a faithful one at the same game point (tracediff snapshot A B --mask tools\ours\modernize\layer1_cd_mask.txt).
+# Established 2026-10-30 from the m1 route (no input; --snapshot-at sky:11, faithful vs --native files), every
+# differing run attributed with symbols/p3fes.sym (docs/MODERNIZE_PLAN.md section 3, layer 1 (d)). Inclusive ranges.
+#
+# libcdvd's EE client: sceCd_ncmd_semid 0x780BA8, sceCd_c_cb_sem 0x780BB4, sceCd_ee_read_mode, sceCdCbfunc_num,
+# sceCd_ncmdsdata 0x780C80 and the N-command / S-command / search RPC buffers after it (observed up to 0x78270C)
+0x00780BA8-0x0078270F
+# the ADX file-system thread's stack (adxm_stack_fs 0x78AF70, 4096 bytes): it runs every SRD / dvCi server pass
+0x0078AF70-0x0078BF6F
+# CRI SRD: srd_obj 0x7A08B0 and its request work (observed 0x7A0908, 0x7A1158..0x7A1161)
+0x007A08B0-0x007A11FF
+# CRI dvCi: the 40 x 72-byte handle table 0x7A1DF0 (SRD +28, request / transferred +16 / +20, mode +68..70), the
+# converted-name scratch 0x7A2930, dvg_ci_cdrmode 0x7A2A70, dvg_ci_rdmode 0x7A2A74, dvg_ci_root_dir 0x7A2A80
+0x007A1DF0-0x007A2A8F
+# CRI ADXF / ADXSTM / ROFS / CVFS handle work (observed 0x7AC73C, 0x7B25FC..0x7B264D, 0x7B4540, 0x7B4720; ROFS's
+# g_rofs_work 0x7B2700 and g_roci_vtbl 0x7B2810 lie between): native whole-file loads open no ADXF / ROFS handle
+0x007AC700-0x007AC7FF
+0x007B2500-0x007B27FF
+0x007B4500-0x007B47FF
+# H_Cdvd's sCdvdCache (256 x 148 bytes): the slot each loaded file takes depends on when requests and destroys meet
+# the pump, i.e. on load timing (same files, other slots)
+0x007D6F80-0x007E037F
+# after sCdvdListFirst 0x7E0384 (observed 0x7E0798..0x7E0919). Layer 2 found what it is (2026-10-30): the pad layer's
+# read buffer 0x7E0700, the two DMA buffers 0x7E0740 / 0x7E0840 (PADMAN's frame counters +88 / +216 follow the
+# vblank) and the pad work records from 0x7E0940 -- timing, not files (tools/ours/modernize/layer2_pad_mask.txt)
+0x007E0700-0x007E09FF

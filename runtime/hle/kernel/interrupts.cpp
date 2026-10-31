@@ -119,6 +119,7 @@ void KernelHooks::run_chain(int list, u32 code) {
     const int n = counts_[static_cast<unsigned>(list)];
     if (n <= 0) die("# %s(%u) Handler does not exist.", dmac ? "DMAC" : "INTC", code);
     const int sentinel = dmac ? kDmacSentinel0 + (list - kIntcLists) : kIntcSentinel0 + list;
+    if (census_) ++(dmac ? census_->dmac_chains[static_cast<unsigned>(list - kIntcLists)] : census_->intc_chains[static_cast<unsigned>(list)]);
 
     // kintr_save_gprs; the HLE saves everything (H-05). Only `cycles` survives the restore.
     const EEContext saved = ctx_;
@@ -137,6 +138,7 @@ void KernelHooks::run_chain(int list, u32 code) {
             set_gpr(ctx_, GPR_RA, static_cast<s32>(kIntrReturnVa));
             set_gpr(ctx_, GPR_V1, static_cast<s32>(h.handler));
             ctx_.pc = h.handler;
+            if (census_) ++census_->handler_runs[h.handler];
             const std::uint8_t prof_zone = prof::enter(prof::Zone::Ee);
             lookup(h.handler)(ctx_);
             prof::leave(prof_zone);

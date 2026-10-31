@@ -104,6 +104,10 @@ private:
     }
 };
 
+// libsd ordinal ordinal with the call's arguments a0..a3 + the first stack word: what the import returns in v0.
+// The interpreted modules reach it through install_libsd_calls, the native SK stack (runtime/native/sound/sk) directly.
+u32 libsd_call(LibsdHle& sd, detail::IopRam& iop, u32 ordinal, const u32 (&args)[5]);
+
 // Registers the libsd ordinals 2..33 as host calls on `cpu` (the import binder resolves "libsd" to
 // them). `iop` is the RAM the transfer addresses refer to.
 void install_libsd_calls(R3000& cpu, LibsdHle& sd, detail::IopRam& iop,

@@ -74,47 +74,57 @@ void KernelHooks::set_dma_handler(unsigned ch, DmaChannelHandler* h) {
 // ---- width-exact dispatch (the bus never splits or merges an access) ---------------------------
 
 u32 KernelHooks::read32(u32 pa) {
+    if (census_) census_bus(pa, false);
     if (HwDevice* d = device_at(pa)) return d->read32(pa);
     report_unhandled(pa, 32, false, 0);
     return 0;
 }
 void KernelHooks::write32(u32 pa, u32 v) {
+    if (census_) census_bus(pa, true);
     if (HwDevice* d = device_at(pa)) return d->write32(pa, v);
     report_unhandled(pa, 32, true, v);
 }
 u64 KernelHooks::read64(u32 pa) {
+    if (census_) census_bus(pa, false);
     if (HwDevice* d = device_at(pa)) return d->read64(pa);
     report_unhandled(pa, 64, false, 0);
     return 0;
 }
 void KernelHooks::write64(u32 pa, u64 v) {
+    if (census_) census_bus(pa, true);
     if (HwDevice* d = device_at(pa)) return d->write64(pa, v);
     report_unhandled(pa, 64, true, v);
 }
 u128 KernelHooks::read128(u32 pa) {
+    if (census_) census_bus(pa, false);
     if (HwDevice* d = device_at(pa)) return d->read128(pa);
     report_unhandled(pa, 128, false, 0);
     return u128{};
 }
 void KernelHooks::write128(u32 pa, const u128& v) {
+    if (census_) census_bus(pa, true);
     if (HwDevice* d = device_at(pa)) return d->write128(pa, v);
     report_unhandled(pa, 128, true, v.lo());
 }
 u8 KernelHooks::read8(u32 pa) {
+    if (census_) census_bus(pa, false);
     if (HwDevice* d = device_at(pa)) return d->read8(pa);
     report_unhandled(pa, 8, false, 0);
     return 0;
 }
 u16 KernelHooks::read16(u32 pa) {
+    if (census_) census_bus(pa, false);
     if (HwDevice* d = device_at(pa)) return d->read16(pa);
     report_unhandled(pa, 16, false, 0);
     return 0;
 }
 void KernelHooks::write8(u32 pa, u8 v) {
+    if (census_) census_bus(pa, true);
     if (HwDevice* d = device_at(pa)) return d->write8(pa, v);
     report_unhandled(pa, 8, true, v);
 }
 void KernelHooks::write16(u32 pa, u16 v) {
+    if (census_) census_bus(pa, true);
     if (HwDevice* d = device_at(pa)) return d->write16(pa, v);
     report_unhandled(pa, 16, true, v);
 }
@@ -157,6 +167,7 @@ const Timebase& KernelHooks::time() const {
 void KernelHooks::vblank_start_event() {
     const u64 at = deadline_[kEvVblankStart];
     ++vblank_index_;
+    if (census_) ++census_->vblanks;
     tb_.field ^= 1u;  // GS CSR.FIELD toggles at every VBLANK_START (the GS device reports tb_.field)
     tb_.vblanks = vblank_index_;
     raise_intc(2);
@@ -172,6 +183,7 @@ void KernelHooks::vblank_start_event() {
 void KernelHooks::run_services() {
     if (in_services_ || services_.empty()) return;
     in_services_ = true;
+    if (census_) ++census_->services;
     deadline_[kEvService] = kNever;
     u64 next = kNever;
     for (DeviceServiceFn& s : services_) next = std::min(next, s());
@@ -211,8 +223,10 @@ void KernelHooks::recompute_deadline(const EEContext& ctx) {
     for (u64 v : deadline_) d = std::min(d, v);
     if ((stop_ || stop_requested_) && no_deliver_depth_ == 0) d = 0;  // run_until: every thread-level check point tests the predicate
     if ((dmac_pending() || intc_pending()) && no_deliver_depth_ == 0 && current_ != kIdleTid &&
-        !cpu_can_deliver(ctx))
+        !cpu_can_deliver(ctx)) {
         d = std::min(d, ctx.cycles + std::max<u64>(1, opts_.masked_poll_cycles));
+        if (census_) ++census_->masked_polls;
+    }
     next_deadline_ = d;
 }
 
@@ -221,6 +235,7 @@ void KernelHooks::recompute_deadline(const EEContext& ctx) {
 // preemption flagged by i* calls inside a chain, test the run_until predicate.
 void KernelHooks::slow_check(EEContext& ctx) {
     const std::uint8_t prof_zone = prof::enter(prof::Zone::Kernel);  // explicit pair: may switch fibers (L3)
+    if (census_) ++census_->slow_checks;
     process_due_events(ctx.cycles);
     if (no_deliver_depth_ == 0 && current_ != kIdleTid && started_) {
         // A stop requested by a time-base event or device service is taken before this point delivers.
@@ -232,6 +247,7 @@ void KernelHooks::slow_check(EEContext& ctx) {
                 // Interrupt exit with g_kNeedResched (0x80000454 -> 0x8000363C): the interrupted context is saved
                 // on its own stack before the pick.
                 if (opts_.context_frames) frame_save(current_, ctx, ctx.gpr[GPR_V0]);
+                if (census_) ++census_->preemptions;
                 reschedule();  // the interrupted thread stays READY at the head of its queue
             }
         }

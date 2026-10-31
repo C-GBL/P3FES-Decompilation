@@ -87,6 +87,7 @@ ThreadView KernelHooks::thread_view(int tid) const {
     v.stack = t.stack;
     v.stack_size = t.stack_size;
     v.frame = t.frame;
+    v.saved_sp = t.saved.gpr[GPR_SP].u32[0];
     return v;
 }
 
@@ -185,6 +186,9 @@ void Kernel::add_device_service(DeviceServiceFn fn) { core_->add_device_service(
 void Kernel::request_stop() { core_->request_stop(); }
 void Kernel::retry_dma_now(int ch) { core_->retry_dma_now(ch); }
 void Kernel::set_vu_control_handler(std::function<void(u32, u32)> fn) { core_->set_vu_control_handler(std::move(fn)); }
+void Kernel::enable_census() { core_->enable_census(); }
+void Kernel::direct_call(EEContext& ctx, u32 pc) { core_->direct_call(ctx, pc); }
+const KernelCensus* Kernel::census() const { return core_->census(); }
 const Timebase& Kernel::time() const { return core_->time(); }
 int Kernel::current_thread() const { return core_->current_thread(); }
 ThreadView Kernel::thread(int tid) const { return core_->thread_view(tid); }

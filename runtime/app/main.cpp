@@ -149,8 +149,41 @@ void print_usage() {
         "  --sound-log FILE      write every sound-side RPC (SDRDRV/SK blocks, CRI DTX) to FILE, one line each:\n"
         "                        vblank, cycles, server, function, verb, payload words, reply; plus KON/KOFF of\n"
         "                        the SPU2 voice model and RNA start/stop of the ADX model\n"
+        "  --native LIST         modernize pass (docs\\MODERNIZE_PLAN.md): the layers to run natively, comma separated:\n"
+        "                        files, input, sound, movies, graphics, kernel; or all | none (default none: every\n"
+        "                        layer faithful, the baseline build). Unknown names are refused. files: the game's\n"
+        "                        CD wrappers read host files by path and every load completes at once (layer 1);\n"
+        "                        input: the game's pad wrapper reads the host's pad (keyboard + XInput, replays and\n"
+        "                        recordings as usual) instead of libpad / PADMAN, vibration on the XInput motors\n"
+        "                        (layer 2); sound, movies, graphics: layers 3-5 (docs\\MODERNIZE_PLAN.md); kernel: the\n"
+        "                        game's kernel calls go to the host kernel directly instead of the syscall\n"
+        "                        instruction (layer 6, the game's timing unchanged); machine states and capture.json\n"
+        "                        record the set\n"
+        "  --native-kernel-timing T  with --native kernel: faithful (default) | host (layer 6's (b) set: no BIOS\n"
+        "                        context frames, no DMA completion latency, the native movie decode instant, the\n"
+        "                        native SK without SIF; the game's behaviour moves, so the old input recordings desync)\n"
+        "  --read-log FILE       write every disc read the game makes (cdvdfsv sceCdRead) to FILE, one line each:\n"
+        "                        vblank, LSN, sectors, bytes, guest destination, the file (X.CVM:\\PATH for a CVM\n"
+        "                        member) and the offset in it, the file size, FNV-1a 64 of the bytes delivered\n"
+        "  --scene-log FILE      write one line per scene change to FILE: vblank, field major / minor / entry, kind\n"
+        "                        (field | event | battle | movie | none) and the event id (runtime\\app\\modernize.h)\n"
+        "  --kernel-census FILE  count what the run asks of the kernel (syscalls and their callers, interrupt chains,\n"
+        "                        DMAC channels, timers, semaphores, hardware registers) and write the report at exit\n"
+        "                        (layer 6's inventory, runtime\\app\\kernel_census.h; changes nothing the guest sees)\n"
+        "  --movie-log FILE      write one line per picture the movie player decodes (both modes): vblank, cycles,\n"
+        "                        result, the input ring's state, the read position, FNV-1a 64 of the frame\n"
+        "  --vblank-dump FILE RANGES  append the bytes of guest RANGES (VA+LEN[,VA+LEN...], main RAM) to FILE at\n"
+        "                        every VBLANK_START, after a vblank number (modernize.h; logcmp.py dumps compares)\n"
         "  --sk MODE             who answers the SK sound RPCs (ADR-0014): modules (default: the game's SDRDRV/SK IRX\n"
         "                        files interpreted in place, SFX audible) | constants (the silent increment-1 replies)\n"
+        "  --native-sk T         with --native sound, how the game reaches the native SK stack: sif (default: its own\n"
+        "                        sceSdRemote RPCs, answered natively behind SDRDRV's boundary -- the faithful timing) |\n"
+        "                        direct (sceSdRemote / the module loads call it; no SIF, the game's timing moves) |\n"
+        "                        off (step 1 only: the SK modules interpreted, for A/B)\n"
+        "  --native-graphics-check N  with --native graphics, every N-th Im2D batch the host draws also runs VU1\n"
+        "                        program 039 exactly on a scratch VU1; registers, memory and the kicked packet compared\n"
+        "  --native-graphics-gs M  with --native graphics: direct (default: the host's packets reach the GS without the GIF\n"
+        "                        walk, their vertex UNPACKs without the VIF decode) | packets (step 1: GIF and VIF as usual)\n"
         "  --iop-layout L        IOP memory map: pcsx2 (default: module images and the game's IOP heap where PCSX2\n"
         "                        puts them) | legacy (the map of every snapshot before SK increment 2)\n"
         "  --spu2-interp I       SPU2 voice interpolation: gaussian (default: the hardware's 4-tap table) | linear\n"
@@ -511,6 +544,17 @@ int run_game(GameArgs& a, HostOptions& h) {
     const bool recording = feed.recording();
     ActivePadFeed active(feed_used ? &feed : nullptr);
     p3fes::app::HostInputSampler sampler(h.input);
+    // --native input (layer 2): the game's vibration (scePadSetActDirect's values) drives the XInput pad's motors.
+    if (p3fes::native::input::NativePad* np = host.native_pad(); np && !a.headless)
+        np->set_rumble_sink([&sampler](std::uint32_t port, p3fes::native::input::Rumble r) {
+            if (port == 0) sampler.rumble(r.small_motor != 0, r.large_motor);
+        });
+    struct RumbleOff {  // the sink goes before the sampler it calls; the motors stop when the run ends
+        p3fes::app::GameHost& host;
+        ~RumbleOff() {
+            if (p3fes::native::input::NativePad* np = host.native_pad()) np->set_rumble_sink(nullptr);
+        }
+    } rumble_off{host};
 
     // GS back end (docs/ANALYSIS/25 §3, §12): windowed play uses the D3D11 renderer when asked or by default (auto),
     // with the software path as the fallback. Headless runs rasterise in software (the oracle) unless asked for
@@ -1184,6 +1228,51 @@ int run_game(GameArgs& a, HostOptions& h) {
                             static_cast<unsigned long long>(im.runs));
         if (as.diff_mismatches && rc == 0) rc = 5;
     }
+    if (const p3fes::native::kernel::NativeKernel* nk = host.native_kernel()) {  // layer 6 (--native kernel)
+        const auto& s = nk->stats();
+        unsigned long long sema = 0, thread = 0;
+        for (unsigned n = 0x40; n <= 0x49; ++n) sema += s.calls[n] + s.icalls[n];
+        for (unsigned n = 0x20; n <= 0x3E; ++n) thread += s.calls[n] + s.icalls[n];
+        std::printf("p3fes: native kernel: %llu kernel calls served directly (threads %llu, semaphores %llu, other %llu); "
+                    "%s\n",
+                    static_cast<unsigned long long>(s.total), thread, sema, static_cast<unsigned long long>(s.total) - thread - sema,
+                    a.cfg.native_kernel_timing == "host" ? "host timing (the (b) set)" : "faithful timing");
+    }
+    if (const p3fes::native::graphics::NativeIm2D* ng = host.native_graphics()) {  // layer 5 (--native graphics)
+        const p3fes::native::graphics::Im2DStats& g = ng->stats();
+        const auto ull = [](p3fes::u64 v) { return static_cast<unsigned long long>(v); };
+        std::printf("p3fes: native graphics: Im2D packets %llu (%llu batches, %llu triangles; other programs %llu); "
+                    "program 039 runs %llu: native %llu (%llu triangles, %llu kick qw, %.1f ms + %.1f ms in the GIF sink), exact %llu "
+                    "(entry %llu, count %llu, no record %llu); records dropped %llu, overflow %llu; other runs %llu\n",
+                    ull(g.packets), ull(g.batches), ull(g.tris), ull(g.packets_other), ull(g.runs), ull(g.native),
+                    ull(g.native_tris), ull(g.native_kick_qw), g.ns / 1e6, g.kick_ns / 1e6, ull(g.fb_entry + g.fb_count + g.fb_nomatch),
+                    ull(g.fb_entry), ull(g.fb_count), ull(g.fb_nomatch), ull(g.dropped), ull(g.overflow), ull(g.other_runs));
+        host.gs_quiesce();
+        const p3fes::gs::GsPipeline* gp = host.gs_pipeline();
+        const p3fes::native::graphics::NativeG3Seam* g3 = host.native_g3();
+        const p3fes::native::graphics::G3Stats g3s = g3 ? g3->stats() : p3fes::native::graphics::G3Stats{};
+        if (g3) {
+            std::printf("p3fes: native graphics: g3 seam: objects %llu, meshes %llu (MatFX / skin bridges %llu); g3 runs %llu "
+                        "(generic %llu, skin %llu, matfx %llu, skin_matfx %llu): matched to a mesh record %llu, unmatched %llu, "
+                        "records dropped %llu, overflow %llu; kicks %llu (%llu qw; not of the host form: generic %llu, skin %llu, "
+                        "matfx %llu, skin_matfx %llu); other runs %llu\n",
+                        ull(g3s.objects), ull(g3s.meshes), ull(g3s.meshes_matfx), ull(g3s.runs), ull(g3s.family[1]),
+                        ull(g3s.family[2]), ull(g3s.family[3]), ull(g3s.family[4]), ull(g3s.matched), ull(g3s.unmatched),
+                        ull(g3s.dropped), ull(g3s.overflow), ull(g3s.kicks), ull(g3s.kick_qw), ull(g3s.other_form[1]),
+                        ull(g3s.other_form[2]), ull(g3s.other_form[3]), ull(g3s.other_form[4]), ull(g3s.other_runs));
+        }
+        const unsigned long long handed = ull(g.kick_host + g3s.host_kicks);
+        const unsigned long long applied = ull(host.gs().gif().host_packets() + (gp ? gp->p1_host_packets() : 0));
+        std::printf("p3fes: native graphics: %s: %llu host packets (Im2D %llu, g3 %llu): %llu applied without the GIF walk, %llu "
+                    "through path1; %llu vertex UNPACKs (%llu qw) written by the host\n",
+                    ng->direct() ? "direct" : "packets", handed, ull(g.kick_host), ull(g3s.host_kicks), applied, handed - applied,
+                    ull(g.unpacks), ull(g.unpack_qw));
+        if (g3s.checked)
+            std::printf("p3fes: native graphics g3 check: %llu runs compared, %llu differ\n", ull(g3s.checked), ull(g3s.check_bad));
+        if (g3s.check_bad && rc == 0) rc = 5;
+        if (g.checked) std::printf("p3fes: native graphics check: %llu runs compared, %llu differ\n", ull(g.checked), ull(g.check_bad));
+        if (g.check_bad && rc == 0) rc = 5;
+    }
     if (const p3fes::native::NativeG3* nr = host.native_renderer()) {
         const p3fes::native::NativeStats& ns = nr->stats();
         std::printf("p3fes: native renderer: runs %llu, native %llu (inits %llu), fallbacks gif-busy %llu / model %llu / "
@@ -1227,6 +1316,10 @@ int run_game(GameArgs& a, HostOptions& h) {
     if (a.zones) host.write_zones(a.zones);
     host.stop_gs_pipeline();  // after the zones' last segment (the workers' CPU times)
     host.print_summary();
+    {
+        std::string census_err;
+        if (!host.write_kernel_census(census_err)) std::fprintf(stderr, "p3fes: %s\n", census_err.c_str());
+    }
     for (const auto& f : host.flips())
         std::printf("p3fes:   flip %llu: vblank %llu, cycles %llu, DISPFB%u FBP %u, g_skyFrameCount %u\n",
                     static_cast<unsigned long long>(f.count), static_cast<unsigned long long>(f.vblank),
@@ -1424,8 +1517,44 @@ int main(int argc, char** argv) {
             game.cfg.trace_sif = true;
         } else if (std::strcmp(a, "--sound-log") == 0 && has1) {
             game.cfg.sound_log = argv[++i];
+        } else if (std::strcmp(a, "--native") == 0 && has1) {
+            std::string err;
+            if (!p3fes::app::parse_native_layers(argv[++i], game.cfg.native, err)) {
+                std::fprintf(stderr, "p3fes: %s\n", err.c_str());
+                return 2;
+            }
+        } else if (std::strcmp(a, "--read-log") == 0 && has1) {
+            game.cfg.read_log = argv[++i];
+        } else if (std::strcmp(a, "--kernel-census") == 0 && has1) {
+            game.cfg.kernel_census = argv[++i];
+        } else if (std::strcmp(a, "--scene-log") == 0 && has1) {
+            game.cfg.scene_log = argv[++i];
+        } else if (std::strcmp(a, "--movie-log") == 0 && has1) {
+            game.cfg.movie_log = argv[++i];
+        } else if (std::strcmp(a, "--vblank-dump") == 0 && i + 2 < argc) {
+            std::string err;
+            if (!p3fes::app::parse_vblank_dump_ranges(argv[i + 2], game.cfg.vblank_dump_ranges, err)) {
+                std::fprintf(stderr, "p3fes: %s\n", err.c_str());
+                return 2;
+            }
+            game.cfg.vblank_dump = argv[i + 1];
+            i += 2;
         } else if (std::strcmp(a, "--sk") == 0 && has1) {
             game.cfg.sk_mode = argv[++i];
+        } else if (std::strcmp(a, "--native-kernel-timing") == 0 && has1) {
+            game.cfg.native_kernel_timing = argv[++i];
+        } else if (std::strcmp(a, "--native-sk") == 0 && has1) {
+            game.cfg.native_sk = argv[++i];
+        } else if (std::strcmp(a, "--native-graphics-check") == 0 && has1) {
+            game.cfg.native_gfx_check = static_cast<std::uint32_t>(std::strtoul(argv[++i], nullptr, 0));
+        } else if (std::strcmp(a, "--native-graphics-gs") == 0 && has1) {
+            const char* v = argv[++i];
+            if (std::strcmp(v, "direct") == 0) game.cfg.native_gfx_direct = true;
+            else if (std::strcmp(v, "packets") == 0) game.cfg.native_gfx_direct = false;
+            else {
+                std::fprintf(stderr, "p3fes: --native-graphics-gs wants direct or packets, got '%s'\n", v);
+                return 2;
+            }
         } else if (std::strcmp(a, "--iop-layout") == 0 && has1) {
             game.cfg.iop_layout = argv[++i];
         } else if (std::strcmp(a, "--spu2-interp") == 0 && has1) {

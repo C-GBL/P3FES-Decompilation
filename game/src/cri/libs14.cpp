@@ -6,6 +6,7 @@
 // p3fes_handgen bodies (game/include/p3fes/game/hg_cpu.h); every statement, charge and check point is the
 // generator's. The roles come from reading the instructions; the RofsHandle offsets are libs14::rofs_hn constants
 // in game/include/p3fes/game/libs14.h (each equals the literal it replaces). Names are symbols/ names (ADR-0009).
+#include "p3fes/game/sound_native.h"
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/libs14.h"
 
@@ -507,6 +508,11 @@ void PS2RNA_Create(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, a3{ctx, 7}, t0{ctx, 8}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, s3{ctx, 19}, s4{ctx, 20}, s5{ctx, 21}, s6{ctx, 22}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00560758
     enter(ctx, 16);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        Gpr rv{ctx, 2};
+        rv = ps2rna_native_create(ctx, *ns, a0.u(), a1.u());
+        return;
+    }
     sp = addiu(sp, -0x60);
     v0 = 0x7B0000;
     sd(s1, sp, 0x28);
@@ -924,6 +930,10 @@ void sub_560AF8(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, a3{ctx, 7}, t0{ctx, 8}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00560af8
     enter(ctx, 10);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        ps2rna_native_destroy(ctx, *ns, a0.u());
+        return;
+    }
     v0 = 0x7B0000;
     sp = addiu(sp, -0x30);
     lw(v1, v0, -27656);  // 0x7A93F8
@@ -1040,6 +1050,10 @@ void sub_560C88(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, s3{ctx, 19}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00560c88
     enter(ctx, 12);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        ps2rna_native_transfer(ctx, *ns, a0.u(), a1.u());
+        return;
+    }
     sp = addiu(sp, -0x30);
     v0 = 0x7B0000;
     sd(s2, sp, 0x10);
@@ -1151,6 +1165,11 @@ void sub_560EB0(EEContext& ctx) {
     Gpr v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00560eb0
     enter(ctx, 7);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        Gpr rv{ctx, 2};
+        rv = ps2rna_native_num_data(ctx, *ns, a0.u());
+        return;
+    }
     v0 = 0x7B0000;
     sp = addiu(sp, -0x10);
     lw(v1, v0, -27656);  // 0x7A93F8
@@ -1198,6 +1217,11 @@ void sub_560F18(EEContext& ctx) {
     Gpr v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00560f18
     enter(ctx, 7);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        Gpr rv{ctx, 2};
+        rv = ps2rna_native_num_room(ctx, *ns, a0.u());
+        return;
+    }
     v0 = 0x7B0000;
     sp = addiu(sp, -0x10);
     lw(v1, v0, -27656);  // 0x7A93F8
@@ -1404,6 +1428,10 @@ void PS2RNA_ExecServer(EEContext& ctx) {
     Gpr v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00561138
     enter(ctx, 9);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        ps2rna_native_exec_server(ctx, *ns);
+        return;
+    }
     v0 = 0x7B0000;
     sp = addiu(sp, -0x20);
     lw(v1, v0, -27656);  // 0x7A93F8

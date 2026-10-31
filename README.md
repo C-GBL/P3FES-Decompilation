@@ -28,6 +28,8 @@ Prebuilt executables are on the [Releases page](https://github.com/C-GBL/P3FES-D
 
 This version does not contain a full handwritten source code, and is currently emulating certain PS2 core features such as IO, Sound, ADX Playback and more. It does however contain a D3D11 backend that runs natively, and it also features ahead-of-time VU1 compilation. The game is completely playable, but it is NOT the finished product.
 
+Builds from source after v0.1.0 also have opt-in native layers. `--native files,input,sound,movies,graphics,kernel` (or `--native all`) swaps those PS2 parts for host code one at a time, and `--native files` alone gives instant loading. All of them are off by default. See [What is native and what is still emulated](#what-is-native-and-what-is-still-emulated).
+
 This executable requires a LEGALLY obtained copy of the game (it needs to be the USA copy of P3FES) and will not launch without the .iso or the extracted game files. The recompiler checks the ELF's SHA-256 against the known USA digest, so other regions and modified images are refused.
 
 Set up the directory like this:
@@ -59,6 +61,7 @@ Saves go to `%APPDATA%\P3FES\saves` as a standard PS2 memory card image (`Mcd001
 
 | Version | Notes |
 |---|---|
+| Unreleased | The `--native` layers (files with instant loading, input, sound, movies, graphics, kernel), all opt-in. Fixed: walking straight down (keyboard S alone) turned the hero away instead of moving him, and a controller walked instead of running at some stick angles. |
 | v0.1.0 | Initial commit, with all recompiled functions (14,500) |
 
 ## How the port works
@@ -83,6 +86,7 @@ Execution follows one host thread with a fiber per guest thread. Time is virtual
 | VU1 | `runtime/vu1/` | a bit-exact interpreter, plus `p3fes_vu1_aotgen`, which compiles all 114 of the game's microprograms to C++ ahead of time |
 | D3D11 back end | `runtime/src/gs/`, `runtime/hfr/` | GPU rasterisation through a rasteriser-ordered-view pixel pipeline into the same 4 MiB VRAM image, frame pacing, in-between frame interpolation |
 | Native renderer | `runtime/native/` | RenderWare g3 batches drawn from a C++ model of the VU1 programs, skipping the microprogram, the GIF parse and the GS vertex queue |
+| Native layers | `runtime/native/` (`files`, `input`, `sound`, `movies`, `graphics`, `kernel`) | the `--native` switches: each one replaces a PS2 device at the game's own call into it, behind a seam in `runtime/include/p3fes/native/` |
 | IPU | `runtime/ipu/` | MPEG-2 decoding for the Sofdec movies |
 | Audio | `runtime/audio/` | 48 SPU2 voices with ADPCM and ADSR, the PSM stream mixer, an ADX decoder, XAudio2 and WAV sinks |
 
@@ -96,6 +100,11 @@ The D3D11 back end (`--gs-backend d3d11`) replays the same GS operations on the 
 
 The native renderer (`--renderer native`) replaces the VU1 run itself. RenderWare's PS2 driver turns every atomic into VIF packets and kicks a g3 microprogram per vertex cluster; two programs, `g3_skin` and `g3_generic`, are 90% of the VU1 work in battle. In native mode a semantic model of those programs computes the batch's vertices in C++ from VU1 memory and hands triangles straight to the GPU. Everything the EE side does stays as it was: the RW driver, the DMAC, VIF1 timing, the UNPACKs into VU1 memory. Any batch the model doesn't recognise falls back to the exact VU1 run. Measured against the exact output, positions land within 1/16 pixel and colours match exactly.
 
+`--native graphics` goes one step further:
+- Im2D draws (sprites, text, windows, fades, the HUD) and the g3 / MatFX / skin batches hand their output to the GS as host packets. This skips the VIF UNPACK decode and the per-qword GIF walk.
+- The g3 programs still run as their AOT-compiled code, which is already a few nanoseconds per instruction pair.
+- `--native-graphics-check N` also runs every N-th batch on a scratch VU1 and compares everything. On all six routes the comparison has found 0 differences, and the frames are byte-identical.
+
 `--fps 60`, `--fps 120`, `--fps monitor` and `--fps unlimited` show interpolated pictures between the game's 30 fps frames. The render thread keeps each game frame's lists and VRAM state, matches native batches between consecutive frames by a hash of their vertex block, and blends vertices in clip space. Game logic, guest memory and every gate are untouched by this; `--fps 30` is the plain behaviour.
 
 Ahead-of-time VU1 (`--vu1 aot`, built with `-DP3FES_VU1_AOT=ON`) compiles each microprogram's label blocks to C++ with host SSE/AVX float under round-toward-zero and an exact per-lane fallback. On captured battle batches it runs 14 to 24 times faster than the interpreter, and a differential mode (`--vu1 diff`) has compared it over 30 billion instruction pairs with zero mismatches.
@@ -103,6 +112,8 @@ Ahead-of-time VU1 (`--vu1 aot`, built with `-DP3FES_VU1_AOT=ON`) compiles each m
 ### Sound
 
 The game decodes ADX on the EE with its own CRI library, which is recompiled like everything else, and streams PCM to the IOP. The IOP side models `CRI_ADXI.IRX`'s PSM mixer. Sound effects and sequenced music go through the game's real `SK*`/`libsd` IRX modules, interpreted on an R3000 core inside the IOP HLE, driving a host SPU2 voice model. Menu sound effects measure within 0.5 dB of PCSX2.
+
+With `--native sound`, the PCM the game's ADX players produce goes to the host mixer at CRI's PS2RNA output layer, and `CRI_ADXI` is no longer loaded. The six SK modules (sequencer, synth, SDRDRV) run as native C++ that is generated at build time from your own `LIB31` files, and they never touch the R3000 interpreter. Their replies, events and heap match the interpreted modules byte for byte, and the scene logs and frames of every route are unchanged.
 
 ## What is native and what is still emulated
 
@@ -117,11 +128,26 @@ The game decodes ADX on the EE with its own CRI library, which is recompiled lik
 
 The plan for removing the right-hand column is ADR-0017 in `docs/DECISIONS.md` and `docs/MODERNIZE_PLAN.md`: one layer at a time (files, input, sound, movies, graphics, kernel and timing), each behind its own switch, each with a stated check against the faithful path before it becomes the default. Files come first, because everything streams through them and the check is exact. After that pass, the hand-written lift starts on code that calls host services only.
 
+Every layer now has its first steps in. They are opt-in, and the table above still describes the default build:
+
+| Switch | What it replaces | Check |
+|---|---|---|
+| `--native files` | CDVD / cdvdfsv / CVM sector reads: host file reads by path, finished at once (instant loading) | every read returns the same bytes (2,142 / 2,142; 12,044 files, 0 differ) |
+| `--native input` | libpad / SIO2: XInput and the keyboard write the game's pad work area | the pad work area is identical on every frame |
+| `--native sound` | the CRI_ADXI PSM path and the SK / libsd modules on the R3000 interpreter | stream PCM and SK command logs identical; scene logs and frames unchanged |
+| `--native movies` | IPU emulation under the Sofdec player: libmpeg's picture loop on the host MPEG-2 core | all 42 `.SFD` files (107,893 pictures) bit-exact with the IPU path |
+| `--native graphics` | the VIF decode and GIF walk for Im2D and g3 batches | frames byte-identical, with the check mode at 0 differences |
+| `--native kernel` | BIOS syscalls go straight to the host kernel | every route byte-exact |
+
+What is left: the SIF transport, the GS register model and the DMAC timing go once the kernel layer owns timing (`--native-kernel-timing host`, still in progress). None of these layers made the game faster on its own. The profile shows the game code itself on the EE thread is now the critical path, and that is the lift's job.
+
 ## Validation
 
 The project treats PCSX2 as a state oracle, never as a source. `tracediff` compares a snapshot of guest memory at a given vblank against a capture from a clean PCSX2 2.8.2 run. At every milestone (first flip, the Atlus logo, the title, a dorm save) the code band differs by 0 bytes. 3,443 compiled EE semantics vectors were run in PCSX2 to pin down instruction behaviour; 0 are unexplained.
 
-Six recorded input routes (first flip, dorm, battle, fusion, shop, Tartarus climb) replay deterministically from a fresh memory card. Every merge re-runs them headless and compares `eeMemory.bin`, `gsMemory.bin` and `frame.png` against stored references. Each function moved into `game/` also runs a pair test against its own recompiled body on randomised inputs (same result, same callee-saved registers, same memory, same cycle count) before the recompiled version is retired. The suite is 16 doctest executables, run under both MSVC and clang-cl.
+Six recorded input routes (first flip, dorm, battle, fusion, shop, Tartarus climb) replay deterministically from a fresh memory card. Every merge re-runs them headless and compares `eeMemory.bin`, `gsMemory.bin` and `frame.png` against stored references. A second set, recorded with the native layers on (`gate.ps1 -Native`), keeps its own baselines per layer set, and `-ExtraArgs` runs the faithful routes with a native layer switched on.
+
+Bugs that every route shares get past these comparisons, because each run agrees with the others. One example: the EE FPU model truncated `SQRT.S`, following PCSX2's interpreter, while its `DIV.S` rounded to nearest, following PCSX2's recompiler. That left the field pad heading just above 1.0 for a stick centred left-right, so `acosf` clamped and the hero turned away instead of walking down. `SQRT.S` now rounds to nearest as well. The routes recorded with the bug were re-recorded and their references rebuilt. Each function moved into `game/` also runs a pair test against its own recompiled body on randomised inputs (same result, same callee-saved registers, same memory, same cycle count) before the recompiled version is retired. The suite is 16 doctest executables, run under both MSVC and clang-cl.
 
 ## Building from source
 

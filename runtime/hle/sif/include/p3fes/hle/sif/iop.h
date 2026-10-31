@@ -62,6 +62,17 @@ inline constexpr u16 kTriangle = 0x1000, kCircle = 0x2000, kCross = 0x4000, kSqu
 
 struct SoundRequest;
 
+// One sceCdRead the game made through cdvdfsv (sid 0x80000595 fn 1), as its data is delivered (or refused).
+// IopConfig::cd_read_sink; the host's --read-log (docs/MODERNIZE_PLAN.md §3, stage 0). Observation only.
+struct CdReadEvent {
+    u32 lsn = 0, sectors = 0;  // sceCdRead's arguments
+    u32 dst = 0;               // the guest destination (sceCdRead's buf)
+    int error = 0;             // libcdvd error code at completion (0 = data delivered; SCECdErREAD for a refused read)
+    std::span<const std::byte> data;  // the sectors*2048 bytes delivered (the staging copy for an unaligned
+                                      // destination, guest RAM otherwise); empty when error != 0
+    u64 cycle = 0, vblank = 0;  // Timebase at completion
+};
+
 // Who answers SDRDRV's RPC 0x80000701 (runtime/hle/sif/README.md §9, ADR-0014): the constant replies of
 // srv_sdr.cpp §3 (increment 1 and before; silent) or the game's own SDRDRV/SK/MOD IRX modules interpreted
 // in place over the SPU2 voice model (increment 2, the default). Kept as a switch for A/B runs.
@@ -107,6 +118,10 @@ struct IopConfig {
     // key-on/key-off events of the SPU2 model and RNA start/stop of the ADX model arrive here too (sid 0 /
     // fno 1 KON, 2 KOFF; sid 0x90000200 fno 0x8000/0x8001), not counted as requests.
     std::function<void(const SoundRequest&)> sound_sink;
+    // Every sceCdRead as it completes (or is refused), in order (CdReadEvent). Called on the host thread from the
+    // IOP's tick, after the data is in place and before the EE sees the RPC end; it must not write anywhere the
+    // guest can see. nullptr = off (the default).
+    std::function<void(const CdReadEvent&)> cd_read_sink;
     // ADR-0014: the SK sound path (see SkMode / IopLayout above).
     SkMode sk_mode = SkMode::Modules;
     IopLayout iop_layout = IopLayout::Pcsx2;
@@ -207,6 +222,22 @@ struct IopStats {
     u64 pad_frames = 0;
 };
 
+// --native sound, steps 2-3: the SK stack on native code (runtime/native/sound/sk) as SDRDRV's server would see it
+// (the host's adapter over sk::NativeSk; IopHle::set_native_sk).
+class SkNativeBackend {
+public:
+    virtual ~SkNativeBackend() = default;
+    // loadfile's request for one of the six SK modules at virtual `now`: the module id; its start result in `start`.
+    virtual s32 load_module(u64 now, std::string_view path, std::string_view args, s32* start) = 0;
+    // SDRDRV's registered RPC server (its SifRpcServerData_t and receive buffer), false before SDRDRV started.
+    virtual bool server(u32& sd, u32& buf) const = 0;
+    // SDRDRV's function `fno` with `send` (already in its receive buffer): the reply bytes, nullopt after a fault.
+    virtual std::optional<std::vector<u8>> rpc(u64 now, u32 fno, std::span<const u8> send, u32 recv_size) = 0;
+    virtual void advance(u64 now) = 0;  // the SK tick up to `now`
+    virtual u64 tick_runs() const = 0;
+    virtual std::string fault() const = 0;
+};
+
 class IopHle {
 public:
     ~IopHle();
@@ -219,10 +250,36 @@ public:
     // play session's consumed PCM to `tap` (both optional, borrowed; nullptr detaches). The output
     // is a function of virtual time only (runtime/audio/README.md).
     void set_audio_output(audio::AudioSink* mix, audio::StreamTap* tap = nullptr);
+    // Where an ADX stream's 48 kHz passes enter the output: the SPU2 mixer's stream input in Modules mode (the
+    // voices are added there), else `mix` itself. `--native sound` pushes its ADX mix here (runtime/native/sound).
+    audio::AudioSink* adx_input();
     AdxiStats adxi_stats() const;
     // End of run: pushes the mixer's last passes (the voice/PSM sum is emitted two passes behind the clock).
     void flush_audio();
     SkStats sk_stats() const;
+
+    // ---- --native sound, steps 2-3 (runtime/native/sound/sk, docs/MODERNIZE_PLAN.md section 3) ----------------------
+    // What the native SK stack (the six SK modules as native code, no interpreter, no SIF) uses of this model: the RAM
+    // the game uploads its sound banks to (sceSifAllocSysMemory + SIF DMA from H_Sndcom), the heap's placement calls,
+    // libsd over the SPU2 voice model the mixer plays (iop/libsd_hle.h libsd_call: the same LibsdHle the interpreted
+    // modules drive, created on first use and attached to the mixer), and the --sound-log request line. Supported
+    // with sk_mode == Modules and iop_layout == Pcsx2 (the native code sits at the Pcsx2 image bases).
+    bool native_sk_supported() const;
+    u8* native_sk_ram();  // 2 MiB
+    u32 native_sk_alloc(u32 size, u32 mode, u32 addr);
+    u32 native_sk_alloc_in(u32 lo, u32 hi, u32 size);
+    bool native_sk_free(u32 addr);
+    u32 native_sk_libsd(u32 ordinal, const u32 (&args)[5]);
+    void native_sk_at_time(u64 ee_cycles);  // the voices render up to here
+    // One SDRDRV request answered natively, logged and counted as the faithful server records it (sid 0x80000701).
+    void native_sk_record(u32 fno, std::span<const u8> send, s32 result, u64 cycles);
+    // A LIB31 module file as the faithful loader reads it (IopConfig::module_source, else the disc).
+    std::optional<std::vector<u8>> read_sk_module(std::string_view file_name);
+    void log(std::string_view line) const;
+    // The native SK stack behind SDRDRV's RPC: loadfile's requests for the six SK modules start it instead of loading
+    // the IRX into the interpreter, and every SDRDRV request is answered by it at the same virtual instant the
+    // interpreted modules would answer (the game's sceSdRemote / sceSifCallRpc traffic is unchanged). nullptr = off.
+    void set_native_sk(SkNativeBackend* backend);
 
     // Inspection.
     const IopStats& stats() const;

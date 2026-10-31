@@ -13,10 +13,12 @@ add_executable(p3fes_sif_tests
     test_adxi.cpp
     test_dbcman.cpp
     test_sk_modules.cpp
+    test_sk_native.cpp
 )
 # runtime/hle/sif/iop: test_adxi.cpp checks the PSM volume law (srv_adxi.h) directly.
 target_include_directories(p3fes_sif_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../vendor ${CMAKE_SOURCE_DIR}/runtime/hle/sif/iop)
-target_link_libraries(p3fes_sif_tests PRIVATE p3fes_common_options p3fes_sif)
+# test_sk_native.cpp: the native SK stack (modernize layer 3 steps 2-3) against the interpreted modules.
+target_link_libraries(p3fes_sif_tests PRIVATE p3fes_common_options p3fes_sif p3fes_native_sound)
 target_compile_definitions(p3fes_sif_tests PRIVATE
     P3FES_EXTRACTED_DIR="${CMAKE_SOURCE_DIR}/extracted"
     P3FES_INPUT_DIR="${CMAKE_SOURCE_DIR}/input"

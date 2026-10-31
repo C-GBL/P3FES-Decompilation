@@ -182,6 +182,13 @@ void SdrdrvServer::state(StateIo& io, IopCore& core) {
         sd_->state(io);
         kernel_->state(io);
     }
+    // --native sound (runtime/native/sound/sk): libsd and the voices without the interpreter's kernel.
+    bool native_sd = sd_ != nullptr && kernel_ == nullptr;
+    io(native_sd, native_now_);
+    if (native_sd) {
+        if (io.loading()) ensure_libsd(core);
+        sd_->state(io);
+    }
 }
 
 void Mc2s1Model::state(StateIo& io) {

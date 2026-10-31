@@ -8,6 +8,8 @@
 // wrappers and the timer; libpad, libsdr, libmc2 / libdbc, libspu2 / libsk; newlib; CRI ADX / LSC / MWSFD.
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/sweep5b.h"
+#include "p3fes/game/sound_native.h"
+#include "p3fes/game/movies_native.h"
 
 namespace p3fes::recomp_gen {
 void fn_DIntr_0050d3a0(p3fes::EEContext&);
@@ -10819,7 +10821,10 @@ void sceSdRemoteInit(EEContext& ctx) {
     sd(ra, sp, 0x30);
     s1 = 0x7C0000;
     jal(ctx, 0x512888u, gen::fn_sceSifInitRpc_005068a8);
-    for (;;) {
+    // Modernize layer 3, steps 2-3 (sound_native.h): with the SK stack native nothing calls SDRDRV's RPC, so it is not
+    // bound; $v0 as the loop's last delay slot leaves it for the stores below.
+    if (sk_service() != nullptr) v0 = 0x780000;
+    else for (;;) {
         // 0x00512890
         charge(ctx, 7);
         a1 = lui(0x8000);
@@ -14776,6 +14781,10 @@ void sub_5944A8(EEContext& ctx) {
     Gpr v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, a3{ctx, 7}, t0{ctx, 8}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, s3{ctx, 19}, s4{ctx, 20}, s5{ctx, 21}, s6{ctx, 22}, s7{ctx, 23}, sp{ctx, 29}, ra{ctx, 31};
     // 0x005944a8
     enter(ctx, 17);  // entry check point + this block's cycles
+    if (native::movies::MoviesService* nm = native::movies::service()) {  // modernize layer 4 (movies_native.h)
+        sfd_native_ring_flush(ctx, *nm, a0.u());
+        return;
+    }
     sp = addiu(sp, -0x50);
     sd(s1, sp, 0x8);
     s1 = a0;
@@ -14955,6 +14964,10 @@ void sub_5946A8(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, a3{ctx, 7}, t0{ctx, 8}, s0{ctx, 16}, sp{ctx, 29}, ra{ctx, 31};
     // 0x005946a8
     enter(ctx, 28);  // entry check point + this block's cycles
+    if (native::movies::MoviesService* nm = native::movies::service()) {  // modernize layer 4 (movies_native.h)
+        sfd_native_ring_stop(ctx, *nm, a0.u());
+        return;
+    }
     sp = addiu(sp, -0x10);
     sd(s0, sp, 0x0);
     s0 = a0;
@@ -15034,6 +15047,10 @@ void sub_5947A8(EEContext& ctx) {
     bool cc = false;  // a branch condition read before its delay slot
     // 0x005947a8
     enter(ctx, 30);  // entry check point + this block's cycles
+    if (native::movies::MoviesService* nm = native::movies::service()) {  // modernize layer 4 (movies_native.h)
+        sfd_native_ring_restart(ctx, *nm, a0.u());
+        return;
+    }
     sp = addiu(sp, -0x40);
     sd(s0, sp, 0x0);
     s0 = a0;

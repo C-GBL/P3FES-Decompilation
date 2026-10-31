@@ -108,6 +108,14 @@ GuestFn KernelHooks::lookup(u32 va) const { return opts_.lookup ? opts_.lookup(v
 
 // ---- dispatch ----------------------------------------------------------------------------------------
 
+// Layer 6 (--native kernel): the game's libkernel stub calls the kernel directly instead of executing `syscall`. The
+// service is the instruction's, so the result, the scheduling and the closing check point are the same; what the layer
+// changes is the context model (KernelOptions::context_frames off: no BIOS frames in guest stacks), not this path.
+void KernelHooks::direct_call(EEContext& ctx, u32 pc) {
+    if (census_) ++census_->direct_calls;
+    syscall(ctx, pc);
+}
+
 void KernelHooks::syscall(EEContext& ctx, u32 pc) {
     (void)ctx;  // always ctx_ (one CPU)
     const std::uint8_t prof_zone = prof::enter(prof::Zone::Kernel);  // explicit pair: the call may switch fibers (L3)
@@ -118,6 +126,10 @@ void KernelHooks::syscall(EEContext& ctx, u32 pc) {
     const s64 mag = neg ? -static_cast<s64>(num) : static_cast<s64>(num);
     if (mag > 0xFF) die("syscall %d ($v1 0x%08X): number out of range", num, static_cast<u32>(num));
     const u32 slot = static_cast<u32>(mag);
+    if (census_) {
+        ++(neg ? census_->isyscalls : census_->syscalls)[slot];
+        ++census_->syscall_sites[(static_cast<u64>(neg) << 40) | (static_cast<u64>(slot) << 32) | ctx_.gpr[GPR_RA].u32[0]];
+    }
     ctx_.cycles += opts_.syscall_cycles;
     if (!neg && no_deliver_depth_ > 0) {
         if (is_switching(slot) || is_blocking(slot))
@@ -137,20 +149,26 @@ void KernelHooks::syscall(EEContext& ctx, u32 pc) {
         s64 r = 0;
         u32 frame = 0;
         u64 frame_v0 = 0;
-        if (!neg && opts_.context_frames && saves_frame(slot) && current_ != kIdleTid) {
+        // The BIOS wrapper of the switching / blocking calls saves the context (at sp - 0x280 with context frames;
+        // without them -- layer 6, --native kernel -- only on the host) and its result rules apply either way.
+        const bool wrapper = !neg && saves_frame(slot) && current_ != kIdleTid;
+        if (wrapper) {
             u128 v0 = ctx_.gpr[GPR_V0];
             if (slot == 0x32) v0.u64[0] = static_cast<u64>(static_cast<s64>(current_));
             else if (frame_v0_is_a0(slot)) v0.u64[0] = ctx_.gpr[GPR_A0].u64[0];
             frame_v0 = v0.u64[0];
-            frame = frame_save(current_, ctx_, v0);
+            if (opts_.context_frames) frame = frame_save(current_, ctx_, v0);
         }
         if (guest_installed_[slot]) r = installed_syscall(slot, handled);
         if (!handled) r = stock_syscall(slot, neg, blocked);
-        if (frame && !blocked) {
+        if (wrapper && (frame || !opts_.context_frames) && !blocked) {
             // The wrapper's result path: ChangeThreadPriority and SleepThread `sd v0,32(frame)` always, the other
             // switching calls on failure; a successful switching call or WaitSema resumes from the frame's $v0.
-            if (slot == 0x29 || slot == 0x32 || (is_switching(slot) && r < 0)) mem_.write<u64>(frame + 32u, static_cast<u64>(r));
-            else if (is_switching(slot) || slot == 0x44) r = static_cast<s64>(frame_v0);
+            if (slot == 0x29 || slot == 0x32 || (is_switching(slot) && r < 0)) {
+                if (frame) mem_.write<u64>(frame + 32u, static_cast<u64>(r));
+            } else if (is_switching(slot) || slot == 0x44) {
+                r = static_cast<s64>(frame_v0);
+            }
         }
         if (!blocked && r != kNoResult) set_gpr(ctx_, GPR_V0, r);
         if (!neg && !blocked && is_switching(slot) && r >= 0) reschedule();
@@ -397,6 +415,7 @@ s64 KernelHooks::sc_create_thread(u32 p) {
     const int tid = tcb_free_.front();
     tcb_free_.pop_front();
     Tcb& t = tcbs_[static_cast<unsigned>(tid)];
+    if (census_) ++census_->thread_creates;
     t = Tcb{};
     t.status = TStatus::Dormant;
     t.entry = mem_.read<u32>(p + 4u);
@@ -418,10 +437,13 @@ s64 KernelHooks::sc_start_thread(s32 tid, u32 arg) {
     Tcb& t = tcbs_[static_cast<unsigned>(tid)];
     if (t.status != TStatus::Dormant) return -1;
     t.arg = arg;
+    if (census_) ++census_->thread_starts;
     build_initial_ctx(tid);
     if (opts_.context_frames && t.frame) {
         mem_.write<u32>(t.frame + 64u, arg);  // iStartThread 0x80003FD4: `sw a1, 64(frame)` ($a0 of the new thread)
         t.start_from_frame = true;            // the registers come from the frame at the first activation
+    } else if (!opts_.context_frames) {
+        t.start_from_frame = true;  // layer 6: the same registers, loaded on the host (activate)
     }
     ready_insert(tid);
     return tid;
@@ -593,7 +615,10 @@ s64 KernelHooks::sc_setup_thread() {
     t.stack = static_cast<u32>(stack);
     t.stack_size = size;
     t.root = gpr32(GPR_T0);
-    if (opts_.context_frames) frame_init(current_);  // SetupThread 0x800051FC
+    frame_init(current_);  // SetupThread 0x800051FC
+    // The returned sp IS this frame: its four words lie in the main thread's live stack (crt0 runs on from there), so
+    // they are written with or without context frames. Without them (layer 6) the TCB keeps no frame.
+    if (!opts_.context_frames) t.frame = 0;
     if (const u32 args = gpr32(GPR_A3)) write_args_block(args);
     return static_cast<s32>(t.stack + size - 0x2A0u);
 }
@@ -619,11 +644,18 @@ s64 KernelHooks::sc_create_sema(u32 p) {
     s.max = static_cast<s32>(mem_.read<u32>(p + 4u));  // recorded, never enforced
     s.attr = mem_.read<u32>(p + 0x10u);
     s.option = mem_.read<u32>(p + 0x14u);
+    if (census_) {
+        KernelCensus::SemaUse& u = census_->semas[id];
+        if (!u.creates++) u.creator = gpr32(GPR_RA);
+        u.init = init;
+        u.max = s.max;
+    }
     return id;
 }
 
 s64 KernelHooks::sc_delete_sema(s32 id) {
     if (!sema_valid(id)) return -1;
+    if (census_) ++census_->semas[id].deletes;
     Sema& s = semas_[static_cast<unsigned>(id)];
     for (int w : s.waiters) {  // released in FIFO order; their WaitSema returns -1
         Tcb& x = tcbs_[static_cast<unsigned>(w)];
@@ -639,6 +671,7 @@ s64 KernelHooks::sc_delete_sema(s32 id) {
 
 s64 KernelHooks::sc_signal_sema(s32 id) {
     if (!sema_valid(id)) return -1;
+    if (census_) ++(no_deliver_depth_ ? census_->semas[id].isignals : census_->semas[id].signals);
     Sema& s = semas_[static_cast<unsigned>(id)];
     if (!s.waiters.empty()) {  // the unit goes to the first waiter; count unchanged
         const int w = s.waiters.front();
@@ -656,6 +689,10 @@ s64 KernelHooks::sc_signal_sema(s32 id) {
 
 s64 KernelHooks::sc_wait_sema(s32 id, bool& blocked) {
     if (!sema_valid(id)) return -1;
+    if (census_) {
+        ++census_->semas[id].waits;
+        if (semas_[static_cast<unsigned>(id)].count <= 0) ++census_->semas[id].blocked;
+    }
     Sema& s = semas_[static_cast<unsigned>(id)];
     if (s.count > 0) {
         --s.count;
@@ -670,6 +707,7 @@ s64 KernelHooks::sc_wait_sema(s32 id, bool& blocked) {
 
 s64 KernelHooks::sc_poll_sema(s32 id) {
     if (!sema_valid(id)) return -1;
+    if (census_) ++census_->semas[id].polls;
     Sema& s = semas_[static_cast<unsigned>(id)];
     if (s.count > 0) {
         --s.count;

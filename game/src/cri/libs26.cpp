@@ -5,6 +5,7 @@
 // helpers. Every body is p3fes_handgen's, register for register and block for block as the recompiled body
 // (frame, spills, $ra links, cycle charges and check points: game/include/p3fes/game/hg_cpu.h); the line above each
 // body gives its role, read from the instructions, and libs26.h names the records' offsets.
+#include "p3fes/game/sound_native.h"
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/libs26.h"
 
@@ -6670,6 +6671,10 @@ void sub_560698(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, s0{ctx, 16}, s1{ctx, 17}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00560698
     enter(ctx, 8);  // entry check point + this block's cycles
+    if (native::sound::SoundService* ns = native::sound::service()) {  // modernize layer 3 (sound_native.h)
+        ps2rna_native_finish(ctx, *ns);
+        return;
+    }
     v0 = 0x7B0000;
     sp = addiu(sp, -0x20);
     lw(v1, v0, -27656);  // 0x7A93F8

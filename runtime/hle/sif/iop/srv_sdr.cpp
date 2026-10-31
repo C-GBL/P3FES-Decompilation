@@ -90,8 +90,7 @@ audio::Spu2Voices* SdrdrvServer::voices() { return sd_ ? &sd_->voices() : nullpt
 
 void SdrdrvServer::ensure_kernel(IopCore& core) {
     if (kernel_) return;
-    core_ = &core;
-    sd_ = std::make_unique<iop::LibsdHle>();
+    ensure_libsd(core);
     kernel_ = std::make_unique<iop::IopKernel>(core.ram(), *sd_, [&core](std::string_view s) { core.log(s); });
     std::vector<std::pair<u32, u32>> ranges;
     if (core.config().iop_layout == IopLayout::Pcsx2) {
@@ -104,13 +103,21 @@ void SdrdrvServer::ensure_kernel(IopCore& core) {
     kernel_->set_time_hook([this](u64 ee) {
         if (mixer_) mixer_->advance_voices(audio::frames_at_cycles(ee));
     });
+}
+
+// The libsd model over the SPU2 voice model and its sound-log events, as the first SK module load creates them; the
+// native SK stack (--native sound, runtime/native/sound/sk) uses it without the interpreter's kernel.
+void SdrdrvServer::ensure_libsd(IopCore& core) {
+    if (sd_) return;
+    core_ = &core;
+    sd_ = std::make_unique<iop::LibsdHle>();
     sd_->on_key_on = [this](const audio::Spu2KeyOn& k) {
         SoundRequest ev;
         ev.sid = 0;
         ev.fno = 1;
         ev.args = {k.core, k.voice, k.ssa, k.lsax, k.pitch, k.adsr1, k.adsr2, (static_cast<u32>(k.voll) << 16) | k.volr};
-        ev.cycle = kernel_->now();
-        ev.result = static_cast<s32>(audio::frames_at_cycles(kernel_->now()));
+        ev.cycle = sd_now();
+        ev.result = static_cast<s32>(audio::frames_at_cycles(sd_now()));
         core_->record_event(ev);
     };
     sd_->on_key_off = [this](u32 c, u32 v) {
@@ -118,8 +125,8 @@ void SdrdrvServer::ensure_kernel(IopCore& core) {
         ev.sid = 0;
         ev.fno = 2;
         ev.args = {c, v, 0, 0, 0, 0, 0, 0};
-        ev.cycle = kernel_->now();
-        ev.result = static_cast<s32>(audio::frames_at_cycles(kernel_->now()));
+        ev.cycle = sd_now();
+        ev.result = static_cast<s32>(audio::frames_at_cycles(sd_now()));
         core_->record_event(ev);
     };
     // Core-level register writes that change a value (the volume law, MMIX, effect attributes, sceSdInit):
@@ -129,12 +136,38 @@ void SdrdrvServer::ensure_kernel(IopCore& core) {
         ev.sid = 0;
         ev.fno = 3;
         ev.args = {c, kind, code, value, old, 0, 0, 0};
-        ev.cycle = kernel_->now();
-        ev.result = static_cast<s32>(audio::frames_at_cycles(kernel_->now()));
+        ev.cycle = sd_now();
+        ev.result = static_cast<s32>(audio::frames_at_cycles(sd_now()));
         core_->record_event(ev);
     };
     sd_->voices().set_interpolation(core.config().spu2_gaussian ? audio::Interpolation::Gaussian : audio::Interpolation::Linear);
     if (mixer_) mixer_->set_voices(&sd_->voices());
+}
+
+u64 SdrdrvServer::sd_now() const { return kernel_ ? kernel_->now() : native_now_; }
+
+u32 SdrdrvServer::native_libsd(IopCore& core, u32 ordinal, const u32 (&args)[5]) {
+    ensure_libsd(core);
+    return iop::libsd_call(*sd_, core.ram(), ordinal, args);
+}
+
+void SdrdrvServer::native_at_time(IopCore& core, u64 ee_cycles) {
+    ensure_libsd(core);
+    native_now_ = ee_cycles;
+    if (mixer_) mixer_->advance_voices(audio::frames_at_cycles(ee_cycles));
+}
+
+void SdrdrvServer::native_record(IopCore& core, u32 fno, std::span<const u8> data, s32 result, u64 cycles) {
+    RpcRequest req;
+    req.sid = kSid;
+    req.fno = fno;
+    req.data = data;
+    SoundRequest r;
+    fill_log(req, r);
+    r.cycle = cycles;
+    r.result = result;
+    ++rpc_routed_;
+    core.record_sound(r);
 }
 
 std::optional<std::vector<u8>> SdrdrvServer::read_module(IopCore& core, std::string_view file_name) {
@@ -166,6 +199,20 @@ std::optional<s32> SdrdrvServer::on_module_load(IopCore& core, std::string_view 
     if (core.config().sk_mode != SkMode::Modules || module_failed_) return std::nullopt;
     const std::string name = file_name_of(path);
     if (!is_sk_module(name)) return std::nullopt;
+    if (native_) {
+        // --native sound steps 2-3: the native SK stack starts the module at virtual `now` (nothing is loaded into
+        // the interpreter); once SDRDRV registered its server the binding points at its buffer, as below.
+        ensure_libsd(core);
+        s32 start = 0;
+        native_->load_module(core.now(), path, args, &start);
+        ++modules_loaded_;
+        u32 sd = 0, buf = 0;
+        if (!routed_ && native_->server(sd, buf)) {
+            core.rebind_server(kSid, sd, buf, 0x100u);
+            routed_ = true;
+        }
+        return start;
+    }
     ensure_kernel(core);
     kernel_->advance_to(core.now());  // the module starts at virtual `now` (its timers and GetSystemTime)
     const auto bytes = read_module(core, name);
@@ -226,6 +273,10 @@ void SdrdrvServer::finish_pending(IopCore& core, u32 result_ptr) {
 }
 
 void SdrdrvServer::tick(IopCore& core, u64 now, const Timebase& /*tb*/) {
+    if (native_) {
+        if (routed_) native_->advance(now);
+        return;
+    }
     if (!kernel_) return;
     advance(core, now);
     if (pending_.active)
@@ -256,6 +307,10 @@ SkStats SdrdrvServer::sk_stats() const {
         s.instructions = kernel_->instructions();
         s.fault = kernel_->fault();
     }
+    if (native_) {  // the native SK stack (no instructions interpreted)
+        s.tick_runs = native_->tick_runs();
+        s.fault = native_->fault();
+    }
     if (sd_) {
         s.key_ons = sd_->key_ons();
         s.key_offs = sd_->key_offs();
@@ -282,6 +337,19 @@ bool SdrdrvServer::call(IopCore& core, const RpcRequest& req, RpcReply& reply, u
     SoundRequest r;
     fill_log(req, r);
     r.cycle = core.now();
+    if (routed_ && native_) {
+        // --native sound steps 2-3: the native SK stack answers at the instant the interpreted modules would.
+        if (auto res = native_->rpc(core.now(), req.fno, req.data, req.recv_size)) {
+            reply.rdata = std::move(*res);
+            r.result = static_cast<s32>(load32(reply.rdata, 0));
+            ++rpc_routed_;
+            core.record_sound(r);
+            return true;
+        }
+        reply.rdata.assign(std::max<u32>(req.recv_size, 16u), 0);  // after a fault (logged once): zeros
+        core.record_sound(r);
+        return true;
+    }
     if (routed_ && kernel_) {
         advance(core, core.now());  // ticks due before this request run first
         if (routed_ && !pending_.active) {

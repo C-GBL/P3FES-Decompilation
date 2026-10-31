@@ -624,12 +624,16 @@ TEST_CASE("context frames: switching syscalls and interrupt-exit preemption save
     });
 }
 
-TEST_CASE("context frames off: no guest-memory writes below sp, zeroed start registers (KernelOptions::context_frames)") {
+TEST_CASE("context frames off: no guest-memory writes below sp, the BIOS restore's start registers (KernelOptions::context_frames)") {
     L.clear();
     register_root();
     register_fn(kTA, [](EEContext& c) {
-        CHECK(c.gpr[GPR_S0].u64[0] == 0);
+        // Layer 6 (--native kernel): the registers the BIOS restore would load from the fresh frame -- the bytes at
+        // stack + size - 0x2A0 as the guest left them (nothing is written there) with gp/sp/fp/ra and $a0 = the arg.
+        CHECK(c.gpr[GPR_S0].u64[0] == 0x5EED0000u);
         CHECK(c.gpr[GPR_A0].u64[0] == 0x55u);
+        CHECK(c.gpr[GPR_SP].u64[0] == kStack + 0x1000 - 0x20);
+        CHECK(c.gpr[GPR_FP].u64[0] == kStack + 0x1000 - 0x20);
         lg("A");
     });
     KernelOptions o;

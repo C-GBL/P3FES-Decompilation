@@ -65,6 +65,9 @@ public:
 
     // IGifSink: VU1 XGKICK -> PATH1.
     void kick(std::span<const u128> qwords) override { gif_.path1(qwords); }
+    void kick_host(std::span<const u128> qwords) override {
+        if (!gif_.path1_host(qwords)) gif_.path1(qwords);
+    }
 
     // Threaded graphics pipeline (gs_pipeline.h): VU1 work and the GS front end on worker threads. Off by default.
     void start_pipeline(const GsPipelineOptions& o);

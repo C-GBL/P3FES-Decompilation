@@ -218,6 +218,7 @@ public:
     CdvdHle* cdvd();
     void set_pad_input(unsigned port, const PadInput& in);
     void set_audio_output(audio::AudioSink* mix, audio::StreamTap* tap);
+    audio::AudioSink* adx_input() { return adx_input_; }
     AdxiStats adxi_stats() const;
     void flush_audio();
     SkStats sk_stats() const;
@@ -267,6 +268,7 @@ private:
     PadmanServer* pad_ = nullptr;
     AdxiServer* adxi_ = nullptr;
     SdrdrvServer* sdr_ = nullptr;
+    audio::AudioSink* adx_input_ = nullptr;  // set_audio_output: the mixer's stream input, else the mix sink
     std::unique_ptr<audio::Spu2Mixer> mixer_;  // Modules mode: voices + PSM -> the host sink
 
     void register_servers(DiscSource* disc);

@@ -50,6 +50,30 @@ GamepadState HostInputSampler::poll_gamepad() {
     return g;
 }
 
+HostInputSampler::~HostInputSampler() { rumble(false, 0); }
+
+void HostInputSampler::rumble(bool small_on, std::uint8_t large) {
+    const std::uint16_t left = static_cast<std::uint16_t>(large * 257u);
+    const std::uint16_t right = small_on ? 0xFFFFu : 0u;
+    if (user_ == rumble_user_ && left == rumble_left_ && right == rumble_right_) return;
+    // A user that changed (unplugged and another found) is stopped first.
+    if (rumble_user_ >= 0 && rumble_user_ != user_) {
+        XINPUT_VIBRATION off = {};
+        XInputSetState(static_cast<DWORD>(rumble_user_), &off);
+        rumble_user_ = -1;
+        rumble_left_ = rumble_right_ = 0;
+    }
+    if (user_ < 0) return;
+    XINPUT_VIBRATION v = {};
+    v.wLeftMotorSpeed = left;
+    v.wRightMotorSpeed = right;
+    if (XInputSetState(static_cast<DWORD>(user_), &v) == ERROR_SUCCESS) {
+        rumble_user_ = user_;
+        rumble_left_ = left;
+        rumble_right_ = right;
+    }
+}
+
 PadInput HostInputSampler::sample(bool accept) {
     if (!accept) return PadInput{};
     KeyState held;

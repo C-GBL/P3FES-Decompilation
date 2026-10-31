@@ -159,6 +159,29 @@ of the first 250 ms (floor-corrected; bands where the SE dominates on both sides
 log-spectral distance; `bgm` aligns a stretch of the ADX stream between SEs by envelope then
 waveform NCC and fits the gain. Numbers: `docs/INTEGRATION_LOG.md` "SK modules, increment 3".
 
+## Native sound (modernize layer 3, `--native sound`; `docs/MODERNIZE_PLAN.md` §3)
+
+Step 1 of the layer, the ADX output: with `--native sound` CRI's PS2 output layer, PS2RNA (the layer under the ADXRNA
+interface every CRI player writes its decoded PCM into: ADXT for BGM and voices, Sofdec's audio, AHX / AIX), plays on
+the host (`runtime/native/sound/native_sound.h`, seam `p3fes/native/sound_service.h`, game side
+`game/src/cri/rna_native.cpp`). No SIF RPC reaches CRI_ADXI (the game does not load it), no DTR SIF DMA moves PCM, no
+DTX / SJX exchange runs and the IOP's PSM model is idle, and the native ADX mix enters the SPU2 mixer's stream input
+where the PSM model's passes did (`IopHle::adx_input`), so the host output stays this library's sinks. Steps 2-3: the
+sound effects' SK stack runs on native code (`runtime/native/sound/sk/README.md`) and keys the same `Spu2Voices`
+through the same libsd model, so the mixer sums the same voices: the mix is byte-identical to the interpreted SK's.
+
+* **Swap point**: the eight PS2RNA functions that touch the IOP (Init, Finish, Create, Destroy, the transfer switch,
+  GetNumData, GetNumRoom, ExecServer); every other PS2RNA / ADXRNA function (the field setters and getters, GetTime)
+  runs its faithful body over the faithful 100-byte records. The decode stays CRI's own EE decoder (game code).
+* **The mix** is the PSM model's arithmetic (rate conversion, `psm_side_gain`, gain / 255, sum, clip) on the same
+  512-frame grid rule; `--dump-wav` writes the same `stream_*` files from the native output's consumption.
+* **Cadence**: so the game's timing stays the faithful one, the native output keeps the faithful device's: one pass per
+  vblank `adxi_tick_delay_cycles` after the VBLANK_START (renders the passes due, the discard, takes the block, answers),
+  one block in flight (DTX's ping-pong; the server's commands come from CRI's own command builder `0x55FC00`), DTR's
+  one-chunk transfers started in one server call and completed in the next, and the 16 KiB buffer's free / data lines
+  kept as SJUNI chunk lists (a transfer fills at most the head free chunk). GetNumData counts what is handed over and
+  not yet given back, as the PSJ's free line does.
+
 ## What is not modelled
 
 * Reverb (decision above), Dolby Pro Logic II, digital out, voice volume sweeps (counted), noise,

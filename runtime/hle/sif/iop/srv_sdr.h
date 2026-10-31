@@ -96,6 +96,13 @@ public:
     // read (IopConfig::module_source, else the disc) and loaded; returns the module's start result.
     std::optional<s32> on_module_load(IopCore& core, std::string_view path, std::string_view args);
     void set_mixer(audio::Spu2Mixer* m) { mixer_ = m; }
+    // ---- the native SK stack (--native sound; runtime/native/sound/sk): libsd and the voices without the interpreter.
+    u32 native_libsd(IopCore& core, u32 ordinal, const u32 (&args)[5]);
+    void native_at_time(IopCore& core, u64 ee_cycles);  // the voices render up to here; libsd events carry the time
+    void native_record(IopCore& core, u32 fno, std::span<const u8> data, s32 result, u64 cycles);  // a --sound-log line
+    std::optional<std::vector<u8>> read_module(IopCore& core, std::string_view file_name);
+    void set_native(SkNativeBackend* b) { native_ = b; }
+    bool native_active() const { return native_ != nullptr; }
     bool modules_active() const { return routed_; }
     audio::Spu2Voices* voices();
     SkStats sk_stats() const;
@@ -143,8 +150,11 @@ private:
         SoundRequest log;
     } pending_;
 
+    SkNativeBackend* native_ = nullptr;  // --native sound steps 2-3: the SK stack on native code answers (borrowed)
+    u64 native_now_ = 0;             // the native SK's clock (libsd event stamps without a kernel)
     void ensure_kernel(IopCore& core);
-    std::optional<std::vector<u8>> read_module(IopCore& core, std::string_view file_name);
+    void ensure_libsd(IopCore& core);
+    u64 sd_now() const;
     void advance(IopCore& core, u64 now);
     RpcReply reply_from(u32 result_ptr, u32 recv_size) const;
     void finish_pending(IopCore& core, u32 result_ptr);

@@ -136,6 +136,50 @@ TEST_CASE("map_gamepad: sticks through the dead zone with Y flipped to the PS2's
     CHECK(q.ry > 0x80);  // XInput down -> PS2 larger
 }
 
+TEST_CASE("stick_to_square: the DUALSHOCK 2's square output, full from kStickFullAt") {
+    CHECK(mag(stick_to_square({}, kStickFullAt)) == 0.0);
+    const StickXY right = stick_to_square({1.0, 0.0}, kStickFullAt);
+    CHECK(right.x == doctest::Approx(1.0));
+    CHECK(right.y == doctest::Approx(0.0));
+    const StickXY diag = stick_to_square({std::sqrt(0.5), -std::sqrt(0.5)}, kStickFullAt);  // the rim at 45 degrees
+    CHECK(diag.x == doctest::Approx(1.0));
+    CHECK(diag.y == doctest::Approx(-1.0));
+    const double t = 15.0 * 3.14159265358979 / 180.0;
+    const StickXY a15 = stick_to_square({std::cos(t), std::sin(t)}, kStickFullAt);
+    CHECK(a15.x == doctest::Approx(1.0));
+    CHECK(a15.y == doctest::Approx(std::tan(t)));                                  // direction kept
+    CHECK(stick_to_square({0.9, 0.0}, 0.9).x == doctest::Approx(1.0));             // full from 0.9
+    CHECK(stick_to_square({0.45, 0.0}, 0.9).x == doctest::Approx(0.5));            // linear below it
+    CHECK(stick_to_square({0.0, -0.3}, 0.0).y == doctest::Approx(-0.3));           // full_at 0: magnitude as is
+}
+
+// The field's run rule (K_VPad_UpdateTask, sub_1E05B0): each axis byte - 128 is zeroed inside +-48, the hero runs when
+// the rest is at least 125 long. Every full deflection must run, whatever the angle (on the unit circle the bands
+// 10..22 degrees off each axis walked: 127 cos(angle) < 125 with the minor component zeroed).
+TEST_CASE("map_gamepad: a full stick deflection runs in the field at every angle") {
+    const InputConfig c = default_input_config();
+    auto runs = [](std::uint8_t bx, std::uint8_t by) {
+        double x = bx - 128.0, y = by - 128.0;
+        if (x >= -48.0 && x <= 48.0) x = 0.0;
+        if (y >= -48.0 && y <= 48.0) y = 0.0;
+        return std::sqrt(x * x + y * y) >= 125.0;
+    };
+    for (const double rim : {1.0, 0.95, 0.9}) {
+        for (int d = 0; d < 360; ++d) {
+            const double t = d * 3.14159265358979 / 180.0;
+            GamepadState g = pad();
+            g.lx = static_cast<std::int16_t>(std::lround(std::cos(t) * rim * 32767.0));
+            g.ly = static_cast<std::int16_t>(std::lround(std::sin(t) * rim * 32767.0));
+            const PadInput p = map_gamepad(c, g);
+            CHECK_MESSAGE(runs(p.lx, p.ly), "angle " << d << " rim " << rim << ": " << int(p.lx) << " " << int(p.ly));
+        }
+    }
+    // A half deflection still walks on the axes (the run is not reached before the rim).
+    GamepadState g = pad();
+    g.lx = 16384;
+    CHECK_FALSE(runs(map_gamepad(c, g).lx, 0x80));
+}
+
 TEST_CASE("merge_inputs: buttons OR'ed, each stick from the keyboard only while it deflects it") {
     PadInput kb, gp;
     kb.buttons = pb::kCross;

@@ -627,7 +627,7 @@ TEST_CASE("game(scene2): the per-resource update -- moves, rotation, scale, twee
         CHECK(r8(*m, res + res::kMoveKind) == 2u);
         CHECK(rf(*m, res + res::kMoveSpeed) == 5.0f);
         CHECK(near(rf(*m, res + res::kMoveFrames), 30.0f));  // the path length
-        CHECK(printed_has("path bezier max kyori = 29.99"));  // 20 chords of float sums: 29.999989
+        CHECK(printed_has("path bezier max kyori = 30.00"));  // 20 chords of float sums (29.999989 with the old truncating SQRT.S)
         wf(*m, res + res::kMoveTime, 15.0f);  // halfway
         const hgp::Run up = spair(*m, "sub_3B9610", {sx(res)}, seed++, "path step", o);
         CHECK(near(rf(*m, res + scn::res::kPos), 15.0f));

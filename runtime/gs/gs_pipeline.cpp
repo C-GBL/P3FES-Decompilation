@@ -154,6 +154,15 @@ public:
         }
         p_.p1_packet(q, p_.run_seq_);
     }
+    // A host stand-in's packet (Gif::path1_host's forms): queued like any kick while the GIF is busy (the queue is
+    // flushed through path1), else marked for the GS stage's path1_host.
+    void kick_host(std::span<const u128> q) override {
+        if (p_.run_queued_) {
+            kick(q);
+            return;
+        }
+        p_.p1_packet(q, p_.run_seq_, true);
+    }
 
 private:
     GsPipeline& p_;
@@ -623,7 +632,10 @@ void GsPipeline::run_vu_batch(Batch& b) {
             const std::size_t n = (h.bytes - sizeof a) / 4u;
             u32 row[4];
             std::memcpy(row, a.row, sizeof row);
-            vif_unpack(a, reinterpret_cast<const u32*>(p + sizeof a), n, vu_.state().data, row);
+            const u32* words = reinterpret_cast<const u32*>(p + sizeof a);
+            u32 vectors = 0;
+            IVuRunHook* uh = vif_.run_hook();
+            if (!(uh && uh->unpack(a, words, n, vu_.state().data, row, vectors))) vif_unpack(a, words, n, vu_.state().data, row);
             break;
         }
         case kMpg: {
@@ -706,7 +718,7 @@ void GsPipeline::run_vu_batch(Batch& b) {
 
 // A PATH1 packet becomes visible to the GS: its SIGNAL / FINISH / LABEL writes are recorded for the EE (applied at
 // its next sync point), the packet goes to the GS stage.
-void GsPipeline::p1_packet(std::span<const u128> q, u64 seq) {
+void GsPipeline::p1_packet(std::span<const u128> q, u64 seq, bool host) {
     p1_packets_.fetch_add(1, std::memory_order_relaxed);
     scan_ad(q, [&](const u128& d) {
         if (!is_event_reg(d.u8[8])) return;
@@ -716,13 +728,14 @@ void GsPipeline::p1_packet(std::span<const u128> q, u64 seq) {
         if (opt_.speculate_csr) spec_failed_ = true;
     });
     if (opt_.threads != 2) {
-        exec_p1(q, seq);
+        exec_p1(q, seq, host);
         return;
     }
     const std::size_t need = sizeof(Hdr) + q.size() * 16u;
     if (vu_out_->n + need > vu_out_->buf.size()) vu_out_->buf.resize(std::max(vu_out_->buf.size() * 2, vu_out_->n + need));
     Hdr h;
     h.op = kP1Packet;
+    h.pad = host ? 1u : 0u;
     h.bytes = static_cast<u32>(q.size() * 16u);
     h.aux = seq;
     u8* p = vu_out_->buf.data() + vu_out_->n;
@@ -812,7 +825,7 @@ void GsPipeline::run_gs_record(const u8* rec) {
         core_.write_image(std::span<const u128>(reinterpret_cast<const u128*>(p), h.bytes / 16u));
         break;
     case kP1Packet:
-        exec_p1(std::span<const u128>(reinterpret_cast<const u128*>(p), h.bytes / 16u), h.aux);
+        exec_p1(std::span<const u128>(reinterpret_cast<const u128*>(p), h.bytes / 16u), h.aux, h.pad != 0);
         break;
     case kGsFn: {
         auto* f = reinterpret_cast<std::function<void()>*>(static_cast<std::uintptr_t>(h.aux));
@@ -825,9 +838,9 @@ void GsPipeline::run_gs_record(const u8* rec) {
     gs_path_.store(0, std::memory_order_relaxed);
 }
 
-void GsPipeline::exec_p1(std::span<const u128> q, u64 seq) {
+void GsPipeline::exec_p1(std::span<const u128> q, u64 seq, bool host) {
     gs_path_.store(1, std::memory_order_relaxed);
-    gif1_.path1(q);
+    if (!host || !gif1_.path1_host(q)) gif1_.path1(q);
     gs_path_.store(0, std::memory_order_relaxed);
     if (!q.empty()) {
         p1_tag_seq_ = seq;

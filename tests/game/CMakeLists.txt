@@ -17,6 +17,11 @@ add_executable(p3fes_game_tests
     test_replacements.cpp
     test_fs_layer.cpp
     test_hcdvd.cpp
+    test_files_native.cpp
+    test_input_native.cpp
+    test_sound_native.cpp
+    test_movies_native.cpp
+    test_kernel_native.cpp
     test_script_vm.cpp
     test_bmd_msg.cpp
     test_menu_ui.cpp
@@ -212,7 +217,8 @@ add_executable(p3fes_game_tests
 )
 target_include_directories(p3fes_game_tests PRIVATE ${_vendor} ${CMAKE_SOURCE_DIR}/tests/rt)
 # p3fes_formats: the host-side BMD parser, the independent reference of test_bmd_msg.cpp.
-target_link_libraries(p3fes_game_tests PRIVATE p3fes_common_options p3fes_game p3fes_rt p3fes_recomp_lib p3fes_formats)
+target_link_libraries(p3fes_game_tests PRIVATE p3fes_common_options p3fes_game p3fes_rt p3fes_recomp_lib p3fes_formats p3fes_native_input p3fes_native_sound
+                      p3fes_native_movies)
 target_compile_definitions(p3fes_game_tests PRIVATE P3FES_ELF_DEFAULT="${P3FES_RT_EXEC_ELF}")
 if(EXISTS ${P3FES_RT_EXEC_ELF})
     # Every function of game/replaced.txt, by start address (keep in step with the list), plus the

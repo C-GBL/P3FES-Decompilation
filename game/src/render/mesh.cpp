@@ -23,6 +23,7 @@
 #include <initializer_list>
 #include <iterator>
 #include "p3fes/game/hg_cpu.h"
+#include "p3fes/native/graphics_service.h"
 
 namespace p3fes::recomp_gen {
 void fn__rwDMAOpenVIFPkt_004d59d0(p3fes::EEContext&);  // the DMA packet layer (DMAC registers)
@@ -75,8 +76,49 @@ u32 rd8(const EEContext& c, u32 va) { return guest::load<u8>(c, va); }
 u32 gp_word(const EEContext& c, s32 off) { return static_cast<u32>(c.gpr[GPR_GP].u64[0]) + static_cast<u32>(off); }
 u32 write_ptr(const EEContext& c) { return rd32(c, gp_word(c, kGpSprWrite)); }
 
+// Modernize layer 5 step 3 (p3fes/native/graphics_service.h): the bridge's record for the host's g3 seam, read once
+// the guest state is complete (host-side reads only). Shared with the MatFX / skin bridges (bridges.cpp).
+u128 rdq(const EEContext& c, u32 va) {
+    u128 q;
+    for (u32 i = 0; i < 4; ++i) q.u32[i] = guest::load<u32>(c, va + 4 * i);
+    return q;
+}
+
+}  // namespace
+
+void mesh::report_native_mesh(EEContext& c, u32 pipe, u32 colour_at, u32 surface_at, u32 program, u32 res_entry, bool matfx) {
+    ::p3fes::native::graphics::G3Service* g3 = ::p3fes::native::graphics::g_g3;
+    if (!g3) return;
+    ::p3fes::native::graphics::G3MeshRecord m;
+    m.atomic = rd32(c, pipe + pd::kObject);
+    const u32 rp_mesh = rd32(c, pipe + pd::kMesh);
+    m.material = rp_mesh ? rd32(c, rp_mesh + 8) : 0;
+    m.texture = rd32(c, pipe + pd::kTexture);
+    const u32 raster = m.texture ? rd32(c, m.texture) : 0;
+    if (raster) {
+        const u32 ext = raster + rd32(c, gp_word(c, kGpRasterExt));
+        m.tex0 = rd32(c, ext + 8) | (static_cast<u64>(rd32(c, ext + 12)) << 32);
+    }
+    m.tex1 = rd64(c, gp_word(c, kGpTex1));
+    m.clamp = rd64(c, gp_word(c, kGpClamp));
+    m.test = rd64(c, gp_word(c, kGpTest));
+    m.block[0] = rdq(c, kTplGifTag);
+    if (colour_at) m.block[1] = rdq(c, colour_at);
+    if (surface_at) m.block[2] = rdq(c, surface_at);
+    m.trans_type = static_cast<u8>(rd8(c, pipe + pd::kTransType));
+    m.prim_type = static_cast<u8>(rd8(c, pipe + pd::kPrimType));
+    m.program = program;
+    m.res_data = res_entry ? rd32(c, res_entry + 32) : 0;
+    m.matfx = matfx ? 1 : 0;
+    g3->mesh(m);
+}
+
+namespace {
+
 // RpMeshPS2AllBridgeCallBack's record (mesh.h MeshDraw), read once the guest state is complete.
 void report_bridge(EEContext& c, u32 pipe, const BridgePass& p) {
+    if (::p3fes::native::graphics::g_g3) [[unlikely]]
+        report_native_mesh(c, pipe, p.colour_at, p.surface_at, p.program, p.res_entry, false);
     if (!g_observer || !g_observer->mesh) return;
     MeshDraw draw;
     draw.atomic = rd32(c, pipe + pd::kObject);
@@ -3090,6 +3132,13 @@ void openVU1SetupPktNew(EEContext& ctx) {
         // 0x004ec474
         charge(ctx, 2);
         sw(v0, gp, -17148);  // 0x7CE9F4
+    }
+    if (::p3fes::native::graphics::G3Service* g3 = ::p3fes::native::graphics::g_g3) [[unlikely]] {
+        ::p3fes::native::graphics::G3ObjectRecord o;
+        if (setup.matrix)
+            for (u32 r = 0; r < 4; ++r) o.matrix[r] = rdq(ctx, setup.matrix + 16 * r);
+        o.light_qw = setup.light_qw;
+        g3->object(o);
     }
     if (g_observer && g_observer->object) g_observer->object(ctx, setup);
     // 0x004ec48c (the shared epilogue, written out on this path)

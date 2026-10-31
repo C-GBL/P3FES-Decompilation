@@ -2,7 +2,7 @@
 # p3fes_app_io: the host's input and presentation policy, pure C++ without a window (tests/app links it):
 #               input.h (keyboard/XInput -> PadInput mapping, config/input.ini, scripts, record/replay logs, the
 #               per-vblank PadFeed and the feed_pad_input hook GameHost calls) and present.h (letterbox rectangle,
-#               wall-clock pacing, --stats). The Win32 halves (host_display: window + presenter + screenshots;
+#               wall-clock pacing, --stats), modernize.h (the --native switch set, the --scene-log line). The Win32 halves (host_display: window + presenter + screenshots;
 #               input_win32: GetAsyncKeyState/XInput sampling) are compiled into p3fes.
 # p3fes_host:   the composed runtime (game_host.h): kernel + GS + IPU + SIF/IOP over the user's disc + rt hooks +
 #               the recompiled program, memory card (p3fes_memcard) and host audio (p3fes_audio), ELF loading, stop
@@ -19,6 +19,8 @@ add_library(p3fes_app_io STATIC
     frame_pacing.cpp
     pc_text.h
     pc_text.cpp
+    modernize.h
+    modernize.cpp
 )
 target_include_directories(p3fes_app_io PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(p3fes_app_io PUBLIC p3fes_common_options p3fes_sif)
@@ -56,6 +58,8 @@ if(P3FES_RECOMP_GENERATED)
         game_state.cpp
         guest_symbols.h
         guest_symbols.cpp
+        kernel_census.h
+        kernel_census.cpp
         host_backtrace.h
         host_backtrace.cpp
         host_crash.h
@@ -72,7 +76,8 @@ if(P3FES_RECOMP_GENERATED)
     target_include_directories(p3fes_host PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
     target_link_libraries(p3fes_host
         PUBLIC p3fes_common_options p3fes_runtime p3fes_kernel p3fes_sif p3fes_cdvd p3fes_gs p3fes_ipu p3fes_rt p3fes_app_io
-               p3fes_audio p3fes_memcard p3fes_native
+               p3fes_audio p3fes_memcard p3fes_native p3fes_native_files p3fes_native_input p3fes_native_sound
+               p3fes_native_movies p3fes_native_graphics p3fes_native_kernel
         PRIVATE p3fes_program p3fes_recomp_lib dbghelp)
     target_compile_definitions(p3fes PRIVATE P3FES_HAVE_PROGRAM=1)
     if(P3FES_MACHINE_STATES)

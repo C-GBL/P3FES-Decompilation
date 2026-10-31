@@ -7,6 +7,9 @@
 // role comment on top. Pair tests: tests/game/test_libs24.cpp.
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/libs24.h"
+#include "p3fes/game/files_native.h"
+#include "p3fes/native/sound_service.h"
+#include "p3fes/game/sound_native.h"
 
 namespace p3fes::recomp_gen {
 void fn_ADXF_AddRofsVol_0053b2c0(p3fes::EEContext&);
@@ -406,6 +409,19 @@ void fn_sub_5940A0_005940a0(p3fes::EEContext&);
 namespace p3fes::game {
 
 namespace gen = ::p3fes::recomp_gen;
+
+namespace {
+// Modernize layer 3, steps 2-3 (sound_native.h): with the SK stack native, kwlnInitPS2Systems' sound-module loads go to
+// it instead of loadfile (the link as the jal makes it; the native load sets $v0).
+void load_sound_module(EEContext& ctx, u32 pc) {
+    if (native::sound::SoundService* ns = sk_service()) {
+        hg::link(ctx, pc);
+        sk_native_load_module(ctx, *ns);
+        return;
+    }
+    hg::jal(ctx, pc, gen::fn_sceSifLoadModule_0050c4e8);
+}
+}  // namespace
 
 // 0x00100800 H_Cdvd_InitCd -- 172 bytes; frame 0x10: ra sp+0x0
 // Brings the disc layer up: sceCdInit(0), sceCdMmode(2 = DVD), sceCdDiskReady(0); then empties the request list
@@ -1760,13 +1776,15 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31264);  // "cdrom0:\\LIB31\\LIBSD.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x1971E8u, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x1971E8u);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
         backedge(ctx);
     }
-    for (;;) {
+    // Modernize layer 3 (--native sound, sound_native.h): CRI's PS2 output runs on the host, so CRI_ADXI.IRX (the IOP's
+    // DTX / SJX / PSM server) is not loaded.
+    for (; native::sound::service() == nullptr;) {
         // 0x001971f8
         charge(ctx, 9);
         a0 = 0x680000;
@@ -1787,7 +1805,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31168);  // "cdrom0:\\LIB31\\SDRDRV.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x19722Cu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x19722Cu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1800,7 +1818,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31136);  // "cdrom0:\\LIB31\\MODHSYN.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x19724Cu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x19724Cu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1813,7 +1831,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31104);  // "cdrom0:\\LIB31\\MODMSIN.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x19726Cu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x19726Cu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1826,7 +1844,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31072);  // "cdrom0:\\LIB31\\MODSESQ.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x19728Cu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x19728Cu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1839,7 +1857,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31040);  // "cdrom0:\\LIB31\\SKSOUND.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x1972ACu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x1972ACu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1852,7 +1870,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31008);  // "cdrom0:\\LIB31\\SKHSYNTH.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x1972CCu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x1972CCu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1865,7 +1883,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a0 = addiu(a0, -31008);  // "cdrom0:\\LIB31\\SKHSYNTH.IRX;1"
         a1 = 0;
         a2 = 0;
-        jal(ctx, 0x1972ECu, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x1972ECu);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -1879,7 +1897,7 @@ void kwlnInitPS2Systems(EEContext& ctx) {
         a1 = 24;
         a2 = 0x680000;
         a2 = addiu(a2, -30944);  // "maxtrack=16"
-        jal(ctx, 0x197310u, gen::fn_sceSifLoadModule_0050c4e8);
+        load_sound_module(ctx, 0x197310u);  // layer 3 steps 2-3: native SK (sound_native.h)
         if (i64(v0) >= 0) {
             break;
         }
@@ -13109,7 +13127,12 @@ void dvCiCdSearchFile(EEContext& ctx) {
     lw(a2, v0, 7548);  // 0x7A1D7C
     a1 = s1;
     a0 = s0;
-    jal(ctx, 0x559E04u, gen::fn_sceCdLayerSearchFile_0050fc38);
+    if (native::files::FileService* nf = native::files::service()) {
+        // Modernize layer 1 (--native files; files_native.h): the host's directory, no RPC.
+        v0 = dvci_native_search(ctx, *nf, a0.u(), a1.u());
+    } else {
+        jal(ctx, 0x559E04u, gen::fn_sceCdLayerSearchFile_0050fc38);
+    }
     a0 = 0x8001;
     s0 = v0;
     jal(ctx, 0x559E10u, gen::fn_sub_558988_00558988);

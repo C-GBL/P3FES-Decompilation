@@ -224,6 +224,62 @@ void GsCore::write_packed(u32 desc, const u128& q) {
     }
 }
 
+namespace {
+struct GifTagBits {
+    u32 nloop, flg;
+    u64 prim;
+    bool pre;
+    explicit GifTagBits(const u128& q) noexcept
+        : nloop(static_cast<u32>(q.u64[0] & 0x7FFFu)), flg(static_cast<u32>(q.u64[0] >> 58) & 3u), prim((q.u64[0] >> 47) & 0x7FFu),
+          pre(((q.u64[0] >> 46) & 1u) != 0) {}
+};
+}  // namespace
+
+void GsCore::packed_run(const u128* q, std::size_t n) {
+    if (sink_) {  // a stream recording: the calls Gif::feed makes, one by one
+        for (std::size_t i = 0; i < n;) {
+            const GifTagBits t(q[i]);
+            on_gif_tag();
+            if (t.pre && t.flg == 0) write_reg(reg::PRIM, t.prim);
+            for (u32 k = 0; k < 3u * t.nloop; ++k) write_packed(static_cast<u32>(q[i].u64[1] >> (4u * (k % 3u))) & 0xFu, q[i + 1 + k]);
+            i += 1 + 3u * static_cast<std::size_t>(t.nloop);
+        }
+        return;
+    }
+    bool first = true;
+    for (std::size_t i = 0; i < n;) {
+        const GifTagBits t(q[i]);
+        r_.q_internal = 0x3F800000u;  // on_gif_tag
+        if (t.pre && t.flg == 0) {    // the tag's PRE write (write_reg_impl's PRIM case)
+            ++stats_.reg_writes;
+            // the draw state may change: at the packet's first PRIM write and when the value changes
+            if (first || t.prim != r_.prim) ++state_gen_;
+            first = false;
+            if (reg_observer_) reg_observer_(reg::PRIM, t.prim);
+            r_.prim = t.prim;
+            queued_ = 0;
+        }
+        if (t.nloop) {
+            const bool fogged = ((q[i].u64[1] >> 8) & 0xFu) == 0x4u;  // the third register: XYZF2, else XYZ2
+            const u128* d = q + i + 1;
+            stats_.reg_writes += 3ull * t.nloop;
+            for (u32 v = 0; v < t.nloop; ++v, d += 3) {
+                const u128& st = d[0];
+                const u128& c = d[1];
+                const u128& x = d[2];
+                r_.st = st.u64[0];
+                r_.q_internal = st.u32[2];
+                r_.rgbaq = (c.u32[0] & 0xFFu) | ((c.u32[1] & 0xFFu) << 8) | ((c.u32[2] & 0xFFu) << 16) |
+                           (static_cast<u64>(c.u32[3] & 0xFFu) << 24) | (static_cast<u64>(r_.q_internal) << 32);
+                const bool adc = ((x.u32[3] >> 15) & 1u) != 0;
+                const u32 xy = (x.u32[0] & 0xFFFFu) | ((x.u32[1] & 0xFFFFu) << 16);
+                if (fogged) vertex(xy, (x.u32[2] >> 4) & 0xFFFFFFu, static_cast<u8>(x.u32[3] >> 4), !adc);
+                else vertex(xy, x.u32[2], static_cast<u8>(r_.fog >> 56), !adc);
+            }
+        }
+        i += 1 + 3u * static_cast<std::size_t>(t.nloop);
+    }
+}
 void GsCore::vertex(u32 xy, u32 z, u8 f, bool kick) {
     const u32 prim = static_cast<u32>(r_.prim) & 7u;
     const u32 needed = vertices_for(prim);

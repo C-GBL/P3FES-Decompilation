@@ -110,6 +110,7 @@ public:
     std::uint64_t p1_packets() const noexcept { return p1_packets_.load(std::memory_order_relaxed); }
     std::uint64_t p1_events() const noexcept { return p1_events_.load(std::memory_order_relaxed); }
     const GifStats& p1_gif_stats() const noexcept { return gif1_.stats(); }
+    u64 p1_host_packets() const noexcept { return gif1_.host_packets(); }  // Gif::path1_host on the GS stage
     // Worker CPU time so far (thread times, ns): [0] VU1 worker (or the single worker), [1] GS worker.
     std::array<std::uint64_t, 2> worker_cpu_ns() const;
 
@@ -167,8 +168,8 @@ private:
     void run_vu_batch(Batch& b);
     void gs_record(const u8* rec);      // VU1 stage: forward a GS command (threads 2) or execute it
     void run_gs_record(const u8* rec);  // GS stage
-    void p1_packet(std::span<const u128> q, u64 seq);
-    void exec_p1(std::span<const u128> q, u64 seq);
+    void p1_packet(std::span<const u128> q, u64 seq, bool host = false);  // host: a kick_host packet (path1_host first)
+    void exec_p1(std::span<const u128> q, u64 seq, bool host = false);
     void publish_vu(u64 index);
     void publish_gs(u64 index);
 

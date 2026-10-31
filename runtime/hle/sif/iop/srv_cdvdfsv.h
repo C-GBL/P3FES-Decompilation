@@ -92,6 +92,7 @@ private:
     void search(IopCore& core, const RpcRequest& req, RpcReply& reply);
     void finish_pending(IopCore& core);
     void build_completion(const Pending& p, bool ok, RpcReply& reply);
+    void report_read(IopCore& core, const Pending& p, int err);  // IopConfig::cd_read_sink (observation only)
     int error() const;
 };
 

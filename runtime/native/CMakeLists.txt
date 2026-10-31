@@ -15,3 +15,10 @@ target_link_libraries(p3fes_native_check PRIVATE p3fes_native p3fes_vu1)
 # p3fes_native_gpucheck: the GPU vertex stage (gs_native_hlsl.h) against the CPU model on captured batches.
 add_executable(p3fes_native_gpucheck tools/native_gpucheck.cpp)
 target_link_libraries(p3fes_native_gpucheck PRIVATE p3fes_native p3fes_gs p3fes_vu1 d3d11 d3dcompiler)
+
+add_subdirectory(files)
+add_subdirectory(input)
+add_subdirectory(sound)
+add_subdirectory(movies)
+add_subdirectory(graphics)
+add_subdirectory(kernel)

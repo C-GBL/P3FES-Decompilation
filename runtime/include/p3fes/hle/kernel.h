@@ -20,8 +20,10 @@
 #include "p3fes/hle/hw_bus.h"
 #include "p3fes/rt_hooks.h"
 
+#include <array>
 #include <cstddef>
 #include <functional>
+#include <map>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -148,6 +150,7 @@ struct ThreadView {
     bool has_fiber = false;
     u32 entry = 0, stack = 0, stack_size = 0;  // CreateThread / SetupThread parameters
     u32 frame = 0;                             // context frame in guest memory (KernelOptions::context_frames)
+    u32 saved_sp = 0;  // $sp of the context the TCB holds (while not running; the start sp before the first run)
 };
 struct UnhandledAccess {
     u32 pa = 0;
@@ -159,6 +162,39 @@ struct UnhandledAccess {
 struct GsCrtSetting {
     bool set = false;
     u32 interlace = 0, mode = 0, ffmd = 0;  // mode after 0/1 -> NTSC (2) resolution
+};
+
+// Layer 6's inventory (docs/MODERNIZE_PLAN.md "Layer 6 status"; `--kernel-census FILE`): what one run asks of the
+// kernel and its timing devices, and who asks. Host-side counters only (Kernel::enable_census): nothing the guest
+// sees changes, and with the census off (the default) the kernel runs exactly as before. "Caller" is $ra at the
+// call (the libkernel stubs are leaves, so $ra is the game function that called the stub).
+struct KernelCensus {
+    struct Count2 {
+        u64 reads = 0, writes = 0;
+    };
+    struct SemaUse {
+        u64 creates = 0, waits = 0, blocked = 0, signals = 0, isignals = 0, polls = 0, deletes = 0;
+        s32 init = 0, max = 0;
+        u32 creator = 0;  // $ra of the first CreateSema that returned this id
+    };
+    std::array<u64, 256> syscalls{}, isyscalls{};  // by slot; isyscalls = the negative (i*) form
+    std::map<u64, u64> syscall_sites;              // (neg << 40 | slot << 32 | caller) -> calls
+    std::array<u64, 15> intc_chains{};             // handler chains run, by cause
+    std::array<u64, 16> dmac_chains{};             // by channel
+    std::map<u32, u64> handler_runs;               // enabled handler VA -> calls
+    std::array<u64, 10> dma_starts{}, dma_chain_starts{}, dma_qwords{}, dma_stalls{}, dma_rearms{}, dma_busy_polls{};
+    std::array<Count2, 4> timer_regs{};            // T0-T3 register accesses
+    std::array<u64, 4> timer_irqs{};
+    Count2 intc_regs{}, dmac_ctrl_regs{};          // INTC_STAT/MASK; D_CTRL/D_STAT/D_PCR/...
+    u64 thread_creates = 0, thread_starts = 0, thread_exits = 0;
+    u64 switches = 0;        // fiber switches (a different thread runs)
+    u64 preemptions = 0;     // interrupt-exit reschedules (an i* call inside a chain readied a higher thread)
+    u64 idle_steps = 0, idle_cycles = 0;  // the idle thread's virtual-time jumps
+    u64 direct_calls = 0;  // kernel calls served through Kernel::direct_call (layer 6, --native kernel) instead of `syscall`
+    u64 slow_checks = 0, masked_polls = 0, services = 0, vblanks = 0;
+    std::map<s32, SemaUse> semas;
+    std::map<u32, Count2> bus;                     // every guest access to a hardware register, by 16-byte register
+    std::map<u64, u64> bus_sites;                  // (pa16 << 32 | caller) -> accesses
 };
 
 class KernelHooks;  // implementation (runtime/hle/kernel/kernel_core.h)
@@ -176,6 +212,12 @@ public:
 
     HwBus& bus();
     RtHooks& hooks();
+    // Layer 6 (--native kernel, p3fes/native/kernel_service.h): a kernel call the game makes through its libkernel stub
+    // ($v1 = the call number as the stub set it, arguments in $a0..; `pc` = the stub's syscall address), served as a
+    // direct host call: the same service, $v0, scheduling and closing check point as the `syscall` instruction's
+    // (hooks().syscall), so the guest sees the same result at the same virtual time. With KernelOptions::context_frames
+    // off (what the layer sets) no call writes a BIOS context frame into the guest stack.
+    void direct_call(EEContext& ctx, u32 pc);
     // HwBus::map without the fatal: false when [b, e) is not 16-byte aligned, leaves the EE/GS register
     // windows, or overlaps an existing mapping (nothing is mapped then).
     bool try_map(u32 pa_begin, u32 pa_end, HwDevice* dev);
@@ -219,6 +261,10 @@ public:
     // COP2 control writes that address the VU1 side (CTC2 to vi28 FBRST; RtHooks::vu_control_write) go to
     // this handler (runtime/gs owns VU1). nullptr: ignored.
     void set_vu_control_handler(std::function<void(u32 reg, u32 value)> fn);
+
+    // Layer 6's inventory (KernelCensus): start counting (idempotent); census() is null until then.
+    void enable_census();
+    const KernelCensus* census() const;
 
     // Inspection.
     const Timebase& time() const;

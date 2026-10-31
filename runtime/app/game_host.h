@@ -35,6 +35,7 @@
 #include "gs_probe.h"
 #include "guest_symbols.h"
 #include "host_zones.h"
+#include "modernize.h"
 #include "p3fes/audio/host_audio.h"
 #include "p3fes/ee_context.h"
 #include "p3fes/ee_memory.h"
@@ -43,8 +44,17 @@
 #include "p3fes/hle/disc_source.h"
 #include "p3fes/hle/kernel.h"
 #include "p3fes/hle/mods_overlay.h"
+#include "p3fes/hle/read_log.h"
 #include "p3fes/hle/sif/sif.h"
 #include "p3fes/ipu/ipu_system.h"
+#include "native_files.h"
+#include "native_pad.h"
+#include "native_sound.h"
+#include "native_im2d.h"
+#include "native_g3.h"
+#include "sk_host.h"
+#include "native_movies.h"
+#include "native_kernel.h"
 #include "native_vu.h"
 
 namespace p3fes {
@@ -97,12 +107,45 @@ struct HostConfig {
     // line each -- vblank, virtual cycles, server/function, verb, payload words, reply (IopConfig::sound_sink;
     // docs/ANALYSIS/19 §4 phase 0). Empty = off. Logging changes nothing the guest sees.
     std::filesystem::path sound_log;
+    // Modernize pass (docs/MODERNIZE_PLAN.md, ADR-0017; modernize.h). `native`: the layers switched to their native
+    // implementation (--native); stage 0 has none, so a switched-on layer is reported at start and runs faithful.
+    // Recorded in state_config() / capture.json when non-empty. `read_log` (--read-log FILE): every cdvdfsv read,
+    // one line each (p3fes/hle/read_log.h). `scene_log` (--scene-log FILE): one line per scene change (modernize.h).
+    // Empty = off; neither log changes anything the guest sees.
+    NativeLayers native;
+    std::filesystem::path read_log;
+    std::filesystem::path scene_log;
+    // --kernel-census FILE (layer 6's inventory, kernel_census.h): the kernel counts what the run asks of it and the
+    // report is written at exit. Empty = off; counting changes nothing the guest sees.
+    std::filesystem::path kernel_census;
+    // Layer 6 (--native kernel): "faithful" (default: the (a) set only -- the game's per-vblank behaviour unchanged) |
+    // "host" (the (b) set too: no DMA completion latency, the native movie decode instant, the native SK called by
+    // sceSdRemote without SIF; changes the game's timing, so the old recordings desync). --native-kernel-timing.
+    std::string native_kernel_timing = "faithful";
+    // --movie-log FILE (layer 4): one line per picture call of the movie player's sceMpeg path (both modes): the
+    // call's cycles, result, the sceMpeg record's public words, the input ring's state, the read position and the
+    // FNV-1a 64 of the frame it wrote (p3fes/native/movies_service.h MovieLogSink). Empty = off; it only reads.
+    std::filesystem::path movie_log;
+    // --vblank-dump FILE RANGES (modernize.h `VblankDump`): the bytes of guest ranges at every VBLANK_START into a
+    // binary file (layer 2's check: the pad work in both modes). Empty = off; it only reads (EEMemory::ram_ptr).
+    std::filesystem::path vblank_dump;
+    std::vector<std::pair<std::uint32_t, std::uint32_t>> vblank_dump_ranges;  // (va, bytes)
     // ADR-0014 B-lite (runtime/hle/sif/README.md §9): who answers the SK sound RPCs -- "modules" (default: the
     // game's SDRDRV/SK/MOD IRX files interpreted in place, SPU2 voices audible) or "constants" (the silent
     // increment-1 replies) -- and the IOP memory map, "pcsx2" (default: module images and the game's heap
     // where PCSX2 puts them) or "legacy" (the map of every snapshot before increment 2). --sk / --iop-layout.
     std::string sk_mode = "modules";
     std::string iop_layout = "pcsx2";
+    // --native sound steps 2-3: how the game reaches the native SK stack -- "sif" (default: its own sceSdRemote RPCs,
+    // answered natively behind SDRDRV's RPC boundary, the faithful timing) | "direct" (sceSdRemote and the module loads
+    // call it, no SIF) | "off" (the interpreted modules, step 1 only, for A/B). --native-sk.
+    std::string native_sk = "sif";
+    // Layer 5 (--native graphics): every N-th natively drawn Im2D batch also runs VU1 program 039 exactly on a scratch
+    // VU1 and is compared (0 = off). --native-graphics-check N.
+    std::uint32_t native_gfx_check = 0;
+    // Layer 5 step 2: the host's Im2D packets reach the GS as host packets and their vertex UNPACKs are written by the
+    // host (true), or as kicks through the GIF walk and vif_unpack (false: step 1). --native-graphics-gs direct|packets.
+    bool native_gfx_direct = true;
     // SPU2 voice interpolation: "gaussian" (the hardware's 4-tap table, default) | "linear" (increment 2). --spu2-interp.
     std::string spu2_interp = "gaussian";
     // --gs-census / --gs-record (gs_probe.h): opt-in GS diagnostics; never change guest-visible state.
@@ -195,6 +238,8 @@ public:
     // Summary of the run for the console: time base, flips, threads, SIF/IOP counters, memory card, CRI_ADXI and
     // host audio counters, unhandled accesses. Call flush_audio() first at exit.
     void print_summary() const;
+    // --kernel-census: writes the report (kernel_census.h) to cfg.kernel_census; false + error when it cannot.
+    bool write_kernel_census(std::string& error) const;
     // Ends the audio outputs (WAV headers patched, per-stream dumps closed; later mixer pushes are dropped).
     void flush_audio();
     // Writes the --gs-census file / a pending --gs-record recording (no-op without them).
@@ -213,6 +258,12 @@ public:
     bool enable_native_renderer(std::uint32_t mask, int mode = 0);
     const native::NativeG3* native_renderer() const { return native_.get(); }
     native::NativeG3* native_renderer() { return native_.get(); }
+    const native::graphics::NativeIm2D* native_graphics() const { return native_gfx_.get(); }
+    const native::kernel::NativeKernel* native_kernel() const { return native_kernel_.get(); }
+    const native::graphics::NativeG3Seam* native_g3() const { return native_g3_.get(); }
+    // Modernize layer 2 (--native input; native_pad.h): the host's pad the game's pad wrapper asks; nullptr in
+    // faithful mode. The windowed host sets its rumble sink (XInput).
+    native::input::NativePad* native_pad() { return native_pad_.get(); }
     // Back to software rasterisation (the D3D11 renderer failed); later frames redraw into the CPU copy.
     void disable_gpu_recording();
     // The ops recorded since the last call (call between run slices only).
@@ -324,6 +375,33 @@ private:
     void gpu_sync_point(gs::GpuSyncReason why);
     std::string memcard_desc_;                 // what --memcard opened (open_memcard description)
     std::FILE* sound_log_ = nullptr;           // --sound-log sink (closed in the destructor)
+    std::FILE* read_log_ = nullptr;            // --read-log sink (closed in the destructor)
+    std::unique_ptr<hle::DiscPathIndex> read_index_;  // LSN -> path for the read log (built only with --read-log)
+    // Modernize layer 1 (--native files; native_files.h): the files service the game's CD wrappers call, installed
+    // as native::files::g_service while this host lives. Over the plain disc (the mods overlay's base): native mode
+    // serves mods by path, with no relocated LSNs and the ROFS tables unpatched (patch_mods_tables).
+    std::unique_ptr<native::files::NativeFiles> native_files_;
+    hle::DiscSource* plain_disc_ = nullptr;      // the user's disc under any mods overlay
+    bool open_native_files(std::string& error);
+    // Modernize layer 2 (--native input): installed as native::input::g_service while this host lives; the pad feed
+    // (input.h) goes to it instead of PADMAN, after its report for the vblank (host_service).
+    std::unique_ptr<native::input::NativePad> native_pad_;
+    std::unique_ptr<native::sound::NativeSound> native_sound_;  // --native sound (layer 3)
+    std::unique_ptr<native::graphics::NativeIm2D> native_gfx_;  // --native graphics (layer 5): the VU1 run hook, first in line
+    std::unique_ptr<native::graphics::NativeG3Seam> native_g3_;  // layer 5 step 3: the g3 seam, next in line
+    std::unique_ptr<native::sound::sk::SkPort> sk_port_;        // layer 3 steps 2-3: the IOP model's side of the native SK
+    std::unique_ptr<native::sound::sk::NativeSk> native_sk_;    // the SK sound-effect stack on native code
+    std::unique_ptr<hle::sif::SkNativeBackend> sk_backend_;     // --native-sk sif: it behind SDRDRV's RPC
+    std::unique_ptr<native::movies::NativeMovies> native_movies_;  // --native movies (layer 4)
+    std::unique_ptr<native::movies::MovieLogSink> movie_log_;      // --movie-log (layer 4's check, both modes)
+    std::unique_ptr<native::kernel::NativeKernel> native_kernel_;  // --native kernel (layer 6): installed as native::kernel::g_service
+    std::FILE* vblank_dump_ = nullptr;         // --vblank-dump sink (closed in the destructor)
+    void sample_vblank_dump(std::uint64_t vblank);
+    std::FILE* scene_log_ = nullptr;           // --scene-log sink (closed in the destructor)
+    SceneSample scene_last_{};
+    bool scene_logged_ = false;                // a line was written (the first sample always is)
+    void sample_scene_log(std::uint64_t vblank);
+    bool open_modernize_logs(hle::sif::IopConfig& ic, std::string& error);
     bool open_memcard(hle::sif::IopConfig& ic, std::string& error);
     static std::filesystem::path appdata_card_path();  // %APPDATA%\P3FES\saves\Mcd001.ps2, or empty
 

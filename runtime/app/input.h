@@ -113,10 +113,21 @@ struct StickXY {
 // Radial dead zone: a deflection of magnitude m <= deadzone reads (0, 0); beyond it the magnitude is rescaled
 // linearly from 0 at the dead-zone edge to 1 at full deflection (clamped), the direction is kept.
 StickXY apply_radial_deadzone(std::int16_t x, std::int16_t y, double deadzone);
+// The DUALSHOCK 2's output shape: its axes are read independently and saturate, so a full diagonal reaches the
+// square's corner (0x00 / 0xFF on both axes; PCSX2's pad, with its 1.33 axis scale, does the same). The field code
+// relies on it: K_VPad_UpdateTask zeroes each stick axis inside +-48 and runs only when the remaining vector is at least
+// 125 long (else it walks at 13), so on the unit circle every full deflection 10..22 degrees off an axis walked (its
+// minor component zeroed, the major one 127 cos(angle) < 125). This keeps the direction, maps the magnitude to
+// min(m / full_at, 1) (full deflection from `full_at` on: a pad's stick rarely reads exactly 1.0 at the rim) and
+// stretches it to the square: the larger component carries the magnitude. map_gamepad passes the raw kStickFullAt
+// rescaled by the dead zone.
+StickXY stick_to_square(const StickXY& s, double full_at);
+inline constexpr double kStickFullAt = 0.9;  // raw stick magnitude (0..1) from which a deflection reads as full
 // -1 -> 0x00, 0 -> 0x80, +1 -> 0xFF (round half up on each side; clamped).
 std::uint8_t axis_to_byte(double v);
 // Gamepad -> pad (Xbox layout onto the DUALSHOCK 2): A Cross, B Circle, X Square, Y Triangle, LB L1, RB R1, LT L2,
-// RT R2, LS L3, RS R3, Start Start, Back Select, D-pad D-pad; sticks with the dead zone, Y flipped (PS2 0x00 = up).
+// RT R2, LS L3, RS R3, Start Start, Back Select, D-pad D-pad; sticks with the dead zone, onto the square
+// (stick_to_square, full from kStickFullAt), Y flipped (PS2 0x00 = up).
 // A disconnected state maps to the neutral pad.
 PadInput map_gamepad(const InputConfig& cfg, const GamepadState& g);
 // Keyboard and gamepad together: buttons OR'ed; each stick from the keyboard while the keyboard deflects it,

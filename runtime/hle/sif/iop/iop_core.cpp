@@ -270,9 +270,11 @@ void IopCore::set_audio_output(audio::AudioSink* mix, audio::StreamTap* tap) {
     if (mixer_) {
         // Modules mode: the PSM stream and the SPU2 voices meet in the mixer, which pushes the sum.
         mixer_->set_sink(mix);
+        adx_input_ = &mixer_->stream_sink();
         if (adxi_) adxi_->set_output(&mixer_->stream_sink(), tap);
         return;
     }
+    adx_input_ = mix;
     if (adxi_) adxi_->set_output(mix, tap);
 }
 
@@ -714,7 +716,27 @@ u32 IopHle::heap_free_total() const { return core_->ram().free_total(); }
 CdvdHle* IopHle::cdvd() { return core_->cdvd(); }
 void IopHle::set_audio_output(audio::AudioSink* mix, audio::StreamTap* tap) { core_->set_audio_output(mix, tap); }
 AdxiStats IopHle::adxi_stats() const { return core_->adxi_stats(); }
+audio::AudioSink* IopHle::adx_input() { return core_->adx_input(); }
 void IopHle::flush_audio() { core_->flush_audio(); }
 SkStats IopHle::sk_stats() const { return core_->sk_stats(); }
+
+// ---- --native sound, steps 2-3: the native SK stack's view of this model -------------------------------------------
+bool IopHle::native_sk_supported() const {
+    return core_->config().sk_mode == SkMode::Modules && core_->config().iop_layout == IopLayout::Pcsx2 && core_->sdrdrv() != nullptr;
+}
+u8* IopHle::native_sk_ram() { return core_->ram().at(0, detail::kIopRamSize); }
+u32 IopHle::native_sk_alloc(u32 size, u32 mode, u32 addr) { return core_->ram().alloc(size, mode, addr); }
+u32 IopHle::native_sk_alloc_in(u32 lo, u32 hi, u32 size) { return core_->ram().alloc_in(lo, hi, size); }
+bool IopHle::native_sk_free(u32 addr) { return core_->ram().free(addr); }
+u32 IopHle::native_sk_libsd(u32 ordinal, const u32 (&args)[5]) { return core_->sdrdrv()->native_libsd(*core_, ordinal, args); }
+void IopHle::native_sk_at_time(u64 ee_cycles) { core_->sdrdrv()->native_at_time(*core_, ee_cycles); }
+void IopHle::native_sk_record(u32 fno, std::span<const u8> send, s32 result, u64 cycles) {
+    core_->sdrdrv()->native_record(*core_, fno, send, result, cycles);
+}
+std::optional<std::vector<u8>> IopHle::read_sk_module(std::string_view file_name) { return core_->sdrdrv()->read_module(*core_, file_name); }
+void IopHle::log(std::string_view line) const { core_->log(line); }
+void IopHle::set_native_sk(SkNativeBackend* backend) {
+    if (core_->sdrdrv()) core_->sdrdrv()->set_native(backend);
+}
 
 }  // namespace p3fes::hle::sif

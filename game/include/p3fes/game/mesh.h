@@ -181,6 +181,9 @@ struct DrawObserver {
 void set_draw_observer(const DrawObserver* observer) noexcept;
 // The installed observer (nullptr: none); the MatFX bridges (bridges.cpp) report their mesh draws through it.
 const DrawObserver* draw_observer() noexcept;
+// Modernize layer 5 step 3: one bridge's record for the host's g3 seam (p3fes/native/graphics_service.h g_g3; no-op
+// while it is null): the PipeData at `pipe`, where the colour / surface quadwords were written, the program, the resEntry.
+void report_native_mesh(EEContext& c, u32 pipe, u32 colour_at, u32 surface_at, u32 program, u32 res_entry, bool matfx);
 
 }  // namespace mesh
 

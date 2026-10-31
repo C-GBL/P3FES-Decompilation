@@ -22,8 +22,10 @@
 //  * The EE's exponent-255 binade and the +/-0x7FFFFFFF overflow / divide-by-zero value (manual: Fmax). PCSX2
 //    computes on host IEEE floats: exponent-255 operands are Inf/NaN to it and every such result is clamped to
 //    +/-0x7F7FFFFF ("ee-range" vectors).
-//  * div/sqrt/rsqrt computed in IEEE double then narrowed; sqrt truncates (as the interpreter: fpu_2271), DIV.S
-//    rounds to nearest (`div_nearest`, the recompiler's value; the interpreter truncates: fpu_2213).
+//  * div/sqrt/rsqrt computed in IEEE double then narrowed; DIV.S and SQRT.S round to nearest (`div_nearest`,
+//    `sqrt_nearest`: the recompiler's values; the interpreter truncates both: fpu_2213, fpu_2271). SQRT.S followed
+//    the interpreter until 2026-10-31, which broke the field pad heading on a centred stick (sqrt_nearest). VU0
+//    VDIV / VSQRT and the unused RSQRT.S keep truncation.
 //  * max/min flush both operands and return the first on ties; both PCSX2 engines order -0 below +0 without
 //    flushing (fpu_2530). The binary never uses MAX.S/MIN.S.
 //  * cfc1 of FCR0 returns 0x2E30 (recompiler; interpreter 0x2E00). FCR31 is held unmasked from reset value 0, as
@@ -189,15 +191,29 @@ inline Result div_nearest(u32 a, u32 b) noexcept {
     return ok(from_double_nearest(to_double(a) / to_double(b)));
 }
 
-// sqrt(|a|); the sign of a negative operand is dropped (manual; PCSX2 2.8.2 observed: fpu_2259 sqrt(-4) = 2 with I).
+// sqrt(|a|), truncated; the sign of a negative operand is dropped (manual; PCSX2 2.8.2 observed: fpu_2259 sqrt(-4) = 2
+// with I). VU0 VSQRT uses this (with sqrt_flags); the FPU's SQRT.S rounds to nearest (sqrt_nearest below).
 inline u32 sqrt(u32 a) noexcept {
     a = flush(a) & kAbs;
     if (!a) return 0;
     return from_double(std::sqrt(to_double(a)));
 }
-// The same with the I flag for a negative operand.
-inline Result sqrt_flags(u32 a) noexcept {
-    const u32 r = sqrt(a);
+// SQRT.S of the EE FPU: as `sqrt`, but rounded to nearest, like DIV.S (div_nearest). PCSX2's EE recompiler -- the state
+// oracle (ADR-0012), whose DIV.S rounding div_nearest already follows -- rounds SQRT.S to nearest too (eevec class
+// `int-sqrt-truncates`, docs/PCSX2.md: sqrt(10) = 0x404A62C2; its interpreter truncates to ...C1). Truncating SQRT.S
+// while DIV.S rounds broke the game's own unit-vector code: the field pad heading sub_1B02C0 normalises the stick
+// (0, 127) to z = 0x3F7FFFFF, then divides it by sqrt(z * z) = sqrt(0x3F7FFFFE): truncated 0x3F7FFFFE gives the
+// quotient 0x3F800001, acosf of a value above 1 returns its 0/0 clamp and the hero turns away and stops (a centred x
+// byte 0x80 with 64 of the 256 y bytes, the keyboard's S among them). Rounded, sqrt gives 0x3F7FFFFF and the quotient
+// is 1.0. A double square root of a single rounded once more to 24 bits is correctly rounded (53 >= 2 * 24 + 2).
+inline u32 sqrt_nearest(u32 a) noexcept {
+    a = flush(a) & kAbs;
+    if (!a) return 0;
+    return from_double_nearest(std::sqrt(to_double(a)));
+}
+// `sqrt` / `sqrt_nearest` with the I flag for a negative operand.
+inline Result sqrt_flags(u32 a, bool nearest = false) noexcept {
+    const u32 r = nearest ? sqrt_nearest(a) : sqrt(a);
     const u32 f = flush(a);   // a negative denormal is -0 after the flush: no I (PCSX2 2.8.2 interpreter: fpu_2273)
     return ((f & kSign) && (f & kAbs)) ? raise_i(r) : ok(r);
 }
@@ -275,9 +291,9 @@ inline void div_s(EEContext& c, u32 fd, u32 fs, u32 ft) noexcept {
     set_fpr(c, fd, r.value);
     raise(c, r);
 }
-// SQRT.S fd, ft (the source is the ft field). (manual encoding)
+// SQRT.S fd, ft (the source is the ft field; manual encoding), rounded to nearest (sqrt_nearest).
 inline void sqrt_s(EEContext& c, u32 fd, u32 ft) noexcept {
-    const Result r = sqrt_flags(fpr(c, ft));
+    const Result r = sqrt_flags(fpr(c, ft), true);
     set_fpr(c, fd, r.value);
     raise(c, r);
 }

@@ -152,6 +152,49 @@ TEST_CASE("sqrt.s / rsqrt.s") {
     CHECK(fpu::rsqrt(kOne, 0u).zero_divide);
 }
 
+TEST_CASE("sqrt.s rounds to nearest like div.s; a unit vector's component over its own length stays <= 1.0") {
+    // (PCSX2 2.8.2 recompiler observed, docs/PCSX2.md: sqrt(10) = 0x404A62C2; the interpreter truncates to ...C1)
+    CHECK(fpu::sqrt(0x41200000u) == 0x404A62C1u);          // VU0 VSQRT's truncating rule
+    CHECK(fpu::sqrt_nearest(0x41200000u) == 0x404A62C2u);  // SQRT.S
+    CHECK(fpu::sqrt_nearest(kFour) == kTwo);
+    CHECK(fpu::sqrt_nearest(kTwo) == 0x3FB504F3u);         // below the half-way point: same as truncation
+    CHECK(fpu::sqrt_nearest(kNegZero) == 0u);
+    CHECK(fpu::sqrt_nearest(kDenormal) == 0u);
+    CHECK(fpu::sqrt_flags(kFour | fpu::kSign, true).invalid_op);
+    EEContext c{};
+    fpu::set_fpr(c, 1, 0x41200000u);
+    fpu::sqrt_s(c, 2, 1);
+    CHECK(fpu::fpr(c, 2) == 0x404A62C2u);
+    // The field pad heading (sub_1B02C0 at 0x1B067C..0x1B068C) on the stick (x 0, z 127), the keyboard's S: the
+    // normalised z = 127 * (1/127) = 0x3F7FFFFF, then acosf(z / sqrt(z * z)). Its argument must not exceed 1.0
+    // (acosf returns its 0/0 clamp above 1 and the hero turns away and stops); with a truncating SQRT.S it was 0x3F800001.
+    const u32 z = 0x42FE0000u;                                     // 127.0
+    const u32 inv = fpu::div_nearest(kOne, fpu::sqrt_nearest(fpu::mul(z, z))).value;
+    const u32 nz = fpu::mul(z, inv);
+    CHECK(nz == 0x3F7FFFFFu);
+    CHECK(fpu::mul(nz, nz) == 0x3F7FFFFEu);
+    CHECK(fpu::sqrt(0x3F7FFFFEu) == 0x3F7FFFFEu);                  // truncated: the old SQRT.S
+    CHECK(fpu::div_nearest(nz, 0x3F7FFFFEu).value == 0x3F800001u); // ... and the out-of-range quotient it gave
+    fpu::set_fpr(c, 1, nz);
+    fpu::mula_s(c, 1, 1);
+    fpu::set_fpr(c, 0, 0u);
+    fpu::madd_s(c, 0, 0, 0);
+    fpu::sqrt_s(c, 0, 0);
+    CHECK(fpu::fpr(c, 0) == 0x3F7FFFFFu);
+    fpu::div_s(c, 12, 1, 0);
+    CHECK(fpu::fpr(c, 12) == kOne);
+    // every z byte with x = 0 (the game's stick bytes 0x00..0xFF minus 128): |quotient| <= 1.0
+    for (int b = 0; b < 256; ++b) {
+        const s32 v = b - 128;
+        if (v == 0) continue;
+        const u32 zz = fpu::cvt_s_w(static_cast<u32>(v));
+        const u32 len = fpu::sqrt_nearest(fpu::mul(zz, zz));
+        const u32 n = fpu::mul(zz, fpu::div_nearest(kOne, len).value);
+        const u32 q = fpu::div_nearest(n, fpu::sqrt_nearest(fpu::mul(n, n))).value;
+        CHECK_MESSAGE((q & fpu::kAbs) <= kOne, "stick byte " << b);
+    }
+}
+
 TEST_CASE("c.eq/c.lt/c.le/c.f: ordering through the flushed sign-magnitude key") {
     EEContext c;
     fpu::set_fpr(c, 1, kOne);

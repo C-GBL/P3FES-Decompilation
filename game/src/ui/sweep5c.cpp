@@ -6,6 +6,8 @@
 // (sweep5c::scene) in its accessors and load / poll bodies. Pair tests: tests/game/test_sweep5c.cpp.
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/sweep5c.h"
+#include "p3fes/game/movies_native.h"
+#include "p3fes/game/files_native.h"
 
 namespace p3fes::recomp_gen {
 void fn_ADXT_UpdateFsStat_0053e0b8(p3fes::EEContext&);
@@ -10482,6 +10484,12 @@ void dvCiReqRd(EEContext& ctx) {
             charge(ctx, 2);
             v1 = 1;
             if (s2 != 0) {
+                if (native::files::FileService* nf = native::files::service()) {
+                    // Modernize layer 1 (--native files; files_native.h): the sectors from the host file at once,
+                    // the handle complete on return (no SRD, no sceCdRead).
+                    v0 = dvci_native_read(ctx, *nf, s0.u(), s2.u(), s1.u());
+                    goto L_0055a618_native;
+                }
                 // 0x0055a518
                 charge(ctx, 5);
                 jal(ctx, 0x55A518u, gen::fn_SRD_Create_00557a58);
@@ -10581,6 +10589,7 @@ void dvCiReqRd(EEContext& ctx) {
         jal(ctx, 0x55A4E8u, gen::fn_sub_559DA8_00559da8);
         v0 = 0;
     }
+L_0055a618_native:
     // 0x0055a618 (the shared epilogue, written out on this path)
     charge(ctx, 7);
     ld(s0, sp, 0x0);
@@ -11130,6 +11139,10 @@ void sub_5941A8(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, a1{ctx, 5}, a2{ctx, 6}, a3{ctx, 7}, s0{ctx, 16}, s1{ctx, 17}, s2{ctx, 18}, sp{ctx, 29}, ra{ctx, 31};
     // 0x005941a8
     enter(ctx, 16);  // entry check point + this block's cycles
+    if (native::movies::MoviesService* nm = native::movies::service()) {  // modernize layer 4 (movies_native.h)
+        sfd_native_ring_reset(ctx, *nm, a0.u());
+        return;
+    }
     sp = addiu(sp, -0x20);
     v0 = 1;
     sd(s1, sp, 0x8);
@@ -11242,6 +11255,10 @@ void sub_594AC0(EEContext& ctx) {
     Gpr zero{ctx, 0}, v0{ctx, 2}, v1{ctx, 3}, a0{ctx, 4}, s0{ctx, 16}, sp{ctx, 29}, ra{ctx, 31};
     // 0x00594ac0
     enter(ctx, 22);  // entry check point + this block's cycles
+    if (native::movies::MoviesService* nm = native::movies::service()) {  // modernize layer 4 (movies_native.h)
+        sfd_native_ring_destroy(ctx, *nm, a0.u());
+        return;
+    }
     sp = addiu(sp, -0x10);
     sd(s0, sp, 0x0);
     s0 = a0;

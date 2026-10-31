@@ -752,6 +752,8 @@ std::string rec_class(const Json& v, const std::vector<std::string>& fields) {
     if (fam == "fpu" && only({"fd", "fd64", "acc"}) && (op == "add.s" || op == "sub.s" || op == "adda.s" || op == "suba.s" ||
                                                       op.rfind("madd", 0) == 0 || op.rfind("msub", 0) == 0))
         return "int-exact-rz-or-ee-range";
+    // SQRT.S rounds to nearest like the recompiler (fpu.h sqrt_nearest, 2026-10-31); the interpreter truncates.
+    if (fam == "fpu" && op == "sqrt.s" && only({"fd", "fd64"})) return "int-sqrt-truncates";
     if (fam == "fpu" && only({"fd", "fd64", "acc"})) return "int-ee-range";
     if (fam == "fpu" && only({"fcr0"})) return "int-fcr0";
     if (fam == "fpu" && only({"fcr31", "fcr31_pre"})) return "int-fcr31-cause-clear";

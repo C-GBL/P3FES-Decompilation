@@ -15,6 +15,7 @@
 #include "host_backtrace.h"
 #include "host_watch.h"
 #include "input.h"
+#include "kernel_census.h"
 #include "p3fes/gs/gs_output.h"
 #include "pc_text.h"
 #include "p3fes/hle/memcard/iop_slot.h"
@@ -26,6 +27,53 @@
 namespace p3fes::app {
 
 namespace {
+
+// Modernize layer 3 steps 2-3: what the native SK stack (runtime/native/sound/sk) uses of the IOP model.
+class IopSkPort final : public native::sound::sk::SkPort {
+public:
+    explicit IopSkPort(hle::sif::IopHle& iop) : iop_(iop) {}
+    u8* ram() override { return iop_.native_sk_ram(); }
+    u32 alloc_at(u32 addr, u32 size) override { return iop_.native_sk_alloc(size, 2, addr); }
+    u32 alloc(u32 size, u32 mode) override { return iop_.native_sk_alloc(size, mode, 0); }
+    u32 alloc_in(u32 lo, u32 hi, u32 size) override { return iop_.native_sk_alloc_in(lo, hi, size); }
+    bool free(u32 addr) override { return iop_.native_sk_free(addr); }
+    u32 libsd(u32 ordinal, const u32 (&args)[5]) override { return iop_.native_sk_libsd(ordinal, args); }
+    void at_time(u64 ee_cycles) override { iop_.native_sk_at_time(ee_cycles); }
+    void log(std::string_view line) override { iop_.log(line); }
+    void record(u32 fno, std::span<const u8> send, s32 result, u64 ee_cycles) override {
+        iop_.native_sk_record(fno, send, result, ee_cycles);
+    }
+
+private:
+    hle::sif::IopHle& iop_;
+};
+
+// --native-sk sif: the native SK stack as SDRDRV's server sees it (p3fes/hle/sif/iop.h SkNativeBackend).
+class NativeSkBackend final : public hle::sif::SkNativeBackend {
+public:
+    explicit NativeSkBackend(native::sound::sk::NativeSk& sk) : sk_(sk) {}
+    s32 load_module(u64 now, std::string_view path, std::string_view args, s32* start) override {
+        return sk_.load_module(now, path, args, start);
+    }
+    bool server(u32& sd, u32& buf) const override {
+        for (const auto& r : sk_.rpc_servers())
+            if (r.sid == 0x80000701u && r.func != 0) {
+                sd = r.sd;
+                buf = r.buf;
+                return true;
+            }
+        return false;
+    }
+    std::optional<std::vector<u8>> rpc(u64 now, u32 fno, std::span<const u8> send, u32 recv_size) override {
+        return sk_.rpc(now, fno, send, recv_size);
+    }
+    void advance(u64 now) override { sk_.advance(now); }
+    u64 tick_runs() const override { return sk_.stats().tick_runs; }
+    std::string fault() const override { return sk_.stats().fault; }
+
+private:
+    native::sound::sk::NativeSk& sk_;
+};
 
 // Guest globals read for stop conditions and capture.json (symbols/p3fes.sym; tools/ours/pcsx2/capture.py).
 constexpr std::uint32_t kSkyFrameCount = 0x7CEA78u;     // g_skyFrameCount
@@ -58,6 +106,68 @@ std::string hexs(std::uint64_t v, int w = 8) {
     std::snprintf(b, sizeof b, "0x%0*llX", w, static_cast<unsigned long long>(v));
     return b;
 }
+
+// --movie-log (modernize layer 4): one line per picture call of the movie player's sceMpeg path, in both modes. It
+// reads main RAM through ram_ptr only. The read position is the native decoder's (ring_cursor) with --native movies,
+// else the faithful one: the saved D4_MADR (+28) rewound by the IPU's buffered qwords (IPU_BP +56: IFC, FP) plus BP.
+class MovieLog final : public native::movies::MovieLogSink {
+public:
+    MovieLog(std::FILE* f, const EEMemory& mem, const hle::Timebase& time, const native::movies::NativeMovies* nm)
+        : f_(f), mem_(mem), time_(time), nm_(nm) {}
+    ~MovieLog() override {
+        if (f_) std::fclose(f_);
+    }
+    void picture_call(u64 c0, u64 c1, u32 work, u32 out, u32 format, s32 result) override {
+        namespace nm = native::movies;
+        auto rd = [&](u32 a) -> u32 {
+            const u8* p = mem_.ram_ptr(a, 4);
+            u32 v = 0;
+            if (p) std::memcpy(&v, p, 4);
+            return v;
+        };
+        const u32 rec = work + static_cast<u32>(nm::kWorkMpeg), ring = work + static_cast<u32>(nm::kWorkViBuf);
+        const u8* rp = mem_.ram_ptr(rec + 12, 52);
+        const u64 rh = rp ? nm::fnv1a64(rp, 52) : 0;
+        const u32 base = rd(ring), size = rd(ring + 24);
+        u32 off = 0, bit = 0;
+        if (nm_) {
+            const u64 c = nm_->ring_cursor(ring);
+            off = size ? static_cast<u32>((c / 8u) % size) : 0;
+            bit = static_cast<u32>(c & 7u);
+        } else {
+            const u32 madr = rd(ring + 28), bpw = rd(ring + 56);
+            const u32 rew = (madr & 0x1FFFFFFu) - (((bpw >> 8) & 15u) + ((bpw >> 16) & 3u)) * 16u;
+            const u32 bp = bpw & 0x7Fu;
+            off = size ? (rew - (base & 0x1FFFFFFu) + bp / 8u) % size : 0;
+            bit = bp & 7u;
+        }
+        const s32 w = static_cast<s32>(rd(work + 12)), h = static_cast<s32>(rd(work + 16));
+        const u32 bytes = static_cast<u32>(((w + 15) >> 4) * ((h + 15) >> 4)) * (format == 2 ? 1024u : 384u);
+        const u8* fp = bytes ? mem_.ram_ptr(out, bytes) : nullptr;
+        u64 total = 0;
+        if (const u8* tp = mem_.ram_ptr(ring + 72, 8)) std::memcpy(&total, tp, 8);
+        std::fprintf(f_,
+                     "%llu %llu %llu work=%X ret=%d fmt=%u w=%d h=%d mp=%u/%u/%u rec=%016llX ring=%u/%u/%u/%u "
+                     "total=%llu cur=%u.%u frame=%016llX",
+                     static_cast<unsigned long long>(time_.vblanks), static_cast<unsigned long long>(c0),
+                     static_cast<unsigned long long>(c1 - c0), work, result, format, w, h, rd(rec), rd(rec + 4),
+                     rd(rec + 8), static_cast<unsigned long long>(rh), rd(ring + 12), rd(ring + 16), rd(ring + 20),
+                     rd(work + static_cast<u32>(nm::kWorkAbort)), static_cast<unsigned long long>(total), off, bit,
+                     static_cast<unsigned long long>(fp ? nm::fnv1a64(fp, bytes) : 0));
+        if (nm_) {  // native: the call's work, the guest-time model's terms (NativeMovies::last_terms)
+            const u64* t = nm_->last_terms();
+            for (unsigned i = 0; i < nm::NativeMovies::kTerms; ++i)
+                std::fprintf(f_, "%s%llu", i ? "," : " terms=", static_cast<unsigned long long>(t[i]));
+        }
+        std::fprintf(f_, "\n");
+    }
+
+private:
+    std::FILE* f_;
+    const EEMemory& mem_;
+    const hle::Timebase& time_;
+    const native::movies::NativeMovies* nm_;
+};
 
 std::uint64_t qpc() {
     LARGE_INTEGER t;
@@ -170,11 +280,25 @@ GameHost::GameHost() = default;
 GameHost::~GameHost() {
     disarm_write_watch();
     if (gs_ && (gs_probe_ || gpu_rec_)) gs_->core().set_draw_observer(nullptr);
-    if (gs_ && native_) {
+    if (gs_ && (native_ || native_gfx_)) {
         gs_->vif1().set_run_hook(nullptr);
         gs_->vu1().set_sink(gs_.get());
     }
+    if (native_gfx_ && native::graphics::g_service == native_gfx_.get()) native::graphics::g_service = nullptr;
+    if (native_g3_ && native::graphics::g_g3 == native_g3_.get()) native::graphics::g_g3 = nullptr;
+    native_gfx_.reset();
+    native_g3_.reset();
     native_.reset();
+    if (native::files::g_service == native_files_.get()) native::files::g_service = nullptr;
+    if (native_pad_ && native::input::g_service == native_pad_.get()) native::input::g_service = nullptr;
+    native_pad_.reset();
+    if (native_sound_ && native::sound::g_service == native_sound_.get()) native::sound::g_service = nullptr;
+    if (movie_log_ && native::movies::g_log == movie_log_.get()) native::movies::g_log = nullptr;
+    movie_log_.reset();
+    if (native_movies_ && native::movies::g_service == native_movies_.get()) native::movies::g_service = nullptr;
+    native_movies_.reset();
+    if (native_kernel_ && native::kernel::g_service == native_kernel_.get()) native::kernel::g_service = nullptr;
+    native_kernel_.reset();  // before the kernel it calls
     gpu_rec_.reset();
     gs_probe_.reset();
     set_hooks(nullptr);
@@ -183,7 +307,19 @@ GameHost::~GameHost() {
     sif_.reset();
     if (sound_log_) std::fclose(sound_log_);
     sound_log_ = nullptr;
+    if (read_log_) std::fclose(read_log_);
+    read_log_ = nullptr;
+    if (scene_log_) std::fclose(scene_log_);
+    scene_log_ = nullptr;
+    if (vblank_dump_) std::fclose(vblank_dump_);
+    vblank_dump_ = nullptr;
+    if (sif_) sif_->iop().set_native_sk(nullptr);
+    sk_backend_.reset();
+    native_sk_.reset();  // before the IOP model it uses
+    sk_port_.reset();
+    native_sound_.reset();  // pushes into the IOP's mixer and the host audio
     audio_.reset();  // after the IOP that pushes into it
+    native_files_.reset();  // before the disc it reads
     disc_.reset();
     ipu_.reset();
     gs_.reset();
@@ -248,6 +384,11 @@ void GameHost::apply_pc_text() {
 }
 
 bool GameHost::patch_mods_tables(std::string& error) {
+    if (native_files_) {  // --native files: mods by path (native_files.h); the ELF's ROFS tables keep the disc's values
+        const std::size_t n = native_files_->set_overrides(mods_->scan().overrides);
+        if (!cfg_.quiet) log("p3fes: native files: " + std::to_string(n) + " mod override(s) served by path");
+        return true;
+    }
     u8* ram = mem_->main_ram() + EEMemory::to_physical(elf_image_va_);
     auto r = mods_->patch_rofs_tables(std::span<std::byte>(reinterpret_cast<std::byte*>(ram), elf_image_bytes_), elf_image_va_);
     if (!r) {
@@ -335,7 +476,30 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
     ko.log_sink = [this](std::string_view s) {
         if (!cfg_.quiet) log(std::string("[kernel] ").append(s));
     };
+    native::kernel::Timing ktiming = native::kernel::Timing::Faithful;
+    if (!native::kernel::parse_timing(cfg_.native_kernel_timing.c_str(), ktiming)) {
+        error = "bad --native-kernel-timing '" + cfg_.native_kernel_timing + "' (faithful | host)";
+        return false;
+    }
+    if (ktiming == native::kernel::Timing::Host && !cfg_.native.kernel) {
+        error = "--native-kernel-timing host needs --native kernel";
+        return false;
+    }
+    // Modernize layer 6 (native_kernel.h): nothing for the (a) set; with host timing, the (b) set's kernel options.
+    if (cfg_.native.kernel) native::kernel::configure(ko, ktiming);
     kernel_ = std::make_unique<hle::Kernel>(*mem_, *ctx_, std::move(ko));
+    if (!cfg_.kernel_census.empty()) kernel_->enable_census();
+    if (cfg_.native.kernel) {
+        // The game's libkernel stubs call the host kernel directly (p3fes/native/kernel_service.h, hg::syscall).
+        native_kernel_ = std::make_unique<native::kernel::NativeKernel>(*kernel_);
+        native::kernel::g_service = native_kernel_.get();
+        if (ktiming == native::kernel::Timing::Host && cfg_.native_sk == "sif") cfg_.native_sk = "direct";
+        if (!cfg_.quiet)
+            log(std::string("p3fes: native kernel: the game's kernel calls go to the host kernel directly") +
+                (ktiming == native::kernel::Timing::Host
+                     ? "; host timing: thread contexts on the host only (no BIOS frames), no DMA completion latency, instant native movie decode, the native SK without SIF (the game's timing moves)"
+                     : ""));
+    }
 
     gs_ = std::make_unique<gs::GsSystem>();
     gs_->attach(kernel_->bus());
@@ -350,6 +514,22 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
         kernel_->hooks().fatal(*ctx_, ctx_->pc, msg);
     });
     gs_->core().set_reg_observer([this](u32 reg, u64 v) { observe_gs_reg(reg, v); });
+    if (cfg_.native.graphics) {
+        // Modernize layer 5, step 1 (native_im2d.h, p3fes/native/graphics_service.h): the game's Im2D packets are reported
+        // to the host, which stands in for VU1 program 039 on their batches (the VIF1's VU1 run hook, first in line).
+        native_gfx_ = std::make_unique<native::graphics::NativeIm2D>();
+        if (cfg_.native_gfx_check) native_gfx_->set_check(cfg_.native_gfx_check, stdout);
+        native_gfx_->set_direct(cfg_.native_gfx_direct);
+        native::graphics::g_service = native_gfx_.get();
+        gs_->vif1().set_run_hook(native_gfx_.get());
+        // Step 3 (native_g3.h): the PS2All bridge seam and the g3 runs' kicks as host packets, next in line.
+        native_g3_ = std::make_unique<native::graphics::NativeG3Seam>();
+        if (cfg_.native_gfx_check) native_g3_->set_check(cfg_.native_gfx_check, stdout);
+        native_g3_->set_direct(cfg_.native_gfx_direct);
+        native::graphics::g_g3 = native_g3_.get();
+        native_gfx_->set_next(native_g3_.get());
+        if (!cfg_.quiet) log("p3fes: native graphics: RenderWare's Im2D triangles are drawn by the host (VU1 program 039 does not run)");
+    }
     gs_->priv().set_flip_callback([this](const gs::FlipEvent& e) {
         flips_.push_back({e.count, e.vblank, ctx_->cycles, e.circuit, e.fbp, guest_u32(kSkyFrameCount), host_seconds()});
         if (gs_probe_) gs_probe_->on_flip(e);
@@ -381,6 +561,22 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
         return false;
     }
     disc_ = std::move(disc.value());
+    plain_disc_ = disc_.get();  // stays alive inside a mods overlay (its base)
+    if (cfg_.native.files && !open_native_files(error)) return false;
+    if (cfg_.native.input) {
+        // Modernize layer 2 (native_pad.h): the game's pad wrapper asks the host's pad; PADMAN gets no port open.
+        native_pad_ = std::make_unique<native::input::NativePad>();
+        native::input::g_service = native_pad_.get();
+        if (!cfg_.quiet) log("p3fes: native input: the game's pad wrapper reads the host's pad (port 0; port 1 unplugged)");
+    }
+    if (cfg_.native.movies) {
+        // Modernize layer 4 (native_movies.h, p3fes/native/movies_service.h): the movie player's sceMpeg path
+        // decodes on the host; no libmpeg, no IPU commands, no DMAC channel 3 / 4 transfers.
+        native_movies_ = std::make_unique<native::movies::NativeMovies>();
+        native_movies_->set_instant(ktiming == native::kernel::Timing::Host);  // layer 6 (b): no per-call cycle model
+        native::movies::g_service = native_movies_.get();
+        if (!cfg_.quiet) log("p3fes: native movies: Sofdec's video decodes on the host (no libmpeg / IPU)");
+    }
     if (!cfg_.mods.empty() || cfg_.mods_overlay) {  // ADR-0016: only when asked for; otherwise disc_ is the plain source
         hle::ModsOptions mo;
         mo.dirs = cfg_.mods;
@@ -404,6 +600,10 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
         error = "bad sk mode '" + cfg_.sk_mode + "' (constants | modules)";
         return false;
     }
+    if (cfg_.native_sk != "sif" && cfg_.native_sk != "direct" && cfg_.native_sk != "off") {
+        error = "bad --native-sk '" + cfg_.native_sk + "' (sif | direct | off)";
+        return false;
+    }
     if (cfg_.iop_layout == "legacy") ic.iop_layout = hle::sif::IopLayout::Legacy;
     else if (cfg_.iop_layout == "pcsx2") ic.iop_layout = hle::sif::IopLayout::Pcsx2;
     else {
@@ -420,6 +620,7 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
         if (!cfg_.quiet || cfg_.trace_sif) log(std::string("[iop] ").append(s));
     };
     if (!open_memcard(ic, error)) return false;
+    if (!open_modernize_logs(ic, error)) return false;
     if (!cfg_.sound_log.empty()) {
         sound_log_ = std::fopen(cfg_.sound_log.string().c_str(), "wb");
         if (!sound_log_) {
@@ -441,6 +642,47 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
     // pushes its 48 kHz mix and every RNA session's PCM; positions come from virtual time only.
     audio_ = std::make_unique<audio::HostAudio>(cfg_.audio);
     sif_->iop().set_audio_output(audio_->mix_sink(), audio_->stream_tap());
+    if (cfg_.native.sound) {
+        // Modernize layer 3 (native_sound.h, p3fes/native/sound_service.h): CRI's PS2 output (PS2RNA) plays on the
+        // host; its 48 kHz passes enter where the IOP's PSM model would push them (the SPU2 mixer's stream input).
+        native_sound_ = std::make_unique<native::sound::NativeSound>();
+        native_sound_->set_output(sif_->iop().adx_input(), audio_->stream_tap());
+        native_sound_->set_pass_delay(ic.adxi_tick_delay_cycles);
+        if (sound_log_)
+            native_sound_->set_event_sink([this](const native::sound::NativeSoundEvent& e) {
+                std::fprintf(sound_log_, "%llu %llu 90000200 %04X RNA %s |",
+                             static_cast<unsigned long long>(kernel_->bus().time().vblanks),
+                             static_cast<unsigned long long>(e.cycles), e.fno, e.fno == 0x8000u ? "start" : "stop");
+                for (u32 a : e.args) std::fprintf(sound_log_, " %X", a);
+                std::fprintf(sound_log_, " -> %llu\n", static_cast<unsigned long long>(e.frame));
+            });
+        native::sound::g_service = native_sound_.get();
+        if (!cfg_.quiet) log("p3fes: native sound: CRI's ADX output (PS2RNA) mixes on the host; CRI_ADXI.IRX is not loaded");
+        // Steps 2-3 (runtime/native/sound/sk): the SK sound-effect stack on native code -- the six modules' code is
+        // sk_gen_*.cpp, their data comes from the IRX files, libsd and the voices stay the IOP model's (the mixer above).
+        if (cfg_.native_sk == "off") {
+            if (!cfg_.quiet) log("p3fes: native sound: --native-sk off: the SK sound effects stay on the IOP's interpreted modules");
+        } else if (sif_->iop().native_sk_supported()) {
+            sk_port_ = std::make_unique<IopSkPort>(sif_->iop());
+            native_sk_ = std::make_unique<native::sound::sk::NativeSk>(*sk_port_);
+            std::string why;
+            if (native_sk_->install([this](std::string_view f) { return sif_->iop().read_sk_module(f); }, why)) {
+                if (cfg_.native_sk == "direct") {
+                    native_sound_->set_sk(native_sk_.get());  // sceSdRemote / the module loads call it (no SIF)
+                } else {
+                    sk_backend_ = std::make_unique<NativeSkBackend>(*native_sk_);  // behind SDRDRV's RPC (the faithful timing)
+                    sif_->iop().set_native_sk(sk_backend_.get());
+                }
+                if (!cfg_.quiet) log(std::string("p3fes: native sound: the SK sound effects (SDRDRV, SKSOUND, SKHSYNTH, SKSESQ, MODSESQ, MODHSYN) run on native code, ") +
+                        (cfg_.native_sk == "direct" ? "called by sceSdRemote (no SIF)" : "behind SDRDRV's RPC (the game's SIF traffic unchanged)"));
+            } else {
+                native_sk_.reset();
+                log("p3fes: native sound: the SK sound effects stay on the IOP (" + why + ")");
+            }
+        } else if (!cfg_.quiet) {
+            log("p3fes: native sound: the SK sound effects stay on the IOP (native SK needs --sk modules and --iop-layout pcsx2)");
+        }
+    }
     if (hle::sif::install_sif_syscalls(*kernel_, *sif_) != static_cast<int>(hle::sif::kSifSyscalls.size())) {
         error = "kernel refused a SIF syscall slot";
         return false;
@@ -449,7 +691,19 @@ bool GameHost::init(const HostConfig& cfg, std::string& error) {
         sif_->service();
         return sif_->next_event_cycles();
     });
+    if (native_sk_ && cfg_.native_sk == "direct")  // layer 3 steps 2-3: the native SK's tick, at every check point as the faithful SDRDRV server's
+        kernel_->add_device_service([this] {
+            native_sk_->advance(kernel_->bus().time().cycles);
+            return ~0ull;  // adds no check point (the faithful server adds none either)
+        });
     kernel_->add_device_service([this] { return host_service(); });
+    if (native_sound_)  // layer 3: the native ADX output's pass, once per vblank after the vblank-end
+        kernel_->add_device_service([this] {
+            const hle::Timebase& t = kernel_->bus().time();
+            native_sound_->vblank(t.vblanks, t.cycles);
+            native_sound_->advance(t.cycles);
+            return native_sound_->next_deadline();
+        });
 
     if (cfg_.trace_syscalls || cfg_.trace_hw) {
         tracing_ = std::make_unique<TracingHooks>(kernel_->hooks(), syms_, cfg_.trace_syscalls, cfg_.trace_hw,
@@ -553,7 +807,9 @@ bool GameHost::enable_native_renderer(std::uint32_t mask, int mode) {
     native_->set_diff(mode == 1, stdout);
     if (mode == 2) native_->set_verify(16, stdout);
     if (mode != 0) gs_->vu1().set_sink(native_.get());  // the tee forwards every kick to GsSystem (PATH1)
-    gs_->vif1().set_run_hook(native_.get());
+    if (native_g3_) native_g3_->set_next(native_.get());  // layer 5's hooks stay first, NativeG3 takes the rest
+    else if (native_gfx_) native_gfx_->set_next(native_.get());
+    else gs_->vif1().set_run_hook(native_.get());
     return true;
 }
 
@@ -561,7 +817,9 @@ void GameHost::disable_gpu_recording() {
     if (!gpu_rec_) return;
     gs_quiesce();
     if (native_) {
-        gs_->vif1().set_run_hook(nullptr);
+        if (native_g3_) native_g3_->set_next(nullptr);
+        else if (native_gfx_) native_gfx_->set_next(nullptr);
+        else gs_->vif1().set_run_hook(nullptr);
         gs_->vu1().set_sink(gs_.get());
         native_.reset();
     }
@@ -675,8 +933,20 @@ std::uint64_t GameHost::host_service() {
     if (plan_.until_cycles && t.cycles >= plan_.until_cycles) stop(StopReason::Cycles);
     if (t.vblanks != last_vblank_seen_) {
         last_vblank_seen_ = t.vblanks;
-        feed_pad_input(t.vblanks, sif_->iop());  // input.h: the state for PADMAN's next frame
+        if (native_pad_) {
+            // --native input: the pad's report for this vblank (PADMAN's frame on the faithful path, written by the
+            // SIF service just before this one), then the feed's state for the next report, as feed_pad_input.
+            native_pad_->vblank();
+            if (PadFeed* f = active_pad_feed(); f && f->latch(t.vblanks)) {
+                const PadInput& in = f->current();
+                native_pad_->set_input(0, native::input::PadState{in.connected, in.buttons, in.rx, in.ry, in.lx, in.ly});
+            }
+        } else {
+            feed_pad_input(t.vblanks, sif_->iop());  // input.h: the state for PADMAN's next frame
+        }
+        if (vblank_dump_) sample_vblank_dump(t.vblanks);
         sample_markers(t.vblanks);
+        if (scene_log_) sample_scene_log(t.vblanks);
         if (plan_.until_vblank && t.vblanks >= plan_.until_vblank) stop(StopReason::Vblank);
         if (plan_.until_sky && guest_u32(kSkyFrameCount) >= plan_.until_sky) stop(StopReason::Sky);
         if (plan_.every_vblank) stop(StopReason::EveryVblank);
@@ -752,6 +1022,133 @@ double GameHost::host_seconds() const {
     LARGE_INTEGER f;
     QueryPerformanceFrequency(&f);
     return static_cast<double>(wall_ticks_ + (qpc() - run_t0_)) / static_cast<double>(f.QuadPart);
+}
+
+// Modernize pass, stage 0 (docs/MODERNIZE_PLAN.md §3; modernize.h): the --native notice and the two logs. Both
+// logs only read: the read log hashes the bytes cdvdfsv delivered, the scene log reads main RAM without touching
+// EEMemory's counters (ram_ptr, not read<>).
+bool GameHost::open_modernize_logs(hle::sif::IopConfig& ic, std::string& error) {
+    for (const std::string& n : native_layer_notices(cfg_.native)) log(n);
+    if (!cfg_.scene_log.empty()) {
+        scene_log_ = std::fopen(cfg_.scene_log.string().c_str(), "wb");
+        if (!scene_log_) {
+            error = "cannot write --scene-log " + cfg_.scene_log.string();
+            return false;
+        }
+        std::fprintf(scene_log_, "%.*s\n", static_cast<int>(kSceneLogHeader.size()), kSceneLogHeader.data());
+    }
+    if (!cfg_.vblank_dump.empty()) {
+        vblank_dump_ = std::fopen(cfg_.vblank_dump.string().c_str(), "wb");
+        if (!vblank_dump_) {
+            error = "cannot write --vblank-dump " + cfg_.vblank_dump.string();
+            return false;
+        }
+        const std::string h = format_vblank_dump_header(cfg_.vblank_dump_ranges);
+        std::fprintf(vblank_dump_, "%s\n", h.c_str());
+    }
+    if (!cfg_.movie_log.empty()) {  // layer 4's check (both modes)
+        std::FILE* f = std::fopen(cfg_.movie_log.string().c_str(), "wb");
+        if (!f) {
+            error = "cannot write --movie-log " + cfg_.movie_log.string();
+            return false;
+        }
+        std::fprintf(f, "# vblank cycles spent work ret fmt w h mp=width/height/frameCount rec=fnv(+12..+63) "
+                        "ring=head/queued/count/abort total cur=offset.bit frame=fnv\n");
+        movie_log_ = std::make_unique<MovieLog>(f, *mem_, kernel_->bus().time(), native_movies_.get());
+        native::movies::g_log = movie_log_.get();
+    }
+    if (cfg_.read_log.empty()) return true;
+    read_log_ = std::fopen(cfg_.read_log.string().c_str(), "wb");
+    if (!read_log_) {
+        error = "cannot write --read-log " + cfg_.read_log.string();
+        return false;
+    }
+    // Native files: the plain disc's LSNs (no mods relocation), the ones the native reads report.
+    read_index_ = std::make_unique<hle::DiscPathIndex>(hle::DiscPathIndex::build(native_files_ ? *plain_disc_ : *disc_));
+    std::fprintf(read_log_, "%.*s\n", static_cast<int>(hle::kReadLogHeader.size()), hle::kReadLogHeader.data());
+    std::fprintf(read_log_, "# index: %zu outer files, %zu CVM members\n", read_index_->outer_files(), read_index_->members());
+    ic.cd_read_sink = [this](const hle::sif::CdReadEvent& e) {
+        hle::ReadLogRecord r;
+        r.vblank = e.vblank;
+        r.lsn = e.lsn;
+        r.sectors = e.sectors;
+        r.dst = e.dst;
+        r.error = e.error;
+        r.file = read_index_->resolve(e.lsn, e.sectors);
+        if (e.error == 0) r.hash = hle::fnv1a64(e.data);
+        const std::string line = hle::format_read_log_line(r);
+        std::fprintf(read_log_, "%s\n", line.c_str());
+    };
+    if (native_files_) {
+        // Native reads in the same format. A whole-file H_Cdvd load is one native read; it is logged as the
+        // 512-sector requests (from the file's start) that CRI's ADXF_ReadNw makes of it on the faithful path, so
+        // `logcmp.py reads --by-path` compares the same records. dvCi reads are never longer than 512 sectors.
+        native_files_->set_read_observer([this](const native::files::NativeRead& n) {
+            constexpr u32 kChunk = 512;
+            for (u32 done = 0; done < n.sectors; done += kChunk) {
+                hle::ReadLogRecord r;
+                r.vblank = kernel_->bus().time().vblanks;
+                r.lsn = n.lsn + done;
+                r.sectors = std::min(kChunk, n.sectors - done);
+                r.dst = n.guest_dst + done * hle::kSectorSize;
+                r.file = read_index_->resolve(r.lsn, r.sectors);
+                const std::size_t at = static_cast<std::size_t>(done) * hle::kSectorSize;
+                r.hash = hle::fnv1a64(n.data.subspan(at, std::min<std::size_t>(n.data.size() - at, std::size_t{r.sectors} * hle::kSectorSize)));
+                const std::string line = hle::format_read_log_line(r);
+                std::fprintf(read_log_, "%s\n", line.c_str());
+            }
+        });
+    }
+    return true;
+}
+
+// Modernize layer 1 (native_files.h): the by-path service over the user's disc, installed for the game's CD wrappers.
+bool GameHost::open_native_files(std::string& error) {
+    auto nf = native::files::NativeFiles::open(*plain_disc_);
+    if (!nf) {
+        error = "--native files: " + std::string(formats::error_name(nf.code())) + " " + nf.detail();
+        return false;
+    }
+    native_files_ = std::move(nf).value();
+    native::files::g_service = native_files_.get();
+    // A file the game asks for and the disc does not have: the game retries it every frame (as faithful), so only
+    // the first few are printed.
+    native_files_->set_miss_observer([this, n = 0](std::string_view path) mutable {
+        if (++n <= 16) log("p3fes: native files: not found: " + std::string(path));
+    });
+    if (!cfg_.quiet)
+        log("p3fes: native files: " + std::to_string(native_files_->outer_files()) + " outer files, " +
+            std::to_string(native_files_->members()) + " CVM members by path; loads complete at once");
+    return true;
+}
+
+// --vblank-dump (modernize.h): one record per VBLANK_START, read through ram_ptr (no counter moves).
+void GameHost::sample_vblank_dump(std::uint64_t vblank) {
+    std::vector<std::uint8_t> rec;
+    rec.reserve(8 + vblank_dump_bytes(cfg_.vblank_dump_ranges));
+    for (int i = 0; i < 8; ++i) rec.push_back(static_cast<std::uint8_t>(vblank >> (8 * i)));
+    for (const auto& [va, n] : cfg_.vblank_dump_ranges) {
+        const std::uint8_t* p = mem_->ram_ptr(va, n);
+        if (p) rec.insert(rec.end(), p, p + n);
+        else rec.insert(rec.end(), n, 0);
+    }
+    std::fwrite(rec.data(), 1, rec.size(), vblank_dump_);
+}
+
+void GameHost::sample_scene_log(std::uint64_t vblank) {
+    const SceneSample s = sample_scene([this](std::uint32_t va) -> std::uint32_t {
+        if (va & 3u) return 0;
+        const std::uint8_t* p = mem_->ram_ptr(va, 4);
+        if (!p) return 0;
+        std::uint32_t v;
+        std::memcpy(&v, p, 4);
+        return v;
+    });
+    if (scene_logged_ && s == scene_last_) return;
+    scene_logged_ = true;
+    scene_last_ = s;
+    const std::string line = format_scene_log_line(vblank, s);
+    std::fprintf(scene_log_, "%s\n", line.c_str());
 }
 
 void GameHost::sample_markers(std::uint64_t vblank) {
@@ -848,6 +1245,57 @@ bool GameHost::snapshot(const std::filesystem::path& dir, const std::string& lab
     }
     const hle::Timebase& t = kernel_->bus().time();
     std::fprintf(f, "{\n  \"tool\": \"p3fes\",\n  \"point\": \"%s\",\n", label.c_str());
+    if (cfg_.native.any())  // ADR-0017 stage 0: absent while every layer is faithful (the baseline's capture.json)
+        std::fprintf(f, "  \"native\": \"%s\",\n", cfg_.native.to_string().c_str());
+    if (native_pad_) {  // layer 2: what the game asked the host's pad
+        const native::input::NativePadStats& s = native_pad_->stats();
+        std::fprintf(f,
+                     "  \"native_input\": {\"reports\": %llu, \"reads\": %llu, \"mode_changes\": %llu, "
+                     "\"act_direct\": %llu, \"rumble_on\": %llu},\n",
+                     static_cast<unsigned long long>(s.reports), static_cast<unsigned long long>(s.reads),
+                     static_cast<unsigned long long>(s.mode_changes), static_cast<unsigned long long>(s.act_direct),
+                     static_cast<unsigned long long>(s.rumble_on));
+    }
+    if (native_sound_) {  // layer 3: the native ADX output
+        const native::sound::NativeSoundStats s = native_sound_->stats();
+        std::fprintf(f,
+                     "  \"native_sound\": {\"creates\": %llu, \"destroys\": %llu, \"starts\": %llu, \"stops\": %llu, "
+                     "\"commands\": %llu, \"restarts\": %llu, \"blocks\": %llu, \"output_passes\": %llu, "
+                     "\"pcm_bytes_in\": %llu, \"pcm_bytes_played\": %llu, "
+                     "\"discarded_bytes\": %llu, \"underrun_samples\": %llu, \"passes\": %llu, \"playing\": %u},\n",
+                     static_cast<unsigned long long>(s.creates), static_cast<unsigned long long>(s.destroys),
+                     static_cast<unsigned long long>(s.starts), static_cast<unsigned long long>(s.stops),
+                     static_cast<unsigned long long>(s.commands), static_cast<unsigned long long>(s.restarts),
+                     static_cast<unsigned long long>(s.blocks), static_cast<unsigned long long>(s.passes_run),
+                     static_cast<unsigned long long>(s.pcm_bytes_in), static_cast<unsigned long long>(s.pcm_bytes_played),
+                     static_cast<unsigned long long>(s.discarded_bytes), static_cast<unsigned long long>(s.underrun_samples),
+                     static_cast<unsigned long long>(s.passes), s.playing);
+    }
+    if (native_sk_) {  // layer 3 steps 2-3: the native SK stack
+        const native::sound::sk::NativeSkStats& s = native_sk_->stats();
+        std::string fault;
+        for (char ch : s.fault) fault.push_back(ch == '"' || ch == '\\' ? '\'' : ch);
+        std::fprintf(f,
+                     "  \"native_sk\": {\"modules\": %u, \"rpc_calls\": %llu, \"tick_runs\": %llu, \"thread_runs\": %llu, "
+                     "\"libsd_calls\": %llu, \"kernel_calls\": %llu, \"fault\": \"%s\"},\n",
+                     s.modules, static_cast<unsigned long long>(s.rpc_calls), static_cast<unsigned long long>(s.tick_runs),
+                     static_cast<unsigned long long>(s.thread_runs), static_cast<unsigned long long>(s.libsd_calls),
+                     static_cast<unsigned long long>(s.kernel_calls), fault.c_str());
+    }
+    if (native_movies_) {  // layer 4: the native movie decoder
+        const native::movies::NativeMoviesStats& s = native_movies_->stats();
+        std::fprintf(f,
+                     "  \"native_movies\": {\"ring_resets\": %llu, \"creates\": %llu, \"resets\": %llu, \"deletes\": %llu, "
+                     "\"calls\": %llu, \"shown\": %llu, \"ends\": %llu, \"errors\": %llu, \"short_plans\": %llu, "
+                     "\"pictures\": [%llu, %llu, %llu], \"stream_bytes\": %llu},\n",
+                     static_cast<unsigned long long>(s.ring_resets), static_cast<unsigned long long>(s.creates),
+                     static_cast<unsigned long long>(s.resets), static_cast<unsigned long long>(s.deletes),
+                     static_cast<unsigned long long>(s.calls), static_cast<unsigned long long>(s.shown),
+                     static_cast<unsigned long long>(s.ends), static_cast<unsigned long long>(s.errors),
+                     static_cast<unsigned long long>(s.short_plans), static_cast<unsigned long long>(s.pictures[1]),
+                     static_cast<unsigned long long>(s.pictures[2]), static_cast<unsigned long long>(s.pictures[3]),
+                     static_cast<unsigned long long>(s.bits / 8u));
+    }
     std::fprintf(f, "  \"stop_reason\": \"%s\",\n", to_string(reason_));
     std::fprintf(f, "  \"flip_count\": %llu,\n", static_cast<unsigned long long>(gs_->flip_count()));
     std::fprintf(f, "  \"cycles\": %llu,\n  \"hlines\": %llu,\n  \"vblanks\": %llu,\n  \"field\": %u,\n",
@@ -864,7 +1312,9 @@ bool GameHost::snapshot(const std::filesystem::path& dir, const std::string& lab
         if (v.status == 0) continue;
         std::fprintf(f, "%s\n    {\"tid\": %d, \"status\": \"%s\", \"priority\": %d, \"init_priority\": %d, \"wait_type\": %u, \"wait_id\": %u, \"wakeup_count\": %u, \"entry\": \"0x%08X\", \"stack\": \"0x%08X\", \"stack_size\": \"0x%X\", \"frame\": \"0x%08X\"}",
                      first ? "" : ",", tid, status_name(v.status), v.priority, v.init_priority, v.wait_type, v.wait_id,
-                     v.wakeup_count, v.entry, v.stack, v.stack_size, v.frame);
+                     v.wakeup_count, v.entry, v.stack, v.stack_size,
+                     // layer 6 (--native kernel: no context frames): the saved sp is the dead-stack bound
+                     v.frame ? v.frame : v.saved_sp);
         first = false;
     }
     std::fprintf(f, "\n  ],\n");
@@ -1150,6 +1600,24 @@ std::map<std::string, std::uint64_t> GameHost::gs_census() const {
     m["vif vu_pairs"] = vs.vu_pairs;
     m["vif traps"] = vs.traps;
     return m;
+}
+
+bool GameHost::write_kernel_census(std::string& error) const {
+    const hle::KernelCensus* c = kernel_ ? kernel_->census() : nullptr;
+    if (!c) return true;
+    std::FILE* f = std::fopen(cfg_.kernel_census.string().c_str(), "wb");
+    if (!f) {
+        error = "cannot write --kernel-census " + cfg_.kernel_census.string();
+        return false;
+    }
+    KernelCensusContext x;
+    x.route = cfg_.kernel_census.stem().string();
+    x.native = cfg_.native.to_string();
+    x.cycles = kernel_->time().cycles;
+    x.flips = gs_->flip_count();
+    ::p3fes::app::write_kernel_census(f, *c, syms_, x);
+    std::fclose(f);
+    return true;
 }
 
 void GameHost::print_summary() const {

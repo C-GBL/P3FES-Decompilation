@@ -53,10 +53,24 @@ $testGlob = if ($Tests) { $Tests } else { $pj.test_glob }
 Set-Location $Repo
 
 # cmd /c <line> > log 2>&1 (appending with -Append); returns the exit code
-function Exec([string]$line, [string]$log, [switch]$Append) {
+function Exec([string]$line, [string]$log, [switch]$Append, [int]$TimeoutSec = 7200) {
+    # capped (2026-10-30): a hung test or build is killed with its process tree after $TimeoutSec and returns 124,
+    # instead of holding the agent for hours
     $op = if ($Append) { '>>' } else { '>' }
-    cmd /c "$line $op `"$log`" 2>&1"
-    return $LASTEXITCODE
+    $psi = New-Object Diagnostics.ProcessStartInfo
+    $psi.FileName = $env:ComSpec
+    $psi.Arguments = "/c `"$line $op `"$log`" 2>&1`""
+    $psi.UseShellExecute = $false
+    $psi.WorkingDirectory = (Get-Location).Path
+    $p = [Diagnostics.Process]::Start($psi)
+    if (-not $p.WaitForExit($TimeoutSec * 1000)) {
+        cmd /c "taskkill /T /F /PID $($p.Id)" *> $null
+        $p.WaitForExit()
+        Add-Content $log "TIMEOUT: killed after $TimeoutSec s: $line" -Encoding ascii
+        Write-Host "  TIMEOUT after $TimeoutSec s (killed): see $log"   # not pipeline output: callers take the exit code
+        return 124
+    }
+    return $p.ExitCode
 }
 function Py([string]$argline) { return (cmd /c "`"$py`" -I $argline 2>&1") }
 function Done([string]$what, [int]$rc, [string]$log) {
@@ -117,7 +131,7 @@ function Do-Build {
 function Run-Tests([string]$dir, [string]$log) {
     $exe = Join-Path $Repo "$dir\bin\p3fes_game_tests.exe"
     if (-not (Test-Path $exe)) { "  no $exe (build first)"; $script:rc = 1; return }
-    $rc = Exec "`"$exe`" `"-sf=$testGlob`"" $log
+    $rc = Exec "`"$exe`" `"-sf=$testGlob`"" $log -TimeoutSec 1800
     Py "`"$here\p5report.py`" doctest `"$log`"" | ForEach-Object { "  $_" }
     $script:rc = $rc; return
 }

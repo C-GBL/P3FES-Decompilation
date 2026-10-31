@@ -201,80 +201,94 @@ s32 LibsdHle::clear_effect_work_area(u32 /*core*/, u32 /*channel*/, u32 /*mode*/
 
 // ---- host-call glue -------------------------------------------------------------------------------
 
-void install_libsd_calls(R3000& cpu, LibsdHle& sd, detail::IopRam& iop, std::map<std::pair<std::string, u16>, u32>& table) {
-    auto def = [&](u16 ordinal, const char* name, R3000::HostCall fn) {
-        table[{"libsd", ordinal}] = cpu.register_host_call(std::string("libsd.") + name, std::move(fn));
-    };
-    def(2, "sceSdQuit", [](R3000& c) { c.set_result(0); });
-    def(4, "sceSdInit", [&sd](R3000& c) { c.set_result(static_cast<u32>(sd.init(c.arg(0)))); });
-    def(5, "sceSdSetParam", [&sd](R3000& c) { sd.set_param(c.arg(0), c.arg(1)); c.set_result(0); });
-    def(6, "sceSdGetParam", [&sd](R3000& c) { c.set_result(sd.get_param(c.arg(0))); });
-    def(7, "sceSdSetSwitch", [&sd](R3000& c) { sd.set_switch(c.arg(0), c.arg(1)); c.set_result(0); });
-    def(8, "sceSdGetSwitch", [&sd](R3000& c) { c.set_result(sd.get_switch(c.arg(0))); });
-    def(9, "sceSdSetAddr", [&sd](R3000& c) { sd.set_addr(c.arg(0), c.arg(1)); c.set_result(0); });
-    def(10, "sceSdGetAddr", [&sd](R3000& c) { c.set_result(sd.get_addr(c.arg(0))); });
-    def(11, "sceSdSetCoreAttr", [&sd](R3000& c) { sd.set_core_attr(c.arg(0), c.arg(1)); c.set_result(0); });
-    def(12, "sceSdGetCoreAttr", [&sd](R3000& c) { c.set_result(sd.get_core_attr(c.arg(0))); });
-    def(13, "sceSdNote2Pitch", [&sd](R3000& c) { c.set_result(sd.note_to_pitch(c.arg(0), c.arg(1), c.arg(2), c.arg(3))); });
-    def(14, "sceSdPitch2Note", [&sd](R3000& c) { c.set_result(sd.pitch_to_note(c.arg(0), c.arg(1), c.arg(2))); });
-    // ProcBatch(batch*, rets*, num): 8-byte records {u16 func, u16 entry, u32 value} (libsd-common.h
-    // sceSdBatch); results go to rets[i] when given. Returns the number of records processed; a bad
-    // function code stops with -(index) (libsd.h: "returns the number of entries processed").
-    auto batch = [&sd](R3000& c, u32 batch_addr, u32 rets, u32 num) {
+u32 libsd_call(LibsdHle& sd, detail::IopRam& iop, u32 ordinal, const u32 (&a)[5]) {
+    u8* const mem = iop.at(0, detail::kIopRamSize);
+    auto mask = [](u32 x) { return x & (detail::kIopRamSize - 1u); };
+    auto rd8 = [&](u32 x) { return mem[mask(x)]; };
+    auto wr8 = [&](u32 x, u8 v) { mem[mask(x)] = v; };
+    auto rd16 = [&](u32 x) { u16 v; std::memcpy(&v, mem + mask(x & ~1u), 2); return v; };
+    auto rd32 = [&](u32 x) { u32 v; std::memcpy(&v, mem + mask(x & ~3u), 4); return v; };
+    auto wr32 = [&](u32 x, u32 v) { std::memcpy(mem + mask(x & ~3u), &v, 4); };
+    switch (ordinal) {
+    case 2: return 0;  // sceSdQuit
+    case 4: return static_cast<u32>(sd.init(a[0]));
+    case 5: sd.set_param(a[0], a[1]); return 0;
+    case 6: return sd.get_param(a[0]);
+    case 7: sd.set_switch(a[0], a[1]); return 0;
+    case 8: return sd.get_switch(a[0]);
+    case 9: sd.set_addr(a[0], a[1]); return 0;
+    case 10: return sd.get_addr(a[0]);
+    case 11: sd.set_core_attr(a[0], a[1]); return 0;
+    case 12: return sd.get_core_attr(a[0]);
+    case 13: return sd.note_to_pitch(a[0], a[1], a[2], a[3]);
+    case 14: return sd.pitch_to_note(a[0], a[1], a[2]);
+    case 15:
+    case 16: {
+        // ProcBatch(batch*, rets*, num): 8-byte records {u16 func, u16 entry, u32 value} (libsd-common.h
+        // sceSdBatch); results go to rets[i] when given. Returns the number of records processed; a bad
+        // function code stops with -(index) (libsd.h: "returns the number of entries processed").
+        const u32 batch = a[0], rets = a[1], num = a[2];
         for (u32 i = 0; i < num; ++i) {
-            const u32 rec = batch_addr + i * 8u;
-            const u32 func = c.read16(rec), entry = c.read16(rec + 2), value = c.read32(rec + 4);
+            const u32 rec = batch + i * 8u;
+            const u32 func = rd16(rec), entry = rd16(rec + 2), value = rd32(rec + 4);
             u32 r = 0;
             switch (func) {
             case 0x1: sd.set_param(entry, value); break;
             case 0x2: sd.set_switch(entry, value); break;
             case 0x3: sd.set_addr(entry, value); break;
             case 0x4: sd.set_core_attr(entry, value); break;
-            case 0x5: c.write32(entry, value); break;  // WRITEIOP (inf: entry = IOP address low half; unused)
+            case 0x5: wr32(entry, value); break;  // WRITEIOP (inf: entry = IOP address low half; unused)
             case 0x11: r = sd.get_param(entry); break;
             case 0x12: r = sd.get_switch(entry); break;
             case 0x13: r = sd.get_addr(entry); break;
             case 0x14: r = sd.get_core_attr(entry); break;
-            default:
-                c.set_result(static_cast<u32>(-static_cast<s32>(i)));
-                return;
+            default: return static_cast<u32>(-static_cast<s32>(i));
             }
-            if (rets) c.write32(rets + i * 4u, r);
+            if (rets) wr32(rets + i * 4u, r);
         }
-        c.set_result(num);
-    };
-    def(15, "sceSdProcBatch", [batch](R3000& c) { batch(c, c.arg(0), c.arg(1), c.arg(2)); });
-    def(16, "sceSdProcBatchEx", [batch](R3000& c) { batch(c, c.arg(0), c.arg(1), c.arg(2)); });
-    def(17, "sceSdVoiceTrans", [&sd, &iop](R3000& c) {
-        c.set_result(static_cast<u32>(sd.voice_trans(c.arg(0), c.arg(1), iop, c.arg(2), c.arg(3), c.arg(4), &iop)));
-    });
-    def(18, "sceSdBlockTrans", [&sd, &iop](R3000& c) {
-        c.set_result(static_cast<u32>(sd.block_trans(c.arg(0), c.arg(1), iop, c.arg(2), c.arg(3), c.arg(4), &iop)));
-    });
-    def(19, "sceSdVoiceTransStatus", [&sd](R3000& c) { c.set_result(sd.voice_trans_status(c.arg(0), c.arg(1))); });
-    def(20, "sceSdBlockTransStatus", [&sd](R3000& c) { c.set_result(sd.block_trans_status(c.arg(0), c.arg(1))); });
-    def(21, "sceSdSetTransCallback", [](R3000& c) { c.set_result(0); });
-    def(22, "sceSdSetIRQCallback", [](R3000& c) { c.set_result(0); });
-    def(23, "sceSdSetEffectAttr", [&sd](R3000& c) {
-        u8 a[32];
-        for (u32 i = 0; i < 32; ++i) a[i] = c.read8(c.arg(1) + i);
-        c.set_result(static_cast<u32>(sd.set_effect_attr(c.arg(0), a)));
-    });
-    def(24, "sceSdGetEffectAttr", [&sd](R3000& c) {
-        u8 a[32];
-        sd.get_effect_attr(c.arg(0), a);
-        for (u32 i = 0; i < 32; ++i) c.write8(c.arg(1) + i, a[i]);
-        c.set_result(0);
-    });
-    def(25, "sceSdClearEffectWorkArea", [&sd](R3000& c) { c.set_result(static_cast<u32>(sd.clear_effect_work_area(c.arg(0), c.arg(1), c.arg(2)))); });
-    def(26, "sceSdSetTransIntrHandler", [](R3000& c) { c.set_result(0); });  // previous handler: none
-    def(27, "sceSdSetSpu2IntrHandler", [](R3000& c) { c.set_result(0); });
-    def(28, "sceSdGetTransIntrHandlerArgument", [](R3000& c) { c.set_result(0); });
-    def(29, "sceSdGetSpu2IntrHandlerArgument", [](R3000& c) { c.set_result(0); });
-    def(30, "sceSdStopTrans", [](R3000& c) { c.set_result(0); });
-    def(31, "sceSdCleanEffectWorkArea", [](R3000& c) { c.set_result(0); });
-    def(32, "sceSdSetEffectMode", [](R3000& c) { c.set_result(0); });
-    def(33, "sceSdSetEffectModeParams", [](R3000& c) { c.set_result(0); });
+        return num;
+    }
+    case 17: return static_cast<u32>(sd.voice_trans(a[0], a[1], iop, a[2], a[3], a[4], &iop));
+    case 18: return static_cast<u32>(sd.block_trans(a[0], a[1], iop, a[2], a[3], a[4], &iop));
+    case 19: return sd.voice_trans_status(a[0], a[1]);
+    case 20: return sd.block_trans_status(a[0], a[1]);
+    case 23: {
+        u8 attr[32];
+        for (u32 i = 0; i < 32; ++i) attr[i] = rd8(a[1] + i);
+        return static_cast<u32>(sd.set_effect_attr(a[0], attr));
+    }
+    case 24: {
+        u8 attr[32];
+        sd.get_effect_attr(a[0], attr);
+        for (u32 i = 0; i < 32; ++i) wr8(a[1] + i, attr[i]);
+        return 0;
+    }
+    case 25: return static_cast<u32>(sd.clear_effect_work_area(a[0], a[1], a[2]));
+    // 21 SetTransCallback, 22 SetIRQCallback, 26 SetTransIntrHandler (previous handler: none), 27 SetSpu2IntrHandler,
+    // 28 / 29 the handler arguments, 30 StopTrans, 31 CleanEffectWorkArea, 32 / 33 SetEffectMode(Params)
+    default: return 0;
+    }
 }
 
+void install_libsd_calls(R3000& cpu, LibsdHle& sd, detail::IopRam& iop, std::map<std::pair<std::string, u16>, u32>& table) {
+    // One host call per ordinal, all through libsd_call (the native SK stack, runtime/native/sound/sk, calls it too).
+    static constexpr std::pair<u16, const char*> kNames[] = {
+        {2, "sceSdQuit"}, {4, "sceSdInit"}, {5, "sceSdSetParam"}, {6, "sceSdGetParam"}, {7, "sceSdSetSwitch"},
+        {8, "sceSdGetSwitch"}, {9, "sceSdSetAddr"}, {10, "sceSdGetAddr"}, {11, "sceSdSetCoreAttr"},
+        {12, "sceSdGetCoreAttr"}, {13, "sceSdNote2Pitch"}, {14, "sceSdPitch2Note"}, {15, "sceSdProcBatch"},
+        {16, "sceSdProcBatchEx"}, {17, "sceSdVoiceTrans"}, {18, "sceSdBlockTrans"}, {19, "sceSdVoiceTransStatus"},
+        {20, "sceSdBlockTransStatus"}, {21, "sceSdSetTransCallback"}, {22, "sceSdSetIRQCallback"},
+        {23, "sceSdSetEffectAttr"}, {24, "sceSdGetEffectAttr"}, {25, "sceSdClearEffectWorkArea"},
+        {26, "sceSdSetTransIntrHandler"}, {27, "sceSdSetSpu2IntrHandler"}, {28, "sceSdGetTransIntrHandlerArgument"},
+        {29, "sceSdGetSpu2IntrHandlerArgument"}, {30, "sceSdStopTrans"}, {31, "sceSdCleanEffectWorkArea"},
+        {32, "sceSdSetEffectMode"}, {33, "sceSdSetEffectModeParams"},
+    };
+    for (const auto& [ordinal, name] : kNames) {
+        const u32 o = ordinal;
+        table[{"libsd", ordinal}] = cpu.register_host_call(std::string("libsd.") + name, [&sd, &iop, o](R3000& c) {
+            const u32 args[5] = {c.arg(0), c.arg(1), c.arg(2), c.arg(3), c.arg(4)};
+            c.set_result(libsd_call(sd, iop, o, args));
+        });
+    }
+}
 }  // namespace p3fes::hle::sif::iop

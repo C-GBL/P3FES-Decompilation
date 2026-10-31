@@ -41,7 +41,11 @@ std::string GameHost::state_config() const {
     return "sk=" + cfg_.sk_mode + " layout=" + cfg_.iop_layout + " interp=" + cfg_.spu2_interp +
            " disc=" + std::string(disc_ && disc_->identity().kind == hle::DiscSourceKind::ExtractedVolumes ? "extracted" : "iso") +
            " sectors=" + std::to_string(disc_ ? disc_->sector_count() : 0) +
-           (mods_ ? " mods=" + mods_->fingerprint() : std::string());  // ADR-0016: absent without --mods
+           (mods_ ? " mods=" + mods_->fingerprint() : std::string()) +  // ADR-0016: absent without --mods
+           // ADR-0017 stage 0: the native layer set, absent while every layer is faithful (the baseline's string)
+           (cfg_.native.any() ? " native=" + cfg_.native.to_string() : std::string()) +
+           // layer 6's (b) set changes the timing: absent with the default (faithful) timing
+           (cfg_.native_kernel_timing != "faithful" ? " ktiming=" + cfg_.native_kernel_timing : std::string());
 }
 
 std::string GameHost::state_summary() {
@@ -84,6 +88,24 @@ bool GameHost::state_body(StateIo& io, PadFeed* feed) {
         }
         feed->state(io);
         if (io.loading()) set_active_pad_feed(feed);
+    }
+    if (native_pad_) {  // --native input (state_config() records the layer set, so both sides have the pad)
+        io.section("native-input");
+        native_pad_->state(io);
+    }
+    if (native_sound_) {  // --native sound (layer 3)
+        io.section("native-sound");
+        native_sound_->state(io);
+    }
+    bool native_sk = native_sk_ != nullptr;  // steps 2-3: the native SK stack (IOP RAM and libsd are the IOP's)
+    io.expect(native_sk, "native SK stack");
+    if (native_sk_) {
+        io.section("native-sk");
+        native_sk_->state(io);
+    }
+    if (native_movies_) {  // --native movies (layer 4)
+        io.section("native-movies");
+        native_movies_->state(io);
     }
     io.section("end");
     return io.ok();

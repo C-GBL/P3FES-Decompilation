@@ -12,6 +12,7 @@
 // (field8.h f8::hdd / resman / mc). tests/game/test_field8_sys.cpp pairs each body with its __recomp body.
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/field8.h"
+#include "p3fes/game/input_native.h"
 
 namespace p3fes::recomp_gen {
 void fn_ADXM_ExecMain_00540ec0(p3fes::EEContext&);
@@ -537,18 +538,25 @@ void H_Pad_Init(EEContext& ctx) {
     a1 = 0;
     a2 = 54;
     jal(ctx, 0x103060u, gen::fn_memset_00521408);
-    a0 = 0;
-    jal(ctx, 0x10306Cu, gen::fn_scePadInit_00511138);
-    a0 = 0;
-    a1 = 0;
-    a2 = 0x7E0000;
-    a2 = addiu(a2, 2112);  // &0x7E0840
-    jal(ctx, 0x103084u, gen::fn_scePadPortOpen_00511590);
-    a0 = 1;
-    a1 = 0;
-    a2 = 0x7E0000;
-    a2 = addiu(a2, 1856);  // &0x7E0740
-    jal(ctx, 0x10309Cu, gen::fn_scePadPortOpen_00511590);
+    if (native::input::PadService* np = native::input::service()) {
+        // Modernize layer 2 (--native input; input_native.h): the host's pad, no libpad / SIF RPC / DMA buffer.
+        (void)np->open(0, 0);
+        Gpr v0{ctx, 2};
+        v0 = np->open(1, 0);  // scePadPortOpen's result
+    } else {
+        a0 = 0;
+        jal(ctx, 0x10306Cu, gen::fn_scePadInit_00511138);
+        a0 = 0;
+        a1 = 0;
+        a2 = 0x7E0000;
+        a2 = addiu(a2, 2112);  // &0x7E0840
+        jal(ctx, 0x103084u, gen::fn_scePadPortOpen_00511590);
+        a0 = 1;
+        a1 = 0;
+        a2 = 0x7E0000;
+        a2 = addiu(a2, 1856);  // &0x7E0740
+        jal(ctx, 0x10309Cu, gen::fn_scePadPortOpen_00511590);
+    }
     // the two state records (54 bytes each): +8 port, +4 = 3, +0 / +2 / +10 cleared
     a3 = 0;
     a1 = 0x7E0000;

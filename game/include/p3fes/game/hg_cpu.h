@@ -25,6 +25,7 @@
 #pragma once
 
 #include "p3fes/ee/core.h"
+#include "p3fes/native/kernel_service.h"
 #include "p3fes_recomp_rt.h"
 
 #include <cstdint>
@@ -186,7 +187,16 @@ inline void mtc0(Gpr t, unsigned reg) { rt::mtc0(t.c, t.r, reg); }
 inline void sync(EEContext& c, unsigned stype) { rt::sync(c, stype); }
 inline void ei(EEContext& c) { rt::ei(c); }
 inline void di(EEContext& c) { rt::di(c); }
-inline void syscall(EEContext& c, u32 pc) { rt::syscall(c, pc); }
+// Every kernel call of the game (its libkernel stubs and inline syscalls). Modernize layer 6 (--native kernel,
+// p3fes/native/kernel_service.h): with a native kernel service installed the call goes to it as a direct host call;
+// without one (the default) the instruction's faithful path.
+inline void syscall(EEContext& c, u32 pc) {
+    if (native::kernel::KernelService* k = native::kernel::service()) {
+        k->call(c, pc);
+        return;
+    }
+    rt::syscall(c, pc);
+}
 inline void brk(EEContext& c, u32 pc, u32 code) { rt::trap(c, pc, rt::Trap::Break, code); }
 
 // --- COP1 (EE singles, ACC, FCR31 flags) ---------------------------------------------------------------------------

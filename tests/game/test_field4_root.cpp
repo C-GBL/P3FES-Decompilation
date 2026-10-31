@@ -10,8 +10,10 @@
 #include "handgen_pairs.h"
 #include "field4_util.h"
 
+#include "p3fes/game/field3_kosaka.h"
 #include "p3fes/game/field4.h"
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
@@ -28,6 +30,8 @@ using namespace p3fes;
 using namespace p3fes::game_test;
 
 namespace p3fes::recomp_gen {
+void fn_sub_1E05B0_001e05b0(EEContext&);  // generated body (field3_kosaka: K_VPad_UpdateTask)
+void fn_sub_1E05B0_001e05b0__recomp(EEContext&);  // recompiled
 void fn_sub_1B00C0_001b00c0(EEContext&);  // generated body
 void fn_sub_1B00C0_001b00c0__recomp(EEContext&);  // recompiled
 void fn_sub_1B02C0_001b02c0(EEContext&);  // generated body
@@ -351,6 +355,45 @@ TEST_CASE("game(field4 root): every body equals its recompiled body on random wo
     }
 }
 
+// The field pad heading sub_1B02C0 (the hero's walk direction relative to the camera, K_VPad_UpdateTask) on a centred
+// x byte: the keyboard's S is (0x80, 0xFF). With a truncating SQRT.S the acosf argument was 0x3F800001 there (64 y bytes
+// in all, with x = 0x80) and the heading came back as the 0/0 clamp: the hero turned away and stopped
+// (fpu.h sqrt_nearest). Every y byte with x = 0x80 must give the heading of the vector (0, z): 180 for z > 0, 360 for z < 0.
+TEST_CASE("game(field4 root): the pad heading of a centred stick x is 180 / 360 degrees for every y byte") {
+    auto m = std::make_unique<Machine>();
+    if (const char* err = m->load_elf(elf_path())) {
+        MESSAGE("SKIP: " << err);
+        return;
+    }
+    const Case& c = [] () -> const Case& {
+        for (const Case& k : kCases)
+            if (std::string(k.name) == "sub_1B02C0") return k;
+        std::abort();
+    }();
+    auto heading = [&](u8 x, u8 y) {
+        *m->at(0x7E094Cu) = 0;  // no d-pad bits (held word, port 0)
+        *m->at(0x7E094Du) = 0;
+        *m->at(0x7E095Eu) = x;  // left stick x
+        *m->at(0x7E095Fu) = y;  // left stick y
+        const hgp::Run r = hgp::pair(*m, c.hand, c.recomp, Args{0, 0, 0, 0}, 1, c.name);
+        REQUIRE_FALSE(r.stopped);
+        float f;
+        std::memcpy(&f, &r.end.fpr[0], 4);
+        return f;
+    };
+    int checked = 0;
+    for (int y = 0; y < 256; ++y) {
+        if (y >= 128 - 48 && y <= 128 + 48) continue;  // the dead zone: heading 0
+        const float h = heading(0x80, static_cast<u8>(y));
+        CHECK_MESSAGE(std::fabs(h - (y > 128 ? 180.0f : 360.0f)) < 0.01f, "y byte " << y << ": heading " << h);
+        ++checked;
+    }
+    CHECK(checked == 159);
+    CHECK(heading(0x80, 0xFF) == 180.0f);                    // S (was the 0/0 clamp)
+    CHECK(std::fabs(heading(0x81, 0xFF) - 180.45f) < 0.01f); // one step right of centre (always worked)
+    CHECK(heading(0x80, 0x80) == 0.0f);                      // dead zone
+}
+
 // --- field4 tests ---
 
 namespace {
@@ -369,6 +412,74 @@ namespace fld = game::f4::fld;
 namespace root = game::f4::root;
 const char* const kFieldSnapshots[] = {"climb_ref_17000", "shop_ref_4100", "fusion_vr_5000", "dorm_replay_4900"};
 }  // namespace
+
+// The hero's pad task on the real field snapshots (no stand-ins): the keyboard's S, (0x80, 0xFF), and straight up on a
+// controller, (0x80, 0x01), steer the hero like their neighbours one x step right of centre. One update of
+// K_VPad_UpdateTask (sub_1E05B0) per input from the same world: the published speed is the same and the
+// hero's controller and rotate task (its orientation, position, the turn it was handed) end within 0.45 degrees of the
+// neighbour's. With a truncating SQRT.S the centred x gave the heading sub_1B02C0 its 0/0 clamp (fpu.h sqrt_nearest):
+// the hero turned away and stood still.
+TEST_CASE("game(field4 root): a centred stick x walks the hero like its neighbour (the field pad task, real snapshots)") {
+    namespace ks = game::f3ks;
+    int checked = 0;
+    for (const char* snap : kFieldSnapshots) {
+        std::vector<u8> base;
+        auto mp = real_machine(snap, base);
+        if (!mp) continue;
+        Machine& m = *mp;
+        const u32 pad = r32(m, kSField + ks::kFieldPadTask);
+        if (pad == 0) continue;
+        const u32 work = r32(m, pad + game::f4::kTaskWork);
+        const u32 ctl = r32(m, work + ks::kPadController), rot = r32(m, work + ks::kPadRotateTask);
+        if (ctl == 0 || rot == 0) continue;
+        const u32 rotWork = r32(m, rot + game::f4::kTaskWork);
+        struct Out {
+            bool stopped;
+            u32 speed;
+            std::vector<u8> ctl, rot;
+        };
+        auto step = [&](u8 x, u8 y) {
+            reset(m, base);
+            w32(m, work + ks::kPadState, 1);  // running, unlocked, not waiting for a turn
+            w32(m, work + ks::kPadLockEvent, 0);
+            w32(m, work + ks::kPadLockNpc, 0);
+            w32(m, gpv(ks::kGpPadSpeed), 0);
+            w16(m, ks::kPadHeld, 0);
+            w16(m, ks::kPadPressed, 0);
+            w8(m, ks::kPadStickLX, x);
+            w8(m, ks::kPadStickLX + 1, y);
+            w8(m, ks::kPadStickLX + 2, 0x80);
+            w8(m, ks::kPadStickLX + 3, 0x80);
+            const hgp::Run r = hgp::pair(m, &recomp_gen::fn_sub_1E05B0_001e05b0, &recomp_gen::fn_sub_1E05B0_001e05b0__recomp,
+                                         Args{pad, 0, 0, 0}, 1, "sub_1E05B0");
+            return Out{r.stopped, r32(m, gpv(ks::kGpPadSpeed)), std::vector<u8>(m.at(ctl), m.at(ctl) + 0x100),
+                       std::vector<u8>(m.at(rotWork), m.at(rotWork) + 0x80)};
+        };
+        // words that are no longer close (floats more than 0.02 apart relative to 1 + |b|, or non-floats that differ)
+        auto far_words = [](const std::vector<u8>& a, const std::vector<u8>& b) {
+            int n = 0;
+            for (std::size_t k = 0; k + 4 <= a.size(); k += 4) {
+                float fa, fb;
+                std::memcpy(&fa, &a[k], 4);
+                std::memcpy(&fb, &b[k], 4);
+                if (std::memcmp(&a[k], &b[k], 4) == 0) continue;
+                if (!(std::isfinite(fa) && std::isfinite(fb) && std::fabs(fa - fb) <= 0.02f * (1.0f + std::fabs(fb)))) ++n;
+            }
+            return n;
+        };
+        for (const u8 y : {u8{0xFF}, u8{0x01}}) {
+            const Out o80 = step(0x80, y), o81 = step(0x81, y);
+            REQUIRE_FALSE(o80.stopped);
+            REQUIRE_FALSE(o81.stopped);
+            CHECK_MESSAGE(o80.speed == o81.speed, std::string(snap) << " y " << int(y));
+            CHECK_MESSAGE(far_words(o80.ctl, o81.ctl) == 0, std::string(snap) << " y " << int(y) << ": the controller");
+            CHECK_MESSAGE(far_words(o80.rot, o81.rot) == 0, std::string(snap) << " y " << int(y) << ": the rotate task");
+            ++checked;
+        }
+    }
+    if (checked == 0) MESSAGE("SKIP: no field snapshot with the pad task");
+    else MESSAGE(checked << " centred-x steps checked");
+}
 
 // The field root on the replay snapshots' live roots (climb: Tartarus floor 5 = 51/4, state 13; shop 8/4 and fusion 8/3:
 // state 13; dorm 7/2 is inside an event): the running state only watches the shutdown word (26_field.md 2.2), the

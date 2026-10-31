@@ -4,6 +4,9 @@
 // the pair tests green (docs/PHASE5_AGENT_BRIEF.md "Using p3fes_handgen").
 #include "p3fes/game/hg_cpu.h"
 #include "p3fes/game/sweep5a.h"
+#include "p3fes/game/files_native.h"
+#include "p3fes/game/input_native.h"
+#include "p3fes/game/sound_native.h"
 
 namespace p3fes::recomp_gen {
 void fn_ADXF_GetFsizeSct_0053d968(p3fes::EEContext&);
@@ -535,6 +538,19 @@ void fn_vsprintf_005288c8(p3fes::EEContext&);
 namespace p3fes::game {
 
 namespace gen = ::p3fes::recomp_gen;
+
+namespace {
+// Modernize layer 3, steps 2-3 (sound_native.h): sceSdRemote's RPC to SDRDRV goes to the native SK stack while it runs
+// (the link as the jal makes it; the reply lands in the receive buffer, $v0 = 0).
+void sdr_call_rpc(EEContext& ctx, u32 pc) {
+    if (native::sound::SoundService* ns = sk_service()) {
+        hg::link(ctx, pc);
+        sdr_native_call(ctx, *ns);
+        return;
+    }
+    hg::jal(ctx, pc, gen::fn_sceSifCallRpc_00507230);
+}
+}  // namespace
 namespace lay = sweep5a;  // the named offsets (sweep5a.h)
 
 // 0x001008B0 H_Cdvd_FileExists -- 200 bytes; frame 0x420: ra sp+0x10, s0 sp+0x0 (sq)
@@ -637,6 +653,13 @@ void H_Cdvd_Update(EEContext& ctx) {
                             sh(zero, s1, 862);
                             a0 = addiu(s1, 600);
                             jal(ctx, 0x1009ECu, gen::fn_H_Cdvd_SetRofsDir_00101520);
+                            if (native::files::FileService* nf = native::files::service()) {
+                                // Modernize layer 1 (--native files; files_native.h): the whole file by path, now.
+                                // Loaded: state 4, handled below like a finished read; else the node stays in
+                                // state 0 and the walk stops at it, as a failed ADXF_Open does.
+                                (void)hcdvd_native_load(ctx, *nf, s1.u());
+                                goto L_00100c38;
+                            }
                             a0 = addiu(s1, 344);
                             a1 = 0;
                             jal(ctx, 0x1009FCu, gen::fn_ADXF_Open_0053c910);
@@ -1228,7 +1251,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
     lhu(s0, a0, 10);
     a0 = s1;
     a1 = s0;
-    jal(ctx, 0x103144u, gen::fn_scePadGetState_00511a58);
+    if (native::input::PadService* np = native::input::service()) {
+        v0 = np->get_state(a0.u(), a1.u());  // layer 2 (--native input; input_native.h)
+    } else {
+        jal(ctx, 0x103144u, gen::fn_scePadGetState_00511a58);
+    }
     lhu(a2, s2, 2);
     a1 = 5;
     if (a2 == a1) {
@@ -1258,7 +1285,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
             a1 = s0;
             a2 = 0x7E0000;
             a2 = addiu(a2, 1792);  // &0x7E0700
-            jal(ctx, 0x1033F0u, gen::fn_scePadRead_005119e0);
+            if (native::input::PadService* np = native::input::service()) {
+                v0 = hpad_native_read(ctx, *np, a0.u(), a1.u(), a2.u());  // layer 2 (--native input; input_native.h)
+            } else {
+                jal(ctx, 0x1033F0u, gen::fn_scePadRead_005119e0);
+            }
             lhu(a2, s2, 46);
             lhu(a1, s2, 48);
             lhu(v1, s2, 50);
@@ -1281,7 +1312,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
             a0 = s1;
             a1 = s0;
             a2 = addiu(sp, 0x40);
-            jal(ctx, 0x103438u, gen::fn_scePadSetActDirect_00512070);
+            if (native::input::PadService* np = native::input::service()) {
+                v0 = hpad_native_act_direct(ctx, *np, a0.u(), a1.u(), a2.u());  // layer 2 (--native input; input_native.h)
+            } else {
+                jal(ctx, 0x103438u, gen::fn_scePadSetActDirect_00512070);
+            }
         } else {
             // 0x001033d4
             charge(ctx, 3);
@@ -1296,7 +1331,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
             charge(ctx, 6);
             a0 = s1;
             a1 = s0;
-            jal(ctx, 0x10335Cu, gen::fn_scePadGetReqState_00511bc0);
+            if (native::input::PadService* np = native::input::service()) {
+                v0 = np->get_req_state(a0.u(), a1.u());  // layer 2 (--native input; input_native.h)
+            } else {
+                jal(ctx, 0x10335Cu, gen::fn_scePadGetReqState_00511bc0);
+            }
             if (v0 == 0) {
                 // 0x00103390
                 charge(ctx, 4);
@@ -1327,14 +1366,22 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
                 a1 = s0;
                 a2 = si(-1);
                 a3 = 0;
-                jal(ctx, 0x103308u, gen::fn_scePadInfoAct_00511c50);
+                if (native::input::PadService* np = native::input::service()) {
+                    v0 = np->info_act(a0.u(), a1.u(), static_cast<s32>(a2.u()), a3.u());  // layer 2 (--native input; input_native.h)
+                } else {
+                    jal(ctx, 0x103308u, gen::fn_scePadInfoAct_00511c50);
+                }
                 if (v0 != 0) {
                     // 0x00103328
                     charge(ctx, 7);
                     a0 = s1;
                     a1 = s0;
                     a2 = addiu(gp, -31360);  // &0x7CB270
-                    jal(ctx, 0x103334u, gen::fn_scePadSetActAlign_00512138);
+                    if (native::input::PadService* np = native::input::service()) {
+                        v0 = hpad_native_act_align(ctx, *np, a0.u(), a1.u(), a2.u());  // layer 2 (--native input; input_native.h)
+                    } else {
+                        jal(ctx, 0x103334u, gen::fn_scePadSetActAlign_00512138);
+                    }
                     if (v0 != 0) {
                         // 0x00103344
                         charge(ctx, 4);
@@ -1406,7 +1453,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
                                 a0 = s1;
                                 a1 = s0;
                                 a2 = 1;
-                                jal(ctx, 0x1032A0u, gen::fn_scePadSetMainMode_00511fb8);
+                                if (native::input::PadService* np = native::input::service()) {
+                                    v0 = np->set_main_mode(a0.u(), a1.u(), a2.u(), a3.u());  // layer 2 (--native input; input_native.h)
+                                } else {
+                                    jal(ctx, 0x1032A0u, gen::fn_scePadSetMainMode_00511fb8);
+                                }
                                 v1 = 1;
                                 if (v0 == v1) {
                                     // 0x001032b4
@@ -1432,7 +1483,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
                                     a0 = s1;
                                     a1 = s0;
                                     a2 = 0;
-                                    jal(ctx, 0x10325Cu, gen::fn_scePadSetMainMode_00511fb8);
+                                    if (native::input::PadService* np = native::input::service()) {
+                                        v0 = np->set_main_mode(a0.u(), a1.u(), a2.u(), a3.u());  // layer 2 (--native input; input_native.h)
+                                    } else {
+                                        jal(ctx, 0x10325Cu, gen::fn_scePadSetMainMode_00511fb8);
+                                    }
                                     v1 = 1;
                                     if (v0 == v1) {
                                         // 0x00103270
@@ -1459,7 +1514,11 @@ void H_Pad_UpdateWorkPad(EEContext& ctx) {
                                         a1 = s0;
                                         a2 = 0;
                                         a3 = 0;
-                                        jal(ctx, 0x103218u, gen::fn_scePadSetMainMode_00511fb8);
+                                        if (native::input::PadService* np = native::input::service()) {
+                                            v0 = np->set_main_mode(a0.u(), a1.u(), a2.u(), a3.u());  // layer 2 (--native input; input_native.h)
+                                        } else {
+                                            jal(ctx, 0x103218u, gen::fn_scePadSetMainMode_00511fb8);
+                                        }
                                         v1 = 1;
                                         if (v0 == v1) {
                                             // 0x0010322c
@@ -28788,7 +28847,7 @@ void sceSdRemote(EEContext& ctx) {
             L_00512cec:
                 charge(ctx, 4);
                 t3 = s2;
-                jal(ctx, 0x512CECu, gen::fn_sceSifCallRpc_00507230);
+                sdr_call_rpc(ctx, 0x512CECu);  // layer 3 steps 2-3: native SK (sound_native.h)
                 lw(v0, s0, -8192);
                 if (s2 != 0) {
                     // 0x00512cfc
@@ -28847,7 +28906,7 @@ void sceSdRemote(EEContext& ctx) {
             t0 = sll(t0, 3);
             a1 = s1;
             t3 = s2;
-            jal(ctx, 0x512C38u, gen::fn_sceSifCallRpc_00507230);
+            sdr_call_rpc(ctx, 0x512C38u);  // layer 3 steps 2-3: native SK (sound_native.h)
             if (s2 == 0) {
                 lw(v0, s0, 12);
             } else {
@@ -28890,7 +28949,7 @@ void sceSdRemote(EEContext& ctx) {
             a1 = a1 | 0x8140;
             t2 = 64;
             t3 = s2;
-            jal(ctx, 0x512BA0u, gen::fn_sceSifCallRpc_00507230);
+            sdr_call_rpc(ctx, 0x512BA0u);  // layer 3 steps 2-3: native SK (sound_native.h)
             v0 = 0x8160;
             if (s2 != 0) {
                 // 0x00512bb0

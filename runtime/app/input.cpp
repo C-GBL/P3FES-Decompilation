@@ -471,6 +471,14 @@ StickXY apply_radial_deadzone(std::int16_t x, std::int16_t y, double deadzone) {
     return {fx / m * k, fy / m * k};
 }
 
+StickXY stick_to_square(const StickXY& s, double full_at) {
+    const double m = std::sqrt(s.x * s.x + s.y * s.y);
+    if (m == 0.0) return {};
+    const double k = full_at > 0.0 ? std::min(m / full_at, 1.0) : std::min(m, 1.0);
+    const double edge = std::max(std::fabs(s.x), std::fabs(s.y)) / m;  // the unit direction's larger component
+    return {s.x / m / edge * k, s.y / m / edge * k};
+}
+
 std::uint8_t axis_to_byte(double v) {
     v = std::clamp(v, -1.0, 1.0);
     const double r = v < 0.0 ? 128.0 + v * 128.0 : 128.0 + v * 127.0;
@@ -492,8 +500,13 @@ PadInput map_gamepad(const InputConfig& cfg, const GamepadState& g) {
         if (g.buttons & x) p.buttons = static_cast<std::uint16_t>(p.buttons | b);
     if (g.left_trigger > cfg.trigger_threshold) p.buttons = static_cast<std::uint16_t>(p.buttons | pb::kL2);
     if (g.right_trigger > cfg.trigger_threshold) p.buttons = static_cast<std::uint16_t>(p.buttons | pb::kR2);
-    const StickXY l = apply_radial_deadzone(g.lx, g.ly, cfg.deadzone_left);
-    const StickXY r = apply_radial_deadzone(g.rx, g.ry, cfg.deadzone_right);
+    // kStickFullAt is a raw magnitude: after the dead zone's rescale it sits at (full - dz) / (1 - dz)
+    auto full_after = [](double deadzone) {
+        const double dz = std::clamp(deadzone, 0.0, 0.95);
+        return std::max((kStickFullAt - dz) / (1.0 - dz), 0.05);
+    };
+    const StickXY l = stick_to_square(apply_radial_deadzone(g.lx, g.ly, cfg.deadzone_left), full_after(cfg.deadzone_left));
+    const StickXY r = stick_to_square(apply_radial_deadzone(g.rx, g.ry, cfg.deadzone_right), full_after(cfg.deadzone_right));
     p.lx = axis_to_byte(l.x);
     p.ly = axis_to_byte(-l.y);
     p.rx = axis_to_byte(r.x);

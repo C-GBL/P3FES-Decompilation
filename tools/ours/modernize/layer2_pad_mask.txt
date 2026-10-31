@@ -1,0 +1,17 @@
+# Modernize layer 2, check 2: the pad layer's own state, excluded when a --native input run is compared with a
+# faithful one (logcmp.py dumps A B --mask=tools\ours\modernize\layer2_pad_mask.txt, or tracediff snapshot A B
+# --mask ...). Established 2026-10-30 from the six old routes (faithful vs --native input, the same end points),
+# every differing run attributed with symbols/p3fes.sym (docs/MODERNIZE_PLAN.md section 3, layer 2). Inclusive ranges.
+#
+# The two 256-byte DMA buffers H_Pad_Init registers with scePadPortOpen (port 1 0x7E0840, port 2 0x7E0740): PADMAN
+# writes a 128-byte pad frame into one half per vblank on the faithful path; native mode never opens them
+0x007E0740-0x007E093F
+# libpad's init flag (scePadInit's "done" word 0x782748; the verbose word 0x78274C next to it stays 0)
+0x00782748-0x0078274B
+# the SIF command handler slot scePadInit2 installs for command 0x80000019 (_pad_intr_hdr 0x511288 and its $gp,
+# observed at 0x966BAC / 0x966BB4)
+0x00966BA8-0x00966BB7
+# libpad's EE client: the two RPC clients pad_rpc_cd0 / pad_rpc_cd1 (0x96DCC0, 0x96DCE8; sceSifBindRpc to
+# 0x80000100 / 0x80000101), the port / slot records 0x96DD10 (112 bytes per port, 28 per slot: buffer, IOP address,
+# open flag), the per-port state words 0x96DE00 (128 per port) and the request buffer pad_rpc_buf 0x96DF00 (128 B)
+0x0096DCC0-0x0096DF7F

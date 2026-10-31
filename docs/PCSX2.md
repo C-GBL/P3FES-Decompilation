@@ -241,7 +241,7 @@ the recompiler's value is accepted as `agree-rec:<class>` where it is the one th
 | Exponent-255 operands/results: the recompiler clamps everything to IEEE `+/-0x7F7FFFFF`; the interpreter keeps some EE-range results (`0x7FFFFFFF / 0x7FFFFFFF = 1.0`, `2^128 x 0.5 = 2^127`) | `fd`/`acc` 69 + 10 |
 | DIV.S rounding: recompiler round-to-nearest (`FPUDiv.Roundmode=0`), interpreter truncation (`1/3 = 0x3EAAAAAA`) | 35 |
 | MAX.S/MIN.S ties: recompiler returns flushed ft, interpreter orders -0 below +0 without flushing | 5 |
-| `sqrt.s`: the recompiler rounds to nearest (`sqrt(10) = 0x404A62C2`), the interpreter truncates (`...C1`, ours) | 2 |
+| `sqrt.s`: the recompiler rounds to nearest (`sqrt(10) = 0x404A62C2`, ours since 2026-10-31: `fpu::sqrt_nearest`, class `agree-rec:int-sqrt-truncates`), the interpreter truncates (`...C1`). Truncating SQRT.S next to the recompiler's rounding DIV.S broke the field pad heading on a centred stick x (INTEGRATION_LOG "SQRT.S rounds to nearest") | 4 |
 | LWR with a non-zero byte offset: recompiler zero-extends the merged word, interpreter leaves bits 63..32 (ours) | `core` 6 |
 | PMADDW/PMSUBW: the interpreter drops the carry from LO into HI; the recompiler (and ours) keep the 64-bit sum | `mmi` 7 |
 | MTSA: the recompiler masks the value to 4 bits (bytes), the interpreter stores it raw and QFSRV then shifts by a garbage amount | `mmi` 7 |
