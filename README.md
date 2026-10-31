@@ -61,7 +61,7 @@ Saves go to `%APPDATA%\P3FES\saves` as a standard PS2 memory card image (`Mcd001
 
 | Version | Notes |
 |---|---|
-| Unreleased | The `--native` layers (files with instant loading, input, sound, movies, graphics, kernel), all opt-in. Fixed: walking straight down (keyboard S alone) turned the hero away instead of moving him, and a controller walked instead of running at some stick angles. |
+| v0.2.0 | The `--native` layers (files with instant loading, input, sound, movies, graphics, kernel), all opt-in. Fixed: walking straight down (keyboard S alone) turned the hero away instead of moving him, and a controller walked instead of running at some stick angles. |
 | v0.1.0 | Initial commit, with all recompiled functions (14,500) |
 
 ## How the port works
